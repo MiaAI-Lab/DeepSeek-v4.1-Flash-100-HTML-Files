@@ -1,0 +1,17 @@
+TITLE: The Wave Archive — Eight Recordings, One Playhead
+
+PROMPT:
+Create "The Wave Archive," a self-contained catalogue of eight fictional field recordings. Use studio dark green-black, phosphor mint, warm amber and cream. Compose a three-column archive: an editorial "The wave archive" title and eight reel buttons; a waveform display with a generated SVG waveform, faint grid, amber playhead, time readout and a spectrum strip; and a reel record with name, subtitle, note, duration, year, medium, character, location, reel number, Play and Stop controls. Selecting a reel should generate a distinct waveform shape, update all metadata and reset playback. Pressing Play should sweep the playhead across the waveform, advance the time readout and then stop at the end. No external audio, assets, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A sound archive without sound. The waveform is a portrait of each recording, and the different envelopes — a bell's decay, a kettle's rise, snow's near-silence — do the work that audio normally would.
+
+MAJOR VISUAL TECHNIQUES:
+- Procedural mirrored waveform paths per recording type
+- Animated amber playhead with timing tied to reel duration
+- Oscilloscope grid and spectrum bar strip
+- Reel metadata and transport controls
+- Studio dark palette with phosphor-mint traces
+
+INTERACTION MODEL:
+Choose any of the eight reels to load its waveform and record. Press Play to sweep the playhead and advance the time readout; press Stop or Play again to stop. The spectrum bars update with the selected waveform.

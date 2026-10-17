@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#182420">
+  <meta name="description" content="The Borrowed Library — a quiet room for other people's books.">
+  <title>The Borrowed Library — Other People's Books</title>
+  <style>
+    :root {
+      --wall: #17231f;
+      --wall2: #1f2f28;
+      --wood: #6c4c33;
+      --wood-light: #8a6243;
+      --cream: #efe6d3;
+      --dim: #9d9a8b;
+      --brass: #c9a464;
+      --line: rgba(239,230,211,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--brass); color: var(--wall); }
+    body { margin: 0; min-height: 100vh; background: var(--wall); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .library { min-height: 100vh; padding: 19px clamp(15px, 3.4vw, 48px) 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; background: radial-gradient(ellipse at 22% 8%, rgba(201,164,100,.16), transparent 44%), radial-gradient(ellipse at 80% 100%, rgba(90,120,104,.16), transparent 46%), var(--wall); }
+    .library::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .14; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: screen; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 9px; position: relative; z-index: 3; }
+    .brand { font-family: var(--serif); font-size: 17px; letter-spacing: -.02em; line-height: 1; }
+    .brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .17em; text-transform: uppercase; color: var(--dim); }
+    .head { display: flex; gap: clamp(15px, 3vw, 34px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(165px, .6fr) minmax(430px, 1.75fr); gap: clamp(16px, 3vw, 40px); align-items: center; padding: 16px 0 12px; position: relative; z-index: 2; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(50px, 7.2vw, 94px); line-height: .79; letter-spacing: -.07em; }
+    .intro h1 em { display: block; color: var(--brass); font-style: italic; }
+    .intro .kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 11px; font-family: var(--mono); font-size: 6px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 18px; height: 1px; background: var(--brass); }
+    .intro p { max-width: 205px; margin: 22px 0 0; font-family: var(--serif); font-size: 12.5px; line-height: 1.6; color: #b0ad9f; }
+    .lamp { margin-top: 24px; width: 86px; height: 78px; position: relative; }
+    .lamp::before { content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 1px; height: 44px; background: var(--brass); }
+    .lamp::after { content: ""; position: absolute; left: 50%; bottom: 41px; transform: translateX(-50%); width: 54px; height: 26px; background: linear-gradient(180deg, var(--brass), #8d6d3e); clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%); box-shadow: 0 10px 30px rgba(201,164,100,.28); }
+    .lamp .glow { position: absolute; left: 50%; top: 57px; transform: translateX(-50%); width: 120px; height: 74px; background: radial-gradient(ellipse at 50% 100%, rgba(255,220,150,.24), transparent 70%); filter: blur(5px); }
+    .shelf-unit { position: relative; background: linear-gradient(180deg, #2b2119, #201812); border: 1px solid rgba(201,164,100,.22); padding: 11px clamp(8px, 1.6vw, 18px) 0; box-shadow: 0 26px 45px rgba(0,0,0,.35), inset 0 0 60px rgba(0,0,0,.3); }
+    .shelf-unit::before { content: ""; position: absolute; left: 3px; right: 3px; top: 3px; height: 5px; background: linear-gradient(90deg, #4b3322, #7a5739, #4b3322); }
+    .row { display: flex; align-items: flex-end; gap: clamp(2px, .45vw, 5px); height: clamp(128px, 19vh, 190px); padding: 0 4px; position: relative; }
+    .row::after { content: ""; position: absolute; left: -10px; right: -10px; bottom: -3px; height: 9px; background: linear-gradient(180deg, #7d5a3a, #563c26); box-shadow: 0 3px 6px rgba(0,0,0,.35); }
+    .row + .row { margin-top: clamp(12px, 2vh, 22px); }
+    .book { position: relative; height: var(--h); width: var(--w); background: var(--c); border-radius: 1px 1px 2px 2px; border: 1px solid rgba(0,0,0,.28); border-top: 2px solid rgba(255,255,255,.18); cursor: pointer; flex: 0 0 auto; transition: transform .32s cubic-bezier(.2,.8,.2,1), box-shadow .32s, filter .32s; transform-origin: bottom center; box-shadow: inset -3px 0 6px rgba(0,0,0,.22), 2px 0 4px rgba(0,0,0,.24); display: flex; align-items: center; justify-content: center; padding: 0; }
+    .book::before { content: ""; position: absolute; left: 3px; right: 3px; top: 9%; bottom: 9%; border-top: 1px solid rgba(255,235,200,.28); border-bottom: 1px solid rgba(255,235,200,.28); opacity: .55; }
+    .book::after { content: attr(data-title); writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--serif); font-size: var(--fs); letter-spacing: .02em; color: var(--tx); opacity: .9; white-space: nowrap; overflow: hidden; max-height: 82%; }
+    .book:hover { transform: translateY(-13px) rotate(-1.2deg); filter: brightness(1.12); box-shadow: inset -3px 0 6px rgba(0,0,0,.2), 4px 8px 12px rgba(0,0,0,.34); z-index: 4; }
+    .book.active { transform: translateY(-17px) rotate(-2deg); box-shadow: 0 0 0 2px var(--brass), 5px 10px 16px rgba(0,0,0,.4); z-index: 5; }
+    .book.lean { transform: rotate(7deg); margin-top: 8px; transform-origin: bottom right; }
+    .book.lean:hover { transform: rotate(7deg) translateY(-10px); }
+    .detail { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 10px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: end; position: relative; z-index: 3; }
+    .quote { font-family: var(--serif); font-size: clamp(13px, 1.4vw, 17px); line-height: 1.5; font-style: italic; color: var(--cream); max-width: 640px; min-height: 44px; }
+    .quote small { display: block; margin-top: 5px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .09em; text-transform: uppercase; font-style: normal; color: var(--dim); }
+    .book-meta { text-align: right; font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    .book-meta b { display: block; font-family: var(--serif); font-size: 18px; font-weight: 400; letter-spacing: -.02em; text-transform: none; color: var(--brass); line-height: 1; margin-bottom: 3px; }
+    footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid var(--line); padding-top: 8px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); position: relative; z-index: 2; }
+    footer span:nth-child(2) { color: var(--cream); }
+    @media (max-width: 860px) {
+      main { grid-template-columns: 1fr; gap: 14px; align-items: start; }
+      .intro { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+      .intro h1 { font-size: clamp(46px, 9vw, 70px); }
+      .intro p { margin: 0; max-width: 310px; }
+      .lamp { display: none; }
+      .row { height: 150px; }
+      .book-meta { display: none; }
+      .quote { max-width: 100%; }
+    }
+    @media (max-width: 540px) {
+      .library { padding: 11px 10px 13px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(42px, 14vw, 63px); }
+      .intro p { display: none; }
+      .shelf-unit { padding: 7px 5px 0; }
+      .row { height: 118px; gap: 2px; }
+      .row + .row { margin-top: 10px; }
+      .book::after { font-size: 5px !important; }
+      .detail { padding-top: 8px; margin-top: 9px; }
+      .quote { font-size: 11px; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="library">
+    <header>
+      <div class="brand">The Borrowed Library<span>Other people’s books / reading room 047</span></div>
+      <div class="head"><div>Shelves<br><b>02 of 14</b></div><div>Volumes<br><b>19 on loan</b></div><div>Silence<br><b>Please</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A room made of other minds</p>
+        <h1>The<em>borrowed<br>library</em></h1>
+        <p>None of these books belong to us. They were lent by friends, neighbours and one very trusting stranger in 2019.</p>
+        <div class="lamp" aria-hidden="true"><span class="glow"></span></div>
+      </section>
+      <section aria-label="Borrowed books shelf">
+        <div class="shelf-unit">
+          <div class="row" id="row1"></div>
+          <div class="row" id="row2"></div>
+        </div>
+        <div class="detail">
+          <blockquote class="quote" id="quote">“A book is a borrowed room. You live in it for a while, then you return the key.”<small id="quoteSource">— The Borrowed Library, frontispiece</small></blockquote>
+          <div class="book-meta"><b id="bookTitle">On Reading</b><span id="bookLender">Lent by M. / 2021</span></div>
+        </div>
+      </section>
+    </main>
+    <footer><span><b>The Borrowed Library</b> / other people’s books</span><span>Return what you borrow, eventually</span><span>Reading room 047</span></footer>
+  </div>
+  <script>
+    (() => {
+      const books = [
+        { title: 'The Salt Path', quote: '“You do not need to know where you are going to keep walking.”', src: '— borrowed from J., summer 2022', color: '#8a4b3c', text: '#f0e2c9', w: 20, h: 82 },
+        { title: 'A Field Guide to Getting Lost', quote: '“Losing yourself is a way of finding out how large you are.”', src: '— borrowed from R., winter 2020', color: '#31544c', text: '#e9dfc6', w: 26, h: 92 },
+        { title: 'The Poetics of Space', quote: '“The house shelters daydreaming, the house protects the dreamer.”', src: '— borrowed from A., spring 2019', color: '#b9a47e', text: '#2c2a22', w: 24, h: 86 },
+        { title: 'Braiding Sweetgrass', quote: '“Paying attention is a form of reciprocity.”', src: '— borrowed from N., autumn 2023', color: '#6c7a4e', text: '#f1ead4', w: 30, h: 98 },
+        { title: 'Ways of Seeing', quote: '“We never look at just one thing; we are always looking at the relation.”', src: '— borrowed from E., 2018', color: '#28394d', text: '#eadfc6', w: 19, h: 80 },
+        { title: 'Small Things Like These', quote: '“It was not too late to do the right thing, even if it was the hard thing.”', src: '— borrowed from C., December 2023', color: '#a24f42', text: '#f2e6cd', w: 22, h: 78 },
+        { title: 'The Living Mountain', quote: '“The thing one has to learn is how to be still.”', src: '— borrowed from T., 2017', color: '#6f7f76', text: '#f0e8d2', w: 21, h: 90 },
+        { title: 'In Praise of Shadows', quote: '“Beauty is not in the thing itself, but in the pattern of shadows.”', src: '— borrowed from H., 2022', color: '#3c3a33', text: '#d9c9a6', w: 17, h: 84 },
+        { title: 'The Argonauts', quote: '“The pleasure of recognizing that one may have to undergo the same realizations again and again.”', src: '— borrowed from S., 2021', color: '#89607a', text: '#f2e7d3', w: 23, h: 88 },
+        { title: 'A Sand County Almanac', quote: '“We abuse land because we regard it as a commodity belonging to us.”', src: '— borrowed from P., 2016', color: '#8e7b4f', text: '#f2ead5', w: 25, h: 94 },
+        { title: 'The Empathy Exams', quote: '“Empathy is a choice, and sometimes it is a hard one.”', src: '— borrowed from L., 2024', color: '#9b6a55', text: '#f5ead3', w: 20, h: 82 },
+        { title: 'Bluets', quote: '“Suppose I were to begin by saying that I had fallen in love with a color.”', src: '— borrowed from I., 2020', color: '#3f6b94', text: '#efe6d3', w: 18, h: 76 },
+        { title: 'The Order of Time', quote: '“We are time. We are this space, this clearing opened by the traces of memory.”', src: '— borrowed from D., 2022', color: '#46525c', text: '#e9e0ca', w: 24, h: 90 },
+        { title: 'On Earth We’re Briefly Gorgeous', quote: '“Too much joy, I swear, is lost in our desperation to be happy.”', src: '— borrowed from V., 2023', color: '#b4794e', text: '#2b241c', w: 23, h: 86 },
+        { title: 'The Diving Bell and the Butterfly', quote: '“My diving bell becomes less oppressive, and my mind takes flight.”', src: '— borrowed from F., 2019', color: '#4f6d6a', text: '#eee4cc', w: 19, h: 80 },
+        { title: 'Devotions', quote: '“Instructions for living a life: pay attention, be astonished, tell about it.”', src: '— borrowed from J., 2024', color: '#a68a4f', text: '#2d271d', w: 26, h: 92 },
+        { title: 'The Hare with Amber Eyes', quote: '“Objects have a way of surviving the people who loved them.”', src: '— borrowed from B., 2018', color: '#75513d', text: '#f1e6cf', w: 25, h: 88 },
+        { title: 'A Philosophy of Walking', quote: '“Walking is not a sport. It is a way of being in the world.”', src: '— borrowed from G., 2021', color: '#5c6b58', text: '#f0e8d2', w: 21, h: 84 },
+        { title: 'The Book of Disquiet', quote: '“I am nothing. I shall never be anything. I cannot wish to be anything.”', src: '— borrowed from O., still waiting', color: '#803f39', text: '#efe3ca', w: 28, h: 96 }
+      ];
+      const rows = [document.getElementById('row1'), document.getElementById('row2')];
+      books.forEach((book, i) => {
+        const el = document.createElement('button');
+        el.type = 'button'; el.className = 'book' + (i === 7 ? ' lean' : '');
+        el.style.setProperty('--c', book.color); el.style.setProperty('--tx', book.text);
+        el.style.setProperty('--w', book.w + 'px'); el.style.setProperty('--h', book.h + 'px'); el.style.setProperty('--fs', (book.h > 90 ? 7 : 6) + 'px');
+        el.dataset.title = book.title;
+        el.setAttribute('aria-label', book.title);
+        el.addEventListener('click', () => {
+          document.querySelectorAll('.book').forEach(b => b.classList.remove('active'));
+          el.classList.add('active');
+          document.getElementById('quote').innerHTML = book.quote + '<small id="quoteSource">' + book.src + '</small>';
+          document.getElementById('bookTitle').textContent = book.title;
+          document.getElementById('bookLender').textContent = book.src.replace('— borrowed from ', 'Lent by ');
+          document.querySelector('.quote').animate([{ opacity: .3 }, { opacity: 1 }], { duration: 420, easing: 'ease-out' });
+        });
+        rows[i < 10 ? 0 : 1].appendChild(el);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+TITLE: Harbour Office — Tide Table, Saint Aubin
+
+PROMPT:
+Create "Harbour Office," a self-contained tide table for a fictional port, Saint Aubin. Use deep Atlantic navy, sea green, pale foam and a coral marker. Compose an official harbour-office sheet: header metadata; a serif "Tide table" title with coordinates and a moon disc; a tide curve drawn in inline SVG over a 24-hour axis with gridlines, a filled sea area and orange high/low markers; a vertical tide gauge with metre ticks; a list of today's high and low waters; an explanatory note; and a scrub control. Generate the tide curve in JavaScript from a semidiurnal harmonic, compute the four turning points, and let a range slider scrub through the day so the marker, gauge, readout and note update. No external assets, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A working harbour document with the precision of an almanac. The curve is the illustration, the table is the argument, and the coral line moving across it makes the page feel like a live instrument rather than a poster.
+
+MAJOR VISUAL TECHNIQUES:
+- JavaScript-generated tide harmonics with filled SVG sea curve
+- Computed high/low water extrema and marker labels
+- Vertical gauge with live fill level
+- Scrubbable time axis with moving indicator
+- Nautical serif and monospaced table typography
+
+INTERACTION MODEL:
+Drag the hour slider to move through the day. The coral line and dot move along the curve, the height readout and vertical gauge update, and the note describes whether the tide is making or ebbing and when the next turn occurs.

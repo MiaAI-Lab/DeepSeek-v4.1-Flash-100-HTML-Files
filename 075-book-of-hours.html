@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e6d9bd">
+  <meta name="description" content="Book of Hours 075 — eight prayers for the hours of the day.">
+  <title>Book of Hours 075 — Eight Prayers for the Day</title>
+  <style>
+    :root {
+      --vellum: #e8dcc0;
+      --vellum2: #f1e8d1;
+      --ink: #2a241b;
+      --gold: #b98a3c;
+      --lapis: #2b4a86;
+      --vermilion: #a8442f;
+      --green: #5c6b45;
+      --dim: #7e6f55;
+      --line: rgba(42,36,27,.3);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--vellum2); }
+    body { margin: 0; min-height: 100vh; background: #b8a37e; color: var(--ink); font-family: var(--serif); padding: clamp(8px, 1.6vw, 20px); display: flex; justify-content: center; }
+    .codex { width: min(1220px, 100%); min-height: calc(100vh - clamp(16px, 3.2vw, 40px)); background: var(--vellum); box-shadow: 0 20px 46px rgba(50,36,14,.35); padding: clamp(13px, 2.4vw, 30px); display: flex; flex-direction: column; position: relative; background-image: radial-gradient(rgba(90,70,36,.1) .6px, transparent .8px); background-size: 4px 4px; }
+    .codex::before { content: ""; position: absolute; inset: 9px; border: 1px solid rgba(42,36,27,.35); pointer-events: none; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 7px; position: relative; z-index: 3; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: .02em; text-transform: none; color: var(--ink); font-weight: 400; }
+    .head { display: flex; gap: clamp(13px, 2.6vw, 28px); font-family: var(--mono); font-size: 4.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(165px, .55fr) minmax(320px, 1.5fr) minmax(150px, .5fr); gap: clamp(12px, 2.4vw, 32px); align-items: center; padding: 10px 0 8px; position: relative; z-index: 2; }
+    .hours h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(33px, 4.4vw, 54px); line-height: .84; letter-spacing: -.04em; }
+    .hours h1 em { display: block; font-style: italic; color: var(--vermilion); font-size: .9em; }
+    .hours .kicker { display: flex; align-items: center; gap: 6px; margin: 0 0 9px; font-family: var(--mono); font-size: 4px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .hours .kicker::before { content: ""; width: 14px; height: 1px; background: var(--vermilion); }
+    .hours p { margin: 12px 0 0; max-width: 185px; font-family: var(--serif); font-size: 10.5px; line-height: 1.55; color: #5e5138; }
+    .hour-list { margin-top: 13px; border-top: 1px solid var(--line); }
+    .hour-btn { display: flex; justify-content: space-between; align-items: baseline; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--dim); padding: 3.5px 0; cursor: pointer; font: inherit; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; text-align: left; transition: color .2s, padding .2s; }
+    .hour-btn b { font-family: var(--serif); font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); }
+    .hour-btn:hover, .hour-btn.active { color: var(--vermilion); padding-left: 4px; }
+    .hour-btn.active b { color: var(--vermilion); }
+    .page { position: relative; background: var(--vellum2); border: 1px solid rgba(42,36,27,.35); padding: clamp(12px, 2vw, 24px) clamp(10px, 1.8vw, 22px); box-shadow: inset 0 0 40px rgba(120,90,40,.1); min-height: 400px; }
+    .page-inner { border: 1px solid rgba(42,36,27,.22); padding: clamp(9px, 1.6vw, 18px); position: relative; }
+    .initial { float: left; width: clamp(58px, 7vw, 88px); height: clamp(58px, 7vw, 88px); margin: 2px 9px 2px 0; background: linear-gradient(145deg, #d9b56a, #b98a3c 55%, #8f6727); display: grid; place-items: center; border: 1px solid #6f4d1c; position: relative; }
+    .initial span { font-family: var(--serif); font-size: clamp(32px, 4.4vw, 54px); color: #3c2a10; line-height: 1; }
+    .initial::before { content: ""; position: absolute; inset: 4px; border: 1px solid rgba(60,42,16,.45); }
+    .initial::after { content: ""; position: absolute; inset: -4px; border: 1px solid rgba(185,138,60,.4); pointer-events: none; }
+    .prayer { font-family: var(--serif); font-size: 10.5px; line-height: 1.75; color: #3d3426; text-align: justify; }
+    .prayer .drop { font-size: 1.15em; }
+    .prayer .rubric { color: var(--vermilion); font-style: italic; }
+    .prayer .gold-word { color: #8a6424; }
+    .columns { column-count: 2; column-gap: 16px; margin-top: 8px; }
+    @media (max-width: 700px) { .columns { column-count: 1; } }
+    .miniatures { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 9px; }
+    .mini { border: 1px solid rgba(42,36,27,.4); background: #dfd2b4; padding: 3px; }
+    .mini svg { display: block; width: 100%; height: auto; }
+    .mini-caption { font-family: var(--mono); font-size: 3.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-top: 2px; text-align: center; }
+    .marginalia { position: absolute; right: -4px; top: 45%; width: 44px; opacity: .9; }
+    .page-foot { display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--mono); font-size: 3.8px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .hour-title { font-family: var(--mono); font-size: 4px; letter-spacing: .12em; text-transform: uppercase; color: var(--vermilion); }
+    .hour-name { font-family: var(--serif); font-size: 25px; line-height: 1; letter-spacing: -.03em; margin-top: 2px; }
+    .hour-time { font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-top: 3px; }
+    .note { margin: 9px 0 0; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--serif); font-size: 10px; line-height: 1.5; color: #5e5138; }
+    .note b { display: block; font-family: var(--mono); font-size: 4px; letter-spacing: .1em; text-transform: uppercase; color: var(--vermilion); font-weight: 400; margin-bottom: 3px; }
+    .materials { margin-top: 9px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .materials div { display: flex; justify-content: space-between; gap: 5px; }
+    .materials b { color: var(--ink); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); position: relative; z-index: 3; }
+    footer span:nth-child(2) { color: var(--vermilion); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .75fr 1.25fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .hour-title, .hour-name, .hour-time { grid-column: 1; }
+      .note { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .materials { grid-column: 2; }
+      .hours p { display: none; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .codex { padding: 10px 10px 11px; min-height: 100vh; box-shadow: none; }
+      .head div:nth-child(2) { display: none; }
+      .hours h1 { font-size: clamp(30px, 10.5vw, 44px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .hour-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-top: 6px; }
+      .hour-btn { padding: 2px 0; }
+      .hour-btn b { font-size: 9px; }
+      .page { order: 2; min-height: 0; padding: 9px; }
+      .prayer { font-size: 9px; line-height: 1.65; }
+      .initial { width: 48px; height: 48px; }
+      .initial span { font-size: 28px; }
+      .marginalia { display: none; }
+      .miniatures { display: none; }
+      aside { order: 3; display: block; }
+      .hour-name { font-size: 18px; }
+      .note { margin-top: 6px; }
+      .materials { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="codex">
+    <header>
+      <div class="brand"><b>Book of Hours</b>Use of Vela / folio 075</div>
+      <div class="head"><div>Rite<br><b>Secular</b></div><div>Hours<br><b>Eight</b></div><div>Leaf<br><b>075 r</b></div></div>
+    </header>
+    <main>
+      <section class="hours">
+        <p class="kicker">The day, divided into prayer</p>
+        <h1>Little<em>hours</em></h1>
+        <p>Eight moments, from the dark before dawn to the last office at night. Each hour has its own light, and its own small request.</p>
+        <div class="hour-list" id="hourList">
+          <button class="hour-btn active" type="button" data-h="0"><b>Matins</b><span>00:00</span></button>
+          <button class="hour-btn" type="button" data-h="1"><b>Lauds</b><span>05:00</span></button>
+          <button class="hour-btn" type="button" data-h="2"><b>Prime</b><span>06:00</span></button>
+          <button class="hour-btn" type="button" data-h="3"><b>Terce</b><span>09:00</span></button>
+          <button class="hour-btn" type="button" data-h="4"><b>Sext</b><span>12:00</span></button>
+          <button class="hour-btn" type="button" data-h="5"><b>None</b><span>15:00</span></button>
+          <button class="hour-btn" type="button" data-h="6"><b>Vespers</b><span>18:00</span></button>
+          <button class="hour-btn" type="button" data-h="7"><b>Compline</b><span>21:00</span></button>
+        </div>
+      </section>
+      <section class="page">
+        <div class="page-inner">
+          <div class="initial"><span id="initial">D</span></div>
+          <div class="prayer" id="prayer"></div>
+          <div class="marginalia">
+            <svg viewBox="0 0 44 80" aria-hidden="true">
+              <path d="M22 76 C18 58 26 46 20 30 C16 20 24 10 22 4" fill="none" stroke="#5c6b45" stroke-width="1.2"/>
+              <path d="M22 30 C12 26 8 18 10 12 C18 14 22 22 22 30Z" fill="#5c6b45" opacity=".7"/>
+              <path d="M20 48 C30 44 36 36 34 28 C26 32 20 40 20 48Z" fill="#5c6b45" opacity=".55"/>
+              <circle cx="22" cy="63" r="3" fill="#a8442f"/>
+              <path d="M20 60 L24 66 M24 60 L20 66" stroke="#a8442f" stroke-width=".7"/>
+            </svg>
+          </div>
+          <div class="miniatures">
+            <div class="mini">
+              <svg viewBox="0 0 100 62" aria-hidden="true">
+                <rect width="100" height="62" fill="#cfc39f"/>
+                <path d="M0 48 L22 34 L38 44 L56 24 L78 42 L100 30 L100 62 L0 62Z" fill="#5c6b45" opacity=".7"/>
+                <circle cx="72" cy="16" r="9" fill="#b98a3c"/>
+                <circle cx="68" cy="14" r="8" fill="#cfc39f"/>
+              </svg>
+              <div class="mini-caption">The sky at the hour</div>
+            </div>
+            <div class="mini">
+              <svg viewBox="0 0 100 62" aria-hidden="true">
+                <rect width="100" height="62" fill="#d9cfae"/>
+                <path d="M50 8 C42 18 40 30 44 40 L56 40 C60 30 58 18 50 8Z" fill="#2b4a86" opacity=".8"/>
+                <circle cx="50" cy="12" r="5" fill="#b98a3c"/>
+                <path d="M32 44 H68 M36 50 H64" stroke="#a8442f" stroke-width="1.4"/>
+                <path d="M50 40 V58" stroke="#2a241b" stroke-width="1"/>
+              </svg>
+              <div class="mini-caption">The office, in figure</div>
+            </div>
+          </div>
+        </div>
+        <div class="page-foot"><span>Incipit hora · <span id="folioHour">Matins</span></span><span>fol. 075 r</span></div>
+      </section>
+      <aside>
+        <div class="hour-title">The hour of</div>
+        <div class="hour-name" id="hourName">Matins</div>
+        <div class="hour-time" id="hourTime">At midnight · before the first light</div>
+        <p class="note"><b>Why this hour</b><span id="hourNote">The office begins in darkness, with a single candle and the longest reading of the day. It is the hour for beginnings that no one witnesses.</span></p>
+        <div class="materials">
+          <div><span>Vellum</span><b>Calfskin</b></div>
+          <div><span>Ink</span><b>Iron gall</b></div>
+          <div><span>Gold</span><b>Leaf, 22 ct</b></div>
+          <div><span>Pigment</span><b>Lapis / vermilion</b></div>
+        </div>
+      </aside>
+    </main>
+    <footer><span><b>Book of Hours</b> / eight prayers for the day</span><span>Written for a house with one window</span><span>Folio 075 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const hours = [
+        { name: 'Matins', initial: 'D', time: 'At midnight · before the first light', note: 'The office begins in darkness, with a single candle and the longest reading of the day. It is the hour for beginnings that no one witnesses.',
+          prayer: '<span class="drop">D</span>omine, labia mea aperies, et os meum annuntiabit laudem tuam. <span class="rubric">Here beginneth the office of the night.</span> Keep us awake in the dark hours, and let the small light we have be enough. <span class="gold-word">Amen.</span><div class="columns"><p>Aperi, Domine, os meum ad benedicendum nomen tuum. Munda cor meum ab omnibus vanitatibus. In nocte consilium, in nocte silentium. Mane autem facto, adhuc tenebrae.</p><p>Et lux in tenebris lucet, et tenebrae eam non comprehenderunt. Custodi nos, Domine, ut pupillam oculi. Sub umbra alarum tuarum protege nos.</p></div>' },
+        { name: 'Lauds', initial: 'L', time: 'At first light · 05:00', note: 'The first office of daylight. The house is still cold, the birds have started, and the day is asked to behave itself.',
+          prayer: '<span class="drop">L</span>audate Dominum de caelis, laudate eum in excelsis. <span class="rubric">At the first light, the bell is rung once.</span> Let the morning be honest, and the work of our hands be clean. <span class="gold-word">Amen.</span><div class="columns"><p>Laudate eum, sol et luna, laudate eum, omnes stellae et lumen. Laudate eum, caeli caelorum. Sit nomen Domini benedictum.</p><p>Ex hoc nunc et usque in saeculum. A solis ortu usque ad occasum, laudabile nomen Domini. Gloria Patri, et Filio, et Spiritui Sancto.</p></div>' },
+        { name: 'Prime', initial: 'P', time: 'At six · the first hour of work', note: 'The hour of good intentions. The day is planned, the tools are laid out, and the first small promise is made to the next eight hours.',
+          prayer: '<span class="drop">P</span>rimam horam diei, Domine, tibi commendamus. <span class="rubric">Here the worker takes up the tool.</span> Direct our hands and keep our minds from wandering, at least until the second hour. <span class="gold-word">Amen.</span><div class="columns"><p>Deus, in adiutorium meum intende. Domine, ad adiuvandum me festina. Gloria Patri, et Filio, et Spiritui Sancto.</p><p>Sicut erat in principio, et nunc, et semper, et in saecula saeculorum. Amen. Dirige, Domine, Deus meus, in conspectu tuo viam meam.</p></div>' },
+        { name: 'Terce', initial: 'T', time: 'At nine · the third hour', note: 'The hour when the work has found its rhythm, and the mind begins to think about lunch. It is a short office, and a useful one.',
+          prayer: '<span class="drop">T</span>ertia hora, Spiritus Sanctus super apostolos descendit. <span class="rubric">A brief pause, hands still.</span> Give us the patience of a long task and the sense to stop when it is finished. <span class="gold-word">Amen.</span><div class="columns"><p>Veni, Sancte Spiritus, reple tuorum corda fidelium. Emitte Spiritum tuum et creabuntur, et renovabis faciem terrae.</p><p>Oremus. Deus, qui corda fidelium Sancti Spiritus illustratione docuisti. Da nobis in eodem Spiritu recta sapere.</p></div>' },
+        { name: 'Sext', initial: 'S', time: 'At noon · the sixth hour', note: 'The hour of strong light and weak resolve. The sun is overhead, the shadows are short, and the day is asked to be patient with us.',
+          prayer: '<span class="drop">S</span>exta hora, sol in meridie stat. <span class="rubric">Here the window is closed against the heat.</span> Let us not mistake the brightness of noon for the whole of the day. <span class="gold-word">Amen.</span><div class="columns"><p>Deus, in adiutorium meum intende. Domine, ad adiuvandum me festina. In sole posuit tabernaculum suum.</p><p>A summo caelo egressio eius, et occursus eius usque ad summum eius. Nec est qui se abscondat a calore eius.</p></div>' },
+        { name: 'None', initial: 'N', time: 'At three · the ninth hour', note: 'The afternoon office, often said while walking. It marks the turn of the day, when the light begins to lean and the work begins to finish.',
+          prayer: '<span class="drop">N</span>ona hora, clamavit Iesus voce magna. <span class="rubric">The house is quiet for a moment.</span> Teach us to finish what we have started, and to leave the rest for tomorrow. <span class="gold-word">Amen.</span><div class="columns"><p>Deus, in adiutorium meum intende. Domine, ad adiuvandum me festina. Clamavit Iesus voce magna, dicens: Pater, in manus tuas commendo spiritum meum.</p><p>Et haec dicta, emisit spiritum. Centurio autem, videns quia sic clamans exspirasset, ait: Vere Filius Dei erat iste.</p></div>' },
+        { name: 'Vespers', initial: 'V', time: 'At six · the evening light', note: 'The evening office, said as the lamps are lit. It is the longest and most beautiful of the little hours, and the one most often set to music.',
+          prayer: '<span class="drop">V</span>espera hora, lampades accenduntur. <span class="rubric">A lamp is lit at the western window.</span> Receive the day that is ending, with its unfinished work and its small mercies. <span class="gold-word">Amen.</span><div class="columns"><p>Deus, in adiutorium meum intende. Domine, ad adiuvandum me festina. Vespertina oratio ascendat ad te, Domine.</p><p>Dirigatur oratio mea sicut incensum in conspectu tuo, elevatio manuum mearum sacrificium vespertinum. Custodi nos, Domine, in omni via nostra.</p></div>' },
+        { name: 'Compline', initial: 'C', time: 'At nine · before sleep', note: 'The last office. It is deliberately short, so that it can be said by someone already half asleep, and it ends with a request for a quiet night.',
+          prayer: '<span class="drop">C</span>onverte nos, Deus, salutaris noster. <span class="rubric">Here the house is locked, and the candle put out.</span> Keep watch over those who sleep, and over those who cannot. <span class="gold-word">Amen.</span><div class="columns"><p>Noctem quietam et finem perfectum concedat nobis Dominus omnipotens. Adiutorium nostrum in nomine Domini, qui fecit caelum et terram.</p><p>Benedicat et custodiat nos omnipotens et misericors Dominus, et in somnum pacis nos perducat. Amen.</p></div>' }
+      ];
+      function show(i) {
+        const h = hours[i];
+        document.getElementById('initial').textContent = h.initial;
+        document.getElementById('prayer').innerHTML = h.prayer;
+        document.getElementById('hourName').textContent = h.name;
+        document.getElementById('hourTime').textContent = h.time;
+        document.getElementById('hourNote').textContent = h.note;
+        document.getElementById('folioHour').textContent = h.name;
+        document.querySelectorAll('.hour-btn').forEach((b, k) => b.classList.toggle('active', k === i));
+        document.querySelector('.page').animate([{ opacity: .55 }, { opacity: 1 }], { duration: 420, easing: 'ease-out' });
+      }
+      document.querySelectorAll('.hour-btn').forEach((b, i) => b.addEventListener('click', () => show(i)));
+      show(0);
+    })();
+  </script>
+</body>
+</html>

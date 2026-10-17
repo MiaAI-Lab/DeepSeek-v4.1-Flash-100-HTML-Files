@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1e55">
+  <meta name="description" content="Blues — a horizontal history of the world's most emotional color.">
+  <title>Blues — A Horizontal History of a Colour</title>
+  <style>
+    :root {
+      --cream: #f1ead9;
+      --gold: #d8b675;
+      --chrome: rgba(7,12,28,.42);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: #08142f; }
+    html, body { margin: 0; height: 100%; }
+    body { background: #0a1e55; color: var(--cream); font-family: var(--sans); overflow: hidden; }
+    .experience { height: 100vh; width: 100vw; position: relative; overflow: hidden; }
+    .track { height: 100%; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+    .track::-webkit-scrollbar { display: none; }
+    .chapter { min-width: 100vw; width: 100vw; height: 100%; scroll-snap-align: start; position: relative; overflow: hidden; padding: clamp(88px, 13vh, 150px) clamp(20px, 5vw, 72px) clamp(72px, 10vh, 105px); display: flex; align-items: center; }
+    .chapter::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .18; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E"); mix-blend-mode: soft-light; }
+    .chapter-inner { position: relative; z-index: 2; width: 100%; max-width: 1400px; margin: 0 auto; }
+    .eye { font-family: var(--mono); font-size: 7px; letter-spacing: .18em; text-transform: uppercase; line-height: 1.8; opacity: .7; margin: 0 0 17px; }
+    .eye b { font-weight: 400; }
+    .chapter h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(70px, 14vw, 217px); line-height: .67; letter-spacing: -.09em; }
+    .chapter h2 em { display: block; font-style: italic; font-weight: 400; }
+    .chapter p.blurb { max-width: 290px; margin: clamp(22px, 4vh, 38px) 0 0 clamp(0px, 13vw, 205px); font-family: var(--serif); font-size: 14px; line-height: 1.55; opacity: .8; }
+    .chapter .fact { position: absolute; z-index: 3; right: 0; bottom: 13%; width: min(210px, 26vw); text-align: right; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+    .chapter .fact b { display: block; font-family: var(--serif); font-size: 22px; font-weight: 400; letter-spacing: -.03em; text-transform: none; opacity: 1; margin-bottom: 4px; }
+    .chapter .big-no { position: absolute; z-index: 1; right: 3vw; top: 11%; font-family: var(--serif); font-style: italic; font-size: clamp(110px, 22vw, 340px); line-height: 1; opacity: .11; letter-spacing: -.09em; color: var(--cream); pointer-events: none; }
+    .chrome { position: fixed; z-index: 10; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px clamp(15px, 3.2vw, 48px); background: linear-gradient(180deg, rgba(3,8,24,.64), transparent); pointer-events: none; }
+    .chrome > * { pointer-events: auto; }
+    .chrome-brand { font-family: var(--serif); font-size: 18px; letter-spacing: -.03em; color: #f1ead9; line-height: 1; }
+    .chrome-brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .17em; text-transform: uppercase; opacity: .6; }
+    .chrome-mid { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: #f1ead9; }
+    .chrome-mid .bar { width: 100px; height: 1px; background: rgba(241,234,217,.3); position: relative; }
+    .chrome-mid .bar i { position: absolute; left: 0; top: 0; height: 1px; background: #f1ead9; width: 20%; transition: width .4s; }
+    .chrome-mid b { font-weight: 400; }
+    .chrome-nav { display: flex; gap: 6px; }
+    .chrome-nav button { width: 31px; height: 31px; border: 1px solid rgba(241,234,217,.4); background: transparent; color: #f1ead9; font: inherit; font-family: var(--mono); font-size: 10px; cursor: pointer; transition: background .2s, color .2s, border .2s; }
+    .chrome-nav button:hover { background: #f1ead9; color: #0a1e55; border-color: #f1ead9; }
+    .pager { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 12px clamp(15px, 3.2vw, 48px); background: linear-gradient(0deg, rgba(3,8,24,.58), transparent); pointer-events: none; }
+    .pager > * { pointer-events: auto; }
+    .dots { display: flex; gap: 7px; align-items: center; }
+    .dots button { width: 25px; height: 2px; padding: 0; border: 0; background: rgba(241,234,217,.25); cursor: pointer; transition: background .25s, width .25s; }
+    .dots button.active { width: 42px; background: #f1ead9; }
+    .pager-note { font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: #f1ead9; opacity: .7; }
+    .pager-note b { color: var(--gold); font-weight: 400; }
+    .drag-hint { font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: #f1ead9; opacity: .58; }
+    /* Chapter 1 */
+    .c1 { background: radial-gradient(ellipse at 82% 13%, rgba(138,180,206,.25), transparent 40%), linear-gradient(155deg, #152d53, #0c1b39 68%, #081027); }
+    .c1 h2 { color: #e7ddc7; }
+    .c1 .glyphs { position: absolute; right: 8%; top: 22%; width: 32vw; max-width: 450px; aspect-ratio: .7; opacity: .35; }
+    .c1 .glyphs div { position: absolute; border: 1px solid #9bb5bd; }
+    .c1 .glyphs div:nth-child(1) { width: 50%; height: 22%; left: 20%; top: 5%; border-radius: 50% 50% 0 0; }
+    .c1 .glyphs div:nth-child(2) { width: 30%; height: 30%; left: 5%; top: 35%; border-radius: 50%; }
+    .c1 .glyphs div:nth-child(3) { width: 43%; height: 8%; left: 47%; top: 41%; border-left: 4px solid #9bb5bd; }
+    .c1 .glyphs div:nth-child(4) { width: 54%; height: 23%; left: 25%; top: 59%; border-radius: 0 50% 0 50%; }
+    .c1 .glyphs div:nth-child(5) { width: 2px; height: 20%; background: #9bb5bd; left: 50%; top: 84%; border: 0; }
+    .c2 { background: radial-gradient(ellipse at 20% 70%, rgba(255,227,168,.18), transparent 42%), linear-gradient(140deg, #0c2370, #153ba2 55%, #0c2c8b); }
+    .c2 h2 { color: #f5e8c9; }
+    .c2 .gold-disc { position: absolute; width: 35vw; height: 35vw; max-width: 480px; max-height: 480px; border: 1px solid rgba(225,196,133,.5); border-radius: 50%; right: 6%; top: 14%; }
+    .c2 .gold-disc::before, .c2 .gold-disc::after { content: ""; position: absolute; border-radius: 50%; border: 1px solid rgba(225,196,133,.35); inset: 13%; }
+    .c2 .gold-disc::after { inset: 31%; background: rgba(216,182,117,.16); }
+    .c2 .flakes { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle, rgba(238,209,143,.7) 0 1px, transparent 1.5px); background-size: 37px 41px, 23px 29px; opacity: .35; }
+    .c3 { background: repeating-linear-gradient(94deg, rgba(255,255,255,.02) 0 2px, transparent 2px 8px), linear-gradient(160deg, #132238, #1b3147 52%, #0d1929); }
+    .c3 h2 { color: #e6dcc4; }
+    .c3 .threads { position: absolute; right: 6%; top: 9%; width: 40vw; max-width: 580px; height: 54%; opacity: .4; background: repeating-linear-gradient(0deg, transparent 0 10px, #88a2a0 10px 11px); mask: radial-gradient(ellipse at 50% 50%, black 15%, transparent 70%); }
+    .c3 .stamp-thread { position: absolute; left: 54%; top: 39%; width: 7px; height: 17%; background: #b85e4e; opacity: .8; }
+    .c4 { background: radial-gradient(ellipse at 66% 43%, rgba(91,203,198,.2), transparent 40%), linear-gradient(145deg, #051d2e, #083b45 55%, #041e2d); }
+    .c4 h2 { color: #c5e6dc; }
+    .c4 .rings { position: absolute; right: 7%; top: 20%; width: 36vw; height: 36vw; max-width: 510px; max-height: 510px; border: 1px solid rgba(125,220,211,.36); border-radius: 50%; }
+    .c4 .rings::before, .c4 .rings::after { content: ""; position: absolute; border: 1px solid rgba(125,220,211,.22); border-radius: 50%; inset: 15%; }
+    .c4 .rings::after { inset: 31%; background: radial-gradient(circle, rgba(79,187,185,.24), transparent 70%); }
+    .c4 .formula { position: absolute; right: 2%; bottom: 24%; font-family: var(--mono); font-size: 8px; letter-spacing: .12em; color: #a3d8ce; opacity: .7; }
+    .c5 { background: #0b1ac6; }
+    .c5 h2 { color: #f2ecdc; font-size: clamp(84px, 18vw, 276px); }
+    .c5 .void { position: absolute; right: 9%; top: 16%; width: 29vw; height: 47%; background: #f2ecdc; border-radius: 50% 50% 44% 44% / 60% 60% 38% 38%; opacity: .92; transform: rotate(-8deg); mix-blend-mode: screen; }
+    .c5 .void::after { content: ""; position: absolute; left: 46%; top: 18%; width: 9%; height: 64%; background: #0b1ac6; border-radius: 50%; transform: rotate(27deg); }
+    .c5 .blue-note { position: absolute; left: 6%; bottom: 12%; font-family: var(--mono); font-size: 6px; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+    @media (max-width: 760px) {
+      .chapter { padding-top: 105px; padding-bottom: 94px; align-items: flex-start; }
+      .chapter h2 { font-size: clamp(70px, 20vw, 130px); line-height: .7; }
+      .chapter p.blurb { margin-left: 0; font-size: 12px; max-width: 270px; }
+      .chapter .fact { position: static; width: 100%; text-align: left; margin-top: 28px; max-width: 240px; }
+      .chapter .fact b { font-size: 17px; }
+      .chapter .big-no { display: none; }
+      .chrome-mid { display: none; }
+      .c1 .glyphs { opacity: .2; width: 56vw; right: -3%; top: 17%; }
+      .c2 .gold-disc, .c4 .rings { opacity: .28; width: 73vw; height: 73vw; right: -24%; top: 19%; }
+      .c3 .threads { opacity: .2; width: 67vw; height: 42%; right: -10%; top: 22%; }
+      .c5 .void { width: 56vw; height: 33%; right: -6%; top: 18%; opacity: .8; }
+      .c5 h2 { font-size: clamp(77px, 23vw, 133px); }
+      .chrome-brand { font-size: 15px; }
+      .chrome-nav button { width: 28px; height: 28px; }
+      .pager { flex-wrap: wrap; gap: 8px; }
+      .pager-note { display: none; }
+      .drag-hint { font-size: 5px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="experience">
+    <div class="chrome">
+      <div class="chrome-brand">Blues<span>A horizontal history / No. 026</span></div>
+      <div class="chrome-mid"><b id="chapterLabel">01 / Egyptian blue</b><span class="bar"><i id="progressBar"></i></span><span id="chapterYear">3100 BCE</span></div>
+      <div class="chrome-nav"><button type="button" id="prev" aria-label="Previous chapter">←</button><button type="button" id="next" aria-label="Next chapter">→</button></div>
+    </div>
+    <div class="track" id="track">
+      <section class="chapter c1" data-name="Egyptian blue" data-year="3100 BCE">
+        <div class="glyphs" aria-hidden="true"><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="big-no" aria-hidden="true">01</div>
+        <div class="chapter-inner">
+          <p class="eye">Chapter 01 / the first blue · <b>3100 BCE</b></p>
+          <h2>Egyptian<em>blue</em></h2>
+          <p class="blurb">The oldest synthetic pigment, fired from sand, copper and ash. A colour invented for eternity and buried with kings.</p>
+          <div class="fact"><b>ca. 3100 BCE</b>First manufactured blue<br>Lapis-like, made by hand<br>Found in tombs &amp; amulets</div>
+        </div>
+      </section>
+      <section class="chapter c2" data-name="Ultramarine" data-year="1300s">
+        <div class="gold-disc" aria-hidden="true"></div><div class="flakes" aria-hidden="true"></div>
+        <div class="big-no" aria-hidden="true">02</div>
+        <div class="chapter-inner">
+          <p class="eye">Chapter 02 / the colour of heaven · <b>1300s</b></p>
+          <h2>Ultra<em>marine</em></h2>
+          <p class="blurb">Ground lapis lazuli, carried across deserts and seas. More expensive than gold; reserved for the robes of angels.</p>
+          <div class="fact"><b>900 g / kg</b>Lapis to pigment<br>Afghanistan → Venice<br>The Virgin's mantle</div>
+        </div>
+      </section>
+      <section class="chapter c3" data-name="Indigo" data-year="1700s">
+        <div class="threads" aria-hidden="true"></div><div class="stamp-thread" aria-hidden="true"></div>
+        <div class="big-no" aria-hidden="true">03</div>
+        <div class="chapter-inner">
+          <p class="eye">Chapter 03 / the working blue · <b>1700s</b></p>
+          <h2>Indi<em>go</em></h2>
+          <p class="blurb">A dye that lives in cloth. It stains the hands of dyers, the pockets of sailors and the memory of whole industries.</p>
+          <div class="fact"><b>4000 BCE</b>Earliest indigo use<br>Plant to vat to cloth<br>The colour of labour</div>
+        </div>
+      </section>
+      <section class="chapter c4" data-name="Prussian blue" data-year="1706">
+        <div class="rings" aria-hidden="true"></div><div class="formula" aria-hidden="true">Fe₄[Fe(CN)₆]₃ · 1706</div>
+        <div class="big-no" aria-hidden="true">04</div>
+        <div class="chapter-inner">
+          <p class="eye">Chapter 04 / the accidental blue · <b>1706</b></p>
+          <h2>Prussian<em>blue</em></h2>
+          <p class="blurb">A failed red made by a Berlin colour-maker. The first modern pigment: deep, cold, and hungry for shadow.</p>
+          <div class="fact"><b>1706</b>Discovered in Berlin<br>Iron ferrocyanide<br>Hokusai's great wave</div>
+        </div>
+      </section>
+      <section class="chapter c5" data-name="International Klein Blue" data-year="1960">
+        <div class="void" aria-hidden="true"></div>
+        <div class="big-no" aria-hidden="true">05</div>
+        <div class="chapter-inner">
+          <p class="eye">Chapter 05 / the blue that entered the body · <b>1960</b></p>
+          <h2>Inter&shy;national<em>Klein blue</em></h2>
+          <p class="blurb">Yves Klein built a pigment so present it seemed to bypass the eye. A colour that wanted to be a feeling.</p>
+          <div class="fact"><b>IKB</b>Patented in 1960<br>Pure ultramarine, no black<br>Blue as a state of being</div>
+          <div class="blue-note">The sky is not above us.<br>It is inside the room.</div>
+        </div>
+      </section>
+    </div>
+    <div class="pager">
+      <div class="dots" id="dots" aria-label="Chapters"></div>
+      <span class="drag-hint">Drag / wheel / arrow keys</span>
+      <span class="pager-note"><b>On colour</b> / an essay in five blues</span>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const track = document.getElementById('track');
+      const chapters = [...document.querySelectorAll('.chapter')];
+      const dots = document.getElementById('dots');
+      const chapterLabel = document.getElementById('chapterLabel');
+      const chapterYear = document.getElementById('chapterYear');
+      const progressBar = document.getElementById('progressBar');
+      let index = 0;
+      chapters.forEach((c, i) => {
+        const dot = document.createElement('button'); dot.type = 'button';
+        dot.setAttribute('aria-label', 'Go to ' + c.dataset.name);
+        dot.addEventListener('click', () => go(i));
+        dots.appendChild(dot);
+      });
+      function go(i) {
+        index = Math.max(0, Math.min(chapters.length - 1, i));
+        track.scrollTo({ left: chapters[index].offsetLeft, behavior: 'smooth' });
+        setUI(index);
+      }
+      function setUI(i) {
+        document.querySelectorAll('.dots button').forEach((d, j) => d.classList.toggle('active', j === i));
+        const chapter = chapters[i];
+        chapterLabel.textContent = String(i + 1).padStart(2, '0') + ' / ' + chapter.dataset.name;
+        chapterYear.textContent = chapter.dataset.year;
+        progressBar.style.width = ((i + 1) / chapters.length * 100) + '%';
+      }
+      track.addEventListener('scroll', () => {
+        const i = Math.round(track.scrollLeft / track.clientWidth);
+        if (i !== index) { index = i; setUI(i); }
+      }, { passive: true });
+      document.getElementById('next').addEventListener('click', () => go(index + 1));
+      document.getElementById('prev').addEventListener('click', () => go(index - 1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); go(index + 1); }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(index - 1); }
+      });
+      track.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault();
+          track.scrollLeft += e.deltaY;
+        }
+      }, { passive: false });
+      setUI(0);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ece9e2">
+  <meta name="description" content="Receipt — a small machine for everyday poetry.">
+  <title>Receipt — Everyday Poetry, Printed</title>
+  <style>
+    :root {
+      --counter: #ece9e2;
+      --paper: #fbfaf6;
+      --ink: #1f1e1b;
+      --muted: #8b8980;
+      --stamp: #b23f2d;
+      --line: rgba(31,30,27,.22);
+      --mono: "Courier New", Courier, monospace;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    body { margin: 0; min-height: 100vh; background: var(--counter); color: var(--ink); font-family: var(--sans); background-image: radial-gradient(rgba(31,30,27,.11) .55px, transparent .75px); background-size: 5px 5px; }
+    .shop { min-height: 100vh; padding: 21px clamp(16px, 3.6vw, 50px) 17px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+    .brand { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; line-height: 1.6; }
+    .brand b { display: block; font-family: var(--sans); font-size: 20px; letter-spacing: -.05em; text-transform: uppercase; font-weight: 800; }
+    .head { display: flex; gap: clamp(18px, 4vw, 48px); font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(170px, .7fr) minmax(280px, 1fr) minmax(170px, .7fr); gap: clamp(18px, 3.5vw, 52px); align-items: center; padding: 22px 0 17px; }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { display: flex; align-items: center; gap: 9px; margin: 0 0 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--stamp); }
+    .kicker::before { content: ""; width: 22px; height: 1px; background: var(--stamp); }
+    h1 { margin: 0; font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif; font-weight: 900; font-size: clamp(57px, 8.6vw, 117px); line-height: .72; letter-spacing: -.07em; text-transform: uppercase; }
+    h1 em { display: block; color: var(--stamp); font-style: normal; }
+    .intro p { max-width: 230px; margin: 28px 0 0; font-family: Georgia, serif; font-size: 13px; line-height: 1.62; color: #5c5b54; }
+    .machine { display: flex; flex-direction: column; align-items: center; justify-self: center; width: 100%; max-width: 330px; }
+    .printer { width: 100%; background: linear-gradient(170deg, #dad6cc, #c4c0b5); border: 1px solid #a29e93; border-radius: 7px; padding: 13px 15px 0; box-shadow: 0 16px 26px rgba(50,48,42,.19), inset 0 1px 0 rgba(255,255,255,.7); position: relative; z-index: 3; }
+    .printer-top { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: #5c574d; padding-bottom: 10px; border-bottom: 1px solid rgba(60,56,49,.2); }
+    .led { display: inline-flex; align-items: center; gap: 5px; }
+    .led::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--stamp); box-shadow: 0 0 6px var(--stamp); animation: blink 1.5s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: .2; } }
+    .slot { height: 11px; background: linear-gradient(180deg, #2a2823, #4a463d); border-radius: 0 0 2px 2px; margin: 12px -2px 0; box-shadow: inset 0 2px 4px rgba(0,0,0,.5); }
+    .paper { position: relative; width: 92%; margin-top: -2px; background: var(--paper); color: var(--ink); font-family: var(--mono); box-shadow: 0 10px 16px rgba(50,48,42,.14); clip-path: polygon(0 0, 100% 0, 100% 97%, 96% 100%, 92% 97%, 88% 100%, 84% 97%, 80% 100%, 76% 97%, 72% 100%, 68% 97%, 64% 100%, 60% 97%, 56% 100%, 52% 97%, 48% 100%, 44% 97%, 40% 100%, 36% 97%, 32% 100%, 28% 97%, 24% 100%, 20% 97%, 16% 100%, 12% 97%, 8% 100%, 4% 97%, 0 100%); padding: 19px 18px 27px; font-size: 8px; line-height: 1.7; transform-origin: top center; transition: transform .3s; }
+    .paper.fresh { animation: print 1.1s cubic-bezier(.2,.8,.2,1); }
+    @keyframes print { from { transform: scaleY(.05); opacity: .2; } to { transform: scaleY(1); opacity: 1; } }
+    .p-head { text-align: center; padding-bottom: 10px; border-bottom: 1px dashed rgba(31,30,27,.35); }
+    .p-head b { display: block; font-family: var(--sans); font-size: 15px; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; }
+    .p-head span { display: block; font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+    .receipt-row { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; font-variant-numeric: tabular-nums; }
+    .receipt-row span:first-child { text-align: left; }
+    .receipt-row span:last-child { text-align: right; }
+    .receipt-row.total { margin-top: 6px; padding-top: 7px; border-top: 1px dashed rgba(31,30,27,.35); font-weight: 700; }
+    .poem { margin: 10px 0; padding: 8px 0; border-top: 1px dashed rgba(31,30,27,.3); border-bottom: 1px dashed rgba(31,30,27,.3); }
+    .poem p { margin: 0; font-family: "Courier New", monospace; font-size: 8px; line-height: 1.65; text-transform: uppercase; letter-spacing: .04em; }
+    .p-foot { text-align: center; margin-top: 10px; font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .barcode { display: flex; justify-content: center; gap: 1.5px; height: 26px; margin-top: 9px; align-items: stretch; }
+    .barcode i { display: block; background: var(--ink); width: 1.5px; }
+    .barcode i:nth-child(3n) { width: 3px; } .barcode i:nth-child(5n) { width: .8px; }
+    .stamp { position: absolute; right: 12px; bottom: 19px; transform: rotate(-12deg); border: 1.5px solid var(--stamp); color: var(--stamp); font-family: var(--mono); font-size: 6px; letter-spacing: .08em; line-height: 1.35; text-transform: uppercase; padding: 4px 5px; text-align: center; opacity: .8; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .panel-label { font-family: var(--mono); font-size: 6px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 7px; }
+    .moods { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 100%; }
+    .moods button { border: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .06em; text-transform: uppercase; padding: 7px 4px; cursor: pointer; transition: background .2s, color .2s; }
+    .moods button:hover, .moods button.active { background: var(--ink); color: var(--paper); }
+    .issue { width: 100%; margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+    .issue b { display: block; font-family: var(--sans); font-size: 24px; letter-spacing: -.05em; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+    .print-btn { width: 100%; margin-top: 15px; border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); font: inherit; font-family: var(--mono); font-size: 8px; letter-spacing: .09em; text-transform: uppercase; padding: 11px; cursor: pointer; transition: background .2s, color .2s, transform .2s; }
+    .print-btn:hover { background: var(--stamp); border-color: var(--stamp); transform: translateY(-2px); }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 6px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    footer span:nth-child(2) { color: var(--ink); }
+    @media (max-width: 830px) {
+      main { grid-template-columns: 1fr 1fr; align-items: start; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: end; text-align: left; padding-top: 9px; }
+      .moods { max-width: 260px; }
+      .issue { margin-top: 0; border-top: 0; padding-top: 0; }
+      .print-btn { grid-column: 1 / -1; max-width: 260px; margin-top: 0; }
+    }
+    @media (max-width: 610px) {
+      .shop { padding: 11px 11px 13px; }
+      header { padding-bottom: 8px; }
+      .head div:nth-child(2) { display: none; }
+      .head { font-size: 6px; gap: 12px; }
+      main { display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 17px 0 13px; }
+      .intro { align-self: stretch; }
+      h1 { font-size: clamp(51px, 16vw, 79px); }
+      .intro p { font-size: 11px; margin-top: 16px; max-width: 270px; }
+      .machine { max-width: 290px; }
+      .paper { font-size: 7px; padding: 15px 14px 23px; }
+      .poem p { font-size: 7px; }
+      aside { display: block; width: 100%; max-width: 290px; }
+      .moods { grid-template-columns: 1fr 1fr 1fr; }
+      .issue { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 8px; display: flex; align-items: baseline; gap: 8px; }
+      .issue b { display: inline; font-size: 19px; }
+      .print-btn { margin-top: 12px; padding: 9px; font-size: 7px; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shop">
+    <header>
+      <div class="brand"><b>Receipt</b>Everyday poetry / printed while you wait</div>
+      <div class="head"><div>Counter<br><b>Open · 07:00–23:00</b></div><div>Paper<br><b>Thermal grade</b></div><div>No.<br><b>033</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Small machine, small feelings</p>
+        <h1>Every<em>receipt</em></h1>
+        <p>We print the things you almost said. One poem at a time, on paper that will fade before you do.</p>
+      </section>
+      <section class="machine" aria-label="Receipt printer">
+        <div class="printer">
+          <div class="printer-top"><span>Pocket Poet™ / model 33</span><span class="led">Printing</span></div>
+          <div class="slot"></div>
+        </div>
+        <div class="paper" id="paper">
+          <div class="p-head"><b>Pocket Poet</b><span>A small machine for everyday feelings</span><span>Est. 2026 / third register</span></div>
+          <div id="receiptLines"></div>
+          <div class="poem" id="poem"><p>THE DAY WAS<br>TOO LARGE FOR<br>MY POCKETS,<br>SO I KEPT<br>THIS SMALL<br>PIECE OF IT.</p></div>
+          <div class="receipt-row"><span>SUBTOTAL</span><span id="subtotal">3.00</span></div>
+          <div class="receipt-row"><span>PATIENCE</span><span id="patience">included</span></div>
+          <div class="receipt-row total"><span>TOTAL</span><span id="total">€ 0.00</span></div>
+          <div class="p-foot">Thank you for feeling carefully<br>CASH · CARD · A SHORT PAUSE<br><b id="serial">TX 033–001</b></div>
+          <div class="barcode" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="stamp" id="stamp">Printed<br>slowly<br>today</div>
+        </div>
+      </section>
+      <aside>
+        <p class="panel-label">Choose a feeling</p>
+        <div class="moods" aria-label="Mood">
+          <button type="button" class="active" data-mood="tender">Tender</button>
+          <button type="button" data-mood="restless">Restless</button>
+          <button type="button" data-mood="grateful">Grateful</button>
+          <button type="button" data-mood="tired">Tired</button>
+          <button type="button" data-mood="hopeful">Hopeful</button>
+          <button type="button" data-mood="strange">Strange</button>
+        </div>
+        <div class="issue"><b id="issueNo">033.001</b>Issue number<br>Recolored by feeling<br>Fades in direct sunlight</div>
+        <button class="print-btn" type="button" id="print">Print another poem ↘</button>
+      </aside>
+    </main>
+    <footer><span><b>Receipt</b> / small machine, small feelings</span><span>No poetry is stored after printing</span><span>Open edition / 033</span></footer>
+  </div>
+  <script>
+    (() => {
+      const poems = {
+        tender: ['THE DAY WAS<br>TOO LARGE FOR<br>MY POCKETS,<br>SO I KEPT<br>THIS SMALL<br>PIECE OF IT.', 'I HELD THE DOOR<br>FOR A STRANGER.<br>FOR THREE SECONDS<br>THE WHOLE CITY<br>WAS SOFTER.'],
+        restless: ['MY THOUGHTS<br>ARRIVED EARLY<br>AND WAITED<br>IN THE WRONG<br>ROOM.', 'I WALKED UNTIL<br>THE STREETS<br>FORGOT MY NAME.<br>IT WAS<br>A GOOD TRADE.'],
+        grateful: ['ENOUGH LIGHT<br>LEFT IN THE DAY<br>TO SEE THE DUST<br>DANCING,<br>AND CALL IT<br>A PARTY.', 'SOMEBODY MADE<br>THIS CHAIR<br>FOR A STRANGER.<br>I HAVE BEEN<br>SITTING IN<br>THEIR KINDNESS.'],
+        tired: ['MY BODY IS<br>A SMALL HOTEL<br>WITH ONE GUEST<br>WHO KEEPS<br>FORGETTING<br>TO CHECK OUT.', 'THE MOON<br>IS DOING<br>THE NIGHT SHIFT<br>ALONE TONIGHT.<br>WE UNDERSTAND<br>EACH OTHER.'],
+        hopeful: ['TOMORROW IS<br>STILL A SEALED<br>ENVELOPE.<br>LET US BE<br>CAREFUL WITH<br>THE FLAP.', 'A TINY GREEN<br>THING PUSHED<br>THROUGH THE PAVEMENT.<br>NOBODY TOLD IT<br>THE RULES.'],
+        strange: ['THE CLOUDS<br>ARE DOING<br>SOMETHING<br>THE WEATHER<br>HAS NOT<br>APPROVED.', 'I HEARD THE<br>BUILDING BREATHE.<br>IT SOUNDED<br>EXACTLY LIKE<br>MY GRANDMOTHER<br>IN THE NEXT ROOM.']
+      };
+      let issue = 1;
+      const paper = document.getElementById('paper');
+      const lines = document.getElementById('receiptLines');
+      const stamps = ['Printed<br>slowly<br>today', 'Approved<br>by the<br>moon', 'Handle<br>with<br>care', 'A copy<br>for<br>yourself', 'No<br>returns<br>possible'];
+      function render(mood) {
+        const set = poems[mood];
+        const poem = set[issue % set.length];
+        document.getElementById('poem').innerHTML = '<p>' + poem + '</p>';
+        const base = 2.5 + (issue % 4) * .5;
+        document.getElementById('subtotal').textContent = base.toFixed(2);
+        document.getElementById('total').textContent = '€ 0.00';
+        document.getElementById('patience').textContent = mood === 'tired' ? 'much needed' : mood === 'hopeful' ? 'generous' : 'included';
+        document.getElementById('issueNo').textContent = '033.' + String(issue).padStart(3, '0');
+        document.getElementById('serial').textContent = 'TX 033–' + String(issue).padStart(3, '0');
+        document.getElementById('stamp').innerHTML = stamps[issue % stamps.length];
+        const rows = [['FEELING / ' + mood.toUpperCase(), '1'], ['QUIET / approx.', (1 + issue % 3).toString()], ['MEMORY / recycled', '∞']];
+        lines.innerHTML = rows.map((r, i) => '<div class="receipt-row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>').join('');
+        paper.classList.remove('fresh'); void paper.offsetWidth; paper.classList.add('fresh');
+      }
+      document.querySelectorAll('[data-mood]').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('[data-mood]').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          issue++;
+          render(button.dataset.mood);
+        });
+      });
+      document.getElementById('print').addEventListener('click', () => {
+        const active = document.querySelector('[data-mood].active');
+        const moods = Object.keys(poems);
+        const next = moods[(moods.indexOf(active.dataset.mood) + 1) % moods.length];
+        document.querySelector(`[data-mood="${next}"]`).click();
+      });
+      render('tender');
+    })();
+  </script>
+</body>
+</html>

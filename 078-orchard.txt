@@ -1,0 +1,17 @@
+TITLE: The Orchard — Six Apples, One Long Shelf
+
+PROMPT:
+Create "The Orchard," a self-contained apple variety catalogue for six heritage apples. Use warm orchard paper, leaf green, bark brown, apple red and russet gold. Compose a three-column variety sheet: an editorial "The orchard" title and six variety buttons; a life-size inline-SVG apple with stem, leaf, gradient skin, blush, specular highlight and optional russet spots; and a panel with variety name, tasting note, a twelve-month harvest-and-keeping strip, sweetness/acidity/aroma bars, origin, size, use, keeping time and use tags. Selecting a variety should redraw the apple's colour stops and blush, add russet spots where appropriate, and update every text field, bar and calendar cell. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+An orchard catalogue with the patience of a fruit book. Each apple is a single well-observed drawing that changes skin, blush and russet, and the season strip quietly tells you when to eat it and when to wait.
+
+MAJOR VISUAL TECHNIQUES:
+- Inline-SVG apple with adjustable radial gradient and blush layer
+- Conditional russet spotting for heritage varieties
+- Twelve-month harvest and keeping strip with peak marking
+- Animated sweetness, acidity and aroma bars
+- Botanical serif and specimen-sheet mono typography
+
+INTERACTION MODEL:
+Choose Cox's Orange, Bramley, Egremont Russet, Discovery, Ashmead's Kernel or Keswick Codlin. The apple's skin colour, blush strength and russet spots change, and the note, season strip, profile bars, origin, size, use and keeping time all update.

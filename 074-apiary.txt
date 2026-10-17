@@ -1,0 +1,17 @@
+TITLE: The Apiary — A Hive Frame, Read Cell by Cell
+
+PROMPT:
+Create "The Apiary," a self-contained beekeeping record built around a single hive frame. Use dark bark brown, wax cream, honey amber, nectar gold, pollen ochre, brood brown and a little sage. Compose a three-column inspection sheet: an editorial "Hive frame" title with three colony buttons and a cell-type legend with counts; a wooden frame containing a honeycomb of 63 hexagonal cells arranged in offset rows with distinct colours for honey, nectar, pollen, brood, capped brood and empty; and a side panel with the selected cell, colony statistics, an animated waggle-dance diagram and a honey-stores bar. Clicking a cell should highlight it and describe its contents; switching colony should regenerate the comb with a different distribution and update every statistic. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A beekeeper's frame treated as a data object. The hexagons are the chart, the legend is the key, and the side panel explains what a single cell means in the life of a colony.
+
+MAJOR VISUAL TECHNIQUES:
+- CSS clip-path honeycomb grid with offset rows
+- Seeded cell-type distribution with brood clustered at the centre
+- Interactive cell selection with contents description
+- Animated SVG waggle-dance figure with moving bee
+- Warm wax-and-honey palette with engraved mono annotations
+
+INTERACTION MODEL:
+Select Hive A, B or C to rebuild the comb and update bees, queen year, frames, temperament, dance vector and honey stores. Click any hexagon to highlight it and read what is stored or developing in that cell; the legend counts reflect the current frame.

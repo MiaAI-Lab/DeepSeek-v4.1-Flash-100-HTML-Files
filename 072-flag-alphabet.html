@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d2230">
+  <meta name="description" content="Signal Tower 072 — a two-flag alphabet by the sea.">
+  <title>Signal Tower 072 — A Two-Flag Alphabet</title>
+  <style>
+    :root {
+      --sky: #b9cdd2;
+      --sky2: #e6e2d2;
+      --sea: #486a72;
+      --navy: #0d2230;
+      --cream: #f2ead8;
+      --red: #c34a3d;
+      --gold: #c9a45c;
+      --dim: #7d8d92;
+      --line: rgba(242,234,216,.18);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--red); color: var(--cream); }
+    body { margin: 0; min-height: 100vh; background: var(--navy); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .station { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: linear-gradient(180deg, #0d2230 0%, #173946 42%, #4d6a6c 72%, #2a3b3c 100%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; position: relative; z-index: 4; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: rgba(242,234,216,.55); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .6fr) minmax(280px, 1.15fr) minmax(210px, .9fr); gap: clamp(14px, 2.8vw, 36px); align-items: center; padding: 10px 0 8px; position: relative; z-index: 3; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 5.2vw, 64px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--gold); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: rgba(242,234,216,.55); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--red); }
+    .intro p { max-width: 190px; margin: 15px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: rgba(242,234,216,.72); }
+    .code-note { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 7px; font-family: var(--mono); font-size: 4.5px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: rgba(242,234,216,.55); }
+    .code-note b { color: var(--gold); font-weight: 400; }
+    .tower { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 400px; }
+    .horizon { position: absolute; left: -20%; right: -20%; bottom: 17%; height: 1px; background: rgba(242,234,216,.35); }
+    .sea-lines { position: absolute; left: -20%; right: -20%; bottom: 4%; height: 14%; opacity: .5; }
+    .sea-lines::before, .sea-lines::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: rgba(242,234,216,.3); }
+    .sea-lines::before { top: 30%; } .sea-lines::after { top: 65%; }
+    .signalman { position: relative; z-index: 3; width: clamp(160px, 22vw, 230px); height: clamp(220px, 30vw, 300px); }
+    .head-shape { position: absolute; left: 50%; top: 0; width: 15%; aspect-ratio: 1; margin-left: -7.5%; border-radius: 50%; background: #17262b; }
+    .body-shape { position: absolute; left: 50%; top: 16%; width: 22%; height: 42%; margin-left: -11%; background: #17262b; border-radius: 20% 20% 8% 8%; }
+    .platform { position: absolute; left: 50%; bottom: 0; width: 76%; height: 9%; margin-left: -38%; background: #1b2a2e; border-top: 3px solid #0f1c1f; }
+    .platform::before { content: ""; position: absolute; left: 15%; right: 15%; top: 100%; height: 90px; background: repeating-linear-gradient(90deg, #1b2a2e 0 4px, transparent 4px 22px); }
+    .arm { position: absolute; top: 22%; width: 44%; height: 5px; transform-origin: 0 50%; background: linear-gradient(180deg, #24363b, #101e22); border-radius: 2px; transition: transform .55s cubic-bezier(.3,.8,.3,1); z-index: 4; }
+    .arm.left { left: 50%; }
+    .arm.right { left: 50%; }
+    .flag { position: absolute; right: -2px; top: 50%; width: 34%; height: 26px; margin-top: -13px; background: var(--red); border: 1px solid rgba(13,34,48,.35); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+    .arm.left .flag { background: var(--cream); }
+    .arm.right .flag { background: var(--red); }
+    .flag::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(13,34,48,.25); }
+    .shoulder { position: absolute; left: 50%; top: 21%; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: #0e1b1f; z-index: 5; }
+    .letter-badge { position: absolute; left: 50%; top: 62%; transform: translateX(-50%); width: 44px; height: 44px; border: 1px solid var(--gold); border-radius: 50%; display: grid; place-items: center; font-family: var(--serif); font-size: 19px; color: var(--gold); background: rgba(13,34,48,.55); z-index: 6; }
+    .readout { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: rgba(242,234,216,.55); }
+    .readout b { color: var(--cream); font-weight: 400; }
+    .controls { display: flex; flex-direction: column; justify-content: center; }
+    .controls h2 { margin: 0 0 4px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: rgba(242,234,216,.55); }
+    .letters { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .letters button { aspect-ratio: 1; border: 1px solid rgba(242,234,216,.28); background: transparent; color: var(--cream); font-family: var(--mono); font-size: 5px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+    .letters button:hover { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+    .letters button.active { background: var(--red); border-color: var(--red); color: var(--cream); }
+    .message { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .message .strip { font-family: var(--mono); font-size: 8px; letter-spacing: .22em; line-height: 1.7; min-height: 26px; word-break: break-all; text-transform: uppercase; color: var(--cream); }
+    .message .strip .cursor { display: inline-block; width: 3px; height: 9px; background: var(--red); animation: blink 1s steps(2) infinite; vertical-align: -1px; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .msg-actions { display: flex; gap: 4px; margin-top: 6px; }
+    .msg-actions button { flex: 1; border: 1px solid rgba(242,234,216,.3); background: transparent; color: var(--cream); font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 3px; cursor: pointer; transition: background .2s, color .2s; }
+    .msg-actions button:hover { background: var(--cream); color: var(--navy); }
+    .msg-actions button.primary { border-color: var(--gold); color: var(--gold); }
+    .msg-actions button.primary:hover { background: var(--gold); color: var(--navy); }
+    .code { margin-top: 9px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: rgba(242,234,216,.5); max-height: 62px; overflow: hidden; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: rgba(242,234,216,.5); position: relative; z-index: 4; }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; }
+      .controls { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; align-items: start; }
+      .controls h2, .letters { grid-column: 1; }
+      .message { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; border-top: 0; padding-top: 0; }
+      .code { display: none; }
+      .intro p { display: none; }
+      .tower { min-height: 330px; }
+    }
+    @media (max-width: 560px) {
+      .station { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(32px, 11vw, 46px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 9px 0 7px; }
+      .code-note { display: none; }
+      .tower { order: 2; min-height: 250px; }
+      .signalman { width: 160px; height: 200px; }
+      .controls { order: 3; display: block; }
+      .letters { grid-template-columns: repeat(9, 1fr); }
+      .letters button { font-size: 4.5px; }
+      .message { margin-top: 6px; border-top: 1px solid var(--line); padding-top: 5px; }
+      .message .strip { font-size: 6.5px; min-height: 20px; }
+      .msg-actions button { font-size: 4px; padding: 4px 2px; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="station">
+    <header>
+      <div class="brand"><b>Signal Tower 072</b>Coastal signalling / lesson 072</div>
+      <div class="head"><div>Station<br><b>Vela Head</b></div><div>Flags<br><b>Two</b></div><div>Alphabet<br><b>Twenty-six</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Two arms, eight places</p>
+        <h1>Flag<em>alphabet</em></h1>
+        <p>Each letter is a pair of arm positions. Eight places, taken two at a time, give twenty-eight combinations — enough for the alphabet, with two to spare.</p>
+        <div class="code-note"><b>Reading the flags</b><br>Position 1 is straight up. Positions run clockwise in eighths. The left arm is bone; the right is vermilion.</div>
+      </section>
+      <section class="tower">
+        <div class="horizon"></div>
+        <div class="sea-lines"></div>
+        <div class="signalman">
+          <div class="head-shape"></div>
+          <div class="body-shape"></div>
+          <div class="shoulder"></div>
+          <div class="arm left" id="armLeft"><div class="flag"></div></div>
+          <div class="arm right" id="armRight"><div class="flag"></div></div>
+          <div class="letter-badge" id="badge">A</div>
+          <div class="platform"></div>
+        </div>
+        <div class="readout"><span>Left <b id="leftRead">1</b></span><span>Right <b id="rightRead">2</b></span><span>Pair <b id="pairRead">01·02</b></span></div>
+      </section>
+      <section class="controls">
+        <h2>Send a letter</h2>
+        <div class="letters" id="letters"></div>
+        <div class="message">
+          <h2>Message</h2>
+          <div class="strip" id="message"><span class="cursor"></span></div>
+          <div class="msg-actions"><button type="button" class="primary" id="send">Transmit</button><button type="button" id="back">Delete</button><button type="button" id="clear">Clear</button></div>
+        </div>
+        <div class="code" id="code"></div>
+      </section>
+    </main>
+    <footer><span><b>Signal Tower 072</b> / a two-flag alphabet</span><span>Send slowly. The horizon is doing its best.</span><span>Lesson 072 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      const pairs = [];
+      for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++) pairs.push([i, j]);
+      const table = {};
+      letters.forEach((L, i) => table[L] = pairs[i]);
+      const angles = [0, 45, 90, 135, 180, 225, 270, 315];
+      let message = '', activeLetter = null, transmitting = false;
+      const armLeft = document.getElementById('armLeft');
+      const armRight = document.getElementById('armRight');
+      function setPose(L) {
+        const p = table[L];
+        const a = p[0], b = p[1];
+        armLeft.style.transform = 'rotate(' + (angles[a] - 90) + 'deg)';
+        armRight.style.transform = 'rotate(' + (angles[b] - 90) + 'deg)';
+        document.getElementById('badge').textContent = L;
+        document.getElementById('leftRead').textContent = a + 1;
+        document.getElementById('rightRead').textContent = b + 1;
+        document.getElementById('pairRead').textContent = '0' + (a + 1) + '·0' + (b + 1);
+        activeLetter = L;
+        document.querySelectorAll('#letters button').forEach(b => b.classList.toggle('active', b.textContent === L));
+        const all = document.querySelectorAll('#letters button');
+        if (all.length && !transmitting) all.forEach(b => b.classList.toggle('active', b.textContent === L));
+      }
+      const grid = document.getElementById('letters');
+      letters.forEach(L => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = L;
+        b.addEventListener('click', () => { setPose(L); message += L; renderMessage(); });
+        grid.appendChild(b);
+      });
+      function renderMessage() {
+        document.getElementById('message').innerHTML = (message || '') + '<span class="cursor"></span>';
+      }
+      document.getElementById('back').addEventListener('click', () => { message = message.slice(0, -1); renderMessage(); });
+      document.getElementById('clear').addEventListener('click', () => { message = ''; renderMessage(); });
+      document.getElementById('send').addEventListener('click', () => {
+        if (transmitting || !message) return;
+        transmitting = true;
+        const seq = message.split('');
+        let i = 0;
+        const id = setInterval(() => {
+          if (i >= seq.length) { clearInterval(id); transmitting = false; setPose(activeLetter || 'A'); document.getElementById('send').textContent = 'Transmit'; return; }
+          setPose(seq[i]);
+          document.getElementById('send').textContent = 'Sending ' + (i + 1) + '/' + seq.length;
+          i++;
+        }, 650);
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+          const L = e.key.toUpperCase();
+          setPose(L); message += L; renderMessage();
+        } else if (e.key === ' ') { e.preventDefault(); message += ' '; renderMessage(); }
+        else if (e.key === 'Backspace') { message = message.slice(0, -1); renderMessage(); }
+      });
+      document.getElementById('code').innerHTML = letters.map(L => L + ' ' + (table[L][0] + 1) + '·' + (table[L][1] + 1)).join(' &nbsp; ');
+      setPose('A');
+      renderMessage();
+    })();
+  </script>
+</body>
+</html>

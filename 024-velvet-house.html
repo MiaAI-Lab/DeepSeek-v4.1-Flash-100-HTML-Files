@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9dfd2">
+  <meta name="description" content="Velvet House — an independent cinema for the attentive.">
+  <title>Velvet House — A Cinema for the Attentive</title>
+  <style>
+    :root {
+      --cream: #e9dfd2;
+      --paper: #f3eadf;
+      --wine: #4c1220;
+      --wine-deep: #2c0912;
+      --gold: #c6a269;
+      --night: #10131c;
+      --rose: #d9a3a0;
+      --muted: #8d7b72;
+      --line: rgba(44,9,18,.22);
+      --serif: "Bodoni 72", Didot, Georgia, serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--wine); color: var(--paper); }
+    body { margin: 0; min-height: 100vh; color: var(--wine); background: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .house { min-height: 100vh; padding: clamp(14px, 2.5vw, 29px) clamp(15px, 3.6vw, 50px) 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .house::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .18; z-index: 5; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
+    header, main, footer { position: relative; z-index: 3; }
+    header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 17px; border-bottom: 1px solid var(--line); padding-bottom: 11px; }
+    .brand { font-family: var(--serif); font-size: 19px; letter-spacing: -.04em; line-height: 1; }
+    .brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    .header-mid { text-align: center; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .header-right { text-align: right; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .header-right b { color: var(--wine); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); gap: clamp(24px, 4vw, 66px); align-items: center; padding: clamp(22px, 4vh, 44px) 0 19px; }
+    .intro { padding-left: clamp(0px, 2vw, 25px); }
+    .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .17em; text-transform: uppercase; color: var(--wine); }
+    .kicker::before { content: ""; width: 26px; height: 1px; background: var(--gold); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(76px, 12vw, 177px); line-height: .7; letter-spacing: -.085em; }
+    h1 em { display: block; margin-left: clamp(28px, 8vw, 110px); color: var(--gold); font-style: italic; font-size: .86em; }
+    .intro p { max-width: 300px; margin: 30px 0 0 clamp(0px, 8vw, 108px); font-family: var(--serif); font-size: 14px; line-height: 1.55; color: #715851; }
+    .film-meta { display: flex; gap: 14px; margin: 26px 0 0 clamp(0px, 8vw, 108px); align-items: baseline; font-family: var(--mono); font-size: 7px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .film-meta b { font-family: var(--serif); font-size: 17px; letter-spacing: -.02em; font-weight: 400; text-transform: none; color: var(--wine); }
+    .film-meta i { width: 20px; height: 1px; background: var(--line); display: inline-block; }
+    .screen-wrap { position: relative; width: 100%; max-width: 620px; justify-self: end; }
+    .screen-frame { position: relative; background: var(--night); padding: 9px; box-shadow: 0 24px 45px rgba(44,9,18,.2); }
+    .screen { position: relative; aspect-ratio: 1.35; overflow: hidden; background: #0b0e16; }
+    .screen::before { content: ""; position: absolute; inset: 0; z-index: 1; background: radial-gradient(ellipse at 50% 48%, transparent 20%, rgba(4,4,8,.6) 100%); pointer-events: none; }
+    .screen::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 16%; z-index: 1; background: linear-gradient(transparent, rgba(3,3,5,.7)); pointer-events: none; }
+    .curtain { position: absolute; top: 0; bottom: 0; width: 51%; z-index: 4; background: repeating-linear-gradient(90deg, #4a0d17 0 9px, #671525 9px 17px, #390a12 17px 27px); transition: transform 1s cubic-bezier(.65,0,.2,1); }
+    .curtain::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.5), transparent 55%, rgba(0,0,0,.28)); }
+    .curtain.left { left: 0; transform-origin: left center; }
+    .curtain.right { right: 0; transform-origin: right center; background-position: 9px 0; }
+    .screen-wrap.open .curtain.left { transform: translateX(-96%) skewX(-3deg); }
+    .screen-wrap.open .curtain.right { transform: translateX(96%) skewX(3deg); }
+    .scene { position: absolute; inset: 0; z-index: 0; background: linear-gradient(154deg, #15233b 0%, #2d3c51 43%, #865458 68%, #b78571 100%); }
+    .scene::before { content: ""; position: absolute; width: 44%; height: 59%; left: 28%; top: 17%; border-radius: 50% 50% 4px 4px / 58% 58% 4px 4px; background: radial-gradient(ellipse at 50% 34%, rgba(250,217,171,.9), rgba(213,147,129,.52) 42%, rgba(61,58,78,.08) 73%); box-shadow: 0 0 70px rgba(238,170,133,.27); }
+    .scene::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 39%; background: linear-gradient(172deg, transparent 0 26%, rgba(13,18,28,.75) 27% 100%); clip-path: polygon(0 46%, 14% 35%, 30% 48%, 46% 30%, 60% 43%, 78% 28%, 100% 43%, 100% 100%, 0 100%); }
+    .scene-figure { position: absolute; z-index: 1; width: 9%; height: 27%; left: 46%; bottom: 13%; background: #0b0c12; border-radius: 50% 50% 7% 7%; box-shadow: 0 0 20px rgba(0,0,0,.3); }
+    .scene-figure::before { content: ""; position: absolute; width: 52%; height: 23%; background: #0b0c12; border-radius: 50%; left: 24%; top: -12%; }
+    .scene-birds { position: absolute; z-index: 2; top: 22%; left: 63%; width: 12%; height: 10%; opacity: .5; }
+    .scene-birds path { fill: none; stroke: #f0d8c1; stroke-width: 1; }
+    .screen-caption { position: absolute; left: 16px; bottom: 14px; z-index: 3; color: var(--cream); font-family: var(--mono); font-size: 6px; letter-spacing: .12em; text-transform: uppercase; }
+    .screen-caption b { display: block; font-family: var(--serif); font-style: italic; font-size: 20px; font-weight: 400; letter-spacing: -.02em; text-transform: none; margin-bottom: 3px; }
+    .screen-no { position: absolute; right: 15px; top: 13px; z-index: 3; color: rgba(233,223,210,.55); font-family: var(--mono); font-size: 6px; letter-spacing: .12em; text-transform: uppercase; }
+    .under-screen { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding-top: 10px; border-top: 1px solid var(--line); margin-top: 11px; font-family: var(--mono); font-size: 7px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .under-screen button { border: 1px solid var(--wine); background: transparent; color: var(--wine); font: inherit; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; padding: 8px 11px; cursor: pointer; transition: background .2s, color .2s; }
+    .under-screen button:hover { background: var(--wine); color: var(--cream); }
+    .film-picker { display: grid; grid-template-columns: .9fr 1fr 1.1fr; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .film-choice { text-align: left; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; padding: 12px 13px 11px 0; cursor: pointer; transition: color .2s, padding .2s; }
+    .film-choice:not(:first-child) { padding-left: 13px; }
+    .film-choice:last-child { border-right: 0; }
+    .film-choice:hover, .film-choice.active { color: var(--wine); padding-top: 9px; }
+    .film-choice span { display: block; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 5px; color: var(--gold); }
+    .film-choice b { display: block; font-family: var(--serif); font-size: 17px; font-weight: 400; letter-spacing: -.03em; line-height: 1.05; }
+    .film-choice small { display: block; font-family: var(--mono); font-size: 6px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+    footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 13px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    footer span:nth-child(2) { color: var(--wine); }
+    .toast { position: fixed; z-index: 20; left: 50%; bottom: 30px; transform: translate(-50%, 10px); background: var(--wine); color: var(--cream); font-family: var(--mono); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; padding: 11px 16px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 880px) {
+      main { grid-template-columns: 1fr; gap: 27px; padding-top: 21px; }
+      .screen-wrap { justify-self: center; max-width: 620px; }
+      h1 { font-size: clamp(74px, 16vw, 136px); }
+      .intro { padding-left: 0; }
+      .intro p { margin-left: 0; }
+      .film-meta { margin-left: 0; }
+      .film-picker { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    @media (max-width: 590px) {
+      .house { padding: 11px 11px 13px; }
+      header { grid-template-columns: 1fr auto; }
+      .header-mid { display: none; }
+      header .brand { font-size: 16px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 17px; padding: 18px 0 13px; }
+      .intro { order: 1; }
+      h1 { font-size: clamp(73px, 22vw, 107px); }
+      h1 em { margin-left: 7vw; }
+      .intro p { font-size: 11px; margin-top: 19px; max-width: 280px; }
+      .film-meta { margin-top: 16px; }
+      .screen-wrap { order: 2; }
+      .screen-frame { padding: 5px; }
+      .screen-caption { left: 10px; bottom: 9px; font-size: 5px; }
+      .screen-caption b { font-size: 14px; }
+      .screen-no { top: 9px; right: 9px; font-size: 5px; }
+      .under-screen { font-size: 6px; margin-top: 7px; padding-top: 7px; }
+      .under-screen button { font-size: 6px; padding: 6px 8px; }
+      .film-picker { order: 3; }
+      .film-choice { padding: 9px 7px 8px 0; }
+      .film-choice:not(:first-child) { padding-left: 7px; }
+      .film-choice b { font-size: 12px; }
+      .film-choice small { font-size: 5px; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="house">
+    <header>
+      <div class="brand">Velvet House<span>Cinema &amp; salon / est. 1928</span></div>
+      <div class="header-mid">A small screen for large feelings<br>72 seats · 35 mm · one screen</div>
+      <div class="header-right">October programme<br><b>Screen 01 / late autumn</b></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A cinema for the attentive</p>
+        <h1>Velvet<em>House</em></h1>
+        <p>We keep the lights low, the sound warm and the seats a little closer than necessary. Tonight, the world can wait outside.</p>
+        <div class="film-meta"><b id="filmTitle">The Quiet Hour</b><i></i><span id="filmInfo">2024 · 104 mins · 35 mm</span></div>
+      </section>
+      <section class="screen-wrap" id="screenWrap">
+        <div class="screen-frame">
+          <div class="screen">
+            <div class="scene">
+              <div class="scene-figure"></div>
+              <svg class="scene-birds" viewBox="0 0 100 60" aria-hidden="true"><path d="M10 30 Q20 20 30 30 Q40 19 50 30"/><path d="M54 19 Q62 11 70 19 Q78 10 86 18"/><path d="M26 47 Q34 39 42 47 Q50 38 58 46"/></svg>
+            </div>
+            <div class="screen-caption"><b id="posterTitle">The Quiet Hour</b>Dir. Lucía Ferreira<br>Screen 01 / velvet house</div>
+            <div class="screen-no">No. 024<br>35 mm</div>
+            <div class="curtain left" aria-hidden="true"></div>
+            <div class="curtain right" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="under-screen"><span id="seatCount">42 seats remaining tonight</span><button type="button" id="curtainBtn">Open the curtains</button></div>
+      </section>
+    </main>
+    <div class="film-picker" aria-label="Film programme">
+      <button class="film-choice active" type="button" data-film="quiet" data-title="The Quiet Hour" data-info="2024 · 104 mins · 35 mm" data-seats="42"><span>19:30</span><b>The Quiet Hour</b><small>Lucía Ferreira / drama</small></button>
+      <button class="film-choice" type="button" data-film="salt" data-title="Salt on the Window" data-info="2022 · 92 mins · 16 mm" data-seats="18"><span>21:15</span><b>Salt on the Window</b><small>Emil Aalto / romance</small></button>
+      <button class="film-choice" type="button" data-film="orchard" data-title="The Orchard at Night" data-info="2025 · 118 mins · 35 mm" data-seats="7"><span>23:00</span><b>The Orchard at Night</b><small>Noor Haddad / mystery</small></button>
+    </div>
+    <footer><span><b>Velvet House</b> / a cinema for the attentive</span><span>Rue des Lanternes 08, Paris · doors at dusk</span><span>Programme 024 / 2026</span></footer>
+  </div>
+  <div class="toast" id="toast">Curtains open. Find your seat.</div>
+  <script>
+    (() => {
+      const wrap = document.getElementById('screenWrap');
+      const btn = document.getElementById('curtainBtn');
+      const toast = document.getElementById('toast');
+      let toastTimer;
+      function showToast(text) { toast.textContent = text; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 1900); }
+      btn.addEventListener('click', () => {
+        wrap.classList.toggle('open');
+        const open = wrap.classList.contains('open');
+        btn.textContent = open ? 'Close the curtains' : 'Open the curtains';
+        showToast(open ? 'Curtains open. Find your seat.' : 'The room goes dark again.');
+      });
+      const posters = {
+        quiet: ['linear-gradient(154deg, #15233b 0%, #2d3c51 43%, #865458 68%, #b78571 100%)', 'radial-gradient(ellipse at 50% 34%, rgba(250,217,171,.9), rgba(213,147,129,.52) 42%, rgba(61,58,78,.08) 73%)'],
+        salt: ['linear-gradient(154deg, #243f47 0%, #557681 40%, #b4b0a1 76%, #d1c1a9 100%)', 'radial-gradient(ellipse at 52% 34%, rgba(239,242,221,.9), rgba(177,199,192,.48) 44%, rgba(62,82,82,.1) 76%)'],
+        orchard: ['linear-gradient(154deg, #211622 0%, #4f2434 45%, #9d564b 72%, #d59b69 100%)', 'radial-gradient(ellipse at 49% 34%, rgba(249,212,154,.88), rgba(210,133,100,.5) 43%, rgba(55,32,41,.08) 74%)']
+      };
+      document.querySelectorAll('.film-choice').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.film-choice').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          const title = button.dataset.title;
+          document.getElementById('filmTitle').textContent = title;
+          document.getElementById('filmInfo').textContent = button.dataset.info;
+          document.getElementById('posterTitle').textContent = title;
+          document.getElementById('seatCount').textContent = button.dataset.seats + ' seats remaining tonight';
+          const scene = document.querySelector('.scene');
+          const [bg, glow] = posters[button.dataset.film];
+          scene.style.background = bg;
+          scene.style.setProperty('--scene-glow', glow);
+          scene.animate([{ opacity: .7 }, { opacity: 1 }], { duration: 500, easing: 'ease-out' });
+          showToast(title + ' / ' + button.querySelector('small').textContent);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f3f0e8">
+  <meta name="description" content="Metro 071 — a transit diagram for the city of Vela.">
+  <title>Metro 071 — A Transit Diagram for Vela</title>
+  <style>
+    :root {
+      --paper: #f3f0e8;
+      --ink: #17202a;
+      --dim: #7c8794;
+      --a: #c8442f;
+      --b: #2c5f9e;
+      --c: #3f7f57;
+      --d: #c58a2e;
+      --line: rgba(23,32,42,.18);
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--a); color: var(--paper); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); padding: clamp(8px, 1.5vw, 18px); display: flex; justify-content: center; }
+    .map-sheet { width: min(1260px, 100%); min-height: calc(100vh - clamp(16px, 3vw, 36px)); background: #faf8f2; border: 1px solid var(--ink); display: flex; flex-direction: column; padding: clamp(12px, 2.2vw, 26px) clamp(12px, 2.6vw, 34px) clamp(10px, 1.6vw, 16px); }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 7px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--sans); font-size: 17px; font-weight: 700; letter-spacing: -.04em; text-transform: none; color: var(--ink); }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(165px, .52fr) minmax(400px, 1.9fr) minmax(150px, .5fr); gap: clamp(12px, 2.4vw, 30px); align-items: stretch; padding: 10px 0 8px; }
+    .side { display: flex; flex-direction: column; justify-content: center; }
+    .side h1 { margin: 0; font-family: var(--sans); font-weight: 700; font-size: clamp(36px, 4.6vw, 58px); line-height: .84; letter-spacing: -.06em; }
+    .side h1 em { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--a); font-size: .82em; letter-spacing: -.04em; }
+    .side .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 8px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .side .kicker::before { content: ""; width: 15px; height: 1px; background: var(--a); }
+    .side p { max-width: 190px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #56616c; }
+    .legend { margin-top: 14px; border-top: 1px solid var(--line); }
+    .legend h2 { margin: 0 0 4px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .line-btn { display: flex; align-items: center; gap: 7px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 4px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: padding .2s; }
+    .line-btn:hover, .line-btn.active { padding-left: 4px; }
+    .line-btn i { width: 17px; height: 3px; flex: 0 0 17px; }
+    .line-btn b { font-family: var(--sans); font-size: 9px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); flex: 1; }
+    .line-btn span { font-family: var(--mono); font-size: 4.5px; letter-spacing: .04em; text-transform: uppercase; }
+    .line-btn.active b { color: var(--ink); }
+    .line-btn.active span { color: var(--ink); }
+    .map-wrap { position: relative; border: 1px solid var(--line); background: #f7f4ec; overflow: hidden; }
+    .map-wrap svg { display: block; width: 100%; height: 100%; }
+    .map-legend { position: absolute; left: 8px; bottom: 6px; display: flex; gap: 9px; font-family: var(--mono); font-size: 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+    .map-legend span { display: flex; align-items: center; gap: 3px; }
+    .map-legend i { width: 8px; height: 2px; display: block; }
+    .line-a { stroke: var(--a); } .line-b { stroke: var(--b); } .line-c { stroke: var(--c); } .line-d { stroke: var(--d); }
+    .track { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; transition: opacity .25s; }
+    .track.dim { opacity: .16; }
+    .station { fill: var(--paper); stroke: var(--ink); stroke-width: 1; cursor: pointer; transition: r .2s, fill .2s; }
+    .station:hover { r: 5; }
+    .station.interchange { fill: var(--paper); stroke-width: 1.4; }
+    .station.selected { fill: var(--ink); }
+    .station.on-route { fill: var(--a); stroke: var(--a); }
+    .station-label { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 4.4px; letter-spacing: .01em; fill: #3d4752; pointer-events: none; }
+    .station-label.inter { font-weight: 700; }
+    .route-line { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 4; opacity: .0; transition: opacity .3s; }
+    .route-line.show { opacity: .85; }
+    .river { fill: none; stroke: #b9cbd2; stroke-width: 9; opacity: .55; }
+    .park { fill: #dde5d4; }
+    .panel { display: flex; flex-direction: column; justify-content: center; }
+    .panel h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .station-name { font-family: var(--sans); font-size: 18px; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
+    .station-sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--a); margin-top: 3px; }
+    .station-info { margin-top: 7px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 4.5px; line-height: 1.9; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .station-info div { display: flex; justify-content: space-between; gap: 5px; }
+    .station-info b { color: var(--ink); font-weight: 400; }
+    .next-trains { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .next-trains .t { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 5px; letter-spacing: .04em; padding: 2px 0; color: var(--dim); }
+    .next-trains .t b { color: var(--ink); font-weight: 400; }
+    .planner { margin-top: 9px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .planner p { margin: 0; font-family: var(--serif); font-size: 10px; line-height: 1.5; color: #56616c; }
+    .planner .actions { display: flex; gap: 4px; margin-top: 6px; }
+    .planner button { flex: 1; border: 1px solid var(--ink); background: transparent; font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 3px; cursor: pointer; color: var(--ink); transition: background .2s, color .2s; }
+    .planner button:hover { background: var(--ink); color: var(--paper); }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--a); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; }
+      .panel { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+      .panel h2, .station-name, .station-sub, .station-info { grid-column: 1; }
+      .next-trains { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; }
+      .planner { grid-column: 2; }
+      .side p { display: none; }
+      .map-wrap { min-height: 340px; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .map-sheet { padding: 10px 10px 11px; min-height: 100vh; }
+      .head div:nth-child(2) { display: none; }
+      .side h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; }
+      .legend h2 { grid-column: 1 / -1; }
+      .line-btn { padding: 2px 0; }
+      .line-btn i { width: 12px; flex-basis: 12px; }
+      .map-wrap { order: 2; min-height: 250px; }
+      .map-legend { display: none; }
+      .panel { order: 3; display: block; }
+      .station-name { font-size: 15px; }
+      .station-info { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+      .next-trains { display: none; }
+      .planner { margin-top: 6px; }
+      .planner p { font-size: 9px; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="map-sheet">
+    <header>
+      <div class="brand"><b>Metro 071</b>Vela transit authority / diagram 071</div>
+      <div class="head"><div>Lines<br><b>Four</b></div><div>Stations<br><b>Thirty-two</b></div><div>Issued<br><b>October 2026</b></div></div>
+    </header>
+    <main>
+      <section class="side">
+        <p class="kicker">A small city, joined up</p>
+        <h1>Vela<em>metro</em></h1>
+        <p>Four lines, one river, and thirty-two stations. Select a line to trace it, or choose two stations to plan a journey.</p>
+        <div class="legend" id="legend">
+          <h2>Lines</h2>
+          <button class="line-btn active" type="button" data-line="a"><i style="background:var(--a)"></i><b>Line A</b><span>Harbour — East</span></button>
+          <button class="line-btn" type="button" data-line="b"><i style="background:var(--b)"></i><b>Line B</b><span>North — South</span></button>
+          <button class="line-btn" type="button" data-line="c"><i style="background:var(--c)"></i><b>Line C</b><span>Hill — Dock</span></button>
+          <button class="line-btn" type="button" data-line="d"><i style="background:var(--d)"></i><b>Line D</b><span>Loop</span></button>
+        </div>
+      </section>
+      <section class="map-wrap">
+        <svg viewBox="0 0 620 520" preserveAspectRatio="xMidYMid meet" aria-label="Vela metro map">
+          <rect width="620" height="520" fill="#f7f4ec"/>
+          <path class="park" d="M420 60 L560 60 L560 160 L470 190 L420 140Z"/>
+          <path class="river" d="M0 350 C110 330 170 380 260 372 C350 364 400 320 480 330 C540 338 580 366 620 360"/>
+          <path class="river" d="M0 362 C110 342 170 392 260 384 C350 376 400 332 480 342 C540 350 580 378 620 372" opacity=".4"/>
+          <g id="tracks"></g>
+          <g id="stations"></g>
+          <polyline class="route-line" id="routeLine" points=""/>
+        </svg>
+        <div class="map-legend"><span><i style="background:var(--a)"></i>A</span><span><i style="background:var(--b)"></i>B</span><span><i style="background:var(--c)"></i>C</span><span><i style="background:var(--d)"></i>D</span><span>● interchange</span></div>
+      </section>
+      <aside class="panel">
+        <h2>Selected station</h2>
+        <div class="station-name" id="stationName">Harbour Gate</div>
+        <div class="station-sub" id="stationSub">Line A · zone 1</div>
+        <div class="station-info">
+          <div><span>Platforms</span><b id="platRead">2</b></div>
+          <div><span>Opened</span><b id="openRead">1904</b></div>
+          <div><span>Interchange</span><b id="intRead">No</b></div>
+          <div><span>Step-free</span><b id="stepRead">Yes</b></div>
+        </div>
+        <div class="next-trains" id="nextTrains"></div>
+        <div class="planner">
+          <h2>Journey planner</h2>
+          <p id="plannerText">Click a station on the map to begin. Click a second station to plan a route.</p>
+          <div class="actions"><button type="button" id="clear">Clear route</button><button type="button" id="locate">Network map</button></div>
+        </div>
+      </aside>
+    </main>
+    <footer><span><b>Metro 071</b> / Vela transit diagram</span><span>Mind the gap, and the river</span><span>Diagram 071 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const lines = {
+        a: { name: 'Line A', colour: '#c8442f', stations: [
+          ['Harbour Gate', 50, 300], ['Customs House', 110, 300], ['Old Market', 170, 300], ['Cathedral', 230, 300], ['Central', 290, 300], ['Museum', 350, 300], ['Park Avenue', 410, 300], ['East Junction', 470, 300], ['Foundry', 530, 300], ['East Terminus', 580, 300]
+        ]},
+        b: { name: 'Line B', colour: '#2c5f9e', stations: [
+          ['Northgate', 290, 50], ['Observatory', 290, 110], ['Botanic', 290, 170], ['University', 290, 230], ['Central', 290, 300], ['Station Road', 290, 360], ['Riverside', 290, 410], ['Southbank', 290, 460]
+        ]},
+        c: { name: 'Line C', colour: '#3f7f57', stations: [
+          ['Hillcrest', 80, 90], ['Bell Vue', 120, 130], ['Cathedral', 230, 300], ['Museum', 350, 300], ['Dock Street', 420, 360], ['Dockyard', 480, 400], ['Fish Quay', 540, 440]
+        ]},
+        d: { name: 'Line D', colour: '#c58a2e', stations: [
+          ['Central', 290, 300], ['Theatre', 360, 240], ['Park Avenue', 410, 300], ['New Town', 430, 210], ['Racecourse', 380, 150], ['Jubilee', 320, 130], ['University', 290, 230], ['Central', 290, 300]
+        ]}
+      };
+      const aliases = { 'Harbour Gate': 'Harbour Gate', 'East Terminus': 'East Terminus' };
+      const svgTracks = document.getElementById('tracks');
+      const svgStations = document.getElementById('stations');
+      const routes = {};
+      Object.entries(lines).forEach(([key, line]) => {
+        const pts = line.stations.map(s => s[1] + ',' + s[2]).join(' ');
+        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        poly.setAttribute('points', pts);
+        poly.setAttribute('class', 'track line-' + key);
+        poly.dataset.line = key;
+        svgTracks.appendChild(poly);
+      });
+      const stationMap = {};
+      Object.entries(lines).forEach(([key, line]) => {
+        line.stations.forEach(([name, x, y]) => {
+          if (!stationMap[name]) stationMap[name] = { name, x, y, lines: [] };
+          if (!stationMap[name].lines.includes(key)) stationMap[name].lines.push(key);
+        });
+      });
+      Object.values(stationMap).forEach(st => {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', st.x); c.setAttribute('cy', st.y); c.setAttribute('r', st.lines.length > 1 ? 6 : 4);
+        c.setAttribute('class', 'station' + (st.lines.length > 1 ? ' interchange' : ''));
+        c.dataset.name = st.name;
+        c.addEventListener('click', () => clickStation(st.name));
+        svgStations.appendChild(c);
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        const dx = 8, dy = -6;
+        t.setAttribute('x', st.x + dx); t.setAttribute('y', st.y + dy);
+        t.setAttribute('class', 'station-label' + (st.lines.length > 1 ? ' inter' : ''));
+        t.textContent = st.name;
+        svgStations.appendChild(t);
+      });
+      const meta = {
+        'Harbour Gate': ['no', 'yes', 1904, 2], 'Customs House': ['no', 'yes', 1904, 2], 'Old Market': ['no', 'no', 1911, 2],
+        'Cathedral': ['yes', 'no', 1904, 4], 'Central': ['yes', 'yes', 1904, 6], 'Museum': ['yes', 'yes', 1922, 4],
+        'Park Avenue': ['yes', 'yes', 1931, 4], 'East Junction': ['no', 'yes', 1950, 3], 'Foundry': ['no', 'no', 1950, 2],
+        'East Terminus': ['no', 'yes', 1950, 2], 'Northgate': ['no', 'yes', 1908, 2], 'Observatory': ['no', 'no', 1908, 2],
+        'Botanic': ['no', 'yes', 1912, 2], 'University': ['yes', 'yes', 1908, 4], 'Station Road': ['no', 'no', 1908, 2],
+        'Riverside': ['no', 'yes', 1908, 2], 'Southbank': ['no', 'yes', 1974, 2], 'Hillcrest': ['no', 'no', 1925, 2],
+        'Bell Vue': ['no', 'no', 1925, 2], 'Dock Street': ['no', 'yes', 1925, 2], 'Dockyard': ['no', 'yes', 1925, 2],
+        'Fish Quay': ['no', 'no', 1925, 2], 'Theatre': ['no', 'yes', 1938, 2], 'New Town': ['no', 'yes', 1938, 2],
+        'Racecourse': ['no', 'yes', 1938, 2], 'Jubilee': ['no', 'no', 1938, 2]
+      };
+      let activeLine = 'a', first = null, second = null, selected = 'Harbour Gate';
+      const plannerText = document.getElementById('plannerText');
+      function setLine(key) {
+        activeLine = key;
+        document.querySelectorAll('.line-btn').forEach(b => b.classList.toggle('active', b.dataset.line === key));
+        document.querySelectorAll('.track').forEach(t => t.classList.toggle('dim', t.dataset.line !== key));
+        document.querySelectorAll('.station').forEach(c => {
+          const st = stationMap[c.dataset.name];
+          const on = st.lines.includes(key) || st.lines.length > 1;
+          c.style.opacity = on ? 1 : .25;
+        });
+        document.querySelectorAll('.station-label').forEach(t => { t.style.opacity = stationMap[t.textContent] && stationMap[t.textContent].lines.includes(key) ? 1 : .3; });
+      }
+      function showStation(name) {
+        selected = name;
+        const st = stationMap[name];
+        document.getElementById('stationName').textContent = name;
+        document.getElementById('stationSub').textContent = st.lines.map(k => lines[k].name).join(' · ') + ' · zone ' + (st.lines.length > 1 ? 1 : 2);
+        const m = meta[name] || ['no', 'no', 1900, 2];
+        document.getElementById('platRead').textContent = m[3];
+        document.getElementById('openRead').textContent = m[2];
+        document.getElementById('intRead').textContent = m[0] === 'yes' ? 'Yes' : 'No';
+        document.getElementById('stepRead').textContent = m[1] === 'yes' ? 'Yes' : 'No';
+        const next = document.getElementById('nextTrains');
+        const now = 18 + Math.floor(Math.random() * 4);
+        next.innerHTML = st.lines.map(k => '<div class="t"><span>' + lines[k].name + ' → ' + (k === 'a' ? 'East Terminus' : k === 'b' ? 'Southbank' : k === 'c' ? 'Fish Quay' : 'Central') + '</span><b>' + String(now).padStart(2,'0') + ':' + String(Math.floor(Math.random() * 6) * 10).padStart(2, '0') + '</b></div>').join('');
+        document.querySelectorAll('.station').forEach(c => c.classList.toggle('selected', c.dataset.name === name));
+      }
+      function clickStation(name) {
+        if (first && first !== name) {
+          second = name;
+          plan(first, second);
+        } else if (first === name) {
+          first = null;
+          document.getElementById('routeLine').classList.remove('show');
+          plannerText.textContent = 'Start cleared. Choose a station to begin again.';
+        } else {
+          first = name; second = null;
+          showStation(name);
+          document.getElementById('routeLine').classList.remove('show');
+          plannerText.textContent = 'From ' + name + '. Now choose a destination.';
+        }
+        showStation(name);
+      }
+      function plan(from, to) {
+        const adj = {};
+        Object.values(lines).forEach(line => {
+          for (let i = 0; i < line.stations.length - 1; i++) {
+            const a = line.stations[i][0], b = line.stations[i + 1][0];
+            const d = Math.hypot(line.stations[i][1] - line.stations[i + 1][1], line.stations[i][2] - line.stations[i + 1][2]);
+            if (!adj[a]) adj[a] = []; if (!adj[b]) adj[b] = [];
+            adj[a].push([b, d]); adj[b].push([a, d]);
+          }
+        });
+        const dist = {}, prev = {}, visited = new Set();
+        Object.keys(adj).forEach(k => dist[k] = Infinity);
+        dist[from] = 0;
+        while (visited.size < Object.keys(adj).length) {
+          let u = null, best = Infinity;
+          Object.keys(dist).forEach(k => { if (!visited.has(k) && dist[k] < best) { best = dist[k]; u = k; } });
+          if (!u) break;
+          visited.add(u);
+          (adj[u] || []).forEach(([v, w]) => { if (dist[u] + w < dist[v]) { dist[v] = dist[u] + w; prev[v] = u; } });
+        }
+        const path = [];
+        let cur = to;
+        while (cur) { path.unshift(cur); cur = prev[cur]; }
+        if (path[0] !== from) { plannerText.textContent = 'No direct route found between those stations.'; return; }
+        const pts = path.map(n => stationMap[n].x + ',' + stationMap[n].y).join(' ');
+        const rl = document.getElementById('routeLine');
+        rl.setAttribute('points', pts); rl.classList.add('show');
+        document.querySelectorAll('.station').forEach(c => c.classList.toggle('on-route', path.includes(c.dataset.name)));
+        const minutes = Math.max(3, Math.round(dist[to] / 22));
+        const changes = new Set();
+        for (let i = 0; i < path.length - 1; i++) {
+          const shared = stationMap[path[i]].lines.filter(l => stationMap[path[i + 1]].lines.includes(l));
+          changes.add(shared[0] || 'x');
+        }
+        plannerText.innerHTML = '<b>' + from + ' → ' + to + '</b><br>' + path.length + ' stops · about ' + minutes + ' min · ' + Math.max(0, changes.size - 1) + ' change' + (changes.size > 2 ? 's' : '') + '.';
+      }
+      document.querySelectorAll('.line-btn').forEach(b => b.addEventListener('click', () => setLine(b.dataset.line)));
+      document.getElementById('clear').addEventListener('click', () => {
+        first = second = null;
+        document.getElementById('routeLine').classList.remove('show');
+        document.querySelectorAll('.station').forEach(c => c.classList.remove('on-route'));
+        plannerText.textContent = 'Click a station on the map to begin. Click a second station to plan a route.';
+      });
+      document.getElementById('locate').addEventListener('click', () => { setLine('a'); });
+      setLine('a'); showStation('Harbour Gate');
+    })();
+  </script>
+</body>
+</html>

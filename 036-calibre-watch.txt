@@ -1,0 +1,17 @@
+TITLE: Calibre 36 — A Study in Precision
+
+PROMPT:
+Create "Calibre 36," a self-contained luxury watch product page built around a live, real-time mechanical dress watch. Use deep charcoal, warm silver, fine film grain and antique gold accents. Compose an atelier-style three-column page: a tall Bodoni-style "Calibre thirty-six" headline, a central watch with a brushed silver dial, hand-drawn minute track, applied numerals, small seconds subdial, date window, gold seconds hand, steel case and fluted crown; and a right-hand specification column ending in a "36 jewels" plaque. The watch hands must move smoothly from the visitor's actual local time, with the seconds hand sweeping continuously. Include case, dial and water-resistance details, reference numbers and a restrained footer. No external assets, fonts, images or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A quiet mechanical object in a dark atelier. Every dial detail is drawn in CSS, and the only real movement is the sweep of the gold seconds hand, which gives the page its living, expensive pulse.
+
+MAJOR VISUAL TECHNIQUES:
+- Pure CSS watch case, lugs, crown and brushed-metal dial
+- Generative tick marks and applied serif numerals
+- requestAnimationFrame sweep hands driven by local time
+- Gold accents, micro-shadows and radial metallic highlights
+- Responsive product editorial composition
+
+INTERACTION MODEL:
+The page is passive but alive: hour, minute and second hands follow the visitor's real clock, while the small-seconds subdial and date window stay in sync. Everything continues smoothly without user input.

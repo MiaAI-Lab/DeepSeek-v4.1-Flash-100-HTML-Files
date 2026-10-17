@@ -1,0 +1,17 @@
+TITLE: The Broken Orchestra — A Sequencer That Makes No Sound
+
+PROMPT:
+Create "The Broken Orchestra," a self-contained visual step sequencer with no audio. Use a dark stage, warm amber, coral, gold, blue and sage instrument colours. Compose a three-column hall: an editorial "The broken orchestra" title with five instrument rows and four pattern presets (March, Rain, Empty hall, Clear); a 5 × 8 sequencer grid with labelled rows and numbered steps, in which cells toggle on and off; and a transport panel with tempo slider (60–160 bpm), Play, Stop, bar/step readout, pattern name and an "Audio: None" note. Playing should move a playhead across the columns at the selected tempo and pulse the instrument row whenever an active cell is triggered. Presets should load different grids and start playing. No external audio, assets, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A rhythm machine with the sound removed. The pattern becomes a piece of visual music, and the moving playhead and row pulses do the work that speakers would normally do.
+
+MAJOR VISUAL TECHNIQUES:
+- Five-row step-sequencer grid with per-instrument colours
+- Moving playhead column and triggered-row pulse
+- Tempo-driven interval timing with live BPM changes
+- Pattern presets and cell-count readout
+- Dark stage palette with warm instrument accents
+
+INTERACTION MODEL:
+Click any cell to turn a step on or off. Press Play to run the playhead, Pause to stop it, and Stop to reset to bar one. Move the tempo slider to change speed live; choose a preset to load and play a ready-made pattern.

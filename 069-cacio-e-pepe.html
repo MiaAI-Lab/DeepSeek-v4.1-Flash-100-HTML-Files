@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f1ead9">
+  <meta name="description" content="Osteria 069 — cacio e pepe, for two or more.">
+  <title>Osteria 069 — Cacio e Pepe</title>
+  <style>
+    :root {
+      --paper: #f1ead9;
+      --sheet: #f7f2e6;
+      --ink: #1d1c17;
+      --pepper: #3a3730;
+      --pecorino: #d8b25f;
+      --terra: #b45a3c;
+      --dim: #857c6b;
+      --line: rgba(29,28,23,.24);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--pecorino); color: var(--ink); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); padding: clamp(8px, 1.6vw, 20px); display: flex; justify-content: center; }
+    .menu { width: min(1200px, 100%); min-height: calc(100vh - clamp(16px, 3.2vw, 40px)); background: var(--sheet); box-shadow: 0 16px 40px rgba(60,50,32,.2); display: flex; flex-direction: column; padding: clamp(14px, 2.6vw, 32px) clamp(14px, 3vw, 44px) clamp(12px, 2vw, 22px); }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--ink); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 32px); font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(165px, .7fr) minmax(260px, 1.05fr) minmax(210px, .9fr); gap: clamp(14px, 2.8vw, 38px); align-items: center; padding: 13px 0 9px; }
+    .title-col h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 5.8vw, 74px); line-height: .8; letter-spacing: -.065em; }
+    .title-col h1 em { display: block; font-style: italic; color: var(--terra); font-size: .86em; }
+    .title-col .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 10px; font-family: var(--mono); font-size: 5px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .title-col .kicker::before { content: ""; width: 16px; height: 1px; background: var(--terra); }
+    .title-col p { max-width: 205px; margin: 17px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #5d584a; }
+    .servings { margin-top: 17px; border-top: 1px solid var(--line); padding-top: 7px; }
+    .servings h2 { margin: 0 0 5px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+    .serving-btns { display: flex; gap: 4px; }
+    .serving-btns button { flex: 1; border: 1px solid rgba(29,28,23,.3); background: transparent; color: var(--dim); font-family: var(--mono); font-size: 5px; letter-spacing: .08em; padding: 5px 3px; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+    .serving-btns button:hover, .serving-btns button.active { background: var(--ink); border-color: var(--ink); color: var(--sheet); }
+    .ingredients { margin-top: 10px; border-top: 1px solid var(--line); }
+    .ing { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: baseline; border-bottom: 1px solid var(--line); padding: 4.5px 0; }
+    .ing .n { font-family: var(--serif); font-size: 12px; line-height: 1.2; }
+    .ing .n span { display: block; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); margin-top: 1px; }
+    .ing .q { font-family: var(--mono); font-size: 5.5px; letter-spacing: .03em; color: var(--terra); white-space: nowrap; }
+    .plate-col { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .plate { position: relative; width: min(100%, 400px); aspect-ratio: 1; }
+    .plate svg { width: 100%; height: 100%; display: block; }
+    .plate-caption { font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: center; line-height: 1.8; }
+    .method h2 { margin: 0 0 5px; font-family: var(--mono); font-size: 5px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+    .step { display: grid; grid-template-columns: 17px 1fr auto; gap: 7px; align-items: baseline; border-top: 1px solid var(--line); padding: 5px 0; }
+    .step .no { font-family: var(--mono); font-size: 5px; color: var(--terra); }
+    .step .tx { font-family: var(--serif); font-size: 11px; line-height: 1.45; color: #3f3c32; }
+    .step .tm { font-family: var(--mono); font-size: 4.5px; color: var(--dim); white-space: nowrap; }
+    .note { margin-top: 9px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--serif); font-style: italic; font-size: 11px; line-height: 1.5; color: #5d584a; }
+    .note b { display: block; font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); font-style: normal; font-weight: 400; margin-bottom: 3px; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 7px; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--terra); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; }
+      .method { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; align-items: start; }
+      .method h2 { grid-column: 1 / -1; }
+      .note { grid-column: 1 / -1; }
+      .title-col p { display: none; }
+      .ingredients { margin-top: 6px; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .menu { padding: 11px 11px 12px; min-height: 100vh; box-shadow: none; }
+      .head div:nth-child(2) { display: none; }
+      .title-col h1 { font-size: clamp(38px, 13vw, 55px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0 8px; }
+      .servings { margin-top: 8px; display: flex; align-items: center; gap: 10px; border-top: 0; padding-top: 0; }
+      .servings h2 { margin: 0; flex: 0 0 auto; }
+      .serving-btns { flex: 0 0 132px; }
+      .plate-col { order: 2; }
+      .plate { width: 210px; }
+      .method { order: 3; display: block; }
+      .method h2 { margin-bottom: 3px; }
+      .step { padding: 3px 0; }
+      .step .tx { font-size: 10px; }
+      .note { display: none; }
+      .ingredients { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+      .ing { padding: 3px 0; }
+      .ing .n { font-size: 10.5px; }
+      footer { font-size: 4.5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <header>
+      <div class="brand"><b>Osteria 069</b>Kitchen broadsheet / plate 069</div>
+      <div class="head"><div>Region<br><b>Lazio</b></div><div>Course<br><b>Primo</b></div><div>Serves<br><b id="servesHead">2</b></div></div>
+    </header>
+    <main>
+      <section class="title-col">
+        <p class="kicker">Three ingredients, no shortcuts</p>
+        <h1>Cacio<em>e pepe</em></h1>
+        <p>Pecorino, black pepper and the water the pasta cooked in. A recipe that fails if you hurry it, and rewards you if you do not.</p>
+        <div class="servings">
+          <h2>Scale the recipe</h2>
+          <div class="serving-btns" id="servingBtns">
+            <button type="button" data-s="2" class="active">2</button>
+            <button type="button" data-s="3">3</button>
+            <button type="button" data-s="4">4</button>
+            <button type="button" data-s="6">6</button>
+          </div>
+        </div>
+        <div class="ingredients" id="ingredients"></div>
+      </section>
+      <section class="plate-col">
+        <div class="plate">
+          <svg viewBox="0 0 400 400" aria-label="A plate of cacio e pepe">
+            <circle cx="200" cy="200" r="188" fill="#e7dfcc" stroke="#c9bfa8" stroke-width="2"/>
+            <circle cx="200" cy="200" r="152" fill="#f8f4e9" stroke="#d8cfb9" stroke-width="1.5"/>
+            <circle cx="200" cy="200" r="150" fill="none" stroke="#ece2cc" stroke-width="10" opacity=".6"/>
+            <g stroke="#dccf9f" stroke-width="13" fill="none" stroke-linecap="round">
+              <path d="M138 214 C112 186 144 146 184 152 C224 158 238 196 214 220 C190 244 148 236 142 206 C136 176 168 158 194 170"/>
+              <path d="M164 236 C140 214 158 178 192 178 C226 178 244 208 228 232 C212 256 176 254 166 228"/>
+              <path d="M210 250 C190 234 200 204 224 200 C248 196 266 218 256 238 C246 258 218 262 208 246"/>
+            </g>
+            <g stroke="#f0e4b8" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9">
+              <path d="M138 214 C112 186 144 146 184 152 C224 158 238 196 214 220"/>
+              <path d="M164 236 C140 214 158 178 192 178 C226 178 244 208 228 232"/>
+              <path d="M210 250 C190 234 200 204 224 200 C248 196 266 218 256 238"/>
+            </g>
+            <g fill="#3a3730">
+              <circle cx="168" cy="176" r="1.8"/><circle cx="214" cy="164" r="1.5"/><circle cx="238" cy="206" r="1.9"/><circle cx="196" cy="224" r="1.6"/>
+              <circle cx="152" cy="222" r="1.4"/><circle cx="222" cy="236" r="1.3"/><circle cx="180" cy="206" r="1.2"/><circle cx="246" cy="184" r="1.2"/>
+              <circle cx="204" cy="196" r="1.1"/><circle cx="232" cy="222" r="1.4"/><circle cx="172" cy="196" r="1.1"/><circle cx="216" cy="212" r="1.2"/>
+            </g>
+            <g fill="none" stroke="#b9ad94" stroke-width=".8" opacity=".7">
+              <path d="M200 30 v14"/><path d="M200 356 v14"/><path d="M30 200 h14"/><path d="M356 200 h14"/>
+            </g>
+            <text x="200" y="382" text-anchor="middle" font-family="Courier New, monospace" font-size="8" letter-spacing="2" fill="#857c6b">OSTERIA 069 / ROMA</text>
+          </svg>
+        </div>
+        <div class="plate-caption">Rigatoni · pecorino romano · black pepper<br>Plated at the pass, 22 cm</div>
+      </section>
+      <aside class="method">
+        <h2>Method</h2>
+        <div class="step"><span class="no">01</span><span class="tx">Boil the pasta in well-salted water. Keep a mug of the cooking water before you drain it.</span><span class="tm" id="t1">9 min</span></div>
+        <div class="step"><span class="no">02</span><span class="tx">Toast the pepper in a dry pan until it smells warm, then add a little pasta water.</span><span class="tm">1 min</span></div>
+        <div class="step"><span class="no">03</span><span class="tx">Mix the pecorino with pasta water in a bowl until it becomes a smooth paste, not a lumpy one.</span><span class="tm">2 min</span></div>
+        <div class="step"><span class="no">04</span><span class="tx">Toss the drained pasta with the pepper and a splash of water, then take it off the heat.</span><span class="tm">1 min</span></div>
+        <div class="step"><span class="no">05</span><span class="tx">Fold in the cheese paste off the heat. Stir hard. Serve immediately, in warm bowls.</span><span class="tm">30 sec</span></div>
+        <p class="note"><b>Cook's note</b>If the sauce seizes, add pasta water one spoon at a time and keep stirring. Heat is what breaks it; patience is what brings it back.</p>
+      </aside>
+    </main>
+    <footer><span><b>Osteria 069</b> / cacio e pepe</span><span>Recipe scales for the table, not the pan</span><span>Plate 069 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const base = [
+        { n: 'Rigatoni', s: 'or other short tube', per: 90, unit: 'g' },
+        { n: 'Pecorino romano', s: 'finely grated, 24 months', per: 45, unit: 'g' },
+        { n: 'Black pepper', s: 'coarsely cracked', per: 2, unit: 'g' },
+        { n: 'Pasta water', s: 'salty, cloudy', per: 60, unit: 'ml' },
+        { n: 'Sea salt', s: 'for the boiling water', per: 8, unit: 'g' }
+      ];
+      let servings = 2;
+      const ingEl = document.getElementById('ingredients');
+      function render() {
+        ingEl.innerHTML = base.map(i => {
+          const qty = i.per * servings;
+          const shown = qty >= 100 ? Math.round(qty / 5) * 5 : qty;
+          return '<div class="ing"><div class="n">' + i.n + '<span>' + i.s + '</span></div><div class="q">' + shown + ' ' + i.unit + '</div></div>';
+        }).join('');
+        document.getElementById('servesHead').textContent = servings;
+        document.getElementById('t1').textContent = (servings > 3 ? '11' : '9') + ' min';
+        document.querySelectorAll('#servingBtns button').forEach(b => b.classList.toggle('active', +b.dataset.s === servings));
+      }
+      document.querySelectorAll('#servingBtns button').forEach(b => b.addEventListener('click', () => { servings = +b.dataset.s; render(); }));
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+TITLE: The Daily Signal — Noise Is a Luxury
+
+PROMPT:
+Design "The Daily Signal," a self-contained brutalist digital newspaper that critiques the attention economy. Use warm newsprint white, absolute black, emergency orange and acid yellow. Build a ferocious editorial grid inside a thick black frame: a masthead with enormous compressed sans-serif type, a live horizontal ticker, a narrow barcode rail, a dominant feature headline reading "Noise is a luxury," an asymmetric manifesto with a serif drop cap, and a right-hand dispatch column. Add a rotating circular stamp, tiny utilitarian metadata, scanline paper texture, and hard one-pixel rules. The primary interaction should generate "rare signals" in the status line and a mute toggle that drains all orange from the page. Make it feel like an award-winning independent broadside that happens to live on the web. Inline CSS and JavaScript only; no fonts, images, libraries, or network requests. Responsive and valid HTML5.
+
+DESCRIPTION:
+A loud, tactile newsprint artifact with an uncompromising typographic hierarchy. The composition collides a monumental masthead with bureaucratic micro-labels, while a rotating seal and live ticker make the static page feel like a freshly printed edition with a pulse.
+
+MAJOR VISUAL TECHNIQUES:
+- Brutalist grid with thick borders, hard shadows and visible construction lines
+- Oversized Arial Black display type, outlined letterforms and rotated highlighter blocks
+- Riso-inspired paper texture built from CSS gradients
+- Continuously scrolling ticker and rotating inline-SVG seal
+- Micro-typography, barcode graphics and asymmetric information density
+
+INTERACTION MODEL:
+Click "Generate a rare signal" to cycle through a set of wry manifestos in the live status line. "Mute the machine" desaturates the accent system and changes the interface language; every dispatch flashes acid yellow when tapped. The page also loops its ticker and seal to make the bulletin feel alive without demanding attention.

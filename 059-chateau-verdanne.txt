@@ -1,0 +1,17 @@
+TITLE: Château Verdanne — Three Vintages from One Hillside
+
+PROMPT:
+Create "Château Verdanne," a self-contained wine estate page comparing three vintages from one vineyard. Use deep wine red, oxblood, warm cream and antique gold. Compose a three-column presentation: an editorial "Château Verdanne" title with a vintage selector (2019, 2020, 2021); a centred CSS-drawn wine bottle with a cream label, crest and vintage year; and a tasting panel with a tasting note, aroma tags, an assemblage bar, a soil cross-section and harvest data. Selecting a vintage should change the label year, tasting note, tags, blend percentages and bar widths, aging time and alcohol. Include estate metadata, a handwritten-feeling serif hierarchy and a refined footer. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+An estate that argues its terroir through three contrasting years. The bottle is the constant and the wine is the variable, which is exactly the point being made.
+
+MAJOR VISUAL TECHNIQUES:
+- Pure-CSS wine bottle with shoulder, neck, foil lip and label
+- Vintage data model driving copy, blend bar and label
+- Animated assemblage bar proportions
+- Inline-SVG soil strata cross-section
+- Editorial serif and engraved mono typography
+
+INTERACTION MODEL:
+Select 2019, 2020 or 2021 to update the bottle label, tasting note, aroma tags, assemblage percentages and key, aging time, harvest date, alcohol and case count. Bars animate to their new proportions.

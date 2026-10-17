@@ -1,0 +1,17 @@
+TITLE: The Major Arcana — A Three-Card Spread
+
+PROMPT:
+Create "The Major Arcana," a self-contained three-card tarot spread page. Use deep indigo, antique gold, warm bone and muted vermilion. Compose a three-column table: an editorial "The spread" title with Past, Present and Future positions; three large tarot cards with patterned backs and gold line-art faces, each drawn as an inline SVG emblem (Star, Moon, Sun, Tower, World, High Priestess); and an interpretation panel with reading text, keyword tags, deck information, drawn count and a "Deal a new spread" button. Clicking a card should flip it in 3D to reveal its face at the correct position, with some cards dealt reversed. A new deal should shuffle six majors into three positions, face down. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A tarot table reduced to its essentials: three cards, a small pool of light, and language that leaves room for the reader. The gold line-art reverses the usual ornate tarot look in favour of something quieter and more graphic.
+
+MAJOR VISUAL TECHNIQUES:
+- 3D card flip with preserve-3d and backface visibility
+- Six hand-drawn inline-SVG emblems in a consistent gold-and-ink style
+- Shuffled three-card deal with random reversals
+- Reading, keywords and drawn count updated by card flips
+- Indigo-and-gold table composition with engraved micro-typography
+
+INTERACTION MODEL:
+Click any face-down card (or focus it and press Enter) to flip it and read that position's interpretation. "Deal a new spread" shuffles the six majors, assigns past/present/future and resets all cards face down, with some drawn reversed.

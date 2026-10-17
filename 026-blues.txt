@@ -1,0 +1,17 @@
+TITLE: Blues — A Horizontal History of a Colour
+
+PROMPT:
+Create "Blues," a self-contained horizontal-scrolling editorial experience tracing five historic blues. Use a full-viewport horizontal track with scroll-snap chapters: Egyptian blue, Ultramarine, Indigo, Prussian blue and International Klein Blue. Give each panel its own composition and distinct blue atmosphere: hieroglyph-like linework for Egypt, a golden lapis disc for ultramarine, woven threads for indigo, chemical orbits for Prussian blue, and a bold white void on pure IKB. Include a fixed translucent chrome header with chapter name, year, progress line and arrow navigation, plus a bottom dot pager. Vertical mouse-wheel input and arrow keys should navigate horizontally. All typography, shapes and textures must be inline; no external fonts, images, libraries or network calls. Responsive and offline-ready.
+
+DESCRIPTION:
+A colour essay you move through sideways. Each chapter is a different spatial world, but together they read as a single continuous meditation on blue, pigment, labour and emotion.
+
+MAJOR VISUAL TECHNIQUES:
+- Horizontal scroll-snap storytelling with wheel and keyboard navigation
+- Five distinct CSS compositions built from gradients, borders and mask textures
+- Large editorial serif headlines with italic continuations
+- Fixed glass chrome with progress bar and chapter metadata
+- Grain overlay and carefully varied contrast across dark blue fields
+
+INTERACTION MODEL:
+Swipe, drag, scroll the wheel or use the left/right arrows to move between chapters. Click header arrows or pager dots to jump directly. The header updates the chapter number, name and historical date while the line and dot progress indicators advance.

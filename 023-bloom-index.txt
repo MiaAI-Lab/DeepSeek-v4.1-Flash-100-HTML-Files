@@ -1,0 +1,17 @@
+TITLE: The Bloom Index — A Data Portrait of Spring
+
+PROMPT:
+Create "The Bloom Index," a self-contained data-art poster that visualizes flowering days across a year as a radial flower. Use a warm seed-paper yellow, deep pine green, leaf green, coral and ochre, with a delicate dot-grain ground. Compose a three-column editorial visualization: a poetic serif title and methodology on the left, the large twelve-petal SVG bloom in the center, and four numeric findings plus a field note on the right. Add a prominent year scrubber from 1990 to 2025 that morphs the petals smoothly and updates total bloom days, change since 1990, earliest and latest bloom dates. Hovering a petal reveals a tooltip with the month and count. The flower must feel like a scientific instrument and an artwork at once. No external assets, fonts, libraries or network requests. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A climate data portrait where a single flower carries a whole spring. Concentric rings, colored petals and quiet scientific typography turn phenology records into a spatial, tactile object.
+
+MAJOR VISUAL TECHNIQUES:
+- Twelve-petal radial SVG chart with CSS transform transitions over time
+- Per-petal color coding by season and hover tooltip readout
+- Year scrubber driving all statistics and petal lengths
+- Seed-paper dot texture, hairline typography and editorial grid
+- Responsive chart-and-controls recomposition
+
+INTERACTION MODEL:
+Drag the year slider to travel from 1990 to 2025; the bloom opens and closes while all numeric readings and field notes update. Hover or focus a petal to see its month and specific flowering-day count.

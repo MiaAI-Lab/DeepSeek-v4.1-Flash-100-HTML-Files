@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f0e6c8">
+  <meta name="description" content="The Bloom Index — a living data portrait of a warming spring.">
+  <title>The Bloom Index — A Data Portrait of Spring</title>
+  <style>
+    :root {
+      --paper: #f0e6c8;
+      --ink: #133b3b;
+      --green: #2d5f4c;
+      --lime: #a8c66c;
+      --coral: #e8654e;
+      --gold: #e2b44f;
+      --muted: #7b8872;
+      --line: rgba(19,59,59,.25);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); overflow-x: hidden; }
+    .poster { min-height: 100vh; padding: clamp(13px, 2.4vw, 29px) clamp(14px, 3.3vw, 47px) 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; background-image: radial-gradient(rgba(19,59,59,.13) .6px, transparent .8px); background-size: 5px 5px; }
+    .halo { position: absolute; width: 45vw; height: 45vw; min-width: 300px; min-height: 300px; border: 1px solid rgba(19,59,59,.14); border-radius: 50%; left: 21%; top: 17%; }
+    header, main, footer { position: relative; z-index: 2; }
+    header { display: grid; grid-template-columns: 1fr auto 1fr; gap: 17px; align-items: start; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+    .brand { font-family: var(--serif); font-size: 17px; letter-spacing: -.03em; }
+    .brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+    .headmid { text-align: center; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .headright { text-align: right; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .headright b { color: var(--coral); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(170px, .72fr) minmax(360px, 1.4fr) minmax(175px, .7fr); gap: clamp(15px, 3vw, 43px); align-items: center; padding: clamp(20px, 4vh, 41px) 0 16px; }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { display: flex; align-items: center; gap: 9px; margin: 0 0 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .15em; text-transform: uppercase; color: var(--coral); }
+    .kicker::before { content: ""; width: 22px; height: 1px; background: var(--coral); }
+    h1 { margin: 0; font-family: var(--serif); font-size: clamp(57px, 8.9vw, 132px); line-height: .77; letter-spacing: -.08em; font-weight: 400; }
+    h1 em { display: block; margin-left: 8px; color: var(--coral); }
+    .intro p { max-width: 235px; margin: 28px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.62; color: #587065; }
+    .source { margin-top: 31px; border-top: 1px solid var(--line); padding-top: 9px; max-width: 200px; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .source b { color: var(--ink); font-weight: 400; }
+    .chart-wrap { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; min-height: 430px; }
+    .chart-wrap::before { content: ""; position: absolute; width: 82%; aspect-ratio: 1; border: 1px dashed rgba(19,59,59,.22); border-radius: 50%; }
+    .chart-wrap::after { content: "BLOOM INDEX / ANNUAL"; position: absolute; bottom: 2%; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 6px; letter-spacing: .14em; color: var(--muted); white-space: nowrap; }
+    svg#bloom { width: 100%; max-width: 620px; aspect-ratio: 1; position: relative; z-index: 1; overflow: visible; }
+    .petal { transform-origin: 0 0; transition: transform .75s cubic-bezier(.2,.8,.2,1), opacity .3s; cursor: pointer; }
+    .petal:hover { opacity: .72; }
+    .petal-label { font-family: "Courier New", monospace; font-size: 7px; fill: var(--muted); letter-spacing: 1px; }
+    .core-ring { fill: none; stroke: rgba(19,59,59,.26); }
+    .core { fill: var(--ink); }
+    .core-text { fill: var(--paper); font-family: "Courier New", monospace; font-size: 8px; letter-spacing: 1px; text-anchor: middle; }
+    .core-number { fill: var(--paper); font-family: Georgia, serif; font-size: 34px; letter-spacing: -1px; text-anchor: middle; }
+    .tooltip { position: absolute; z-index: 5; pointer-events: none; background: var(--ink); color: var(--paper); padding: 8px 10px; font-family: var(--mono); font-size: 7px; line-height: 1.7; letter-spacing: .06em; text-transform: uppercase; opacity: 0; transform: translate(-50%,-100%) translateY(-8px); transition: opacity .15s; white-space: nowrap; }
+    .tooltip.show { opacity: 1; }
+    .tooltip b { display: block; font-family: var(--serif); font-size: 14px; letter-spacing: -.02em; text-transform: none; color: var(--lime); }
+    .year-control { margin-top: 16px; width: 100%; }
+    .year-control .year-top { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .09em; text-transform: uppercase; }
+    .year-top b { font-family: var(--serif); font-size: 29px; font-weight: 400; letter-spacing: -.04em; line-height: 1; color: var(--ink); }
+    .year-top span { color: var(--coral); }
+    input[type="range"] { width: 100%; accent-color: var(--coral); margin-top: 10px; cursor: ew-resize; }
+    .year-scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 6px; letter-spacing: .05em; color: var(--muted); margin-top: 2px; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .stat { width: 100%; border-top: 1px solid var(--line); padding: 10px 0 9px; }
+    .stat span { display: block; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .stat b { font-family: var(--serif); font-size: 28px; font-weight: 400; letter-spacing: -.05em; line-height: 1; color: var(--ink); }
+    .stat b small { font-family: var(--mono); font-size: 8px; letter-spacing: .06em; margin-left: 2px; color: var(--coral); }
+    .stat:last-of-type { border-bottom: 1px solid var(--line); }
+    .reading { margin-top: 20px; font-family: var(--serif); font-size: 12px; line-height: 1.55; font-style: italic; color: #5b7064; }
+    .reading b { display: block; margin-bottom: 5px; font-family: var(--mono); font-size: 6px; font-style: normal; letter-spacing: .1em; line-height: 1.7; text-transform: uppercase; color: var(--muted); }
+    .legend { margin-top: 19px; width: 100%; font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .legend div { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-bottom: 3px; }
+    .legend i { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); }
+    .legend div:nth-child(2) i { background: var(--gold); } .legend div:nth-child(3) i { background: var(--green); }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    footer span:nth-child(2) { color: var(--coral); }
+    @media (max-width: 930px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; align-items: start; text-align: left; padding-top: 2px; }
+      .reading { margin-top: 0; grid-column: 1 / 3; }
+      .legend { grid-column: 3; margin-top: 0; justify-self: end; }
+      .chart-wrap { min-height: 360px; }
+    }
+    @media (max-width: 650px) {
+      .poster { padding: 11px 11px 13px; }
+      header { grid-template-columns: 1fr auto; }
+      .headmid { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 17px 0 13px; }
+      .intro { align-self: auto; }
+      h1 { font-size: clamp(58px, 19vw, 92px); }
+      .intro p { font-size: 11px; margin-top: 17px; max-width: 270px; }
+      .source { display: none; }
+      .chart-wrap { min-height: 0; order: 2; }
+      svg#bloom { width: 100%; max-width: 100%; }
+      .year-control { order: 3; margin-top: 4px; }
+      .year-control .year-top { border-top: 1px solid var(--line); }
+      aside { order: 4; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding-top: 4px; }
+      .stat { padding: 8px 0; }
+      .stat:nth-of-type(4) { display: none; }
+      .stat b { font-size: 20px; }
+      .reading { grid-column: 1 / -1; font-size: 11px; }
+      .legend { display: none; }
+      .halo { left: 9%; top: 20%; width: 82vw; height: 82vw; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <div class="halo" aria-hidden="true"></div>
+    <header>
+      <div class="brand">The Bloom Index<span>Climate data / bloom no. 023</span></div>
+      <div class="headmid">A living data portrait of spring<br>Phenology / Northern hemisphere</div>
+      <div class="headright">Data through 2025<br><b>Rebuilt 17 Oct 2026</b></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">What spring remembers</p>
+        <h1>The<em>bloom index</em></h1>
+        <p>Twelve months, arranged as a flower. Each petal is the average number of flowering days observed across the northern temperate garden network.</p>
+        <div class="source"><b>Method / citizen phenology</b>1,240 gardens · 36 years<br>One petal = one month<br>Visualized as radial abundance</div>
+      </section>
+      <section class="chart-wrap">
+        <svg id="bloom" viewBox="0 0 600 600" role="img" aria-label="Radial bloom chart of flowering days by month">
+          <g id="petals" transform="translate(300,300)"></g>
+          <circle cx="300" cy="300" r="64" class="core-ring"/>
+          <circle cx="300" cy="300" r="55" class="core"/>
+          <text x="300" y="292" class="core-text">BLOOM DAYS</text>
+          <text x="300" y="320" class="core-number" id="coreTotal">186</text>
+          <text x="300" y="337" class="core-text" id="coreYear">2025</text>
+          <text x="300" y="54" class="petal-label" text-anchor="middle">JAN</text>
+          <text x="546" y="300" class="petal-label" text-anchor="middle">APR</text>
+          <text x="300" y="552" class="petal-label" text-anchor="middle">JUL</text>
+          <text x="54" y="300" class="petal-label" text-anchor="middle">OCT</text>
+        </svg>
+        <div class="tooltip" id="tooltip">May<b>22 days</b></div>
+      </section>
+      <aside>
+        <div class="stat"><span>Total flowering days</span><b id="totalDays">186<small>days</small></b></div>
+        <div class="stat"><span>Change since 1990</span><b id="changeVal">+17.4<small>%</small></b></div>
+        <div class="stat"><span>Earliest bloom</span><b id="earliest">Mar 04<small>→</small></b></div>
+        <div class="stat"><span>Latest bloom</span><b id="latest">Oct 19<small>←</small></b></div>
+        <div class="reading"><b>Field note</b>Spring now arrives roughly eight days earlier than it did when this survey began. The flower keeps the receipt.</div>
+        <div class="legend"><div><i></i>Spring / emergence</div><div><i></i>Summer / abundance</div><div><i></i>Autumn / release</div></div>
+      </aside>
+    </main>
+    <div class="year-control">
+      <div class="year-top"><span>Year under observation</span><b id="yearBig">2025</b><span id="seasonRead">A warm, early spring</span></div>
+      <input id="year" type="range" min="1990" max="2025" value="2025" aria-label="Select year">
+      <div class="year-scale"><span>1990</span><span>2000</span><span>2010</span><span>2025</span></div>
+    </div>
+    <footer><span><b>The Bloom Index</b> / field data as ornament</span><span>1,240 gardens / 36 years of looking closely</span><span>Open data · reprint 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const petalsGroup = document.getElementById('petals');
+      const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      const values1990 = [3,6,13,20,25,28,27,24,17,10,5,2];
+      const values2025 = [5,9,19,25,29,30,29,26,20,12,7,3];
+      const max = 32;
+      const petals = [];
+      const tooltip = document.getElementById('tooltip');
+      months.forEach((month, i) => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `rotate(${i * 30})`);
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', 'M0 0 C-24 -37 -20 -160 0 -225 C20 -160 24 -37 0 0Z');
+        p.setAttribute('class', 'petal');
+        p.setAttribute('fill', i < 5 ? '#e8654e' : i < 9 ? '#e2b44f' : '#2d5f4c');
+        p.dataset.month = month;
+        p.dataset.index = i;
+        p.addEventListener('pointerenter', (e) => {
+          const value = Math.round(Number(p.style.getPropertyValue('--v') || .7) * max);
+          tooltip.innerHTML = month + '<b>' + value + ' flowering days</b>';
+          tooltip.classList.add('show');
+          const rect = document.querySelector('.chart-wrap').getBoundingClientRect();
+          tooltip.style.left = (e.clientX - rect.left) + 'px';
+          tooltip.style.top = (e.clientY - rect.top) + 'px';
+        });
+        p.addEventListener('pointermove', (e) => {
+          const rect = document.querySelector('.chart-wrap').getBoundingClientRect();
+          tooltip.style.left = (e.clientX - rect.left) + 'px'; tooltip.style.top = (e.clientY - rect.top) + 'px';
+        });
+        p.addEventListener('pointerleave', () => tooltip.classList.remove('show'));
+        g.appendChild(p); petalsGroup.appendChild(g); petals.push(p);
+      });
+      const year = document.getElementById('year');
+      const seasonText = ['A quiet, late spring', 'A patient spring', 'A spring in transition', 'A warm, early spring'];
+      function renderYear(y) {
+        const t = (y - 1990) / 35;
+        let total = 0;
+        petals.forEach((petal, i) => {
+          const val = values1990[i] + (values2025[i] - values1990[i]) * Math.pow(t, .9) + Math.sin(i * 1.7 + t * 3) * .65 * t;
+          const ratio = Math.max(.08, val / max);
+          petal.style.setProperty('--v', ratio.toFixed(3));
+          petal.style.transform = `scale(1, ${ratio.toFixed(3)})`;
+          total += Math.round(val);
+        });
+        document.getElementById('coreTotal').textContent = String(Math.round(total / 12 * 12));
+        document.getElementById('coreYear').textContent = y;
+        document.getElementById('yearBig').textContent = y;
+        document.getElementById('totalDays').innerHTML = Math.round(total) + '<small>days</small>';
+        document.getElementById('changeVal').innerHTML = '+' + (17.4 * t).toFixed(1) + '<small>%</small>';
+        const early = Math.max(1, Math.round(4 + (1 - t) * 8));
+        document.getElementById('earliest').innerHTML = 'Mar ' + String(early).padStart(2, '0') + '<small>→</small>';
+        document.getElementById('latest').innerHTML = 'Oct ' + String(19 - Math.round(t * 6)).padStart(2, '0') + '<small>←</small>';
+        document.getElementById('seasonRead').textContent = seasonText[Math.min(3, Math.floor(t * 4))];
+        document.querySelector('.reading').innerHTML = '<b>Field note</b>' + (t > .65 ? 'Spring now arrives roughly eight days earlier than it did when this survey began. The flower keeps the receipt.' : 'The records show a slower spring, but the trend is already folded into every petal.');
+      }
+      year.addEventListener('input', (e) => renderYear(Number(e.target.value)));
+      renderYear(2025);
+    })();
+  </script>
+</body>
+</html>

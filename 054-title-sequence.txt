@@ -1,0 +1,17 @@
+TITLE: After the Light — A Title Sequence
+
+PROMPT:
+Create "After the Light," a self-contained cinematic title-sequence experience in five cards. Use pure black, warm ivory, muted taupe and champagne amber, with 2.39:1 letterbox bars and heavy animated film grain. Build five full-screen title cards: director credit, main title "After the light" in serif with outlined italic second line, starring card, supporting cast card and closing card. Each card should animate its label, title, rule line and credit upward into place with staggered fades when it becomes active. Provide reel dots, a card counter, "now showing" label, replay button and arrow-key navigation; cards auto-advance every five seconds. The mood is an art-house opening sequence: restrained, typographic, slightly melancholic. No external assets, fonts, libraries or media files. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+The opening minute of a film that does not exist. Typography and grain do all the work, and the pacing makes the viewer lean forward rather than click away.
+
+MAJOR VISUAL TECHNIQUES:
+- Staggered title animation with translate, opacity and line growth
+- 2.39:1 letterbox composition and animated grain
+- Difference-blended HUD and controls
+- Card carousel with reel dots and keyboard control
+- Serif and monospaced credit typography
+
+INTERACTION MODEL:
+Cards advance automatically every 5.2 seconds. Click a reel dot to jump to a card, press Replay to start from the opening credit, or use the left and right arrow keys to step through the sequence manually.

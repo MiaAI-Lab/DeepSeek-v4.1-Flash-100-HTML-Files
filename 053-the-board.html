@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0c1512">
+  <meta name="description" content="The Board — a motherboard treated like a city map.">
+  <title>The Board — A Motherboard Atlas</title>
+  <style>
+    :root {
+      --pcb: #0d2a22;
+      --pcb2: #10362b;
+      --trace: #c9a85c;
+      --trace-dim: rgba(201,168,92,.35);
+      --ink: #eef1e6;
+      --dim: #82968a;
+      --led: #7dffb0;
+      --red: #ff6b5e;
+      --line: rgba(238,241,230,.15);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--led); color: var(--pcb); }
+    body { margin: 0; min-height: 100vh; background: #09100d; color: var(--ink); font-family: var(--sans); overflow-x: hidden; }
+    .atlas { min-height: 100vh; padding: 18px clamp(14px, 3vw, 42px) 15px; display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 0%, rgba(31,74,59,.5), transparent 55%); }
+    header { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 9px; }
+    .brand { font-family: var(--mono); font-size: 7px; letter-spacing: .15em; text-transform: uppercase; color: var(--trace); line-height: 1.8; }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; color: var(--ink); letter-spacing: -.02em; text-transform: none; font-weight: 400; }
+    .head { display: flex; gap: clamp(15px, 3vw, 34px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(155px, .56fr) minmax(400px, 1.7fr) minmax(150px, .54fr); gap: clamp(14px, 2.8vw, 38px); align-items: center; padding: 14px 0 11px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(46px, 6.8vw, 87px); line-height: .8; letter-spacing: -.07em; }
+    .intro h1 em { display: block; color: var(--trace); font-style: italic; }
+    .intro .kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 11px; font-family: var(--mono); font-size: 6px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 18px; height: 1px; background: var(--led); }
+    .intro p { max-width: 195px; margin: 20px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #a0b0a4; }
+    .board-wrap { position: relative; width: 100%; max-width: 660px; justify-self: center; }
+    .board { position: relative; aspect-ratio: 1.24; background: linear-gradient(150deg, var(--pcb2), var(--pcb) 60%, #0a201a); border: 1px solid #2c5748; border-radius: 5px; box-shadow: 0 24px 45px rgba(0,0,0,.45), inset 0 0 60px rgba(0,0,0,.4); overflow: hidden; }
+    .board::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(201,168,92,.16) .6px, transparent .9px); background-size: 11px 11px; opacity: .6; }
+    .board::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 90px rgba(0,0,0,.5); pointer-events: none; }
+    .trace-layer { position: absolute; inset: 0; z-index: 1; transition: opacity .4s; }
+    .component { position: absolute; z-index: 3; border: 1px solid rgba(201,168,92,.5); background: linear-gradient(160deg, #1b3d31, #102a21); cursor: pointer; transition: box-shadow .25s, transform .25s, border-color .25s; padding: 0; display: flex; align-items: center; justify-content: center; }
+    .component:hover, .component.active { border-color: var(--led); box-shadow: 0 0 16px rgba(125,255,176,.35); z-index: 4; }
+    .component span { font-family: var(--mono); font-size: 4.5px; letter-spacing: .07em; text-transform: uppercase; color: #a9b9ac; text-align: center; line-height: 1.4; pointer-events: none; }
+    .cpu { left: 34%; top: 30%; width: 25%; height: 27%; border-radius: 2px; background: linear-gradient(150deg, #2a3d34, #16261f); box-shadow: inset 0 0 0 3px #1f332a, inset 0 0 0 4px rgba(201,168,92,.35); }
+    .cpu span { font-family: var(--serif); font-size: 8px; letter-spacing: .06em; color: var(--trace); }
+    .ram { left: 64%; top: 30%; width: 14%; height: 30%; background: repeating-linear-gradient(0deg, #1a3a2d 0 5px, #234a3a 5px 9px); }
+    .chip { left: 12%; top: 24%; width: 14%; height: 15%; }
+    .battery { left: 16%; bottom: 16%; width: 19%; height: 13%; border-radius: 50%; }
+    .slots { left: 66%; top: 68%; width: 24%; height: 8%; background: repeating-linear-gradient(90deg, #102a21 0 6px, #29503f 6px 8px); }
+    .ports { left: 60%; bottom: 9%; width: 30%; height: 7%; background: repeating-linear-gradient(90deg, #0a1c16 0 12px, #2a4a3c 12px 15px); }
+    .caps { position: absolute; z-index: 3; width: 4.4%; aspect-ratio: .7; background: linear-gradient(180deg, #3b5363, #1c2c34); border: 1px solid rgba(201,168,92,.3); border-radius: 1px; }
+    .caps::after { content: ""; position: absolute; left: 10%; right: 10%; top: -2px; height: 3px; background: #9aa8a6; }
+    .led { position: absolute; z-index: 4; width: 5px; height: 5px; border-radius: 50%; background: #1d3b2e; border: 1px solid rgba(201,168,92,.4); transition: background .3s, box-shadow .3s; }
+    .on .led { background: var(--led); box-shadow: 0 0 9px var(--led); }
+    .on .led.red { background: var(--red); box-shadow: 0 0 9px var(--red); }
+    .pad { position: absolute; z-index: 2; width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--trace); background: #0c1f19; }
+    .board-label { position: absolute; left: 10px; top: 8px; z-index: 4; font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; text-transform: uppercase; color: rgba(201,168,92,.7); }
+    .board-tag { position: absolute; right: 10px; bottom: 7px; z-index: 4; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: rgba(201,168,92,.55); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; text-align: right; }
+    .readout { border-top: 1px solid var(--line); padding: 8px 0; font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    .readout b { display: block; font-family: var(--serif); font-size: 19px; font-weight: 400; letter-spacing: -.02em; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+    .detail { border-top: 1px solid var(--line); padding-top: 9px; margin-top: 12px; text-align: left; }
+    .detail h2 { margin: 0 0 5px; font-family: var(--serif); font-size: 18px; font-weight: 400; letter-spacing: -.02em; line-height: 1; color: var(--trace); }
+    .detail p { margin: 0; font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .04em; color: #9aab9d; text-transform: uppercase; min-height: 55px; }
+    .power { width: 100%; border: 1px solid var(--trace); background: transparent; color: var(--trace); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; padding: 8px; cursor: pointer; margin-top: 12px; transition: background .25s, color .25s; }
+    .power:hover { background: var(--trace); color: #10231c; }
+    footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid var(--line); padding-top: 8px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--trace); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; text-align: left; padding-top: 4px; }
+      .detail { border-top: 0; padding-top: 0; margin-top: 0; }
+      .readout { padding: 6px 0; }
+      .power { margin-top: 0; grid-column: 1 / -1; max-width: 210px; }
+    }
+    @media (max-width: 580px) {
+      .atlas { padding: 10px 10px 12px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(42px, 14vw, 63px); }
+      .intro p { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 11px 0 10px; }
+      .board-wrap { order: 2; }
+      aside { order: 3; display: block; }
+      .detail { display: none; }
+      .readout b { font-size: 16px; }
+      .readout { display: inline-block; width: 48%; vertical-align: top; }
+      .power { margin-top: 8px; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="atlas">
+    <header>
+      <div class="brand"><b>The Board</b>Motherboard atlas / rev. 053</div>
+      <div class="head"><div>Board<br><b>City 01</b></div><div>Chipset<br><b>32-bit</b></div><div>Power<br><b id="powerState">Off</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A city seen from above</p>
+        <h1>The<em>board</em></h1>
+        <p>Copper traces as boulevards, capacitors as water towers. Every computer is a small municipality with a very strict traffic problem.</p>
+      </section>
+      <section class="board-wrap">
+        <div class="board" id="board">
+          <svg class="trace-layer" viewBox="0 0 600 484" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="none" stroke="rgba(201,168,92,.55)" stroke-width="1.4">
+              <path d="M30 60 H190 V150 H240"/><path d="M40 90 H165 V175 H235"/><path d="M60 400 H180 V330 H250"/>
+              <path d="M390 170 H455 V110 H540"/><path d="M400 200 H470 V150 H545"/><path d="M420 330 H500 V280 H560"/>
+              <path d="M160 300 H220 V380 H400 V340"/><path d="M280 430 H330 V390 H420"/>
+              <path d="M520 80 H575 V250 H530"/><path d="M90 130 V260 H150"/>
+            </g>
+            <g fill="none" stroke="rgba(201,168,92,.24)" stroke-width="3.4">
+              <path d="M45 70 H185 V160"/><path d="M395 180 H465 V120"/><path d="M70 390 H175 V340"/><path d="M430 320 H495 V270"/>
+            </g>
+            <g fill="rgba(201,168,92,.6)">
+              <circle cx="190" cy="60" r="2.4"/><circle cx="240" cy="150" r="2.4"/><circle cx="235" cy="175" r="2.4"/><circle cx="250" cy="330" r="2.4"/>
+              <circle cx="455" cy="110" r="2.4"/><circle cx="540" cy="110" r="2.4"/><circle cx="470" cy="150" r="2.4"/><circle cx="560" cy="280" r="2.4"/>
+              <circle cx="400" cy="340" r="2.4"/><circle cx="330" cy="390" r="2.4"/><circle cx="575" cy="80" r="2.4"/><circle cx="90" cy="130" r="2.4"/>
+            </g>
+          </svg>
+          <span class="board-label">MS-053 / planetary board</span>
+          <button class="component cpu" type="button" data-comp="cpu"><span>CPU<br>CORE</span></button>
+          <button class="component ram" type="button" data-comp="ram"><span>RAM</span></button>
+          <button class="component chip" type="button" data-comp="chip"><span>IO</span></button>
+          <button class="component battery" type="button" data-comp="battery"><span>CMOS</span></button>
+          <button class="component slots" type="button" data-comp="slots"><span>PCIe</span></button>
+          <button class="component ports" type="button" data-comp="ports"><span>PORTS</span></button>
+          <span class="caps" style="left:9%;top:48%"></span><span class="caps" style="left:13%;top:48%"></span><span class="caps" style="left:17%;top:48%"></span>
+          <span class="caps" style="right:10%;top:22%"></span><span class="caps" style="right:10%;top:32%"></span><span class="caps" style="right:10%;top:42%"></span>
+          <span class="led" style="left:5%;bottom:7%"></span><span class="led red" style="left:9%;bottom:7%"></span><span class="led" style="right:5%;top:6%"></span>
+          <span class="pad" style="left:4%;top:4%"></span><span class="pad" style="right:4%;top:4%"></span><span class="pad" style="left:4%;bottom:4%"></span><span class="pad" style="right:4%;bottom:4%"></span>
+          <span class="board-tag">PCB · 4 layers · gold immersion</span>
+        </div>
+      </section>
+      <aside>
+        <div class="readout"><b id="clockRead">0.00</b>Clock speed / GHz</div>
+        <div class="readout"><b id="tempRead">24</b>Board temperature / °C</div>
+        <div class="readout"><b id="powerRead">0.0</b>Power draw / W</div>
+        <div class="detail"><h2 id="compName">CPU core</h2><p id="compDesc">Select any component on the board to read its city analogy.</p></div>
+        <button class="power" type="button" id="power">Power on the board</button>
+      </aside>
+    </main>
+    <footer><span><b>The Board</b> / a motherboard atlas</span><span>Every trace is a road with one destination</span><span>Revision 053 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const board = document.getElementById('board');
+      const components = [...document.querySelectorAll('.component')];
+      let on = false;
+      const info = {
+        cpu: ['CPU core', 'City hall. Everything important passes through here, and everything else waits for it to finish a thought.'],
+        ram: ['Memory bank', 'Short-term housing. Fast, temporary, and cleared every time the city loses power.'],
+        chip: ['I/O controller', 'The front desk. It greets the outside world, translates requests and quietly decides what matters.'],
+        battery: ['CMOS battery', 'A small civic clock that keeps time even when everyone has gone home.'],
+        slots: ['Expansion slots', 'Vacant lots zoned for future ambition. Usually populated years later, if at all.'],
+        ports: ['External ports', 'The city gates. Everything that enters or leaves the board must pass through them.']
+      };
+      components.forEach(comp => {
+        comp.addEventListener('click', () => {
+          components.forEach(c => c.classList.remove('active'));
+          comp.classList.add('active');
+          const d = info[comp.dataset.comp];
+          document.getElementById('compName').textContent = d[0];
+          document.getElementById('compDesc').textContent = d[1];
+          comp.animate([{ opacity: .6 }, { opacity: 1 }], { duration: 300 });
+        });
+      });
+      document.getElementById('power').addEventListener('click', (e) => {
+        on = !on;
+        board.classList.toggle('on', on);
+        document.getElementById('powerState').textContent = on ? 'Live' : 'Off';
+        document.getElementById('power').textContent = on ? 'Power down the board' : 'Power on the board';
+        document.getElementById('clockRead').textContent = on ? '3.60' : '0.00';
+        document.getElementById('tempRead').textContent = on ? '41' : '24';
+        document.getElementById('powerRead').textContent = on ? '18.4' : '0.0';
+        e.currentTarget.animate([{ transform: 'scale(.97)' }, { transform: 'scale(1)' }], { duration: 220 });
+      });
+      components[0].click();
+    })();
+  </script>
+</body>
+</html>

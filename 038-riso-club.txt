@@ -1,0 +1,17 @@
+TITLE: Riso Club — A Zine About Making Things
+
+PROMPT:
+Create "Riso Club," a self-contained digital zine cover designed like a two-colour risograph comic. Use warm newsprint cream, dense black ink, riso blue, fluorescent pink and a single yellow panel. Compose a bold comic-page grid: a large yellow editor's-letter panel with a massive "Make things anyway" headline and outlined word, a blue panel with "Done is a place" and a rotated pink starburst, and a pink "Bring your weird" call-for-submissions panel. Add sunburst rays, a round "Make bad things often" sticker, a handwritten-style quote, a fake barcode, page numbers, misregistered printing texture and punchy editorial microtype. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A screen-printed zine that radiates enthusiasm rather than polish. Loud panels, bold type and overprinted colors create the feeling of a photocopied manifesto passed hand to hand.
+
+MAJOR VISUAL TECHNIQUES:
+- Two-colour risograph palette with halftone dot texture
+- Comic-panel layout with heavy black borders and hard offset shadows
+- Sunburst radial pattern and rotated sticker/burst elements
+- Display type mixing solid, colored and outlined treatments
+- Print registration marks and fake barcode
+
+INTERACTION MODEL:
+Primarily a poster-like experience: hover over panels to feel the print lift slightly, and let the eye travel between the three editorial panels. The page is deliberately immediate and works as a cover, a manifesto and a call for submissions at once.

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041b23">
+  <meta name="description" content="The Aquarium — one tank, three species, a pinch of food.">
+  <title>The Aquarium — One Tank, Three Species</title>
+  <style>
+    :root {
+      --deep: #041b23;
+      --water: #0b4552;
+      --water2: #12606c;
+      --sand: #c9b489;
+      --coral: #d97a5a;
+      --fish: #e8b45e;
+      --cream: #e8f1ec;
+      --dim: #7fa3a6;
+      --line: rgba(232,241,236,.17);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--fish); color: var(--deep); }
+    body { margin: 0; min-height: 100vh; background: var(--deep); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .aquarium { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 46%, #0d3540, #031015 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--fish); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(150px, .55fr) minmax(310px, 1.45fr) minmax(180px, .68fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 10px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(35px, 4.9vw, 61px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--fish); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--coral); }
+    .intro p { max-width: 185px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #b3c7c5; }
+    .species { margin-top: 14px; border-top: 1px solid var(--line); }
+    .species h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .sp-row { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--line); padding: 3.5px 0; cursor: pointer; }
+    .sp-row i { width: 9px; height: 6px; border-radius: 50% 50% 40% 40%; flex: 0 0 9px; }
+    .sp-row b { font-family: var(--serif); font-size: 10px; font-weight: 400; color: var(--cream); flex: 1; }
+    .sp-row span { font-family: var(--mono); font-size: 4px; color: var(--dim); }
+    .sp-row:hover b { color: var(--fish); }
+    .tank-wrap { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .tank { position: relative; width: min(100%, 470px); aspect-ratio: 1.12; border: 6px solid #163a44; border-top-width: 4px; background: linear-gradient(180deg, #12606c, #0b4552 55%, #08333d); overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,.45), 0 14px 28px rgba(0,0,0,.4); }
+    .tank::before { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,.18), transparent 22%, transparent 78%, rgba(255,255,255,.1)); pointer-events: none; z-index: 5; }
+    .tank::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14%; background: linear-gradient(180deg, #b6a077, #8d7852); z-index: 1; }
+    .tank.night { background: linear-gradient(180deg, #0a3a4a, #041f2a 55%, #02141b); }
+    .tank.night::after { background: linear-gradient(180deg, #5d5540, #3a3527); }
+    .tank.night .fish { filter: brightness(.65) saturate(.7); }
+    .plant { position: absolute; bottom: 11%; width: 16px; background: linear-gradient(180deg, #4e8f5f, #2c5e3d); border-radius: 50% 50% 0 0; z-index: 2; transform-origin: 50% 100%; animation: weed 6s ease-in-out infinite; }
+    .plant::before, .plant::after { content: ""; position: absolute; left: 50%; width: 10px; height: 60%; background: inherit; border-radius: 50% 50% 0 0; transform-origin: 50% 100%; }
+    .plant::before { transform: translateX(-50%) rotate(-22deg); }
+    .plant::after { transform: translateX(-50%) rotate(22deg); }
+    @keyframes weed { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+    .fish { position: absolute; z-index: 3; width: 46px; transform: translateY(-50%); animation: swim linear infinite; }
+    .fish svg { width: 100%; height: auto; display: block; }
+    .fish.flip svg { transform: scaleX(-1); }
+    @keyframes swim { 0% { left: -60px; } 100% { left: 110%; } }
+    .food { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #d9a85e; z-index: 4; animation: fall linear forwards; }
+    @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(120px); opacity: 0; } }
+    .bubble { position: absolute; bottom: 12%; border: 1px solid rgba(232,241,236,.5); border-radius: 50%; animation: rise linear infinite; z-index: 2; }
+    @keyframes rise { 0% { transform: translateY(0); opacity: .75; } 100% { transform: translateY(-70vh); opacity: 0; } }
+    .tank-meta { display: flex; justify-content: space-between; width: 100%; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .card { border-top: 1px solid var(--line); padding-top: 6px; }
+    .card h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card .name { font-family: var(--serif); font-size: 22px; letter-spacing: -.03em; line-height: 1; color: var(--fish); }
+    .card .sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); margin-top: 2px; }
+    .card .note { margin: 6px 0 0; font-family: var(--serif); font-size: 10.5px; line-height: 1.5; color: #b3c7c5; min-height: 52px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 6px; border-top: 1px solid var(--line); padding-top: 4px; }
+    .data div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--cream); font-weight: 400; }
+    .actions { display: flex; gap: 4px; margin-top: 7px; }
+    .actions button { flex: 1; border: 1px solid rgba(232,180,94,.6); background: transparent; color: var(--fish); font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 3px; cursor: pointer; transition: background .2s, color .2s; }
+    .actions button:hover { background: var(--fish); color: var(--deep); }
+    .actions button.primary { background: var(--fish); color: var(--deep); }
+    .actions button.primary:hover { background: var(--cream); border-color: var(--cream); }
+    .log { margin-top: 6px; font-family: var(--mono); font-size: 4px; line-height: 1.8; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); min-height: 20px; }
+    .log b { color: var(--fish); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--fish); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .card { grid-column: 1; }
+      .data { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .actions { grid-column: 2; }
+      .log { grid-column: 1; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .aquarium { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .species { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; }
+      .species h2 { grid-column: 1 / -1; }
+      .sp-row { padding: 2px 0; }
+      .sp-row b { font-size: 9px; }
+      .sp-row span { display: none; }
+      .tank-wrap { order: 2; }
+      .tank { aspect-ratio: 1.05; }
+      aside { order: 3; display: block; }
+      .card .name { font-size: 18px; }
+      .card .note { min-height: 0; font-size: 9px; }
+      .data, .log { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="aquarium">
+    <header>
+      <div class="brand"><b>The Aquarium</b>Freshwater tank / display 093</div>
+      <div class="head"><div>Tank<br><b>120 litres</b></div><div>Species<br><b>Three</b></div><div>Light<br><b id="lightHead">Day</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">One tank, three species</p>
+        <h1>The<em>aquarium</em></h1>
+        <p>A tank is a small weather system. Feed the fish, turn the light down, and watch the water do what water does.</p>
+        <div class="species" id="species">
+          <h2>Stock</h2>
+          <div class="sp-row" data-s="0"><i style="background:#e8b45e"></i><b>Harlequin rasbora</b><span>12</span></div>
+          <div class="sp-row" data-s="1"><i style="background:#7fb5b3"></i><b>Neon tetra</b><span>18</span></div>
+          <div class="sp-row" data-s="2"><i style="background:#c96a4a"></i><b>Cherry barb</b><span>6</span></div>
+          <div class="sp-row" data-s="3"><i style="background:#8a7f68"></i><b>Bristlenose</b><span>2</span></div>
+        </div>
+      </section>
+      <section class="tank-wrap">
+        <div class="tank" id="tank">
+          <div class="plant" style="left:8%;height:60px;background:linear-gradient(180deg,#4e8f5f,#2c5e3d)"></div>
+          <div class="plant" style="left:78%;height:80px;background:linear-gradient(180deg,#5b9a5e,#356343)"></div>
+          <div class="plant" style="left:88%;height:48px;background:linear-gradient(180deg,#487f57,#2a5238)"></div>
+        </div>
+        <div class="tank-meta"><span id="tankMeta">120 l · 24 °C · pH 7.2</span><span id="feedMeta">Last fed 09:20</span></div>
+      </section>
+      <aside>
+        <div class="card">
+          <h2>Selected species</h2>
+          <div class="name" id="spName">Harlequin rasbora</div>
+          <div class="sub" id="spLatin">Trigonostigma heteromorpha</div>
+          <p class="note" id="spNote">A small shoaling fish with a black wedge on its flank. It prefers company, soft water and a little shade, and it will spend most of the day in the middle of the tank.</p>
+        </div>
+        <div class="data">
+          <div><span>Origin</span><b id="originRead">Sumatra</b></div>
+          <div><span>Size</span><b id="sizeRead">4 cm</b></div>
+          <div><span>Temp</span><b id="tempRead">23—26 °C</b></div>
+          <div><span>pH</span><b id="phRead">6.5—7.2</b></div>
+          <div><span>Shoal</span><b id="shoalRead">6+</b></div>
+          <div><span>Level</span><b id="levelRead">Middle</b></div>
+        </div>
+        <div class="actions"><button type="button" class="primary" id="feed">Feed the fish</button><button type="button" id="light">Lights off</button></div>
+        <div class="log" id="log"><b>Tank settled.</b> All fish accounted for.</div>
+      </aside>
+    </main>
+    <footer><span><b>The Aquarium</b> / one tank, three species</span><span>Do not tap the glass. Nobody likes that.</span><span>Display 093 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const species = [
+        { name: 'Harlequin rasbora', latin: 'Trigonostigma heterasperma', origin: 'Sumatra', size: '4 cm', temp: '23—26 °C', ph: '6.5—7.2', shoal: '6+', level: 'Middle', note: 'A small shoaling fish with a black wedge on its flank. It prefers company, soft water and a little shade, and it will spend most of the day in the middle of the tank.', colour: '#e8b45e', count: 12, w: 46 },
+        { name: 'Neon tetra', latin: 'Paracheirodon innesi', origin: 'Amazon', size: '3 cm', temp: '20—26 °C', ph: '6.0—7.0', shoal: '8+', level: 'Middle', note: 'A blue line and a red line, and very little else. In a dim tank it looks like a small piece of electricity, which is rather the point of it.', colour: '#7fb5b3', count: 18, w: 38 },
+        { name: 'Cherry barb', latin: 'Puntius titteya', origin: 'Sri Lanka', size: '5 cm', temp: '22—27 °C', ph: '6.0—7.5', shoal: '5+', level: 'Middle', note: 'The males turn the colour of a cherry in good condition. They are gentle, curious and always the first to notice that food has arrived.', colour: '#c96a4a', count: 6, w: 50 },
+        { name: 'Bristlenose catfish', latin: 'Ancistrus cirrhatus', origin: 'Brazil', size: '12 cm', temp: '23—28 °C', ph: '6.5—7.6', shoal: '1+', level: 'Bottom', note: 'A quiet armoured fish that spends its time on the glass and the wood. The males grow small bristles on their noses, which they seem rather proud of.', colour: '#8a7f68', count: 2, w: 62 }
+      ];
+      let selected = 0, lightOn = true, fed = 0;
+      const tank = document.getElementById('tank');
+      const fishMarkup = '<svg viewBox="0 0 60 30"><path d="M4 15 C14 5 34 4 46 11 C52 14 56 14 58 15 C56 16 52 16 46 19 C34 26 14 25 4 15Z" fill="CUR" stroke="rgba(10,20,20,.35)" stroke-width=".8"/><path d="M46 15 L56 8 L54 15 L56 22Z" fill="CUR" opacity=".85"/><circle cx="15" cy="13" r="1.6" fill="#0a1a1e"/><path d="M34 11 C38 14 38 16 34 19" fill="none" stroke="rgba(10,20,20,.25)" stroke-width=".8"/></svg>';
+      function buildFish() {
+        tank.querySelectorAll('.fish,.bubble,.food').forEach(el => el.remove());
+        species.forEach((s, si) => {
+          for (let i = 0; i < Math.min(4, Math.ceil(s.count / 4)); i++) {
+            const f = document.createElement('div');
+            f.className = 'fish' + (i % 2 ? ' flip' : '');
+            f.style.top = (18 + (si * 14) + i * 8) + '%';
+            f.style.width = s.w + 'px';
+            f.style.animationDuration = (14 + i * 4 + si * 2) + 's';
+            f.style.animationDelay = (-i * 5 - si) + 's';
+            f.innerHTML = fishMarkup.replace(/CUR/g, s.colour);
+            tank.appendChild(f);
+          }
+        });
+        for (let i = 0; i < 14; i++) {
+          const b = document.createElement('div');
+          b.className = 'bubble';
+          const size = 2 + Math.random() * 5;
+          b.style.width = size + 'px'; b.style.height = size + 'px';
+          b.style.left = (6 + Math.random() * 88) + '%';
+          b.style.animationDuration = (6 + Math.random() * 7) + 's';
+          b.style.animationDelay = (-Math.random() * 8) + 's';
+          tank.appendChild(b);
+        }
+      }
+      function select(i) {
+        selected = i;
+        const s = species[i];
+        document.querySelectorAll('.sp-row').forEach((r, k) => r.style.opacity = k === i ? 1 : .6);
+        document.getElementById('spName').textContent = s.name;
+        document.getElementById('spLatin').textContent = s.latin;
+        document.getElementById('spNote').textContent = s.note;
+        document.getElementById('originRead').textContent = s.origin;
+        document.getElementById('sizeRead').textContent = s.size;
+        document.getElementById('tempRead').textContent = s.temp;
+        document.getElementById('phRead').textContent = s.ph;
+        document.getElementById('shoalRead').textContent = s.shoal;
+        document.getElementById('levelRead').textContent = s.level;
+      }
+      document.querySelectorAll('.sp-row').forEach((r, i) => r.addEventListener('click', () => select(i)));
+      document.getElementById('feed').addEventListener('click', () => {
+        fed++;
+        for (let i = 0; i < 16; i++) {
+          const f = document.createElement('div');
+          f.className = 'food';
+          f.style.left = (20 + Math.random() * 60) + '%';
+          f.style.top = '3%';
+          f.style.animationDuration = (3 + Math.random() * 3) + 's';
+          f.style.animationDelay = (Math.random() * .6) + 's';
+          tank.appendChild(f);
+          setTimeout(() => f.remove(), 7000);
+        }
+        document.getElementById('feedMeta').textContent = 'Last fed ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('log').innerHTML = '<b>Fed.</b> The tank is briefly a very popular place.';
+        tank.querySelectorAll('.fish').forEach(f => { f.style.animationDuration = (f.style.animationDuration.replace('s','') * .6) + 's'; });
+        setTimeout(() => { document.getElementById('log').innerHTML = '<b>Settled.</b> The flakes are gone and the water is clearing.'; }, 6000);
+      });
+      document.getElementById('light').addEventListener('click', (e) => {
+        lightOn = !lightOn;
+        tank.classList.toggle('night', !lightOn);
+        document.getElementById('lightHead').textContent = lightOn ? 'Day' : 'Night';
+        e.currentTarget.textContent = lightOn ? 'Lights off' : 'Lights on';
+        document.getElementById('log').innerHTML = lightOn ? '<b>Lights on.</b> The plants begin their slow work again.' : '<b>Lights off.</b> The rasboras settle; the catfish becomes brave.';
+      });
+      select(0);
+      buildFish();
+    })();
+  </script>
+</body>
+</html>

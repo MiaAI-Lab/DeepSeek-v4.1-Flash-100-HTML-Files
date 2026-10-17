@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1526">
+  <meta name="description" content="The Night Train — three sleepers, one long corridor.">
+  <title>The Night Train — Three Sleepers, One Long Corridor</title>
+  <style>
+    :root {
+      --night: #0b1526;
+      --blue: #132a45;
+      --cream: #efe6d2;
+      --brass: #c2a164;
+      --claret: #7a2a3a;
+      --dim: #8493a8;
+      --line: rgba(239,230,210,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--brass); color: var(--night); }
+    body { margin: 0; min-height: 100vh; background: var(--night); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .sleeper { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 30%, #1a3555, #070f1a 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--brass); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(175px, .65fr) minmax(280px, 1.25fr) minmax(180px, .7fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(35px, 4.9vw, 61px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--brass); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--claret); }
+    .intro p { max-width: 200px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #b8c1cb; }
+    .services { margin-top: 13px; border-top: 1px solid var(--line); }
+    .services h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .service-btn { display: flex; justify-content: space-between; align-items: baseline; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 4px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: color .2s, padding .2s; }
+    .service-btn b { font-family: var(--serif); font-size: 11px; font-weight: 400; color: var(--cream); }
+    .service-btn span { font-family: var(--mono); font-size: 4px; letter-spacing: .04em; text-transform: uppercase; }
+    .service-btn:hover, .service-btn.active { color: var(--brass); padding-left: 4px; }
+    .service-btn.active b { color: var(--brass); }
+    .coach { display: flex; flex-direction: column; gap: 7px; align-items: center; }
+    .carriage { position: relative; width: min(100%, 460px); border: 1px solid rgba(194,161,100,.5); background: #101f33; padding: 8px; border-radius: 18px; box-shadow: 0 18px 34px rgba(0,0,0,.45), inset 0 0 0 4px rgba(239,230,210,.06); }
+    .carriage::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 1px; background: rgba(239,230,210,.15); }
+    .corridor { position: absolute; right: 8px; top: 10px; bottom: 10px; width: 26px; border-left: 1px solid rgba(239,230,210,.2); background: repeating-linear-gradient(0deg, rgba(239,230,210,.06) 0 3px, transparent 3px 9px); }
+    .compartments { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding-right: 32px; }
+    .compartment { border: 1px solid rgba(239,230,210,.2); border-radius: 4px 4px 2px 2px; background: #16283d; padding: 5px; position: relative; }
+    .compartment .no { font-family: var(--mono); font-size: 3.6px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); display: flex; justify-content: space-between; }
+    .compartment .no b { color: var(--brass); font-weight: 400; }
+    .berths { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 3px; }
+    .berth { border: 1px solid rgba(239,230,210,.22); background: #1d3049; color: var(--dim); border-radius: 2px; padding: 5px 2px; cursor: pointer; font-family: var(--mono); font-size: 3.6px; letter-spacing: .05em; text-transform: uppercase; transition: background .2s, color .2s, border-color .2s; }
+    .berth small { display: block; font-family: var(--serif); font-size: 8px; text-transform: none; letter-spacing: 0; margin-top: 1px; color: var(--cream); }
+    .berth:hover { border-color: var(--brass); }
+    .berth.sel { background: var(--brass); border-color: var(--brass); color: var(--night); }
+    .berth.sel small { color: var(--night); }
+    .berth.taken { opacity: .35; cursor: not-allowed; background: #101d2c; }
+    .carriage-label { position: absolute; left: 8px; bottom: -12px; font-family: var(--mono); font-size: 3.6px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .coach-meta { display: flex; justify-content: space-between; width: 100%; max-width: 460px; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .summary { border-top: 1px solid var(--line); padding-top: 6px; }
+    .summary h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .summary .route { font-family: var(--serif); font-size: 16px; line-height: 1.1; color: var(--cream); }
+    .summary .times { font-family: var(--mono); font-size: 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--brass); margin-top: 2px; }
+    .classes { margin-top: 6px; display: flex; gap: 3px; }
+    .class-btn { flex: 1; border: 1px solid rgba(239,230,210,.25); background: transparent; color: var(--dim); font-family: var(--mono); font-size: 3.6px; letter-spacing: .05em; text-transform: uppercase; padding: 5px 2px; cursor: pointer; }
+    .class-btn.active { background: var(--brass); border-color: var(--brass); color: var(--night); }
+    .lines { margin-top: 6px; border-top: 1px solid var(--line); padding-top: 4px; }
+    .line { display: flex; justify-content: space-between; gap: 6px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .line b { color: var(--cream); font-weight: 400; }
+    .total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px; border-top: 1px solid var(--line); padding-top: 4px; font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    .total b { font-family: var(--serif); font-size: 21px; color: var(--brass); font-weight: 400; }
+    .book { width: 100%; margin-top: 7px; border: 1px solid var(--brass); background: var(--brass); color: var(--night); font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; text-transform: uppercase; padding: 7px; cursor: pointer; }
+    .book:hover { background: var(--cream); border-color: var(--cream); }
+    .book:disabled { opacity: .4; cursor: default; }
+    .ticket { margin-top: 7px; border: 1px dashed rgba(194,161,100,.5); padding: 6px; font-family: var(--mono); font-size: 4px; letter-spacing: .05em; line-height: 1.8; text-transform: uppercase; color: var(--dim); display: none; }
+    .ticket.show { display: block; }
+    .ticket b { color: var(--brass); font-weight: 400; }
+    .ticket .ref { font-family: var(--serif); font-size: 14px; color: var(--cream); letter-spacing: .05em; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--brass); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .72fr 1.28fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .summary { grid-column: 1; }
+      .classes { grid-column: 2; grid-row: 1; margin-top: 0; }
+      .lines { grid-column: 2; }
+      .total { grid-column: 1; }
+      .book { grid-column: 2; margin-top: 0; }
+      .ticket { grid-column: 2; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .sleeper { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .services { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; }
+      .services h2 { grid-column: 1 / -1; }
+      .service-btn { padding: 2px 0; }
+      .service-btn b { font-size: 9px; }
+      .service-btn span { display: none; }
+      .coach { order: 2; }
+      .compartments { grid-template-columns: 1fr; }
+      .berths { grid-template-columns: repeat(4, 1fr); }
+      aside { order: 3; display: block; }
+      .summary .route { font-size: 13px; }
+      .classes { margin-top: 5px; }
+      .total b { font-size: 18px; }
+      .book { margin-top: 5px; }
+      .ticket { display: none !important; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sleeper">
+    <header>
+      <div class="brand"><b>The Night Train</b>Sleeper service / coach 086</div>
+      <div class="head"><div>Route<br><b>Vela — Trieste</b></div><div>Departs<br><b>21:10</b></div><div>Coach<br><b id="coachRead">S1</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Three sleepers, one long corridor</p>
+        <h1>The<em>night train</em></h1>
+        <p>There is no reason to fly this route. Choose a service, a compartment and a berth, and let the night do the driving.</p>
+        <div class="services" id="services">
+          <h2>Departures</h2>
+          <button class="service-btn active" type="button" data-s="0"><b>21:10 · Vela</b><span>to Trieste</span></button>
+          <button class="service-btn" type="button" data-s="1"><b>22:40 · Vela</b><span>to Vienna</span></button>
+          <button class="service-btn" type="button" data-s="2"><b>20:05 · Vela</b><span>to Prague</span></button>
+        </div>
+      </section>
+      <section class="coach">
+        <div class="carriage" id="carriage">
+          <div class="corridor"></div>
+          <div class="compartments" id="compartments"></div>
+          <span class="carriage-label">Coach S1 / corridor side</span>
+        </div>
+        <div class="coach-meta"><span id="coachMeta">Coach S1 · 8 compartments</span><span id="berthMeta">Berth 12 · lower</span></div>
+      </section>
+      <aside>
+        <div class="summary">
+          <h2>Journey</h2>
+          <div class="route" id="routeRead">Vela Centrale → Trieste</div>
+          <div class="times" id="timesRead">21:10 — 06:40 · 9 h 30</div>
+          <div class="classes" id="classes"><button class="class-btn" type="button" data-c="0">Reclining</button><button class="class-btn active" type="button" data-c="1">2-berth</button><button class="class-btn" type="button" data-c="2">Single</button></div>
+          <div class="lines">
+            <div class="line"><span>Berth</span><b id="berthRead">—</b></div>
+            <div class="line"><span>Class</span><b id="classRead">2-berth sleeper</b></div>
+            <div class="line"><span>Fare</span><b id="fareRead">£96</b></div>
+            <div class="line"><span>Breakfast</span><b id="breakfastRead">Included</b></div>
+          </div>
+          <div class="total"><span>Total</span><b id="totalRead">£0</b></div>
+          <button class="book" type="button" id="book" disabled>Choose a berth</button>
+        </div>
+        <div class="ticket" id="ticket"></div>
+      </aside>
+    </main>
+    <footer><span><b>The Night Train</b> / three sleepers, one long corridor</span><span>Please do not pull the emergency cord for scenery</span><span>Coach 086 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const services = [
+        { route: 'Vela Centrale → Trieste', times: '21:10 — 06:40 · 9 h 30', code: 'S1', base: 42, breakfast: 'Included' },
+        { route: 'Vela Centrale → Vienna', times: '22:40 — 08:15 · 9 h 35', code: 'S2', base: 48, breakfast: 'Included' },
+        { route: 'Vela Centrale → Prague', times: '20:05 — 07:50 · 11 h 45', code: 'S3', base: 39, breakfast: 'Coffee & roll' }
+      ];
+      const classes = [
+        { name: 'Reclining seat', extra: 8, berths: 8 },
+        { name: '2-berth sleeper', extra: 54, berths: 4 },
+        { name: 'Single sleeper', extra: 86, berths: 4 }
+      ];
+      let service = 0, cls = 1, berth = null, booked = false;
+      const comps = document.getElementById('compartments');
+      function build() {
+        comps.innerHTML = '';
+        for (let c = 1; c <= 8; c++) {
+          const comp = document.createElement('div');
+          comp.className = 'compartment';
+          comp.innerHTML = '<div class="no"><span>Compartment</span><b>0' + c + '</b></div><div class="berths">' +
+            '<button class="berth' + (c === 3 ? ' taken' : '') + '" type="button" data-b="L' + c + '">lower<small>' + (c === 3 ? 'sold' : 'available') + '</small></button>' +
+            '<button class="berth" type="button" data-b="U' + c + '">upper<small>available</small></button>' +
+            '</div>';
+          comps.appendChild(comp);
+        }
+        comps.querySelectorAll('.berth').forEach(b => b.addEventListener('click', () => choose(b)));
+      }
+      function choose(b) {
+        if (booked || b.classList.contains('taken')) return;
+        comps.querySelectorAll('.berth').forEach(x => x.classList.remove('sel'));
+        if (berth === b.dataset.b) { berth = null; } else { b.classList.add('sel'); berth = b.dataset.b; }
+        render();
+      }
+      function render() {
+        const s = services[service], c = classes[cls];
+        document.getElementById('routeRead').textContent = s.route;
+        document.getElementById('timesRead').textContent = s.times;
+        document.getElementById('coachRead').textContent = s.code;
+        document.getElementById('coachMeta').textContent = 'Coach ' + s.code + ' · 8 compartments';
+        document.getElementById('berthMeta').textContent = berth ? 'Berth ' + berth : 'No berth selected';
+        document.getElementById('berthRead').textContent = berth ? (berth[0] === 'L' ? 'Lower ' : 'Upper ') + berth.slice(1) : '—';
+        document.getElementById('classRead').textContent = c.name;
+        document.getElementById('fareRead').textContent = '£' + (s.base + c.extra);
+        document.getElementById('breakfastRead').textContent = s.breakfast;
+        document.getElementById('totalRead').textContent = '£' + (berth ? s.base + c.extra : 0);
+        document.getElementById('book').textContent = berth ? 'Book berth ' + berth : 'Choose a berth';
+        document.getElementById('book').disabled = !berth || booked;
+        document.querySelectorAll('.service-btn').forEach((b, i) => b.classList.toggle('active', i === service));
+        document.querySelectorAll('.class-btn').forEach((b, i) => b.classList.toggle('active', i === cls));
+      }
+      document.querySelectorAll('.service-btn').forEach((b, i) => b.addEventListener('click', () => { if (booked) return; service = i; render(); }));
+      document.querySelectorAll('.class-btn').forEach((b, i) => b.addEventListener('click', () => { if (booked) return; cls = i; render(); }));
+      document.getElementById('book').addEventListener('click', () => {
+        if (!berth || booked) return;
+        booked = true;
+        const s = services[service], c = classes[cls];
+        const t = document.getElementById('ticket');
+        t.classList.add('show');
+        t.innerHTML = '<b>The Night Train · sleeper ticket</b><br><span class="ref">' + s.code + ' · ' + berth + '</span><br>' + s.route + '<br>' + s.times + '<br>' + c.name + ' · £' + (s.base + c.extra) + '<br>Breakfast: ' + s.breakfast + '<br>Please keep this ticket with you.';
+        document.getElementById('book').textContent = 'Berth booked';
+        document.getElementById('book').disabled = true;
+      });
+      build(); render();
+    })();
+  </script>
+</body>
+</html>

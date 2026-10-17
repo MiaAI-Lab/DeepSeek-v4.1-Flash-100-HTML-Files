@@ -1,0 +1,17 @@
+TITLE: The Pigment Archive — Eight Colours and a Mixing Tray
+
+PROMPT:
+Create "The Pigment Archive," a self-contained colour library with a working mixing tray. Use a dark gallery wall, cream labels, antique gold and eight vivid pigments. Compose a three-column archive: an editorial "The pigment archive" title and a list of eight pigments with colour chips; a large tilted swatch card with painted texture and a label, plus a mixing tray with wells A, B and the resulting mix; and a record panel with pigment name, code, history note, hue, origin, opacity, lightfastness, binder and grade, plus Add to mix and Clear mix. Selecting a pigment should recolour the swatch and update its record; adding two pigments should show each in a well and compute a 50:50 blend with its hex value. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A colour library that lets you handle the material. The swatches are painted rather than flat, the histories are specific, and the mixing tray turns colour theory into something you can see happen.
+
+MAJOR VISUAL TECHNIQUES:
+- Painted swatch texture with repeated brush marks and a highlight
+- Eight pigment colour chips and records
+- Two-well mixing tray with live 50:50 RGB blend
+- Tilted gallery card with printed label typography
+- Dark-wall palette with antique gold and cream
+
+INTERACTION MODEL:
+Click a pigment to select it and read its record. Press "Add to mix" to place it in well A, then B; the tray computes the blend and shows its hex value. Clear mix empties both wells.

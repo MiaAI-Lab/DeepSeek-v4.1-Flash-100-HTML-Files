@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171226">
+  <meta name="description" content="The Major Arcana — a three-card spread, drawn at midnight.">
+  <title>The Major Arcana — A Three-Card Spread</title>
+  <style>
+    :root {
+      --indigo: #171226;
+      --indigo2: #221a38;
+      --bone: #e9dfc8;
+      --gold: #c8a55c;
+      --red: #a34a44;
+      --dim: #8f88a0;
+      --line: rgba(233,223,200,.17);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--indigo); }
+    body { margin: 0; min-height: 100vh; background: var(--indigo); color: var(--bone); font-family: var(--sans); overflow-x: hidden; }
+    .table { min-height: 100vh; display: flex; flex-direction: column; padding: 17px clamp(14px, 3vw, 40px) 13px; background: radial-gradient(ellipse at 50% 42%, #2a2044, #120e1e 70%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--bone); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 32px); font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--bone); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(150px, .6fr) minmax(360px, 1.6fr) minmax(180px, .7fr); gap: clamp(15px, 3vw, 38px); align-items: center; padding: 13px 0 9px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.6vw, 71px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--gold); font-size: .92em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 10px; font-family: var(--mono); font-size: 5px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 16px; height: 1px; background: var(--red); }
+    .intro p { max-width: 195px; margin: 18px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #b6adc2; }
+    .positions { margin-top: 18px; border-top: 1px solid var(--line); }
+    .pos { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding: 5px 0; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    .pos b { font-family: var(--serif); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--bone); }
+    .spread { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(8px, 1.6vw, 17px); align-items: center; }
+    .card-slot { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .card { position: relative; width: 100%; aspect-ratio: .6; perspective: 900px; cursor: pointer; }
+    .inner { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .85s cubic-bezier(.2,.7,.2,1); }
+    .card.flipped .inner { transform: rotateY(180deg); }
+    .face { position: absolute; inset: 0; backface-visibility: hidden; border: 1px solid var(--gold); border-radius: 3px; overflow: hidden; box-shadow: 0 12px 22px rgba(0,0,0,.4); }
+    .back { background: repeating-linear-gradient(45deg, #241b3a 0 6px, #1d1530 6px 12px); display: grid; place-items: center; }
+    .back::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(200,165,92,.35); border-radius: 2px; }
+    .back .moon { width: 44%; aspect-ratio: 1; border-radius: 50%; box-shadow: inset -9px -2px 0 0 var(--gold); transform: rotate(-18deg); opacity: .85; }
+    .back .sigil { position: absolute; font-family: var(--serif); color: var(--gold); font-size: 8px; letter-spacing: .2em; bottom: 9%; }
+    .front { transform: rotateY(180deg); background: linear-gradient(170deg, #f2e8d2, #e3d6b8); color: #211a2c; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 7px 5px; }
+    .front .num { font-family: var(--mono); font-size: 5px; letter-spacing: .16em; color: var(--red); align-self: flex-start; }
+    .front .emblem { width: 100%; flex: 1; display: grid; place-items: center; }
+    .front .emblem svg { width: 100%; height: 100%; }
+    .front .name { font-family: var(--serif); font-size: clamp(7px, .82vw, 9.5px); letter-spacing: .07em; text-transform: uppercase; text-align: center; line-height: 1.1; }
+    .front .ori { font-family: var(--mono); font-size: 3.8px; letter-spacing: .1em; text-transform: uppercase; color: var(--red); }
+    .slot-label { font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .reading { border-top: 1px solid var(--line); padding-top: 7px; }
+    .reading h2 { margin: 0 0 4px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+    .reading p { margin: 0; font-family: var(--serif); font-size: 11.5px; line-height: 1.55; color: #b6adc2; min-height: 76px; }
+    .keywords { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+    .keywords span { border: 1px solid rgba(200,165,92,.4); padding: 2px 5px; font-family: var(--mono); font-size: 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+    .deck-info { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .deck-info div { display: flex; justify-content: space-between; }
+    .deck-info b { color: var(--bone); font-weight: 400; }
+    .deal { width: 100%; margin-top: 10px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font: inherit; font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; text-transform: uppercase; padding: 7px; cursor: pointer; transition: background .2s, color .2s; }
+    .deal:hover { background: var(--gold); color: var(--indigo); }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 7px; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+      .reading { grid-column: 1; }
+      .deck-info { grid-column: 2; margin-top: 0; border-top: 0; padding-top: 0; }
+      .deal { grid-column: 2; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .table { padding: 10px 10px 12px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(34px, 11vw, 50px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0 8px; }
+      .positions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 8px; margin-top: 8px; }
+      .pos { display: block; border-bottom: 0; padding: 0; }
+      .pos b { display: block; font-size: 10px; }
+      .spread { order: 2; }
+      .card { aspect-ratio: .62; }
+      aside { order: 3; display: block; }
+      .reading { padding-top: 6px; }
+      .reading p { font-size: 10px; min-height: 0; }
+      .deck-info { display: none; }
+      .deal { margin-top: 7px; }
+      footer { font-size: 4.5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="table">
+    <header>
+      <div class="brand"><b>The Major Arcana</b>Three-card spread / table 065</div>
+      <div class="head"><div>Deck<br><b>Twenty-two</b></div><div>Spread<br><b>Past / present / future</b></div><div>Drawn<br><b>At midnight</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A reading, if you want one</p>
+        <h1>The<em>spread</em></h1>
+        <p>Three cards, face down. Turn them over one at a time: what came before, what stands here, and what is already walking toward you.</p>
+        <div class="positions">
+          <div class="pos"><span>I</span><b>Past</b></div>
+          <div class="pos"><span>II</span><b>Present</b></div>
+          <div class="pos"><span>III</span><b>Future</b></div>
+        </div>
+      </section>
+      <section class="spread" id="spread"></section>
+      <aside>
+        <div class="reading"><h2>Interpretation</h2><p id="readingText">The cards are still face down. Turn one over to begin the reading.</p><div class="keywords" id="keywords"></div></div>
+        <div class="deck-info">
+          <div><span>Deck</span><b>Marseille, restored</b></div>
+          <div><span>Reversals</span><b>Included</b></div>
+          <div><span>Cards drawn</span><b id="drawnCount">0 / 3</b></div>
+        </div>
+        <button class="deal" type="button" id="deal">Deal a new spread</button>
+      </aside>
+    </main>
+    <footer><span><b>The Major Arcana</b> / a three-card spread</span><span>For reflection, not prediction</span><span>Table 065 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const deck = [
+        { name: 'The Star', num: 'XVII', upright: 'Hope after a long night. A quiet restoration of the thing you thought was finished.', reversed: 'A hope held too tightly, or a light you refuse to look at. Rest is still owed.', up: ['Hope', 'Healing', 'Water'], rev: ['Doubt', 'Delay', 'Thirst'],
+          emblem: '<svg viewBox="0 0 100 150"><g fill="none" stroke="#a34a44" stroke-width="1"><circle cx="50" cy="52" r="26"/><path d="M50 18 v68 M16 52 h68 M26 28 l48 48 M74 28 l-48 48"/></g><path d="M50 34 l4 12 h12 l-10 8 4 12 -10 -8 -10 8 4 -12 -10 -8 h12z" fill="#c8a55c"/><path d="M20 106 q30 -12 60 0" stroke="#2b2140" fill="none" stroke-width="1.2"/><path d="M20 116 q30 -12 60 0" stroke="#2b2140" fill="none" stroke-width="1"/><g stroke="#c8a55c" stroke-width=".8"><path d="M30 94 l0 -8 M70 94 l0 -8 M50 98 l0 -10"/></g></svg>' },
+        { name: 'The Moon', num: 'XVIII', upright: 'Things seen by inadequate light. Trust the path, not the shapes at its edges.', reversed: 'The fog begins to lift. What frightened you is becoming legible.', up: ['Dream', 'Uncertainty', 'Instinct'], rev: ['Clarity', 'Release', 'Dawn'],
+          emblem: '<svg viewBox="0 0 100 150"><circle cx="50" cy="52" r="26" fill="#c8a55c"/><circle cx="60" cy="44" r="23" fill="#efe5cd"/><g fill="#a34a44"><circle cx="22" cy="92" r="2"/><circle cx="78" cy="88" r="1.6"/><circle cx="64" cy="104" r="1.4"/></g><path d="M18 118 q32 -14 64 0" stroke="#2b2140" fill="none" stroke-width="1"/><path d="M32 112 v-8 M50 110 v-10 M68 112 v-8" stroke="#c8a55c" stroke-width=".8"/></svg>' },
+        { name: 'The Sun', num: 'XIX', upright: 'Plain daylight. A thing is exactly as good as it appears, which is rare.', reversed: 'A brightness that exhausts rather than warms. Step out of the glare.', up: ['Joy', 'Clarity', 'Arrival'], rev: ['Burnout', 'Delay', 'Ego'],
+          emblem: '<svg viewBox="0 0 100 150"><circle cx="50" cy="54" r="19" fill="#c8a55c"/><g stroke="#a34a44" stroke-width="1.2"><path d="M50 22 v-10 M50 86 v10 M18 54 h-10 M82 54 h10 M27 31 l-7 -7 M73 31 l7 -7 M27 77 l-7 7 M73 77 l7 7"/></g><path d="M28 110 q22 -12 44 0" stroke="#2b2140" fill="none" stroke-width="1.1"/><circle cx="50" cy="103" r="3" fill="#a34a44"/></svg>' },
+        { name: 'The Tower', num: 'XVI', upright: 'A structure gives way. What falls was built on the wrong ground.', reversed: 'The collapse is postponed, not cancelled. Better to leave before the roof does.', up: ['Rupture', 'Revelation', 'Change'], rev: ['Delay', 'Fear', 'Repair'],
+          emblem: '<svg viewBox="0 0 100 150"><path d="M32 130 L38 46 L50 32 L62 46 L68 130Z" fill="none" stroke="#2b2140" stroke-width="1.3"/><path d="M38 46 h24 M40 62 h20 M42 78 h16 M44 96 h12" stroke="#a34a44" stroke-width=".9"/><path d="M50 32 L58 12 L50 20 L42 8Z" fill="#c8a55c"/><path d="M68 54 l10 -6 M24 72 l-10 4 M70 84 l10 6" stroke="#a34a44" stroke-width=".9"/></svg>' },
+        { name: 'The World', num: 'XXI', upright: 'A circle closes. You are allowed to call this finished and begin again.', reversed: 'Almost complete. One last thing is still owed, and you know what it is.', up: ['Completion', 'Return', 'Wholeness'], rev: ['Near-miss', 'Holding on', 'Loose end'],
+          emblem: '<svg viewBox="0 0 100 150"><ellipse cx="50" cy="62" rx="35" ry="42" fill="none" stroke="#c8a55c" stroke-width="1.2"/><path d="M50 20 C70 36 70 88 50 104 C30 88 30 36 50 20Z" fill="none" stroke="#a34a44" stroke-width="1"/><path d="M15 62 h70" stroke="#2b2140" stroke-width=".8"/><circle cx="50" cy="62" r="5" fill="#c8a55c"/><path d="M26 118 q24 -8 48 0" fill="none" stroke="#2b2140" stroke-width="1"/><g fill="#a34a44"><circle cx="18" cy="38" r="1.4"/><circle cx="82" cy="38" r="1.4"/><circle cx="18" cy="86" r="1.4"/><circle cx="82" cy="86" r="1.4"/></g></svg>' },
+        { name: 'The High Priestess', num: 'II', upright: 'Knowledge kept behind a curtain. Sit still long enough and it will be offered.', reversed: 'A secret kept from yourself. The curtain is not the problem.', up: ['Intuition', 'Silence', 'Depth'], rev: ['Avoidance', 'Noise', 'Surface'],
+          emblem: '<svg viewBox="0 0 100 150"><path d="M30 128 V58 Q50 34 70 58 V128" fill="none" stroke="#2b2140" stroke-width="1.2"/><path d="M50 38 V18 M42 26 h16" stroke="#c8a55c" stroke-width="1.4"/><circle cx="50" cy="18" r="5" fill="none" stroke="#a34a44" stroke-width="1"/><path d="M38 70 q12 -8 24 0" stroke="#a34a44" fill="none" stroke-width="1"/><path d="M38 84 h24 M38 94 h24 M38 104 h24" stroke="#2b2140" stroke-width=".7"/></svg>' }
+      ];
+      const positions = ['Past', 'Present', 'Future'];
+      const spread = document.getElementById('spread');
+      let current = [], flipped = [false, false, false], dealt = 0;
+      function shuffle(a) { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
+      function render() {
+        spread.innerHTML = '';
+        current.forEach((c, i) => {
+          const slot = document.createElement('div');
+          slot.className = 'card-slot';
+          const card = document.createElement('div');
+          card.className = 'card' + (flipped[i] ? ' flipped' : '');
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+          card.setAttribute('aria-label', positions[i] + ' card, face down');
+          card.innerHTML = '<div class="inner"><div class="face back"><div class="moon"></div><div class="sigil">M · A</div></div>' +
+            '<div class="face front"><div class="num">' + c.num + (c.rev ? ' · reversed' : '') + '</div><div class="emblem">' + c.emblem + '</div><div class="name">' + c.name + '</div><div class="ori">' + (c.rev ? 'Reversed' : 'Upright') + '</div></div></div>';
+          card.addEventListener('click', () => flip(i));
+          card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(i); } });
+          slot.appendChild(card);
+          const label = document.createElement('div'); label.className = 'slot-label'; label.textContent = (i + 1) + ' / ' + positions[i];
+          slot.appendChild(label);
+          spread.appendChild(slot);
+        });
+      }
+      function flip(i) {
+        if (flipped[i]) return;
+        flipped[i] = true;
+        dealt = flipped.filter(Boolean).length;
+        document.getElementById('drawnCount').textContent = dealt + ' / 3';
+        const c = current[i];
+        const text = c.rev ? c.reversed : c.upright;
+        document.getElementById('readingText').textContent = positions[i] + ' · ' + c.name + (c.rev ? ' (reversed)' : '') + ' — ' + text;
+        document.getElementById('keywords').innerHTML = (c.rev ? c.rev : c.up).map(k => '<span>' + k + '</span>').join('');
+        render();
+      }
+      function deal() {
+        current = shuffle(deck).slice(0, 3).map(c => ({ ...c, rev: Math.random() < .28 }));
+        flipped = [false, false, false]; dealt = 0;
+        document.getElementById('readingText').textContent = 'The cards are still face down. Turn one over to begin the reading.';
+        document.getElementById('keywords').innerHTML = '';
+        document.getElementById('drawnCount').textContent = '0 / 3';
+        render();
+      }
+      document.getElementById('deal').addEventListener('click', deal);
+      deal();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+TITLE: Herbarium Plate 55 — Papaver, Studied in Parts
+
+PROMPT:
+Create "Herbarium Plate 55," a self-contained botanical illustration plate for Papaver rhoeas, the field poppy. Use warm herbarium paper, ink green, muted rust, and sepia leader lines. Compose a three-column scientific sheet: a serif "Field poppy" title with Latin name and collection note; a large hand-drawn inline-SVG poppy with four crumpled petals, a green seed pod, hairy stem, pinnate leaves and a bud, plus labelled leader lines and a magnification lens; and a right-hand anatomy index with five parts, a description and specimen data. Clicking a part name or the drawing itself should highlight that anatomical element and update the description. Include sheet borders, plate number, collection stamp and a footer. No external assets, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A scientific plate that never existed but feels as though it has been in an archive for a century. The rust-red poppy against warm paper is the whole composition, and the labels make it feel studied rather than merely drawn.
+
+MAJOR VISUAL TECHNIQUES:
+- Detailed inline-SVG botanical illustration with gradient petals and pod
+- Leader-line labelling system
+- Interactive anatomy selection across both drawing and index
+- Herbarium sheet composition with manuscript borders and stamp
+- Serif and monospaced scientific typography
+
+INTERACTION MODEL:
+Click Petal, Seed pod, Leaf, Stem or Bud in the index, or click that part of the drawing, to highlight it and read a short botanical note. The lens label updates to the selected detail.

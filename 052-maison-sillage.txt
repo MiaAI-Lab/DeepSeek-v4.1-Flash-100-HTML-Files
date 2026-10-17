@@ -1,0 +1,17 @@
+TITLE: Maison Sillage — A Perfume Atelier
+
+PROMPT:
+Create "Maison Sillage," a self-contained luxury perfume atelier page. Use near-black plum, warm cream, champagne gold, dusty rose and an amber accent. Compose a three-column layout: an editorial serif "Maison Sillage" headline and poetic note; a centred hand-blown perfume bottle drawn entirely in CSS with a gold cap, glass body, coloured liquid, specular highlight and a cream label; and a right-hand scent list with three extraits, an olfactory pyramid and an italic sillage quote. Selecting a scent should change the liquid colour, bottle label, notes, quote, maceration text and the ambient blurred haze colours. Clicking the bottle cycles scents. Add elegant micro-typography and a quiet footer. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A perfume house distilled into a single still life. The bottle is the hero, the haze is its aura, and the scent notes read like small poems rather than product data.
+
+MAJOR VISUAL TECHNIQUES:
+- Pure-CSS glass bottle with cap, neck, liquid, label and specular highlight
+- Ambient blurred colour haze that changes per fragrance
+- Three-scent data model driving all text and colour changes
+- Olfactory pyramid and monospaced atelier metadata
+- Animated liquid level and crossfade transitions
+
+INTERACTION MODEL:
+Choose Sillage I, II or III from the list to transform the bottle liquid, label, notes, quote and surrounding haze. Click the bottle itself to cycle through the three scents. Transitions animate smoothly over about a second.

@@ -1,0 +1,17 @@
+TITLE: The Night Market — Three Stalls, One String of Lanterns
+
+PROMPT:
+Create "The Night Market," a self-contained evening bazaar page with a working basket. Use deep teal night, lantern amber, stall red, cream and warm wood. Compose a three-column market sheet: an editorial "The night market" title and three stall buttons (Hana's Counter, Bread & Salt, The Lantern Man); a market lane scene with a swinging string of paper lanterns, three striped awnings, hanging signs, wooden counters and small goods; and a stall panel with three items, prices and add buttons, plus a basket with lines, total, pay button and a receipt message. Selecting a stall or clicking its scene should change the goods; adding items should update the basket and total; paying should clear the basket and print a short confirmation. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A market lane after dark, built from awnings and lantern light. The basket makes it a real transaction, while the copy keeps it fond and slightly amused by itself.
+
+MAJOR VISUAL TECHNIQUES:
+- Striped awning silhouettes with scalloped edges
+- Hanging lantern string with individual sway animation
+- Wooden counter, crates and produce built from CSS
+- Stall-based goods model with basket and running total
+- Teal, amber and red night-market palette
+
+INTERACTION MODEL:
+Choose a stall from the list or click its awning to see its three goods. Press + to add an item; the basket and total update. Pay the stallholder to clear the basket and print a receipt message. The lantern string sways continuously.

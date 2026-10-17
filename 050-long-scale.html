@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#05060a">
+  <meta name="description" content="The Long Scale — the solar system at the speed of walking.">
+  <title>The Long Scale — A Solar System at Human Pace</title>
+  <style>
+    :root {
+      --space: #05060a;
+      --ink: #eceadf;
+      --dim: #767b88;
+      --sun: #f6b04e;
+      --line: rgba(236,234,223,.14);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--sun); color: #0a0703; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--space); color: var(--ink); font-family: var(--sans); overflow-x: hidden; background-image: radial-gradient(ellipse at 50% 0%, rgba(246,176,78,.1), transparent 42%); }
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: radial-gradient(rgba(236,234,223,.75) .5px, transparent .8px), radial-gradient(rgba(236,234,223,.35) .5px, transparent .8px); background-size: 97px 89px, 53px 61px; background-position: 12px 22px, 40px 7px; opacity: .4; }
+    .hud { position: fixed; z-index: 20; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 13px clamp(15px, 3.4vw, 48px); background: linear-gradient(180deg, rgba(5,6,10,.92), rgba(5,6,10,0)); pointer-events: none; }
+    .hud-brand { font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .hud-brand b { display: block; font-family: var(--serif); font-size: 15px; color: var(--ink); letter-spacing: -.02em; text-transform: none; font-weight: 400; }
+    .hud-track { flex: 1; max-width: 340px; display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .hud-track .line { flex: 1; height: 1px; background: rgba(236,234,223,.18); position: relative; }
+    .hud-track .line i { position: absolute; left: 0; top: 0; height: 1px; background: var(--sun); width: 0; transition: width .2s; }
+    .hud-track b { color: var(--ink); font-weight: 400; }
+    .hud-right { font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .hud-right b { color: var(--sun); font-weight: 400; }
+    .hero { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px clamp(18px, 5vw, 72px) 70px; }
+    .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-family: var(--mono); font-size: 8px; letter-spacing: .2em; text-transform: uppercase; color: var(--sun); }
+    .kicker::before { content: ""; width: 30px; height: 1px; background: var(--sun); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(62px, 13vw, 190px); line-height: .68; letter-spacing: -.085em; }
+    h1 em { display: block; margin-left: clamp(24px, 9vw, 150px); color: var(--sun); font-style: italic; }
+    .hero p { max-width: 310px; margin: clamp(24px, 4vh, 40px) 0 0 clamp(0px, 12vw, 190px); font-family: var(--serif); font-size: 14px; line-height: 1.6; color: #a7a9ae; }
+    .hero .cue { position: absolute; left: clamp(18px, 5vw, 72px); bottom: 36px; display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 6px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .hero .cue i { display: block; width: 1px; height: 30px; background: var(--sun); animation: drip 2s ease-in-out infinite; transform-origin: top; }
+    @keyframes drip { 50% { transform: scaleY(.4); opacity: .4; } }
+    .scale-note { position: absolute; right: clamp(18px, 5vw, 72px); bottom: 36px; text-align: right; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .09em; text-transform: uppercase; color: var(--dim); }
+    .scale-note b { color: var(--ink); font-weight: 400; }
+    .journey { position: relative; z-index: 2; padding: 0 clamp(18px, 5vw, 72px) 120px; }
+    .body-section { position: relative; display: flex; align-items: center; justify-content: space-between; gap: clamp(20px, 5vw, 70px); border-top: 1px solid var(--line); }
+    .body-section:nth-child(odd) { flex-direction: row-reverse; }
+    .body-section .copy { max-width: 330px; }
+    .body-section .no { font-family: var(--mono); font-size: 6px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .body-section h2 { margin: 7px 0 4px; font-family: var(--serif); font-size: clamp(38px, 5.4vw, 68px); font-weight: 400; letter-spacing: -.06em; line-height: .9; }
+    .body-section .latin { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--dim); margin: 0 0 14px; }
+    .body-section p { margin: 0 0 12px; font-family: var(--serif); font-size: 12.5px; line-height: 1.6; color: #a2a5ac; }
+    .stats { display: flex; gap: 18px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    .stats b { display: block; color: var(--ink); font-family: var(--serif); font-size: 13px; font-weight: 400; letter-spacing: -.01em; text-transform: none; }
+    .planet-wrap { position: relative; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .planet { border-radius: 50%; position: relative; width: var(--d); height: var(--d); background: var(--grad); box-shadow: var(--shadow, 0 0 40px rgba(255,255,255,.06)), inset -18% -14% 30% rgba(0,0,0,.55); }
+    .planet::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.24), transparent 42%); }
+    .planet .band { position: absolute; left: -4%; right: -4%; height: 9%; border-radius: 50%; background: rgba(0,0,0,.13); }
+    .ring-system { position: absolute; width: calc(var(--d) * 1.95); height: calc(var(--d) * .54); border: 1px solid rgba(236,234,223,.24); border-radius: 50%; transform: rotate(-17deg); }
+    .ring-system::before { content: ""; position: absolute; inset: 9%; border: 1px solid rgba(236,234,223,.14); border-radius: 50%; }
+    .moon { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #b9b6ab; box-shadow: 0 0 8px rgba(236,234,223,.3); }
+    .distance-label { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+    .sun-section { min-height: 78vh; display: flex; align-items: center; gap: clamp(24px, 6vw, 90px); border-top: 1px solid var(--line); }
+    .sun { width: clamp(160px, 26vw, 340px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 42% 38%, #fff2c4, #f6b04e 42%, #d66d2c 76%, #8f3516); box-shadow: 0 0 90px rgba(246,176,78,.35), 0 0 180px rgba(246,176,78,.16); flex: 0 0 auto; position: relative; }
+    .sun::after { content: ""; position: absolute; inset: -14%; border-radius: 50%; border: 1px solid rgba(246,176,78,.16); }
+    .sun-copy h2 { margin: 0; font-family: var(--serif); font-size: clamp(40px, 6vw, 82px); font-weight: 400; letter-spacing: -.06em; line-height: .88; }
+    .sun-copy .no { font-family: var(--mono); font-size: 6px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .sun-copy p { max-width: 330px; margin: 14px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.6; color: #a7a9ae; }
+    .sun-copy .stats { margin-top: 16px; max-width: 330px; }
+    .end { min-height: 72vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-top: 1px solid var(--line); gap: 14px; padding: 40px 0; }
+    .end .tiny { width: 4px; height: 4px; background: var(--sun); border-radius: 50%; box-shadow: 0 0 10px var(--sun); }
+    .end h2 { margin: 0; font-family: var(--serif); font-size: clamp(30px, 4.6vw, 58px); font-weight: 400; letter-spacing: -.05em; max-width: 620px; line-height: 1.05; }
+    .end p { max-width: 380px; margin: 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: var(--dim); }
+    .end a { margin-top: 8px; font-family: var(--mono); font-size: 6px; letter-spacing: .13em; text-transform: uppercase; color: var(--sun); text-decoration: none; border-bottom: 1px solid rgba(246,176,78,.4); padding-bottom: 3px; }
+    .end a:hover { color: var(--ink); border-color: var(--ink); }
+    @media (max-width: 800px) {
+      .body-section, .body-section:nth-child(odd) { flex-direction: column; align-items: flex-start; gap: 24px; padding: 34px 0; }
+      .planet-wrap { align-self: center; }
+      .body-section .copy { max-width: 100%; }
+      .sun-section { flex-direction: column; align-items: flex-start; padding: 34px 0; min-height: 0; }
+      .hud-track { display: none; }
+      .scale-note { display: none; }
+      .hero p { margin-left: 0; }
+    }
+    @media (max-width: 520px) {
+      .hero { padding-top: 100px; }
+      h1 { font-size: clamp(56px, 20vw, 100px); }
+      h1 em { margin-left: 6vw; }
+      .hero p { font-size: 11px; max-width: 250px; }
+      .journey { padding-left: 14px; padding-right: 14px; padding-bottom: 70px; }
+      .body-section h2 { font-size: clamp(34px, 11vw, 48px); }
+      .body-section p { font-size: 11px; }
+      .stats { flex-wrap: wrap; gap: 12px; }
+      .body-section .planet { --d: min(48vw, 190px) !important; }
+      .sun-copy h2 { font-size: 38px; }
+      .hud-right { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="hud">
+    <div class="hud-brand"><b>The Long Scale</b>Solar system / human pace</div>
+    <div class="hud-track"><span>Sol</span><span class="line"><i id="progress"></i></span><span id="hudEnd">Neptune</span></div>
+    <div class="hud-right">Distance travelled<br><b id="hudDistance">0.0 AU</b></div>
+  </div>
+  <section class="hero">
+    <p class="kicker">A journey at walking speed</p>
+    <h1>The long<em>scale</em></h1>
+    <p>If the Sun were the size of a grapefruit, the Earth would be a grain of sand, twelve metres away. Neptune would be nearly a kilometre further. Scroll slowly.</p>
+    <div class="cue"><i></i>Scroll to travel</div>
+    <div class="scale-note">Scale <b>1 : 1.4 billion</b><br>One pixel ≈ one thousand kilometres<br>Distances are approximate, awe is not</div>
+  </section>
+  <div class="journey" id="journey">
+    <section class="sun-section" data-dist="0">
+      <div class="sun" aria-hidden="true"></div>
+      <div class="sun-copy"><span class="no">00 / The centre</span><h2>Sol</h2><p>A middle-aged yellow dwarf holding everything in orbit with a patience measured in gigatonnes. It contains 99.86% of the mass of the solar system.</p><div class="stats"><span>Diameter<b>1.39 million km</b></span><span>Surface<b>5,500 °C</b></span><span>Age<b>4.6 billion years</b></span></div></div>
+    </section>
+    <section class="body-section" data-dist="0.39">
+      <div class="copy"><span class="no">01 / 0.39 AU</span><h2>Mercury</h2><p class="latin">Mercurius — the swift one</p><p>Small, scorched and unexpectedly icy in its polar shadows. Mercury completes three spins for every two orbits, a slow pirouette around the Sun.</p><div class="stats"><span>Day<b>176 Earth days</b></span><span>Year<b>88 Earth days</b></span><span>Moons<b>None</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(80px,12vw,150px);--grad:radial-gradient(circle at 36% 30%, #b9b4a9, #7a766d 46%, #3e3c38 82%);--shadow:0 0 40px rgba(185,180,169,.12)"></div><span class="distance-label">58 million km</span></div>
+    </section>
+    <section class="body-section" data-dist="0.72">
+      <div class="copy"><span class="no">02 / 0.72 AU</span><h2>Venus</h2><p class="latin">Venus — the morning star</p><p>Earth’s almost-twin, wrapped in a suffocating gold cloud. It rotates backwards, and a single day lasts longer than its year.</p><div class="stats"><span>Day<b>243 Earth days</b></span><span>Year<b>225 Earth days</b></span><span>Moons<b>None</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(92px,14vw,174px);--grad:radial-gradient(circle at 34% 28%, #f7e3b0, #dcb26f 42%, #a6743a 78%);--shadow:0 0 60px rgba(220,178,111,.18)"><span class="band" style="top:32%"></span><span class="band" style="top:52%"></span><span class="band" style="top:70%"></span></div><span class="distance-label">108 million km</span></div>
+    </section>
+    <section class="body-section" data-dist="1">
+      <div class="copy"><span class="no">03 / 1.00 AU</span><h2>Earth</h2><p class="latin">Terra — the ground beneath us</p><p>The only address in the catalogue with a known postcode. Seventy-one percent water, one unusually curious species, and a moon that keeps the tides honest.</p><div class="stats"><span>Day<b>24 hours</b></span><span>Year<b>365.25 days</b></span><span>Moons<b>One</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(96px,14.5vw,182px);--grad:radial-gradient(circle at 34% 28%, #b9d9e8, #4a86a6 38%, #2f5d46 66%, #1c3a2c 88%);--shadow:0 0 60px rgba(96,160,196,.24)"><span class="band" style="top:28%;background:rgba(240,246,245,.35);height:7%"></span><span class="band" style="top:62%;background:rgba(70,60,40,.2)"></span></div><div class="moon" style="left:calc(50% + min(9vw,110px));top:16%"></div><span class="distance-label">150 million km</span></div>
+    </section>
+    <section class="body-section" data-dist="1.52">
+      <div class="copy"><span class="no">04 / 1.52 AU</span><h2>Mars</h2><p class="latin">Mars — the red wanderer</p><p>Iron dust and ancient riverbeds. Mars is the solar system’s most studied neighbour and its most persistent invitation.</p><div class="stats"><span>Day<b>24.6 hours</b></span><span>Year<b>687 Earth days</b></span><span>Moons<b>Two</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(86px,13vw,164px);--grad:radial-gradient(circle at 36% 30%, #e0a27e, #b35f3f 46%, #6c3323 84%);--shadow:0 0 50px rgba(179,95,63,.24)"><span class="band" style="top:26%;background:rgba(250,240,225,.18);height:6%"></span></div><span class="distance-label">228 million km</span></div>
+    </section>
+    <section class="body-section" data-dist="5.2">
+      <div class="copy"><span class="no">05 / 5.20 AU</span><h2>Jupiter</h2><p class="latin">Iuppiter — father of the sky</p><p>A failed star with a century-old storm and more than ninety moons. Jupiter is less a planet than a small weather system that swallowed everything nearby.</p><div class="stats"><span>Day<b>9.9 hours</b></span><span>Year<b>11.9 Earth years</b></span><span>Moons<b>95 known</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(150px,22vw,286px);--grad:radial-gradient(circle at 34% 27%, #f0dfc6, #c9a882 34%, #9a735a 62%, #5e4436 90%);--shadow:0 0 80px rgba(201,168,130,.18)"><span class="band" style="top:26%;height:11%"></span><span class="band" style="top:45%;height:13%"></span><span class="band" style="top:66%;height:9%"></span><span class="band" style="top:80%;height:7%"></span></div><span class="distance-label">778 million km</span></div>
+    </section>
+    <section class="body-section" data-dist="9.58">
+      <div class="copy"><span class="no">06 / 9.58 AU</span><h2>Saturn</h2><p class="latin">Saturnus — the ringed one</p><p>Rings of ice and dust, fine enough to be nearly transparent from some angles. Saturn would float in a sufficiently large ocean.</p><div class="stats"><span>Day<b>10.7 hours</b></span><span>Year<b>29.4 Earth years</b></span><span>Moons<b>146 known</b></span></div></div>
+      <div class="planet-wrap"><div class="ring-system"></div><div class="planet" style="--d:clamp(120px,18vw,230px);--grad:radial-gradient(circle at 36% 28%, #f4e6c2, #dcc79a 40%, #b19a6c 76%, #796748 96%);--shadow:0 0 70px rgba(220,199,154,.18)"><span class="band" style="top:38%;height:8%"></span><span class="band" style="top:56%;height:6%"></span></div><span class="distance-label">1.43 billion km</span></div>
+    </section>
+    <section class="body-section" data-dist="19.2">
+      <div class="copy"><span class="no">07 / 19.2 AU</span><h2>Uranus</h2><p class="latin">Uranus — the sky-coloured world</p><p>Tipped on its side, rolling around the Sun like a dropped coin. Its calm blue-green is methane catching the last of the light.</p><div class="stats"><span>Day<b>17.2 hours</b></span><span>Year<b>84 Earth years</b></span><span>Moons<b>28 known</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(100px,15vw,190px);--grad:radial-gradient(circle at 36% 28%, #d9f2ee, #9fd6d6 40%, #6ba6b4 76%, #3f6779 96%);--shadow:0 0 60px rgba(159,214,214,.2)"><span class="band" style="top:44%;height:7%;background:rgba(255,255,255,.12)"></span></div><span class="distance-label">2.87 billion km</span></div>
+    </section>
+    <section class="body-section" data-dist="30.1">
+      <div class="copy"><span class="no">08 / 30.1 AU</span><h2>Neptune</h2><p class="latin">Neptunus — the deep blue</p><p>The furthest major planet, discovered by mathematics before it was seen. Winds of 2,000 km/h tear across a world that receives 0.1% of Earth's sunlight.</p><div class="stats"><span>Day<b>16.1 hours</b></span><span>Year<b>165 Earth years</b></span><span>Moons<b>16 known</b></span></div></div>
+      <div class="planet-wrap"><div class="planet" style="--d:clamp(96px,14vw,180px);--grad:radial-gradient(circle at 36% 28%, #b9d4fb, #4f6fb5 40%, #2b427d 76%, #172a56 96%);--shadow:0 0 60px rgba(79,111,181,.3)"><span class="band" style="top:38%;height:6%;background:rgba(255,255,255,.12)"></span><span class="band" style="top:58%;height:8%;background:rgba(10,20,50,.2)"></span></div><span class="distance-label">4.50 billion km</span></div>
+    </section>
+    <section class="end">
+      <span class="tiny"></span>
+      <h2>And then, for a very long time, nothing.</h2>
+      <p>The solar system does not end at Neptune. It thins into the Kuiper Belt, the heliopause, and a silence that takes light four years to cross.</p>
+      <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Return to the Sun ↑</a>
+    </section>
+  </div>
+  <script>
+    (() => {
+      const sections = [...document.querySelectorAll('[data-dist]')];
+      const progress = document.getElementById('progress');
+      const hudDistance = document.getElementById('hudDistance');
+      const hudEnd = document.getElementById('hudEnd');
+      function update() {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        const pct = Math.min(1, Math.max(0, scrollY / max));
+        progress.style.width = (pct * 100) + '%';
+        const au = pct * 30.1;
+        hudDistance.textContent = au.toFixed(1) + ' AU';
+        let nearest = sections[0];
+        sections.forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .45) nearest = s; });
+        hudEnd.textContent = nearest === sections[0] ? 'Sol' : nearest.querySelector('h2').textContent;
+      }
+      addEventListener('scroll', update, { passive: true });
+      addEventListener('resize', update);
+      update();
+    })();
+  </script>
+</body>
+</html>

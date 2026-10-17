@@ -1,0 +1,17 @@
+TITLE: Cloud Atlas — A Field Guide to the Sky
+
+PROMPT:
+Create "Cloud Atlas," a self-contained illustrated field guide to six cloud genera, designed like a beautiful natural-history book spread. Use cool sky blue, pale cloud white, warm paper and ink grey. Compose two facing pages: on the left, a serif "Cumulus" title, Latin name, a CSS-illustrated plate with soft cloud puffs, sun disc, optional rain, plate number and caption; on the right, a scientific fact table, a drop-capped description, six genera tabs and an altitude scale. Clicking a genus (Cumulus, Stratus, Cirrus, Cumulonimbus, Altocumulus, Nimbostratus) should redraw the cloud illustration and update all text, altitude and precipitation data. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+The sky treated as a collection of specimens. The book-spread layout, soft illustrated clouds and editorial typography give the page the authority of a well-loved reference book and the calm of looking up.
+
+MAJOR VISUAL TECHNIQUES:
+- Pure-CSS cloud illustration from layered radial puffs
+- Book-spread grid with gutter rule, plate numbers and captions
+- Data-driven switching of cloud diagram and scientific copy
+- Altitude bar visualisation
+- Serif editorial typography with monospaced labels
+
+INTERACTION MODEL:
+Select any of the six cloud genera from the tab panel. The plate redraws into the corresponding cloud form, the sun and rain change, and the Latin name, facts, description and altitude bar all update instantly.

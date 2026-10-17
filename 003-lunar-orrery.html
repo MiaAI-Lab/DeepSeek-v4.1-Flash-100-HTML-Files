@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171914">
+  <meta name="description" content="Lunar Orrery — an interactive field guide to the moon.">
+  <title>Lunar Orrery — A Field Guide to the Night</title>
+  <style>
+    :root {
+      --bone: #e9e4d6;
+      --paper: #f3eee1;
+      --night: #191b16;
+      --rust: #b85c36;
+      --moss: #667258;
+      --line: rgba(25,27,22,.2);
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "Courier New", Courier, monospace;
+      --speed: 18s;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--rust); color: var(--paper); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bone);
+      color: var(--night);
+      font-family: var(--mono);
+      background-image: radial-gradient(rgba(25,27,22,.12) .55px, transparent .65px);
+      background-size: 5px 5px;
+    }
+    .page { min-height: 100vh; padding: clamp(14px, 2.5vw, 30px); }
+    header { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--night); padding-bottom: 13px; align-items: flex-start; }
+    .mark { font-family: var(--serif); font-style: italic; font-size: 18px; line-height: 1; letter-spacing: -.03em; }
+    .mark span { color: var(--rust); }
+    .edition { font-size: 9px; text-transform: uppercase; letter-spacing: .17em; line-height: 1.7; text-align: center; }
+    .date { font-size: 9px; text-transform: uppercase; letter-spacing: .12em; text-align: right; line-height: 1.7; }
+    .date b { color: var(--rust); font-weight: 400; }
+    main { display: grid; grid-template-columns: 1.03fr 1.35fr .74fr; gap: 0; min-height: calc(100vh - 120px); align-items: stretch; }
+    .intro { padding: clamp(25px, 5vw, 70px) clamp(14px, 2.5vw, 34px) 30px 0; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); }
+    .kicker { margin: 0 0 26px; display: flex; gap: 9px; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+    .kicker::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--rust); }
+    h1 { margin: 0; font-family: var(--serif); font-size: clamp(57px, 7.2vw, 119px); font-weight: 400; letter-spacing: -.075em; line-height: .77; }
+    h1 em { display: block; margin-left: clamp(14px, 4vw, 58px); font-weight: 400; color: var(--rust); }
+    .intro-copy { max-width: 270px; margin: 36px 0 20px; font-family: Georgia, serif; font-size: clamp(14px, 1.25vw, 17px); line-height: 1.55; }
+    .intro-copy::first-letter { font-size: 3.8em; float: left; line-height: .72; margin: 6px 6px 0 0; color: var(--rust); }
+    .folio { display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 12px; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.6; }
+    .folio b { color: var(--rust); font-weight: 400; }
+    .stage-wrap { padding: clamp(17px, 2.5vw, 34px); border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+    .stage-label { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 10px; }
+    .stage-label span:last-child { color: var(--rust); }
+    .stage {
+      flex: 1; min-height: 430px; position: relative; overflow: hidden;
+      background: var(--night); color: var(--paper); border-radius: 2px;
+      background-image: radial-gradient(circle at 50% 48%, rgba(183,92,54,.13), transparent 38%), linear-gradient(145deg, #1b1e18, #11130f);
+    }
+    .stars { position: absolute; inset: 0; opacity: .65; background-image: radial-gradient(#d6cfbb 0.65px, transparent .8px), radial-gradient(rgba(214,207,187,.5) .5px, transparent .7px); background-size: 67px 53px, 31px 43px; background-position: 5px 13px, 18px 9px; }
+    .stars::after { content: ""; position: absolute; width: 4px; height: 4px; background: var(--rust); border-radius: 50%; top: 19%; left: 24%; box-shadow: 0 0 12px var(--rust); }
+    .orbit { position: absolute; left: 50%; top: 48%; transform: translate(-50%,-50%); border: 1px solid rgba(233,228,214,.2); border-radius: 50%; }
+    .o1 { width: 58%; aspect-ratio: 1; }
+    .o2 { width: 82%; aspect-ratio: 1; border-style: dashed; opacity: .54; }
+    .o3 { width: 108%; aspect-ratio: 1; opacity: .27; }
+    .orbit::before { content: attr(data-label); position: absolute; top: 4%; left: 6%; color: rgba(233,228,214,.48); font-size: 7px; letter-spacing: .13em; }
+    .orbit .satellite { position: absolute; width: 8px; height: 8px; background: var(--bone); border-radius: 50%; top: 49%; left: -4px; box-shadow: 0 0 0 5px rgba(233,228,214,.05); }
+    .orbit .satellite::after { content: ""; position: absolute; inset: -6px; border: 1px solid rgba(233,228,214,.24); border-radius: 50%; }
+    .moon { position: absolute; left: 50%; top: 48%; width: clamp(112px, 15vw, 174px); aspect-ratio: 1; transform: translate(-50%,-50%); border-radius: 50%; background: #d9d1bd; overflow: hidden; box-shadow: -23px 0 48px rgba(0,0,0,.52), 0 0 50px rgba(233,228,214,.08); }
+    .moon::before { content: ""; position: absolute; width: 25%; height: 25%; border-radius: 50%; background: #bfb5a1; top: 20%; left: 27%; box-shadow: 50px 21px 0 -4px #c5bca8, 25px 58px 0 -2px #b7ad99, 63px 65px 0 -7px #c7bfaa, 11px 71px 0 -8px #b3a993; opacity: .8; }
+    .moon::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 65% 30%, transparent 30%, rgba(0,0,0,.18)); }
+    .axis { position: absolute; left: 50%; top: 48%; width: 1px; height: 150%; background: linear-gradient(transparent, rgba(233,228,214,.22), transparent); transform: translate(-50%,-50%) rotate(32deg); }
+    .hero-word { position: absolute; left: 50%; top: 48%; transform: translate(-50%,-50%) rotate(-90deg) translateY(-40px); z-index: 0; font-family: var(--serif); font-size: clamp(58px, 8vw, 118px); font-style: italic; color: transparent; -webkit-text-stroke: 1px rgba(233,228,214,.16); white-space: nowrap; pointer-events: none; }
+    .stage .corner { position: absolute; font-size: 7px; letter-spacing: .12em; color: rgba(233,228,214,.5); text-transform: uppercase; }
+    .corner.tl { top: 14px; left: 14px; } .corner.tr { top: 14px; right: 14px; text-align: right; } .corner.bl { bottom: 14px; left: 14px; } .corner.br { bottom: 14px; right: 14px; text-align: right; }
+    .moon-label { position: absolute; z-index: 3; font-size: 8px; letter-spacing: .13em; text-transform: uppercase; color: var(--bone); display: flex; align-items: center; gap: 6px; cursor: pointer; border: 0; background: transparent; padding: 0; }
+    .moon-label::before { content: ""; width: 15px; height: 1px; background: var(--rust); display: inline-block; }
+    .l1 { top: 30%; right: 12%; } .l2 { bottom: 27%; left: 14%; } .l3 { top: 21%; left: 18%; }
+    .controls { display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: center; padding-top: 16px; }
+    .phase { display: flex; align-items: center; gap: 10px; }
+    .phase-orb { width: 19px; height: 19px; border-radius: 50%; background: linear-gradient(90deg, var(--night) 50%, var(--paper) 50%); border: 1px solid var(--night); }
+    .phase span { font-size: 8px; text-transform: uppercase; letter-spacing: .14em; line-height: 1.5; }
+    .phase span b { display: block; font-family: var(--serif); font-size: 14px; letter-spacing: 0; text-transform: none; font-weight: 400; }
+    input[type="range"] { width: 100%; accent-color: var(--rust); cursor: ew-resize; }
+    .speed-read { font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: var(--rust); min-width: 44px; text-align: right; }
+    aside { padding: clamp(25px, 4vw, 50px) 0 24px clamp(16px, 2vw, 28px); display: flex; flex-direction: column; }
+    .aside-title { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--night); padding-bottom: 9px; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
+    .aside-title b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 17px; text-transform: none; letter-spacing: -.02em; }
+    .data-row { display: flex; justify-content: space-between; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 9px; line-height: 1.5; }
+    .data-row span:first-child { color: var(--moss); text-transform: uppercase; letter-spacing: .09em; font-size: 8px; }
+    .data-row span:last-child { text-align: right; }
+    .data-row em { font-family: var(--serif); font-size: 14px; font-style: normal; }
+    .note { margin-top: auto; padding: 16px 0 0; }
+    .note p { font-family: var(--serif); font-size: 14px; line-height: 1.45; margin: 0 0 15px; }
+    .note p::before { content: "“"; color: var(--rust); font-size: 34px; line-height: 0; vertical-align: -10px; margin-right: 3px; }
+    .note small { font-size: 8px; text-transform: uppercase; letter-spacing: .12em; color: var(--moss); }
+    .legend { display: flex; gap: 13px; margin-top: 21px; font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: var(--moss); flex-wrap: wrap; }
+    .legend span::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--rust); margin-right: 5px; vertical-align: 1px; }
+    .legend span:nth-child(2)::before { background: var(--bone); border: 1px solid var(--night); }
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr 1.25fr; }
+      aside { grid-column: 1 / -1; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr 1fr; column-gap: 25px; padding: 20px 0 5px; }
+      .aside-title { grid-column: 1 / -1; margin-bottom: 5px; }
+      .data-row { flex-direction: column; gap: 3px; }
+      .data-row span:last-child { text-align: left; }
+      .note { margin-top: 0; padding-top: 12px; }
+      .legend { grid-column: 1 / -1; margin-top: 8px; }
+    }
+    @media (max-width: 670px) {
+      .page { padding: 12px; }
+      .edition { display: none; }
+      header { align-items: center; }
+      .date { font-size: 8px; }
+      main { display: block; min-height: auto; }
+      .intro { border-right: 0; border-bottom: 1px solid var(--line); padding: 30px 0 24px; }
+      h1 { font-size: clamp(59px, 18vw, 105px); }
+      .intro-copy { max-width: 310px; margin-top: 27px; }
+      .folio { margin-top: 20px; }
+      .stage-wrap { border-right: 0; padding: 16px 0 0; }
+      .stage { min-height: 390px; }
+      .moon { width: 135px; }
+      aside { display: block; padding: 18px 0 0; }
+      .note { margin-top: 16px; }
+      .legend { margin-top: 14px; }
+      .hero-word { font-size: 72px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="mark">Selene<br><span>Field Notes</span></div>
+      <div class="edition">Observatory of small distances<br>Plate No. 003 · Moon studies</div>
+      <div class="date">Cycle 27.3<br><b>17 / X / 2026</b></div>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <p class="kicker">A field guide to the night</p>
+          <h1>Lunar<em>Orrery</em></h1>
+          <p class="intro-copy">Every orbit is a conversation between distance and desire. Our nearest neighbour keeps a calendar we can feel but never quite hold.</p>
+        </div>
+        <div class="folio"><span>Latitude <b>51.5072° N</b><br>Longitude <b>0.1276° W</b></span><span>Printed for<br>night readers</span></div>
+      </section>
+      <section class="stage-wrap" aria-label="Interactive lunar orrery">
+        <div class="stage-label"><span>Fig. 01 — The near side</span><span id="orbitStatus">Perigee / waxing</span></div>
+        <div class="stage">
+          <div class="stars"></div>
+          <div class="hero-word" aria-hidden="true">moon</div>
+          <div class="axis"></div>
+          <div class="orbit o1" data-label="LUNAR TRACK"><i class="satellite"></i></div>
+          <div class="orbit o2" data-label="EARTH ORBIT"><i class="satellite" style="top:70%;left:80%"></i></div>
+          <div class="orbit o3" data-label="SOLAR WIND"><i class="satellite" style="top:25%;left:94%"></i></div>
+          <div class="moon" id="moon" role="img" aria-label="The moon, rendered in warm grey"></div>
+          <span class="corner tl">N 09° 14′<br>E 04° 38′</span>
+          <span class="corner tr">Plate 003<br>1:1 000 000</span>
+          <span class="corner bl">Illumination<br><span id="illum">73.8%</span></span>
+          <span class="corner br">Distance<br>384,400 km</span>
+          <button class="moon-label l1" data-name="Mare Serenitatis" type="button">Mare Serenitatis</button>
+          <button class="moon-label l2" data-name="Tycho Crater" type="button">Tycho Crater</button>
+          <button class="moon-label l3" data-name="Oceanus Procellarum" type="button">Oceanus Procellarum</button>
+        </div>
+        <div class="controls">
+          <div class="phase"><div class="phase-orb" id="phaseOrb"></div><span>Current phase<b id="phaseName">Waxing gibbous</b></span></div>
+          <div class="speed-read" id="speedRead">1.0×</div>
+          <input id="speed" type="range" min="0" max="200" value="35" aria-label="Orbital speed">
+        </div>
+      </section>
+      <aside>
+        <div class="aside-title"><span>Observation log</span><b>No. 03</b></div>
+        <div class="data-row"><span>Body</span><span><em>Luna</em> / natural satellite</span></div>
+        <div class="data-row"><span>Angular diameter</span><span>29.3 — 34.1 arcmin</span></div>
+        <div class="data-row"><span>Orbital period</span><span>27.3 Earth days</span></div>
+        <div class="data-row"><span>Tidal lock</span><span>100% — one face</span></div>
+        <div class="data-row"><span>Discovered by</span><span>Everyone looking up</span></div>
+        <div class="note">
+          <p>The moon is not a destination. It is a mirror with a very long memory.</p>
+          <small>— from the observatory notebook, unpaginated</small>
+        </div>
+        <div class="legend"><span>Active orbit</span><span>Lunar surface</span></div>
+      </aside>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const names = ['New moon','Waxing crescent','First quarter','Waxing gibbous','Full moon','Waning gibbous','Last quarter','Waning crescent'];
+      const moon = document.getElementById('moon');
+      const speed = document.getElementById('speed');
+      const speedRead = document.getElementById('speedRead');
+      const phaseName = document.getElementById('phaseName');
+      const illum = document.getElementById('illum');
+      const phaseOrb = document.getElementById('phaseOrb');
+      const status = document.getElementById('orbitStatus');
+      const applySpeed = () => {
+        const value = Number(speed.value);
+        const factor = value === 0 ? 0 : (.18 + value / 55).toFixed(2);
+        speedRead.textContent = value === 0 ? 'PAUSED' : factor + '×';
+        document.querySelectorAll('.orbit').forEach((orbit, i) => {
+          orbit.style.animation = value === 0 ? 'none' : `orbit ${(22 + i * 9) / factor}s linear infinite`;
+        });
+        moon.style.animation = value === 0 ? 'none' : `moonTurn ${48 / Math.max(.2, Number(factor))}s linear infinite`;
+      };
+      const style = document.createElement('style');
+      style.textContent = '@keyframes orbit{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes moonTurn{0%{box-shadow:-23px 0 48px rgba(0,0,0,.52),0 0 50px rgba(233,228,214,.08)}50%{box-shadow:23px 0 48px rgba(0,0,0,.52),0 0 70px rgba(233,228,214,.14)}100%{box-shadow:-23px 0 48px rgba(0,0,0,.52),0 0 50px rgba(233,228,214,.08)}}';
+      document.head.appendChild(style);
+      document.querySelectorAll('.orbit').forEach((orbit, i) => {
+        orbit.style.transformOrigin = '50% 50%';
+        orbit.style.animationDelay = `-${i * 4}s`;
+      });
+      speed.addEventListener('input', applySpeed);
+      document.querySelectorAll('.moon-label').forEach((label) => {
+        label.addEventListener('click', () => {
+          status.textContent = label.dataset.name + ' / located';
+          moon.style.background = label.dataset.name.includes('Tycho') ? '#c3ba9f' : '#d9d1bd';
+          window.setTimeout(() => { status.textContent = 'Perigee / waxing'; moon.style.background = '#d9d1bd'; }, 2600);
+        });
+      });
+      let phase = 3;
+      document.querySelector('.phase').addEventListener('click', () => {
+        phase = (phase + 1) % names.length;
+        phaseName.textContent = names[phase];
+        const lit = Math.round(12 + Math.abs(Math.sin(phase / names.length * Math.PI)) * 86);
+        illum.textContent = lit + '%';
+        phaseOrb.style.background = `linear-gradient(90deg, var(--night) ${100 - lit}%, var(--paper) ${100 - lit}%)`;
+        status.textContent = names[phase] + ' / logged';
+      });
+      applySpeed();
+    })();
+  </script>
+</body>
+</html>

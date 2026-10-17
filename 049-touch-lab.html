@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111318">
+  <meta name="description" content="Touch Lab — nine small interactions, made to be felt.">
+  <title>Touch Lab — Nine Small Interactions</title>
+  <style>
+    :root {
+      --bg: #111318;
+      --card: #181b21;
+      --edge: rgba(255,255,255,.13);
+      --ink: #f1efe8;
+      --dim: #8a8e99;
+      --lime: #d4ff5e;
+      --pink: #ff7bab;
+      --blue: #77b6ff;
+      --line: rgba(241,239,232,.14);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--lime); color: #111318; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: var(--sans); overflow-x: hidden; background-image: radial-gradient(ellipse at 20% 0%, rgba(212,255,94,.07), transparent 45%), radial-gradient(ellipse at 85% 100%, rgba(119,182,255,.07), transparent 45%); }
+    .lab { min-height: 100vh; padding: 18px clamp(14px, 3vw, 44px) 15px; display: flex; flex-direction: column; gap: 12px; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 9px; }
+    .brand { font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--lime); line-height: 1.8; }
+    .brand b { display: block; font-family: var(--serif); font-size: 17px; font-weight: 400; letter-spacing: -.02em; text-transform: none; color: var(--ink); }
+    .head { display: flex; gap: clamp(15px, 3vw, 34px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    .intro { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding: 4px 0 2px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.2vw, 64px); line-height: .92; letter-spacing: -.06em; }
+    .intro h1 em { font-style: italic; color: var(--lime); }
+    .intro p { max-width: 280px; margin: 0; font-family: var(--serif); font-size: 12px; line-height: 1.55; color: #a5a8b0; text-align: right; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; flex: 1; }
+    .cell { background: var(--card); border: 1px solid var(--edge); border-radius: 5px; padding: 12px; display: flex; flex-direction: column; min-height: 148px; position: relative; overflow: hidden; }
+    .cell::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 80% 0%, rgba(255,255,255,.045), transparent 55%); pointer-events: none; }
+    .cell h2 { margin: 0 0 2px; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; font-weight: 400; color: var(--ink); }
+    .cell small { font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    .demo { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0 4px; }
+    .read { font-family: var(--mono); font-size: 5px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); border-top: 1px solid rgba(255,255,255,.08); padding-top: 5px; }
+    .read b { color: var(--lime); font-weight: 400; }
+    /* 1 magnetic */
+    .magnet { border: 1px solid var(--ink); background: transparent; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 14px; border-radius: 2px; cursor: pointer; transition: background .2s, color .2s; will-change: transform; }
+    .magnet:hover { background: var(--ink); color: var(--bg); }
+    /* 2 toggle */
+    .switch { width: 58px; height: 30px; border-radius: 30px; border: 1px solid var(--edge); background: #0d0f13; position: relative; cursor: pointer; padding: 0; }
+    .switch i { position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--dim); transition: left .28s cubic-bezier(.3,1.5,.5,1), background .28s; }
+    .switch.on { border-color: var(--lime); }
+    .switch.on i { left: 31px; background: var(--lime); }
+    /* 3 checkbox */
+    .check { display: flex; align-items: center; gap: 9px; cursor: pointer; border: 0; background: none; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .08em; text-transform: uppercase; padding: 0; }
+    .check .box { width: 24px; height: 24px; border: 1px solid var(--edge); display: grid; place-items: center; border-radius: 3px; transition: background .2s, border .2s; }
+    .check .box svg { width: 14px; height: 14px; }
+    .check .box path { fill: none; stroke: var(--bg); stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .3s ease .05s; }
+    .check.checked .box { background: var(--lime); border-color: var(--lime); }
+    .check.checked .box path { stroke-dashoffset: 0; }
+    .check.checked .box { animation: pop .35s ease; }
+    @keyframes pop { 50% { transform: scale(1.15); } }
+    /* 4 hold */
+    .hold { position: relative; border: 1px solid var(--pink); color: var(--pink); background: transparent; font: inherit; font-family: var(--mono); font-size: 6.5px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 12px; border-radius: 2px; cursor: pointer; overflow: hidden; }
+    .hold span { position: relative; z-index: 2; }
+    .hold i { position: absolute; inset: 0; background: var(--pink); transform: scaleX(0); transform-origin: left; transition: transform .1s linear; }
+    .hold.done { color: var(--bg); }
+    .hold.done i { transform: scaleX(1); }
+    /* 5 search */
+    .search { display: flex; align-items: center; border: 1px solid var(--edge); border-radius: 30px; padding: 4px 6px 4px 12px; gap: 6px; width: 100%; max-width: 190px; transition: border .25s, box-shadow .25s; background: #0d0f13; }
+    .search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(119,182,255,.12); }
+    .search input { background: none; border: 0; outline: none; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .06em; width: 100%; min-width: 0; }
+    .search input::placeholder { color: var(--dim); }
+    .search button { width: 24px; height: 24px; border-radius: 50%; border: 0; background: var(--blue); color: #0b1017; display: grid; place-items: center; cursor: pointer; font-size: 10px; flex: 0 0 auto; transition: transform .2s; }
+    .search button:hover { transform: rotate(90deg); }
+    /* 6 counter */
+    .counter { display: flex; align-items: baseline; gap: 7px; }
+    .counter b { font-family: var(--serif); font-size: 42px; font-weight: 400; letter-spacing: -.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .counter button { width: 25px; height: 25px; border-radius: 50%; border: 1px solid var(--edge); background: transparent; color: var(--ink); cursor: pointer; font-size: 12px; line-height: 1; }
+    .counter button:hover { border-color: var(--lime); color: var(--lime); }
+    /* 7 pull */
+    .pull { width: 92px; height: 38px; border-radius: 30px; border: 1px solid var(--edge); background: #0d0f13; position: relative; cursor: grab; padding: 2px; }
+    .pull i { position: absolute; left: 2px; top: 2px; bottom: 2px; width: 34px; border-radius: 30px; background: var(--ink); display: grid; place-items: center; font-style: normal; font-family: var(--mono); font-size: 6px; color: var(--bg); transition: left .3s cubic-bezier(.3,1.4,.5,1), background .3s; }
+    .pull.done { border-color: var(--lime); }
+    .pull.done i { left: 54px; background: var(--lime); }
+    /* 8 tilt */
+    .tilt { width: 62px; height: 62px; background: linear-gradient(135deg, #2a2f39, #1a1e25); border: 1px solid var(--edge); border-radius: 8px; display: grid; place-items: center; font-family: var(--mono); font-size: 6px; letter-spacing: .06em; color: var(--dim); cursor: pointer; transition: transform .15s ease-out, border .2s; transform-style: preserve-3d; }
+    .tilt:hover { border-color: var(--lime); color: var(--lime); }
+    /* 9 confetti */
+    .burst { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--lime); background: transparent; color: var(--lime); font-family: var(--mono); font-size: 16px; cursor: pointer; position: relative; transition: background .2s, color .2s; }
+    .burst:hover { background: var(--lime); color: var(--bg); }
+    .spark { position: fixed; width: 5px; height: 5px; border-radius: 50%; pointer-events: none; z-index: 99; animation: fly .75s ease-out forwards; }
+    @keyframes fly { to { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; } }
+    footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid var(--line); padding-top: 8px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--lime); }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+      .intro p { display: none; }
+      .cell { min-height: 138px; padding: 10px; }
+    }
+    @media (max-width: 640px) {
+      .lab { padding: 11px 10px 12px; gap: 8px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(34px, 11vw, 50px); }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .cell { min-height: 126px; padding: 9px; }
+      .cell h2 { font-size: 6px; }
+      .cell small { display: none; }
+      .demo { padding: 6px 0 3px; }
+      .counter b { font-size: 30px; }
+      .search { max-width: 100%; }
+      .search input { font-size: 5.5px; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lab">
+    <header>
+      <div class="brand"><b>Touch Lab</b>Nine small interactions / 049</div>
+      <div class="head"><div>Samples<br><b>09 widgets</b></div><div>Material<br><b>Pixels &amp; springs</b></div><div>Status<br><b id="status">Ready</b></div></div>
+    </header>
+    <div class="intro">
+      <h1>Made to be <em>felt.</em></h1>
+      <p>A workbench of satisfying details. Each one is small on purpose: the best interactions are usually the ones you notice with your hands.</p>
+    </div>
+    <div class="grid">
+      <div class="cell"><h2>01 / Magnetic button</h2><small>Pointer attraction</small><div class="demo"><button class="magnet" id="magnet">Come closer</button></div><div class="read">Offset <b id="magnetRead">0 px</b></div></div>
+      <div class="cell"><h2>02 / Elastic switch</h2><small>Spring easing</small><div class="demo"><button class="switch" id="switch" aria-label="Toggle"><i></i></button></div><div class="read">State <b id="switchRead">Off</b></div></div>
+      <div class="cell"><h2>03 / Drawn check</h2><small>Stroke animation</small><div class="demo"><button class="check" id="check"><span class="box"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9"/></svg></span><span>Approve</span></button></div><div class="read">Checked <b id="checkRead">No</b></div></div>
+      <div class="cell"><h2>04 / Hold to confirm</h2><small>Deliberate friction</small><div class="demo"><button class="hold" id="hold"><i></i><span>Hold me</span></button></div><div class="read">Hold <b id="holdRead">0%</b></div></div>
+      <div class="cell"><h2>05 / Expanding search</h2><small>Focus with glow</small><div class="demo"><div class="search"><input id="searchInput" type="text" placeholder="Search the lab" aria-label="Search"><button type="button" id="searchBtn" aria-label="Search">↗</button></div></div><div class="read">Query <b id="searchRead">—</b></div></div>
+      <div class="cell"><h2>06 / Rolling number</h2><small>Increment with weight</small><div class="demo"><div class="counter"><button type="button" id="minus" aria-label="Decrease">−</button><b id="number">12</b><button type="button" id="plus" aria-label="Increase">+</button></div></div><div class="read">Value <b id="numberRead">12</b></div></div>
+      <div class="cell"><h2>07 / Slide to send</h2><small>Commitment gesture</small><div class="demo"><button class="pull" id="pull" aria-label="Slide to send"><i>→</i></button></div><div class="read">Message <b id="pullRead">Draft</b></div></div>
+      <div class="cell"><h2>08 / Tilt card</h2><small>3D tracking</small><div class="demo"><div class="tilt" id="tilt">TILT</div></div><div class="read">Angle <b id="tiltRead">0° / 0°</b></div></div>
+      <div class="cell"><h2>09 / Tiny celebration</h2><small>Particles on click</small><div class="demo"><button class="burst" id="burst" aria-label="Celebrate">✦</button></div><div class="read">Celebrations <b id="burstRead">0</b></div></div>
+    </div>
+    <footer><span><b>Touch Lab</b> / nine small interactions</span><span>Hover, hold, slide, tilt, click</span><span>Sample set 049</span></footer>
+  </div>
+  <script>
+    (() => {
+      const magnet = document.getElementById('magnet');
+      const magnetRead = document.getElementById('magnetRead');
+      magnet.addEventListener('pointermove', (e) => {
+        const rect = magnet.getBoundingClientRect();
+        const dx = (e.clientX - (rect.left + rect.width / 2)) * .28;
+        const dy = (e.clientY - (rect.top + rect.height / 2)) * .4;
+        magnet.style.transform = `translate(${dx}px, ${dy}px)`;
+        magnetRead.textContent = Math.round(Math.hypot(dx, dy)) + ' px';
+      });
+      magnet.addEventListener('pointerleave', () => { magnet.style.transform = 'translate(0,0)'; magnetRead.textContent = '0 px'; });
+      const sw = document.getElementById('switch');
+      sw.addEventListener('click', () => {
+        const on = sw.classList.toggle('on');
+        document.getElementById('switchRead').textContent = on ? 'On' : 'Off';
+        document.getElementById('status').textContent = on ? 'Something switched on' : 'Ready';
+      });
+      const check = document.getElementById('check');
+      check.addEventListener('click', () => {
+        const on = check.classList.toggle('checked');
+        document.getElementById('checkRead').textContent = on ? 'Yes' : 'No';
+      });
+      const hold = document.getElementById('hold');
+      let holdTimer = null, holdStart = 0;
+      function holdTick() {
+        const pct = Math.min(100, (Date.now() - holdStart) / 12);
+        hold.style.setProperty('--p', pct);
+        hold.querySelector('i').style.transform = 'scaleX(' + (pct / 100) + ')';
+        document.getElementById('holdRead').textContent = Math.round(pct) + '%';
+        if (pct >= 100) { hold.classList.add('done'); hold.querySelector('span').textContent = 'Confirmed'; clearInterval(holdTimer); holdTimer = null; document.getElementById('holdRead').textContent = '100%'; }
+      }
+      hold.addEventListener('pointerdown', () => { if (holdTimer) return; holdStart = Date.now(); holdTick(); holdTimer = setInterval(holdTick, 40); });
+      hold.addEventListener('pointerup', () => { if (!hold.classList.contains('done')) { clearInterval(holdTimer); holdTimer = null; hold.querySelector('i').style.transform = 'scaleX(0)'; document.getElementById('holdRead').textContent = '0%'; } });
+      hold.addEventListener('pointerleave', () => { if (!hold.classList.contains('done')) { clearInterval(holdTimer); holdTimer = null; hold.querySelector('i').style.transform = 'scaleX(0)'; document.getElementById('holdRead').textContent = '0%'; } });
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        document.getElementById('searchRead').textContent = e.target.value || '—';
+      });
+      document.getElementById('searchBtn').addEventListener('click', () => {
+        const v = document.getElementById('searchInput').value || 'nothing';
+        document.getElementById('status').textContent = 'Searching for “' + v + '”';
+      });
+      let number = 12;
+      const numberEl = document.getElementById('number');
+      function setNumber(n) { number = Math.max(0, n); numberEl.textContent = number; document.getElementById('numberRead').textContent = number; numberEl.animate([{ transform: 'translateY(-4px)', opacity: .4 }, { transform: 'none', opacity: 1 }], { duration: 240, easing: 'ease-out' }); }
+      document.getElementById('plus').addEventListener('click', () => setNumber(number + 1));
+      document.getElementById('minus').addEventListener('click', () => setNumber(number - 1));
+      const pull = document.getElementById('pull');
+      pull.addEventListener('click', () => {
+        const on = pull.classList.toggle('done');
+        document.getElementById('pullRead').textContent = on ? 'Sent' : 'Draft';
+        pull.querySelector('i').textContent = on ? '✓' : '→';
+      });
+      const tilt = document.getElementById('tilt');
+      tilt.addEventListener('pointermove', (e) => {
+        const r = tilt.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        tilt.style.transform = `rotateY(${x * 24}deg) rotateX(${-y * 24}deg)`;
+        document.getElementById('tiltRead').textContent = Math.round(x * 24) + '° / ' + Math.round(-y * 24) + '°';
+      });
+      tilt.addEventListener('pointerleave', () => { tilt.style.transform = 'none'; document.getElementById('tiltRead').textContent = '0° / 0°'; });
+      let celebrations = 0;
+      document.getElementById('burst').addEventListener('click', (e) => {
+        celebrations++;
+        document.getElementById('burstRead').textContent = celebrations;
+        const colors = ['#d4ff5e', '#ff7bab', '#77b6ff', '#f1efe8'];
+        for (let i = 0; i < 16; i++) {
+          const spark = document.createElement('span');
+          spark.className = 'spark';
+          spark.style.left = e.clientX + 'px'; spark.style.top = e.clientY + 'px';
+          spark.style.background = colors[i % colors.length];
+          spark.style.setProperty('--dx', (Math.random() - .5) * 140 + 'px');
+          spark.style.setProperty('--dy', (Math.random() - .5) * 140 + 'px');
+          spark.style.animationDelay = (Math.random() * .1) + 's';
+          document.body.appendChild(spark);
+          setTimeout(() => spark.remove(), 1000);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

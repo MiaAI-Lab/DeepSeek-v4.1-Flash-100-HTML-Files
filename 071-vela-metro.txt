@@ -1,0 +1,17 @@
+TITLE: Metro 071 — A Transit Diagram for Vela
+
+PROMPT:
+Create "Metro 071," a self-contained transit diagram for the fictional city of Vela. Use warm diagram paper, dark ink, and four line colours: vermilion, cobalt, forest and ochre. Compose a sheet with a bold "Vela metro" title and a four-line legend; a large inline-SVG schematic map with smooth coloured polylines, station circles, interchange rings, labels, a river, a park and a map legend; and a side panel with the selected station's lines, platforms, opening year, interchange and step-free status, next trains and a journey planner. Selecting a line should dim the others; clicking one station then another should compute the shortest route, draw a dashed route line through the stations, highlight the stops and report stops, minutes and changes. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A transit map designed to be used rather than admired, though it rewards both. The four lines carry the colour, the panel does the thinking, and the journey planner makes the diagram answer a question.
+
+MAJOR VISUAL TECHNIQUES:
+- Inline-SVG schematic with rounded polylines and interchange rings
+- Line filtering that dims non-selected routes
+- Shortest-path journey planning across a shared-station graph
+- Route overlay, stop highlighting and service summary
+- Diagrammatic transit typography and legend furniture
+
+INTERACTION MODEL:
+Click a line in the legend to trace it (interchanges stay visible). Click a station to read its details and next trains; click a second station to plan a journey and see the route drawn. Clear route resets the planner, and Network map restores the full diagram.

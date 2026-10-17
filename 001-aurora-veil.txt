@@ -1,0 +1,17 @@
+TITLE: Aurora Veil — Atmospheric Light Study
+
+PROMPT:
+Create a premium, self-contained interactive editorial page called "Aurora Veil," a field study of northern light. Compose a cinematic deep-teal night atmosphere with a large Georgia serif headline reading "Light remembers." where the second word is an outlined italic. Put the page in a restrained scientific-editorial frame: thin rules, tiny tracked uppercase metadata, coordinates, a live magnetosphere readout, and a vertical activity note. Behind it, paint several soft, slow aurora ribbons in acid green, ice blue and lavender on a full-screen canvas, with a subtle drifting star field and pointer-responsive movement. Add grain, a pulsing activity dot, an orbiting annotation and a responsive mobile composition. Clicking chooses a new aurora palette and updates the activity readout. No external assets, fonts, images or libraries. Must open directly in a browser, work offline, be responsive and validate as HTML5.
+
+DESCRIPTION:
+A dark, museum-grade atmospheric editorial that treats the aurora as a live scientific specimen. Oversized romantic serif typography sits against tiny instrument-like labels, while luminous canvas ribbons and grain turn the background into a continuously breathing night sky.
+
+MAJOR VISUAL TECHNIQUES:
+- Full-screen Canvas 2D aurora ribbons with layered gradients, screen blending and pointer influence
+- Editorial grid with hairline rules, tracked micro-type and a vertical sidebar
+- Serif display typography with outlined italic accent
+- CSS radial-gradient atmosphere, animated activity indicators and inline SVG grain texture
+- Fluid clamp() typography and a deliberate mobile re-composition
+
+INTERACTION MODEL:
+Move the pointer or drag a finger to bend the aurora field toward the light. Click or tap to cycle through three curated aurora palettes; the atmospheric activity reading randomizes and the footer hint acknowledges the new "memory." Reduced-motion users receive a still, carefully composed frame.

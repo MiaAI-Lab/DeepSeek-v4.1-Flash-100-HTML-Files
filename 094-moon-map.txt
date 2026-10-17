@@ -1,0 +1,17 @@
+TITLE: The Map of the Moon — Near Side, Named and Measured
+
+PROMPT:
+Create "The Map of the Moon," a self-contained selenographic chart of the near side. Use near-black space, silver-grey lunar surface, cream type, muted blue and a single gold accent. Compose a three-column chart sheet: an editorial "Map of the moon" title with six feature buttons (Copernicus, Tycho, Clavius, Apollo 11, Apollo 17, Mare Imbrium); a large moon disc with radial shading, darker maria, pitted craters, labels and gold crosses for landing sites; and a feature panel with type, diameter, depth, age, latitude, longitude, a note and a name toggle. Selecting a feature from the list or by clicking its crater or cross should highlight it and update every field; the toggle should show or hide labels. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A chart that treats the Moon as a place with an index. The crater ray systems and grey maria are suggested rather than photographed, which keeps the page graphic and lets the labels do the scientific work.
+
+MAJOR VISUAL TECHNIQUES:
+- Radial lunar shading with inset shadow and highlight
+- Blurred maria fields and layered crater shadows
+- Clickable craters and gold landing-site crosses
+- Feature index with coordinates and geological ages
+- Label toggle and star-field background
+
+INTERACTION MODEL:
+Click any feature in the index, or its crater or landing cross on the disc, to highlight it and read its record. Toggle feature names on or off. The selected crater receives a gold ring.

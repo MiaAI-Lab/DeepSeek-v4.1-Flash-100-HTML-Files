@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#d9c8a9">
+  <meta name="description" content="Paper City — a small metropolis built from cardboard.">
+  <title>Paper City — A Cardboard Metropolis</title>
+  <style>
+    :root {
+      --card: #c8a97c;
+      --card-light: #dcc19a;
+      --card-dark: #a8875d;
+      --ink: #3a2c1d;
+      --paper: #e9dcc4;
+      --tape: #e8d9b8;
+      --cut: #8b6c43;
+      --blue: #5f7d86;
+      --red: #a6513e;
+      --line: rgba(58,44,29,.28);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    body { margin: 0; min-height: 100vh; background: #cbb896; color: var(--ink); font-family: var(--sans); overflow-x: hidden; }
+    .workshop { min-height: 100vh; padding: 18px clamp(14px, 3vw, 42px) 15px; display: flex; flex-direction: column; position: relative; overflow: hidden; background-image: repeating-linear-gradient(0deg, rgba(58,44,29,.05) 0 1px, transparent 1px 5px); }
+    header { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 9px; position: relative; z-index: 3; }
+    .brand { font-family: var(--serif); font-size: 17px; letter-spacing: -.02em; }
+    .brand span { display: block; margin-top: 4px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .16em; text-transform: uppercase; color: #7d6748; }
+    .head { display: flex; gap: clamp(15px, 3vw, 34px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: #7d6748; text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .62fr) minmax(380px, 1.6fr) minmax(150px, .56fr); gap: clamp(14px, 2.8vw, 34px); align-items: center; padding: 15px 0 12px; position: relative; z-index: 2; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(50px, 7.4vw, 93px); line-height: .79; letter-spacing: -.07em; }
+    .intro h1 em { display: block; color: var(--red); font-style: italic; }
+    .intro .kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 11px; font-family: var(--mono); font-size: 6px; letter-spacing: .15em; text-transform: uppercase; color: #7d6748; }
+    .intro .kicker::before { content: ""; width: 18px; height: 1px; background: var(--blue); }
+    .intro p { max-width: 200px; margin: 22px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #58452e; }
+    .diorama { position: relative; display: flex; align-items: flex-end; justify-content: center; min-height: 420px; padding-bottom: 24px; perspective: 900px; }
+    .ground { position: absolute; left: 4%; right: 4%; bottom: 0; height: 15%; background: linear-gradient(180deg, #bda27c, #ad916c); clip-path: polygon(2% 22%, 98% 8%, 100% 100%, 0 100%); box-shadow: 0 20px 35px rgba(60,42,24,.25); }
+    .ground::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 24px, rgba(80,58,34,.13) 25px 26px); }
+    .skyline { position: relative; display: flex; align-items: flex-end; gap: clamp(4px, .9vw, 11px); z-index: 2; transform-style: preserve-3d; }
+    .tower { position: relative; width: var(--w); height: var(--h); background: linear-gradient(90deg, #b0905f, #c8a97c 27%, #d4b78c 52%, #bd9c6d 100%); border: 1px solid rgba(74,54,33,.35); cursor: pointer; transform-origin: bottom center; transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, filter .35s; flex: 0 0 auto; }
+    .tower::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent 0 9px, rgba(105,76,44,.13) 10px 11px), repeating-linear-gradient(90deg, transparent 0 17px, rgba(255,243,220,.11) 18px 19px); opacity: .9; }
+    .tower::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--card-dark); border-bottom: 1px solid rgba(74,54,33,.28); }
+    .tower:hover { transform: translateY(-9px) rotateX(2deg); filter: brightness(1.06); box-shadow: 0 14px 22px rgba(60,42,24,.28); }
+    .tower.active { transform: translateY(-13px); box-shadow: 0 0 0 2px var(--red), 0 16px 25px rgba(60,42,24,.3); }
+    .tower .windows { position: absolute; inset: 14% 16% 12%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 5px; }
+    .tower .windows i { background: #6f5838; opacity: .62; box-shadow: inset 0 0 0 1px rgba(50,36,22,.3); }
+    .tower .windows i.lit { background: #e8c983; opacity: .9; box-shadow: 0 0 6px rgba(232,201,131,.5); }
+    .tower .tape { position: absolute; left: 50%; top: -6px; transform: translateX(-50%) rotate(-4deg); width: 42%; height: 10px; background: rgba(232,217,184,.75); border-left: 1px dashed rgba(120,96,63,.35); border-right: 1px dashed rgba(120,96,63,.35); }
+    .tower .tag { position: absolute; left: 50%; bottom: -17px; transform: translateX(-50%); font-family: var(--mono); font-size: 4.5px; letter-spacing: .07em; text-transform: uppercase; color: #6d573a; white-space: nowrap; }
+    .tower.round { border-radius: 40% 40% 2px 2px / 12% 12% 2px 2px; }
+    .tower.tall { background: linear-gradient(90deg, #b79766, #cfb086 30%, #dcc19a 55%, #b99868 100%); }
+    .crane { position: absolute; right: 3%; top: 6%; width: 1px; height: 46%; background: #8a6c46; z-index: 4; }
+    .crane::before { content: ""; position: absolute; left: -22px; top: 0; width: 54px; height: 1px; background: #8a6c46; }
+    .crane::after { content: ""; position: absolute; left: 12px; top: 0; width: 1px; height: 24%; background: #8a6c46; }
+    .crane span { position: absolute; left: 11px; top: 24%; width: 7px; height: 7px; border: 1px solid #8a6c46; }
+    .cutlines .tower::before { background-image: repeating-linear-gradient(0deg, transparent 0 22px, rgba(139,108,67,.4) 23px 24px); }
+    .cutlines .tower { outline: 1px dashed rgba(166,81,62,.55); outline-offset: 2px; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; text-align: right; }
+    .card { border: 1px solid var(--line); background: rgba(233,220,196,.65); padding: 11px; text-align: left; position: relative; }
+    .card::before { content: ""; position: absolute; top: -5px; left: 13px; width: 38px; height: 9px; background: rgba(232,217,184,.85); transform: rotate(-3deg); }
+    .card span { font-family: var(--mono); font-size: 5px; letter-spacing: .1em; text-transform: uppercase; color: #7d6748; }
+    .card h2 { margin: 3px 0 5px; font-family: var(--serif); font-size: 21px; font-weight: 400; letter-spacing: -.03em; line-height: 1; }
+    .card p { margin: 0; font-family: var(--serif); font-size: 10.5px; line-height: 1.5; color: #58452e; }
+    .meta { font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .07em; text-transform: uppercase; color: #7d6748; margin-top: 14px; }
+    .meta div { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid rgba(58,44,29,.15); padding: 4px 0; }
+    .meta b { color: var(--ink); font-weight: 400; }
+    .modes { margin-top: 13px; display: flex; gap: 4px; justify-content: flex-end; }
+    .modes button { border: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 5.5px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 7px; cursor: pointer; }
+    .modes button:hover, .modes button.active { background: var(--ink); color: var(--paper); }
+    footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid var(--line); padding-top: 8px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: #7d6748; position: relative; z-index: 2; }
+    footer span:nth-child(2) { color: var(--ink); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .72fr 1.28fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: start; text-align: left; padding-top: 6px; }
+      .modes { justify-content: flex-start; margin-top: 0; }
+      .meta { margin-top: 0; }
+      .diorama { min-height: 330px; }
+      .intro h1 { font-size: clamp(46px, 7vw, 70px); }
+    }
+    @media (max-width: 580px) {
+      .workshop { padding: 10px 10px 12px; }
+      .head div:nth-child(2) { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 0 10px; }
+      .intro { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+      .intro .kicker { display: none; }
+      .intro h1 { font-size: clamp(44px, 14vw, 64px); }
+      .intro p { display: none; }
+      .diorama { min-height: 250px; padding-bottom: 18px; order: 2; }
+      .tower .tag { font-size: 3.5px; bottom: -13px; }
+      aside { order: 3; display: block; padding-top: 0; }
+      .card h2 { font-size: 17px; }
+      .card p { font-size: 9.5px; }
+      .meta { display: none; }
+      .modes { margin-top: 8px; }
+      .crane { display: none; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="workshop" id="workshop">
+    <header>
+      <div class="brand">Paper City<span>A cardboard metropolis / model 046</span></div>
+      <div class="head"><div>Scale<br><b>1 : 500</b></div><div>Material<br><b>Recycled board</b></div><div>Edition<br><b>No. 046</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A small city, cut and folded</p>
+        <h1>Paper<em>city</em></h1>
+        <p>Nine buildings, one sheet of board and a very sharp knife. The city is unfinished on purpose; it looks better with the tape showing.</p>
+      </section>
+      <section class="diorama" id="diorama" aria-label="Cardboard model city">
+        <div class="ground"></div>
+        <div class="crane" aria-hidden="true"><span></span></div>
+        <div class="skyline" id="skyline"></div>
+      </section>
+      <aside>
+        <div class="card"><span id="plotNo">Plot 01 / Tower A</span><h2 id="plotName">The Tall One</h2><p id="plotDesc">A residential tower with more windows than residents. Built first, because the city needed a centre to argue around.</p></div>
+        <div class="meta"><div><span>Height</span><b id="plotHeight">84 mm</b></div><div><span>Floors</span><b id="plotFloors">12</b></div><div><span>Glue</span><b id="plotGlue">Hot, visible</b></div></div>
+        <div class="modes"><button class="active" type="button" id="cutToggle">Cut lines</button><button type="button" id="lightsToggle">Lights on</button></div>
+      </aside>
+    </main>
+    <footer><span><b>Paper City</b> / a cardboard metropolis</span><span id="footNote">Tap any building to read its plot card</span><span>Model 046 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const plots = [
+        { name: 'The Tall One', desc: 'A residential tower with more windows than residents. Built first, because the city needed a centre to argue around.', height: '84 mm', floors: 12, glue: 'Hot, visible', w: 54, h: 210, cls: 'tall' },
+        { name: 'The Quiet Bank', desc: 'No money inside, only drawers. The architect insisted that a bank should look like it is keeping a secret.', height: '58 mm', floors: 8, glue: 'PVA, clean', w: 78, h: 148, cls: '' },
+        { name: 'The Round House', desc: 'An experiment in curved cardboard. It took three attempts and one very patient evening to make the roof meet itself.', height: '47 mm', floors: 5, glue: 'Tacky, lumpy', w: 92, h: 118, cls: 'round' },
+        { name: 'The Little Workshop', desc: 'A low building with a big chimney. This is where all the other buildings were drawn before they were real.', height: '38 mm', floors: 3, glue: 'Hot, generous', w: 74, h: 96, cls: '' },
+        { name: 'The Lighthouse', desc: 'Not technically a lighthouse. The paint was left over from another project, and the city decided to keep the joke.', height: '70 mm', floors: 9, glue: 'None, taped', w: 40, h: 176, cls: 'round' },
+        { name: 'The Blue Block', desc: 'The only building with colour. It was meant to be a placeholder, but everyone liked the blue too much to change it.', height: '49 mm', floors: 6, glue: 'PVA, rushed', w: 86, h: 124, cls: '' },
+        { name: 'The Long Hall', desc: 'A civic building for meetings that never happen. Its corridor is longer than the building, which is the whole point.', height: '41 mm', floors: 4, glue: 'Clean, invisible', w: 106, h: 102, cls: '' },
+        { name: 'The Annex', desc: 'Added later, when the city ran out of room. Slightly too tall, slightly too narrow, entirely beloved.', height: '55 mm', floors: 7, glue: 'Hot, hurried', w: 46, h: 137, cls: 'tall' },
+        { name: 'The Cinema', desc: 'A single screen, a red curtain, and a roof that lifts off for the projector. Paper City’s cultural heart.', height: '44 mm', floors: 5, glue: 'PVA, careful', w: 82, h: 110, cls: '' }
+      ];
+      const skyline = document.getElementById('skyline');
+      let lit = true;
+      plots.forEach((plot, i) => {
+        const tower = document.createElement('button');
+        tower.type = 'button'; tower.className = 'tower ' + plot.cls;
+        tower.style.setProperty('--w', plot.w + 'px'); tower.style.setProperty('--h', plot.h + 'px');
+        tower.setAttribute('aria-label', plot.name);
+        const windows = document.createElement('span'); windows.className = 'windows';
+        const count = Math.max(4, plot.floors * 2);
+        for (let k = 0; k < count; k++) {
+          const win = document.createElement('i');
+          if (Math.random() > .45) win.classList.add('lit');
+          windows.appendChild(win);
+        }
+        tower.appendChild(windows);
+        const tape = document.createElement('span'); tape.className = 'tape'; tower.appendChild(tape);
+        const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = '0' + (i + 1); tower.appendChild(tag);
+        tower.addEventListener('click', () => {
+          document.querySelectorAll('.tower').forEach(t => t.classList.remove('active'));
+          tower.classList.add('active');
+          document.getElementById('plotNo').textContent = 'Plot ' + String(i + 1).padStart(2, '0') + ' / Tower ' + String.fromCharCode(65 + i);
+          document.getElementById('plotName').textContent = plot.name;
+          document.getElementById('plotDesc').textContent = plot.desc;
+          document.getElementById('plotHeight').textContent = plot.height;
+          document.getElementById('plotFloors').textContent = plot.floors;
+          document.getElementById('plotGlue').textContent = plot.glue;
+          document.getElementById('footNote').textContent = plot.name + ' selected / paper only';
+          document.querySelector('.card').animate([{ transform: 'rotate(-1.5deg)' }, { transform: 'rotate(0)' }], { duration: 380, easing: 'ease-out' });
+        });
+        skyline.appendChild(tower);
+      });
+      document.getElementById('cutToggle').addEventListener('click', (e) => {
+        const on = document.getElementById('workshop').classList.toggle('cutlines');
+        e.currentTarget.classList.toggle('active', on);
+      });
+      document.getElementById('lightsToggle').addEventListener('click', (e) => {
+        lit = !lit;
+        document.querySelectorAll('.windows i').forEach(w => w.classList.toggle('lit', lit ? Math.random() > .3 : false));
+        e.currentTarget.classList.toggle('active', lit);
+        document.getElementById('footNote').textContent = lit ? 'Lights on / the city is awake' : 'Lights off / the city is asleep';
+      });
+      document.querySelector('.tower').click();
+    })();
+  </script>
+</body>
+</html>

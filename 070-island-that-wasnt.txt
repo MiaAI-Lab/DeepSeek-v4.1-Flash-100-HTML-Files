@@ -1,0 +1,17 @@
+TITLE: The Island That Wasn’t — Six Sightings of Isla Perdida
+
+PROMPT:
+Create "The Island That Wasn’t," a self-contained phantom-island hydrographic study. Use aged parchment, sea green-grey, sepia ink and a faded oxblood stamp. Compose an admiralty chart sheet: a title and six year buttons (1762, 1801, 1834, 1871, 1902, 1927); a large inline-SVG chart with sea hatching, concentric bearing circles, rhumb lines, soundings, a compass rose, a ship mark and a hand-drawn island labelled Isla Perdida; and a log panel with an extract, coordinates, observer, ship, area, elevation and a confidence meter. Selecting a year should move and scale the island across the chart, fade it out for the final deletion, update all data and the log, fill the confidence meter and stamp the chart "Not found" in 1927. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A cartographic ghost story told through six archival entries. The island drifts, shrinks and finally vanishes, and the only thing that changes faster than the chart is the confidence of the people making it.
+
+MAJOR VISUAL TECHNIQUES:
+- Hand-drawn inline-SVG island with layered coastline and hachures
+- Nautical chart furniture: sea hatch pattern, bearing circles, rhumb lines, soundings and compass rose
+- Animated island transform and opacity across sightings
+- Confidence meter and rotating archival stamp
+- Parchment texture, serif log extracts and engraved mono metadata
+
+INTERACTION MODEL:
+Click any sighting year to move the island to that recorded position and scale, read the log extract and see the observer, ship, area, elevation and confidence. In 1927 the island fades to open water and a "Not found" stamp appears.

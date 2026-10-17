@@ -1,0 +1,17 @@
+TITLE: The Almanac — October, Day by Day
+
+PROMPT:
+Create "The Almanac," a self-contained month of weather observations for October 2026. Use almanac cream, ink, rust red, rain blue and harvest gold. Compose a three-column almanac sheet: an editorial "The almanac" title and a list of notable days; a complete seven-column calendar with blank leading days, day numbers, small moon-phase marks, weather symbols and high/low temperatures, plus sunrise and sunset notes; and a day panel with the date, moon and temperature, a written observation, high, low, rain, wind, moon phase, daylight and a temperature sparkline for the month. Selecting a day should update the observation and all readouts, and notable-day rows should jump to those dates. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A month kept by hand rather than by app. The calendar carries the data, but the written observation is the point, and the variable weather gives each day a small character.
+
+MAJOR VISUAL TECHNIQUES:
+- Seven-column calendar with leading blanks and today marker
+- Moon-phase and weather symbols drawn in CSS
+- Day selection with rust fill and updated panel
+- Monthly temperature sparkline in inline SVG
+- Almanac paper palette and engraved mono metadata
+
+INTERACTION MODEL:
+Click any date to read its observation and weather figures; click a notable day in the left list to jump to it. The selected day is highlighted, the 17th is marked as today, and the rain-day count is calculated from the month.

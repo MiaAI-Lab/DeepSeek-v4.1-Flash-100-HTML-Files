@@ -1,0 +1,17 @@
+TITLE: Terrazzo Studio — Make Something Worth Keeping
+
+PROMPT:
+Create "Terrazzo Studio," a self-contained playful design-studio landing page built around the language of terrazzo. Use creamy paper, deep forest green, terracotta, bubblegum pink, cornflower blue and a touch of ochre. Compose an editorial hero with a bold headline "Make something worth keeping" mixing condensed grotesk and an italic Georgia line, a large arched terrazzo panel filled with irregular inline-SVG chips, a tilted yellow studio seal, and a loose blue annotation card. Add an overprint grain texture, project index, studio note and contact button. Clicking "Throw some confetti" or empty space releases a shower of terrazzo chips, and project names give small toast feedback. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A warm, confident studio identity made tangible. Terrazzo chips become both graphic system and playful interaction, while the arched composition and offset annotations feel hand-arranged rather than templated.
+
+MAJOR VISUAL TECHNIQUES:
+- Inline SVG terrazzo field with irregular colored stone shapes
+- Warm print-grain overlay and hand-cut paper composition
+- Mixed grotesk and serif italic typography
+- Animated confetti chips generated in the DOM
+- Tilted seal, annotation card and asymmetric project index
+
+INTERACTION MODEL:
+Move through the project index to see hover underlines and click a project for a friendly toast. Press the confetti button or click anywhere outside interactive elements to release a burst of colored chips. The studio seal floats gently, and every click keeps the page tactile and alive.

@@ -1,0 +1,17 @@
+TITLE: The Masquerade — Four Masks for One Long Night
+
+PROMPT:
+Create "The Masquerade," a self-contained Venetian mask atelier. Use deep lagoon teal, gold leaf, ivory and wine red. Compose a three-column atelier sheet: an editorial "The masquerade" title with four mask buttons (Colombina, Bauta, Moretta, Medico); a centred mask drawn in inline SVG with a shaded leather face, gold trim, ribbon ties, eye openings and variations for full face, long chin, black oval and beak; and a panel with mask name, subtitle, note, form, coverage, material, weight, voice, hour, traits and a wearing note. Selecting a mask should change the drawing, face colour and extra forms, and update every field. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A costume shop after dark. Each mask is one drawing with a distinct silhouette, and the panel treats the mask as an object with weight, voice and a correct way to wear it.
+
+MAJOR VISUAL TECHNIQUES:
+- Inline-SVG mask with radial leather shading and gold trim
+- Conditional silhouette layers for four different mask forms
+- Ribbon, eye openings and stitch-line detailing in SVG
+- Atelier palette of lagoon teal, gold and wine
+- Object-led data panel with traits and wearing instructions
+
+INTERACTION MODEL:
+Choose Colombina, Bauta, Moretta or Medico. The mask drawing changes silhouette and face colour, and the name, subtitle, note, form, coverage, material, weight, voice, hour, traits and wearing note all update.

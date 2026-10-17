@@ -1,0 +1,17 @@
+TITLE: Salt &amp; Silence — The Quietest Room on Earth
+
+PROMPT:
+Create "Salt &amp; Silence," a self-contained immersive editorial about the Salar de Uyuni. Use chalk white, warm grey, near-black ink and a single apricot sun. The visual should be a near-featureless salt-flat landscape, with a vast pale sky, a barely-there horizon and a fine web of perspective salt polygons drawn in Canvas 2D. Place an enormous editorial serif headline "Salt & silence" with generous negative space, a small expedition paragraph, a "Change the light" button and discreet altimeter and temperature readouts. Clicking the ground ripples out a trace of fine elliptical lines; the light changes between day and blue hour. The page should feel hushed, expansive and expensive, like a travel journal from another planet. All inline, no external assets, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+An exercise in absence and scale. The salt flat becomes a quiet field of pale geometry beneath a monumental headline; every element is given room to breathe, and even the interactive traces disappear almost as soon as they are seen.
+
+MAJOR VISUAL TECHNIQUES:
+- Canvas 2D perspective salt-crack polygons and mirage horizon lines
+- Minimalist editorial layout with oversized serif display type
+- Restrained day / dusk palette transition
+- Fading ripple traces from pointer clicks
+- Ambient grain and fine data typography
+
+INTERACTION MODEL:
+Click the salt field to leave a set of fine elliptical traces that slowly fade. Press "Change the light" to shift from pale afternoon to blue hour, adjusting the sun, sky, surface tones and temperature readout.

@@ -1,0 +1,17 @@
+TITLE: Shipping Forecast — 0040 UTC
+
+PROMPT:
+Create "Shipping Forecast," a self-contained marine weather broadcast page in the spirit of the BBC radio bulletin. Use midnight navy, sea grey, warm cream and gale amber. Compose a broadcast sheet: a Met Office header; a scrolling gale-warning strip; a three-column body with a scrollable index of sea areas (Viking through Trafalgar), a central dispatch panel with a huge serif area name, issued time, monospaced forecast text and outlook over faint isobars; and a side panel with a compass needle, wind, gusts, sea state and pressure readouts plus a synopsis. Selecting a sea area should update the name, number, forecast, outlook, readings and compass direction, with the needle rotating. Keep the tone formal, rhythmic and slightly ominous. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A radio bulletin rendered as a printed dispatch. The monospaced forecast and the slow compass needle do most of the atmospheric work; the content is written to be read aloud in the correct cadence.
+
+MAJOR VISUAL TECHNIQUES:
+- Isobar field drawn in inline SVG behind the dispatch text
+- Rotating compass needle driven by wind direction
+- Scrolling gale-warning ticker
+- Sea-area data model updating all readouts
+- Broadcast typography mixing serif headlines and monospaced bulletins
+
+INTERACTION MODEL:
+Click any sea area in the index to load its forecast. The area name, region number, forecast text, outlook, wind, gusts, sea state, pressure and compass needle all update. The gale warning scrolls continuously.

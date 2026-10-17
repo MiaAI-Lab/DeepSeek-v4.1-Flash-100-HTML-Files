@@ -1,0 +1,17 @@
+TITLE: Audio Guide No. 7 — Twelve Rooms
+
+PROMPT:
+Create "Audio Guide No. 7," a self-contained museum audio-guide experience presented as a beautiful printed player. Use warm paper, ink black, museum grey and a single vermillion accent. Compose a two-column page with a big editorial serif "Twelve rooms" headline and a highly tactile audio player: album-art card, stop number, room title, description, fake duration, progress bar, transport controls, speed control and a scrollable list of twelve stops. Each stop is a poetic description of a room in an exhibition you cannot visit. Playing simulates progress through the current room and automatically advances to the next stop. All visuals, timings and interactions must be inline; no external assets, audio files, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A museum guide for an imaginary exhibition, built as an object you would want to hold. The typography is curatorial, the interface is quiet, and the twelve rooms read like short prose poems.
+
+MAJOR VISUAL TECHNIQUES:
+- Editorial two-column layout with archival player hardware
+- CSS album-art card with abstract geometric cover
+- Simulated playback timeline and auto-advancing stops
+- Scrollable stop list with active-state indicator
+- Paper grain, registration border and monospaced metadata
+
+INTERACTION MODEL:
+Press play to begin a simulated audio tour; the progress bar fills in real time and advances to the next room automatically. Use the previous/next buttons or click any stop in the list to jump. The speed button cycles 1×, 1.5× and 2×.

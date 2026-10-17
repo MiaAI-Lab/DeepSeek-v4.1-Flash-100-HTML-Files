@@ -1,0 +1,17 @@
+TITLE: The Borrowed Library — Other People's Books
+
+PROMPT:
+Create "The Borrowed Library," a self-contained reading-room page built around a wooden bookshelf of borrowed books. Use dark pine wall, warm wood, cream page tones, brass and muted book-spine colors: wine, forest, ochre, slate, plum and rust. Compose an editorial left column with a serif "The borrowed library" headline, a small brass reading lamp and a note that none of the books belong here; and a large right-hand shelf unit with two rows of nineteen CSS book spines of varied widths, heights and colors, each with vertical serif titles and subtle spine ridges. Clicking a book lifts it from the shelf and updates a quote block and lender metadata below. Include library microdata and a footer reminder to return borrowed things. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A warm, slightly melancholy reading room made of other people's reading. The physical shelf and the quotes work together to make borrowing feel like an act of trust and memory.
+
+MAJOR VISUAL TECHNIQUES:
+- CSS book spines with vertical text, ridges, highlights and varied dimensions
+- Shelf geometry with wood grain and shadow
+- Book lift/select interaction with quote updates
+- Brass lamp with radial glow
+- Dark-library editorial layout and bookish microdata
+
+INTERACTION MODEL:
+Click any book spine to pull it forward, highlight it in brass, and replace the quote and lender information beneath the shelf. Books are arranged on two rows and one leans slightly for a lived-in feel.

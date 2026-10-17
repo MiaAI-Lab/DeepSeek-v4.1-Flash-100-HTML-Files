@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1b1a19">
+  <meta name="description" content="The Pigment Archive — eight colours and a mixing tray.">
+  <title>The Pigment Archive — Eight Colours and a Mixing Tray</title>
+  <style>
+    --none: 0;
+    :root {
+      --wall: #1b1a19;
+      --wall2: #242220;
+      --cream: #efe7d6;
+      --ink: #121110;
+      --gold: #c8a45e;
+      --dim: #98908a;
+      --line: rgba(239,231,214,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--wall); }
+    body { margin: 0; min-height: 100vh; background: var(--wall); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .archive { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 44%, #302c28, #141312 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(155px, .55fr) minmax(280px, 1.15fr) minmax(195px, .76fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(35px, 4.8vw, 60px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--gold); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--gold); }
+    .intro p { max-width: 190px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #bdb4a8; }
+    .pigments { margin-top: 14px; border-top: 1px solid var(--line); }
+    .pigments h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .pig-btn { display: flex; align-items: center; gap: 6px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 3.5px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: color .2s, padding .2s; }
+    .pig-btn i { width: 8px; height: 8px; flex: 0 0 8px; border: 1px solid rgba(239,231,214,.3); }
+    .pig-btn b { font-family: var(--serif); font-size: 11px; font-weight: 400; color: var(--cream); flex: 1; }
+    .pig-btn span { font-family: var(--mono); font-size: 4px; letter-spacing: .04em; text-transform: uppercase; }
+    .pig-btn:hover, .pig-btn.active { color: var(--gold); padding-left: 4px; }
+    .pig-btn.active b { color: var(--gold); }
+    .swatch-area { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .swatch-card { width: min(100%, 400px); aspect-ratio: .92; padding: 6%; background: #f0e9da; box-shadow: 0 16px 32px rgba(0,0,0,.45); transform: rotate(-1.2deg); position: relative; }
+    .swatch { position: absolute; inset: 8% 8% 29%; background: var(--swatch, #2d4b8e); box-shadow: inset 0 0 30px rgba(0,0,0,.18); overflow: hidden; transition: background .5s; }
+    .swatch::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(92deg, rgba(255,255,255,.06) 0 2px, transparent 2px 7px), radial-gradient(circle at 30% 25%, rgba(255,255,255,.16), transparent 55%); opacity: .8; }
+    .swatch::after { content: ""; position: absolute; left: 8%; bottom: 8%; width: 30%; height: 8%; background: rgba(255,255,255,.12); border-radius: 50%; filter: blur(4px); }
+    .swatch-label { position: absolute; left: 8%; right: 8%; bottom: 7%; display: flex; justify-content: space-between; align-items: flex-end; color: #2b2822; }
+    .swatch-label .n { font-family: var(--serif); font-size: clamp(15px, 2vw, 21px); line-height: 1; letter-spacing: -.03em; }
+    .swatch-label .c { font-family: var(--mono); font-size: 3.8px; letter-spacing: .08em; text-transform: uppercase; text-align: right; line-height: 1.8; }
+    .tray { width: min(100%, 400px); border: 1px solid var(--line); background: #201e1c; padding: 6px; display: flex; align-items: center; gap: 7px; }
+    .tray .well { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .tray .well i { width: 100%; height: 28px; background: #151412; border: 1px solid rgba(239,231,214,.16); display: block; transition: background .4s; }
+    .tray .well span { font-family: var(--mono); font-size: 3.4px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .tray .plus { font-family: var(--serif); font-size: 14px; color: var(--gold); }
+    .tray .mix { width: 100%; height: 28px; background: #151412; border: 1px solid rgba(200,164,94,.5); display: block; transition: background .4s; }
+    .tray .mix-label { font-family: var(--mono); font-size: 3.4px; letter-spacing: .05em; text-transform: uppercase; color: var(--gold); }
+    .swatch-caption { display: flex; justify-content: space-between; width: 100%; max-width: 400px; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .card { border-top: 1px solid var(--line); padding-top: 6px; }
+    .card h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card .name { font-family: var(--serif); font-size: 24px; letter-spacing: -.03em; line-height: 1; color: var(--gold); }
+    .card .sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); margin-top: 2px; }
+    .card .note { margin: 6px 0 0; font-family: var(--serif); font-size: 10.5px; line-height: 1.5; color: #bdb4a8; min-height: 58px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .data div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--cream); font-weight: 400; }
+    .mix-actions { display: flex; gap: 4px; margin-top: 8px; }
+    .mix-actions button { flex: 1; border: 1px solid rgba(200,164,94,.5); background: transparent; color: var(--gold); font-family: var(--mono); font-size: 4.2px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 3px; cursor: pointer; transition: background .2s, color .2s; }
+    .mix-actions button:hover { background: var(--gold); color: var(--wall); }
+    .mix-actions button.primary { background: var(--gold); color: var(--wall); }
+    .mix-note { margin-top: 6px; font-family: var(--mono); font-size: 4px; line-height: 1.8; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .mix-note b { color: var(--cream); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .72fr 1.28fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .card { grid-column: 1; }
+      .data { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .mix-actions { grid-column: 2; }
+      .mix-note { grid-column: 1; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .archive { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .pigments { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; }
+      .pigments h2 { grid-column: 1 / -1; }
+      .pig-btn { padding: 2px 0; }
+      .pig-btn b { font-size: 9px; }
+      .pig-btn span { display: none; }
+      .swatch-area { order: 2; }
+      .swatch-card { width: 280px; }
+      aside { order: 3; display: block; }
+      .card .name { font-size: 19px; }
+      .card .note { min-height: 0; font-size: 9px; }
+      .data, .mix-note { display: none; }
+      .mix-actions { margin-top: 6px; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="archive">
+    <header>
+      <div class="brand"><b>The Pigment Archive</b>Colour library / drawer 089</div>
+      <div class="head"><div>Drawers<br><b>Eight</b></div><div>Binder<br><b>Gum arabic</b></div><div>Mix<br><b id="mixHead">0 / 2</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Eight colours, one mixing tray</p>
+        <h1>The<em>pigment</em> archive</h1>
+        <p>Every colour began as a stone, a root, an insect or a laboratory accident. Select a pigment, read its history, and try a mixture.</p>
+        <div class="pigments" id="pigments">
+          <h2>Pigments</h2>
+        </div>
+      </section>
+      <section class="swatch-area">
+        <div class="swatch-card">
+          <div class="swatch" id="swatch"></div>
+          <div class="swatch-label"><div class="n" id="swatchName">Ultramarine</div><div class="c" id="swatchCode">PB29<br>Lapis lazuli</div></div>
+        </div>
+        <div class="tray">
+          <div class="well"><i id="wellA"></i><span>A</span></div>
+          <span class="plus">+</span>
+          <div class="well"><i id="wellB"></i><span>B</span></div>
+          <span class="plus">=</span>
+          <div class="well"><i class="mix" id="wellMix"></i><span class="mix-label">Mix</span></div>
+        </div>
+        <div class="swatch-caption"><span id="mixName">No mixture yet</span><span id="mixHex">—</span></div>
+      </section>
+      <aside>
+        <div class="card">
+          <h2>Pigment record</h2>
+          <div class="name" id="pigName">Ultramarine</div>
+          <div class="sub" id="pigSub">PB29 · synthetic · 1826</div>
+          <p class="note" id="pigNote">Once made by grinding lapis lazuli, which cost more than gold. The synthetic version was invented in 1826 and immediately changed the colour of European painting.</p>
+        </div>
+        <div class="data">
+          <div><span>Hue</span><b id="hueRead">Blue</b></div>
+          <div><span>Origin</span><b id="originRead">Synthetic</b></div>
+          <div><span>Opacity</span><b id="opacityRead">Semi</b></div>
+          <div><span>Lightfast</span><b id="lightRead">Excellent</b></div>
+          <div><span>Binder</span><b id="binderRead">Gum arabic</b></div>
+          <div><span>Grade</span><b id="gradeRead">Artist</b></div>
+        </div>
+        <div class="mix-actions"><button type="button" class="primary" id="add">Add to mix</button><button type="button" id="clear">Clear mix</button></div>
+        <div class="mix-note">Tray: <b id="trayRead">A empty · B empty</b><br><span id="mixStatus">Choose two pigments to see the mixture.</span></div>
+      </aside>
+    </main>
+    <footer><span><b>The Pigment Archive</b> / eight colours and a mixing tray</span><span>All colour is a bargain with light</span><span>Drawer 089 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const pigments = [
+        { name: 'Ultramarine', code: 'PB29', sub: 'PB29 · synthetic · 1826', hex: '#2d4b8e', hue: 'Blue', origin: 'Synthetic', opacity: 'Semi', light: 'Excellent', grade: 'Artist', note: 'Once made by grinding lapis lazuli, which cost more than gold. The synthetic version was invented in 1826 and immediately changed the colour of European painting.' },
+        { name: 'Vermilion', code: 'PR106', sub: 'PR106 · mercury sulfide · ancient', hex: '#b03a2e', hue: 'Red', origin: 'Mineral', opacity: 'Opaque', light: 'Good', grade: 'Artist', note: 'A bright scarlet made from cinnabar, mined since antiquity and poisonous since forever. It darkens in sunlight, which is why old paintings keep their reds behind glass.' },
+        { name: 'Orpiment', code: 'PY39', sub: 'PY39 · arsenic sulfide · ancient', hex: '#d6a52e', hue: 'Yellow', origin: 'Mineral', opacity: 'Opaque', light: 'Poor', grade: 'Historical', note: 'A golden yellow with an alarming chemistry. Medieval illuminators used it for halos while avoiding its dust, and modern conservators handle it with considerable respect.' },
+        { name: 'Malachite', code: 'PG39', sub: 'PG39 · copper carbonate · ancient', hex: '#4e7d60', hue: 'Green', origin: 'Mineral', opacity: 'Semi', light: 'Moderate', grade: 'Historical', note: 'Ground from a green copper ore, favoured for landscape and drapery. It turns brown with age and does not like an acid binder, which has been the ruin of several skies.' },
+        { name: 'Ochre', code: 'PY43', sub: 'PY43 · iron oxide · prehistoric', hex: '#b07a3c', hue: 'Earth', origin: 'Mineral', opacity: 'Opaque', light: 'Excellent', grade: 'Artist', note: 'The oldest pigment in the archive. Iron oxide and clay, dug from the ground and used on cave walls, pottery and the warm half of every landscape ever painted.' },
+        { name: 'Indigo', code: 'NB1', sub: 'NB1 · plant · ancient', hex: '#2f3a56', hue: 'Blue', origin: 'Plant', opacity: 'Transparent', light: 'Moderate', grade: 'Artist', note: 'A deep blue fermented from the leaves of Indigofera. It was one of the great trade goods of the world, and it fades with a grace that painters have learned to forgive.' },
+        { name: 'Madder', code: 'NR9', sub: 'NR9 · root · ancient', hex: '#9c3e52', hue: 'Red', origin: 'Plant', opacity: 'Transparent', light: 'Moderate', grade: 'Artist', note: 'A rose-red extracted from the root of Rubia tinctorum. It needs a mordant to fix it to cloth and a careful hand to keep it from turning brick, and it is worth both.' },
+        { name: 'Lead white', code: 'PW1', sub: 'PW1 · lead carbonate · ancient', hex: '#e9e1cd', hue: 'White', origin: 'Synthetic', opacity: 'Opaque', light: 'Good', grade: 'Historical', note: 'The workhorse white of European oil painting, made by exposing lead to vinegar and manure. It is toxic, warm, heavy and very beautiful, which is a difficult combination.' }
+      ];
+      let current = 0, mixA = null, mixB = null;
+      const list = document.getElementById('pigments');
+      pigments.forEach((p, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'pig-btn' + (i === 0 ? ' active' : '');
+        b.innerHTML = '<i style="background:' + p.hex + '"></i><b>' + p.name + '</b><span>' + p.code + '</span>';
+        b.addEventListener('click', () => select(i));
+        list.appendChild(b);
+      });
+      function select(i) {
+        current = i;
+        const p = pigments[i];
+        document.querySelectorAll('.pig-btn').forEach((b, k) => b.classList.toggle('active', k === i));
+        document.getElementById('pigName').textContent = p.name;
+        document.getElementById('pigSub').textContent = p.sub;
+        document.getElementById('pigNote').textContent = p.note;
+        document.getElementById('hueRead').textContent = p.hue;
+        document.getElementById('originRead').textContent = p.origin;
+        document.getElementById('opacityRead').textContent = p.opacity;
+        document.getElementById('lightRead').textContent = p.light;
+        document.getElementById('gradeRead').textContent = p.grade;
+        document.getElementById('swatch').style.background = p.hex;
+        document.getElementById('swatchName').textContent = p.name;
+        document.getElementById('swatchCode').innerHTML = p.code + '<br>' + p.origin;
+      }
+      function hexToRgb(h) { return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
+      function rgbToHex(r,g,b) { return '#' + [r,g,b].map(x => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2,'0')).join(''); }
+      function renderTray() {
+        document.getElementById('wellA').style.background = mixA ? mixA.hex : '#151412';
+        document.getElementById('wellB').style.background = mixB ? mixB.hex : '#151412';
+        document.getElementById('mixHead').textContent = [mixA, mixB].filter(Boolean).length + ' / 2';
+        document.getElementById('trayRead').textContent = (mixA ? mixA.name : 'A empty') + ' · ' + (mixB ? mixB.name : 'B empty');
+        if (mixA && mixB) {
+          const a = hexToRgb(mixA.hex), b = hexToRgb(mixB.hex);
+          const m = rgbToHex((a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2);
+          document.getElementById('wellMix').style.background = m;
+          document.getElementById('mixHex').textContent = m.toUpperCase();
+          document.getElementById('mixName').textContent = mixA.name + ' + ' + mixB.name;
+          document.getElementById('mixStatus').textContent = 'A 50 : 50 mixture. A starting point, not a rule.';
+        } else {
+          document.getElementById('wellMix').style.background = '#151412';
+          document.getElementById('mixHex').textContent = '—';
+          document.getElementById('mixName').textContent = 'No mixture yet';
+          document.getElementById('mixStatus').textContent = 'Choose two pigments to see the mixture.';
+        }
+      }
+      document.getElementById('add').addEventListener('click', () => {
+        const p = pigments[current];
+        if (!mixA) mixA = p; else if (!mixB) mixB = p; else { mixA = p; mixB = null; }
+        renderTray();
+      });
+      document.getElementById('clear').addEventListener('click', () => { mixA = null; mixB = null; renderTray(); });
+      select(0); renderTray();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ece3d4">
+  <meta name="description" content="Motif Mill — a generative textile pattern studio.">
+  <title>Motif Mill — A Textile Pattern Studio</title>
+  <style>
+    :root {
+      --linen: #ece3d4;
+      --cloth: #f4ecdd;
+      --ink: #2b2a25;
+      --dim: #837a6b;
+      --red: #b8513f;
+      --blue: #33546b;
+      --gold: #c59a52;
+      --sage: #7d8c6f;
+      --line: rgba(43,42,37,.22);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--red); color: var(--cloth); }
+    body { margin: 0; min-height: 100vh; background: var(--linen); color: var(--ink); font-family: var(--sans); overflow-x: hidden; background-image: repeating-linear-gradient(0deg, rgba(43,42,37,.03) 0 1px, transparent 1px 4px); }
+    .mill { min-height: 100vh; padding: 18px clamp(14px, 3vw, 42px) 15px; display: flex; flex-direction: column; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 9px; }
+    .brand { font-family: var(--serif); font-size: 17px; letter-spacing: -.02em; }
+    .brand span { display: block; margin-top: 4px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .head { display: flex; gap: clamp(15px, 3vw, 34px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .6fr) minmax(390px, 1.6fr) minmax(150px, .54fr); gap: clamp(15px, 3vw, 42px); align-items: center; padding: 15px 0 12px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(49px, 7.2vw, 93px); line-height: .79; letter-spacing: -.075em; }
+    .intro h1 em { display: block; color: var(--red); font-style: italic; }
+    .intro .kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 11px; font-family: var(--mono); font-size: 6px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 18px; height: 1px; background: var(--red); }
+    .intro p { max-width: 200px; margin: 21px 0 0; font-family: var(--serif); font-size: 12.5px; line-height: 1.6; color: #655d51; }
+    .sample-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .sample { width: 100%; max-width: 560px; aspect-ratio: 1; background: var(--cloth); box-shadow: 0 18px 36px rgba(70,58,40,.18), inset 0 0 0 1px rgba(43,42,37,.12); padding: 12px; position: relative; transform: rotate(-.5deg); }
+    .sample::after { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(43,42,37,.14); pointer-events: none; }
+    canvas#cloth { width: 100%; height: 100%; display: block; cursor: crosshair; background: transparent; }
+    .sample-label { display: flex; justify-content: space-between; width: 100%; max-width: 560px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    .sample-label b { color: var(--ink); font-weight: 400; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; text-align: right; }
+    .group { width: 100%; border-top: 1px solid var(--line); padding-top: 9px; margin-bottom: 15px; }
+    .group label { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 6px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    .group label b { color: var(--ink); font-weight: 400; }
+    input[type="range"] { width: 100%; margin-top: 7px; accent-color: var(--red); cursor: ew-resize; }
+    .swatches { display: flex; gap: 5px; justify-content: flex-end; margin-top: 8px; }
+    .swatches button { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(43,42,37,.25); background: var(--c); cursor: pointer; transition: transform .2s, box-shadow .2s; }
+    .swatches button:hover { transform: translateY(-2px); }
+    .swatches button.active { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .motifs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
+    .motifs button { border: 1px solid var(--line); background: transparent; color: var(--dim); font: inherit; font-family: var(--mono); font-size: 5px; letter-spacing: .05em; text-transform: uppercase; padding: 6px 3px; cursor: pointer; }
+    .motifs button:hover, .motifs button.active { background: var(--ink); color: var(--cloth); }
+    .again { width: 100%; border: 1px solid var(--ink); background: var(--ink); color: var(--cloth); font: inherit; font-family: var(--mono); font-size: 6.5px; letter-spacing: .09em; text-transform: uppercase; padding: 9px; cursor: pointer; transition: background .2s, transform .2s; }
+    .again:hover { background: var(--red); transform: translateY(-2px); }
+    footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid var(--line); padding-top: 8px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--ink); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .75fr 1.25fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; align-items: start; text-align: left; padding-top: 4px; }
+      .group { margin-bottom: 0; }
+      .swatches { justify-content: flex-start; }
+      .motifs { grid-template-columns: repeat(3, 1fr); }
+      .again { grid-column: 1 / -1; max-width: 230px; }
+    }
+    @media (max-width: 580px) {
+      .mill { padding: 10px 10px 12px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(44px, 14vw, 66px); }
+      .intro p { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 0 10px; }
+      .sample { order: 2; padding: 7px; }
+      .sample::after { inset: 4px; }
+      .sample-label { font-size: 4.5px; }
+      aside { order: 3; display: block; padding-top: 0; }
+      .group { margin-bottom: 9px; padding-top: 6px; }
+      .swatches button { width: 18px; height: 18px; }
+      .motifs { grid-template-columns: repeat(6, 1fr); }
+      .again { margin-top: 4px; padding: 7px; }
+      footer { font-size: 4.5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mill">
+    <header>
+      <div class="brand">Motif Mill<span>Textile pattern studio / sample 051</span></div>
+      <div class="head"><div>Material<br><b>Block-printed cotton</b></div><div>Repeat<br><b id="repeatRead">6 × 6</b></div><div>Edition<br><b>No. 051</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A pattern is a small agreement</p>
+        <h1>Motif<em>mill</em></h1>
+        <p>Blocks, repeats and the quiet pleasure of a thing that tiles. Click the cloth to alter one cell at a time.</p>
+      </section>
+      <section class="sample-wrap">
+        <div class="sample"><canvas id="cloth" aria-label="Generated textile pattern"></canvas></div>
+        <div class="sample-label"><span><b id="sampleName">Grid Bloom</b> / hand-set repeat</span><span id="sampleNo">Sample 051—A</span></div>
+      </section>
+      <aside>
+        <div class="group"><label for="repeat"><span>Repeat</span><b id="repeatVal">6</b></label><input id="repeat" type="range" min="3" max="12" value="6" aria-label="Pattern repeat"></div>
+        <div class="group"><label><span>Palette</span><b id="paletteName">Madder</b></label><div class="swatches" id="swatches"><button class="active" type="button" data-pal="madder" style="--c:#b8513f" aria-label="Madder"></button><button type="button" data-pal="indigo" style="--c:#33546b" aria-label="Indigo"></button><button type="button" data-pal="ochre" style="--c:#c59a52" aria-label="Ochre"></button><button type="button" data-pal="sage" style="--c:#7d8c6f" aria-label="Sage"></button><button type="button" data-pal="ink" style="--c:#2b2a25" aria-label="Ink"></button></div></div>
+        <div class="group"><label><span>Motif</span><b id="motifName">Bloom</b></label><div class="motifs"><button class="active" type="button" data-motif="bloom">Bloom</button><button type="button" data-motif="diamond">Diamond</button><button type="button" data-motif="stripe">Stripe</button><button type="button" data-motif="arc">Arc</button><button type="button" data-motif="cross">Cross</button><button type="button" data-motif="dot">Dot</button></div></div>
+        <button class="again" type="button" id="again">New sample ↘</button>
+      </aside>
+    </main>
+    <footer><span><b>Motif Mill</b> / a textile pattern studio</span><span>Every cloth is generated in the browser</span><span>Sample 051 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const canvas = document.getElementById('cloth');
+      const ctx = canvas.getContext('2d');
+      const palettes = { madder: ['#b8513f', '#d98c6a', '#f1d9c0', '#70452f'], indigo: ['#33546b', '#6c8fa3', '#e5e2d4', '#1f3745'], ochre: ['#c59a52', '#e3c68c', '#f6eedb', '#8c6a33'], sage: ['#7d8c6f', '#b4bfa4', '#f0eddc', '#4c5a42'], ink: ['#2b2a25', '#6b675b', '#efe8d8', '#141310'] };
+      let pal = 'madder', motif = 'bloom', repeat = 6, seed = 51, cells = [];
+      let w, h;
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        w = rect.width; h = rect.height;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        build();
+      }
+      function build() {
+        cells = [];
+        const cols = repeat, rows = repeat;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            cells.push({ r, c, variant: Math.floor(Math.random() * 3), flip: Math.random() > .5, tint: Math.floor(Math.random() * 3) });
+          }
+        }
+        draw();
+      }
+      function draw() {
+        const colors = palettes[pal];
+        const cellW = w / repeat, cellH = h / repeat;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = colors[2]; ctx.fillRect(0, 0, w, h);
+        // subtle cloth weave
+        ctx.strokeStyle = 'rgba(90,70,50,.05)'; ctx.lineWidth = .5;
+        for (let x = 0; x < w; x += 4) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+        for (let y = 0; y < h; y += 4) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+        cells.forEach(cell => {
+          const x = cell.c * cellW, y = cell.r * cellH;
+          const cx = x + cellW / 2, cy = y + cellH / 2;
+          const size = Math.min(cellW, cellH) * .38;
+          const main = colors[cell.tint];
+          const accent = colors[(cell.tint + 1) % colors.length];
+          ctx.save(); ctx.translate(cx, cy);
+          if (cell.flip) ctx.rotate(Math.PI / 2);
+          ctx.fillStyle = main; ctx.strokeStyle = main; ctx.lineWidth = Math.max(1, size * .12);
+          if (motif === 'bloom') {
+            for (let i = 0; i < 4; i++) {
+              ctx.save(); ctx.rotate(i * Math.PI / 2 + cell.variant * .2);
+              ctx.beginPath(); ctx.ellipse(0, -size * .5, size * .3, size * .52, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            }
+            ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(0, 0, size * .25, 0, Math.PI * 2); ctx.fill();
+          } else if (motif === 'diamond') {
+            ctx.beginPath(); ctx.moveTo(0, -size); ctx.lineTo(size, 0); ctx.lineTo(0, size); ctx.lineTo(-size, 0); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = colors[2]; ctx.beginPath(); ctx.moveTo(0, -size * .42); ctx.lineTo(size * .42, 0); ctx.lineTo(0, size * .42); ctx.lineTo(-size * .42, 0); ctx.closePath(); ctx.fill();
+          } else if (motif === 'stripe') {
+            ctx.fillRect(-size, -size * .3, size * 2, size * .22);
+            ctx.fillRect(-size, size * .12, size * 2, size * .22);
+            ctx.fillStyle = accent; ctx.fillRect(-size, -size * .05, size * 2, size * .1);
+          } else if (motif === 'arc') {
+            ctx.beginPath(); ctx.arc(0, size * .25, size * .82, Math.PI, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, size * .25, size * .5, Math.PI, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(0, size * .25, size * .16, 0, Math.PI * 2); ctx.fill();
+          } else if (motif === 'cross') {
+            ctx.fillRect(-size * .16, -size, size * .32, size * 2);
+            ctx.fillRect(-size, -size * .16, size * 2, size * .32);
+            ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(0, 0, size * .27, 0, Math.PI * 2); ctx.fill();
+          } else {
+            ctx.beginPath(); ctx.arc(0, 0, size * .45, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(-size * .45, -size * .45, size * .17, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(size * .45, size * .45, size * .17, 0, Math.PI * 2); ctx.fill();
+          }
+          ctx.restore();
+        });
+        ctx.strokeStyle = 'rgba(43,42,37,.08)'; ctx.lineWidth = .5;
+        for (let i = 1; i < repeat; i++) {
+          ctx.beginPath(); ctx.moveTo(i * cellW, 0); ctx.lineTo(i * cellW, h); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, i * cellH); ctx.lineTo(w, i * cellH); ctx.stroke();
+        }
+        document.getElementById('repeatRead').textContent = repeat + ' × ' + repeat;
+      }
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const c = Math.floor((e.clientX - rect.left) / (w / repeat));
+        const r = Math.floor((e.clientY - rect.top) / (h / repeat));
+        cells.forEach(cell => {
+          if (cell.r === r || cell.c === c) {
+            cell.variant = (cell.variant + 1) % 3;
+            if (Math.random() > .6) cell.tint = (cell.tint + 1) % palettes[pal].length;
+          }
+        });
+        draw();
+      });
+      document.getElementById('repeat').addEventListener('input', (e) => { repeat = Number(e.target.value); document.getElementById('repeatVal').textContent = repeat; build(); });
+      document.querySelectorAll('[data-pal]').forEach(button => {
+        button.addEventListener('click', () => {
+          pal = button.dataset.pal;
+          document.querySelectorAll('[data-pal]').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          document.getElementById('paletteName').textContent = button.getAttribute('aria-label');
+          draw();
+        });
+      });
+      document.querySelectorAll('[data-motif]').forEach(button => {
+        button.addEventListener('click', () => {
+          motif = button.dataset.motif;
+          document.querySelectorAll('[data-motif]').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          document.getElementById('motifName').textContent = button.textContent;
+          document.getElementById('sampleName').textContent = { bloom: 'Grid Bloom', diamond: 'Lattice', stripe: 'Ticking', arc: 'Rainbow Weave', cross: 'Cross Stitch', dot: 'Seed Dot' }[motif];
+          draw();
+        });
+      });
+      document.getElementById('again').addEventListener('click', () => { seed++; build(); document.getElementById('sampleNo').textContent = 'Sample 051—' + String.fromCharCode(65 + seed % 26); document.querySelector('.sample').animate([{ transform: 'rotate(-.5deg) scale(.985)' }, { transform: 'rotate(-.5deg) scale(1)' }], { duration: 400, easing: 'ease-out' }); });
+      addEventListener('resize', resize);
+      resize();
+    })();
+  </script>
+</body>
+</html>

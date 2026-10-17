@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eee7d4">
+  <meta name="description" content="A Dérive in Nine Turns — a walk with no destination.">
+  <title>A Dérive in Nine Turns — A Walk with No Destination</title>
+  <style>
+    :root {
+      --paper: #eee7d4;
+      --sheet: #f6f0e0;
+      --ink: #2c3540;
+      --route: #b8432f;
+      --water: #a9c3c9;
+      --park: #cad3b2;
+      --block: #e0d8c4;
+      --dim: #7c7d70;
+      --line: rgba(44,53,64,.22);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--route); color: var(--sheet); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); padding: clamp(8px, 1.5vw, 18px); display: flex; justify-content: center; }
+    .walk { width: min(1240px, 100%); min-height: calc(100vh - clamp(16px, 3vw, 36px)); background: var(--sheet); box-shadow: 0 16px 38px rgba(50,44,28,.22); display: flex; flex-direction: column; padding: clamp(12px, 2.2vw, 28px) clamp(12px, 2.8vw, 38px) clamp(10px, 1.6vw, 17px); }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 7px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--ink); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 2.8vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(165px, .58fr) minmax(310px, 1.45fr) minmax(185px, .68fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 5vw, 64px); line-height: .8; letter-spacing: -.06em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--route); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--route); }
+    .intro p { max-width: 195px; margin: 14px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #5c5f52; }
+    .deck { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .deck h2 { margin: 0 0 4px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card { border: 1px solid var(--line); padding: 7px 6px; background: #efe7d3; font-family: var(--serif); font-size: 11px; line-height: 1.4; min-height: 62px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 0 rgba(44,53,64,.08); }
+    .card span { font-family: var(--mono); font-size: 3.8px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
+    .buttons { display: flex; gap: 4px; margin-top: 6px; }
+    .buttons button { flex: 1; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 3px; cursor: pointer; transition: background .2s, color .2s; }
+    .buttons button:hover { background: var(--ink); color: var(--sheet); }
+    .buttons button.primary { background: var(--route); border-color: var(--route); color: var(--sheet); }
+    .buttons button.primary:hover { background: var(--ink); border-color: var(--ink); }
+    .buttons button:disabled { opacity: .4; cursor: default; }
+    .map-wrap { position: relative; border: 1px solid var(--ink); background: #e7dfcb; overflow: hidden; }
+    .map-wrap svg { display: block; width: 100%; height: 100%; }
+    .map-label { position: absolute; left: 7px; top: 5px; font-family: var(--mono); font-size: 4px; letter-spacing: .1em; text-transform: uppercase; color: rgba(44,53,64,.6); }
+    .map-label.right { left: auto; right: 7px; top: auto; bottom: 5px; }
+    .compass { position: absolute; right: 9px; top: 9px; width: 38px; height: 38px; border: 1px solid rgba(44,53,64,.4); border-radius: 50%; }
+    .compass::before { content: ""; position: absolute; left: 50%; top: 50%; width: 1px; height: 30px; background: var(--route); transform-origin: 50% 100%; transform: translate(-50%,-100%) rotate(18deg); }
+    .compass::after { content: "N"; position: absolute; left: 50%; top: 1px; transform: translateX(-50%); font-family: var(--mono); font-size: 4px; color: var(--ink); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .itinerary { border-top: 1px solid var(--line); padding-top: 6px; }
+    .itinerary h2 { margin: 0 0 4px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .stop-row { display: grid; grid-template-columns: 14px 32px 1fr; gap: 5px; border-bottom: 1px solid var(--line); padding: 3.5px 0; align-items: baseline; }
+    .stop-row .n { font-family: var(--mono); font-size: 4px; color: var(--route); }
+    .stop-row .t { font-family: var(--mono); font-size: 4px; color: var(--dim); }
+    .stop-row .d { font-family: var(--serif); font-size: 9.5px; line-height: 1.35; color: #4a4f44; }
+    .empty { font-family: var(--serif); font-style: italic; font-size: 10px; line-height: 1.5; color: var(--dim); }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .stats div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .stats b { color: var(--ink); font-weight: 400; }
+    .rules { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--serif); font-style: italic; font-size: 9.5px; line-height: 1.5; color: #5c5f52; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--route); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .75fr 1.25fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .itinerary { grid-column: 1; }
+      .stats { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .rules { grid-column: 2; margin-top: 0; }
+      .intro p { display: none; }
+      .map-wrap { min-height: 340px; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .walk { padding: 10px 10px 11px; min-height: 100vh; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(32px, 11vw, 46px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .deck { margin-top: 7px; }
+      .card { min-height: 48px; font-size: 10px; }
+      .map-wrap { order: 2; min-height: 250px; }
+      .compass { width: 28px; height: 28px; }
+      aside { order: 3; display: block; }
+      .itinerary { padding-top: 5px; }
+      .stop-row { padding: 2px 0; }
+      .stop-row .d { font-size: 8.5px; }
+      .stats, .rules { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="walk">
+    <header>
+      <div class="brand"><b>A Dérive in Nine Turns</b>Psychogeographic survey / walk 080</div>
+      <div class="head"><div>Method<br><b>Unplanned</b></div><div>Turns<br><b>Nine</b></div><div>Duration<br><b id="durHead">0 min</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A walk with no destination</p>
+        <h1>A<em>dérive</em></h1>
+        <p>Nine turns, chosen by the deck, drawn on a map that does not quite agree with the city. The point is not to arrive; the point is to notice.</p>
+        <div class="deck">
+          <h2>The next instruction</h2>
+          <div class="card" id="card">Turn left at the first street that has no name.<span>Card 01 / draw to begin</span></div>
+          <div class="buttons"><button type="button" class="primary" id="draw">Take a turn</button><button type="button" id="reset">Start again</button></div>
+        </div>
+      </section>
+      <section class="map-wrap">
+        <svg viewBox="0 0 560 420" preserveAspectRatio="xMidYMid slice" aria-label="Dérive map">
+          <rect width="560" height="420" fill="#e7dfcb"/>
+          <g fill="#d9d0b9" stroke="rgba(44,53,64,.12)" stroke-width=".6">
+            <rect x="28" y="34" width="86" height="58"/><rect x="132" y="28" width="74" height="72"/><rect x="222" y="42" width="96" height="52"/>
+            <rect x="336" y="30" width="62" height="66"/><rect x="416" y="40" width="104" height="50"/><rect x="34" y="112" width="60" height="84"/>
+            <rect x="112" y="118" width="104" height="58"/><rect x="236" y="110" width="58" height="70"/><rect x="314" y="114" width="90" height="54"/>
+            <rect x="424" y="108" width="88" height="72"/><rect x="30" y="220" width="92" height="62"/><rect x="142" y="198" width="66" height="80"/>
+            <rect x="228" y="202" width="104" height="56"/><rect x="352" y="190" width="72" height="84"/><rect x="442" y="204" width="76" height="58"/>
+            <rect x="42" y="306" width="76" height="72"/><rect x="138" y="300" width="98" height="54"/><rect x="256" y="284" width="72" height="76"/>
+            <rect x="348" y="296" width="86" height="58"/><rect x="454" y="286" width="62" height="82"/>
+          </g>
+          <rect x="346" y="204" width="80" height="62" fill="#cad3b2" opacity=".9"/>
+          <path d="M0 190 C90 180 160 214 250 202 C340 190 430 160 560 178" fill="none" stroke="#a9c3c9" stroke-width="18" opacity=".8"/>
+          <path d="M0 190 C90 180 160 214 250 202 C340 190 430 160 560 178" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+          <g stroke="#f6f0e0" stroke-width="7" opacity=".95">
+            <path d="M0 104 H560"/><path d="M0 276 H560"/><path d="M0 390 H560"/>
+            <path d="M124 0 V420"/><path d="M314 0 V420"/><path d="M430 0 V420"/>
+          </g>
+          <g stroke="rgba(44,53,64,.2)" stroke-width=".6" fill="none" stroke-dasharray="2 4">
+            <path d="M0 104 H560"/><path d="M0 276 H560"/><path d="M124 0 V420"/><path d="M314 0 V420"/>
+          </g>
+          <g id="routeLayer"></g>
+          <g id="markers"></g>
+          <circle id="you" cx="86" cy="336" r="4" fill="#b8432f" stroke="#f6f0e0" stroke-width="2"/>
+        </svg>
+        <span class="map-label">Plan of the quarter / not to scale</span>
+        <span class="map-label right">Route drawn as walked</span>
+        <div class="compass"></div>
+      </section>
+      <aside>
+        <div class="itinerary">
+          <h2>Itinerary</h2>
+          <div id="stops"><p class="empty">No turns yet. Draw a card and the first line will be drawn from the red dot.</p></div>
+        </div>
+        <div class="stats">
+          <div><span>Turns</span><b id="turnCount">0 / 9</b></div>
+          <div><span>Distance</span><b id="distRead">0 m</b></div>
+          <div><span>Elapsed</span><b id="elapsed">0 min</b></div>
+          <div><span>Ends</span><b id="endRead">—</b></div>
+        </div>
+        <p class="rules">“A dérive is a technique of rapid passage through varied ambiences. Do not stop for anything you did not come to see.”</p>
+      </aside>
+    </main>
+    <footer><span><b>A Dérive in Nine Turns</b> / a walk with no destination</span><span>Drawn from the deck, walked at street level</span><span>Walk 080 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const instructions = [
+        'Turn left at the first street that has no name.',
+        'Follow the sound of water until it stops being water.',
+        'Take the narrower of the two streets. Do not deliberate.',
+        'Walk until the buildings change their minds about height.',
+        'Turn toward the sun, then turn again, for no reason.',
+        'Cross the square diagonally, as if late for something.',
+        'Find a door you would not normally notice. Do not open it.',
+        'Take the street that smells of bread, then the one that smells of rain.',
+        'Turn right at the third café, whether or not it is open.'
+      ];
+      const dirs = [['east', 1, 0], ['south-east', 1, 1], ['south', 0, 1], ['south-west', -1, 1], ['west', -1, 0], ['north-west', -1, -1], ['north', 0, -1], ['north-east', 1, -1]];
+      let points = [[86, 336]], heading = 0, turns = 0;
+      const routeLayer = document.getElementById('routeLayer');
+      const markers = document.getElementById('markers');
+      const stops = document.getElementById('stops');
+      let totalDist = 0;
+      function render() {
+        routeLayer.innerHTML = '';
+        markers.innerHTML = '';
+        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        poly.setAttribute('points', points.map(p => p[0] + ',' + p[1]).join(' '));
+        poly.setAttribute('fill', 'none'); poly.setAttribute('stroke', '#b8432f'); poly.setAttribute('stroke-width', '2.2');
+        poly.setAttribute('stroke-dasharray', '7 3');
+        routeLayer.appendChild(poly);
+        points.forEach((p, i) => {
+          if (i === 0) return;
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 3.2);
+          c.setAttribute('fill', '#f6f0e0'); c.setAttribute('stroke', '#b8432f'); c.setAttribute('stroke-width', '1.4');
+          markers.appendChild(c);
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('x', p[0] + 6); t.setAttribute('y', p[1] + 3);
+          t.setAttribute('font-family', 'Courier New, monospace'); t.setAttribute('font-size', '6'); t.setAttribute('fill', '#2c3540');
+          t.textContent = i;
+          markers.appendChild(t);
+        });
+        document.getElementById('you').setAttribute('cx', points[points.length - 1][0]);
+        document.getElementById('you').setAttribute('cy', points[points.length - 1][1]);
+        totals();
+      }
+      function totals() {
+        document.getElementById('turnCount').textContent = turns + ' / 9';
+        document.getElementById('distRead').textContent = (totalDist * 9) + ' m';
+        document.getElementById('elapsed').textContent = (turns * 7) + ' min';
+        document.getElementById('durHead').textContent = (turns * 7) + ' min';
+        document.getElementById('endRead').textContent = turns >= 9 ? 'Here' : dirs[heading][0];
+      }
+      function draw() {
+        if (turns >= 9) return;
+        const card = instructions[turns % instructions.length];
+        document.getElementById('card').innerHTML = card + '<span>Card ' + String(turns + 1).padStart(2, '0') + ' / nine</span>';
+        const turn = [0, 1, 1, -1, -1, 2, -2][Math.floor(Math.random() * 7)] || 0;
+        heading = (heading + turn + 8) % 8;
+        const d = dirs[heading];
+        const len = 55 + Math.floor(Math.random() * 40);
+        let nx = points[points.length - 1][0] + d[1] * len;
+        let ny = points[points.length - 1][1] + d[2] * len;
+        nx = Math.max(22, Math.min(538, nx)); ny = Math.max(22, Math.min(398, ny));
+        points.push([nx, ny]);
+        totalDist += Math.round(Math.hypot(nx - points[points.length - 2][0], ny - points[points.length - 2][1]) * 9 / 10) * 10 / 10;
+        turns++;
+        const row = document.createElement('div');
+        row.className = 'stop-row';
+        const totalMin = turns * 7;
+        const clock = String(16 + Math.floor(totalMin / 60)).padStart(2, '0') + ':' + String(totalMin % 60).padStart(2, '0');
+        row.innerHTML = '<span class="n">0' + turns + '</span><span class="t">' + clock + '</span><span class="d">' + card + '</span>';
+        document.getElementById('stops').insertBefore(row, document.getElementById('stops').firstChild);
+        if (turns === 1) { document.getElementById('stops').querySelector('.empty')?.remove(); }
+        document.getElementById('draw').textContent = turns >= 9 ? 'Walk ends' : 'Take a turn';
+        document.getElementById('draw').disabled = turns >= 9;
+        render();
+      }
+      document.getElementById('draw').addEventListener('click', draw);
+      document.getElementById('reset').addEventListener('click', () => {
+        points = [[86, 336]]; heading = 0; turns = 0; totalDist = 0;
+        routeLayer.innerHTML = ''; markers.innerHTML = '';
+        document.getElementById('stops').innerHTML = '<p class="empty">No turns yet. Draw a card and the first line will be drawn from the red dot.</p>';
+        document.getElementById('card').innerHTML = instructions[0] + '<span>Card 01 / draw to begin</span>';
+        document.getElementById('draw').textContent = 'Take a turn';
+        document.getElementById('draw').disabled = false;
+        totals();
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

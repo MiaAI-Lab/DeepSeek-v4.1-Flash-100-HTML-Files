@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1717e8">
+  <meta name="description" content="Kinetic Type Lab — a playground for letters that refuse to sit still.">
+  <title>Kinetic Type Lab — Letters in Motion</title>
+  <style>
+    :root {
+      --blue: #1717e8;
+      --red: #ff4b2b;
+      --paper: #f1eee5;
+      --ink: #111111;
+      --track: -0.03em;
+      --weight: 800;
+      --skew: 0deg;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { color: var(--paper); background: var(--red); }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: var(--paper); font-family: var(--sans); overflow-x: hidden; }
+    .poster { min-height: 100vh; padding: clamp(12px, 2vw, 24px); position: relative; overflow: hidden; background-image: linear-gradient(rgba(17,17,17,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(17,17,17,.08) 1px, transparent 1px); background-size: 42px 42px; }
+    .poster::before { content: ""; position: absolute; width: 36vw; height: 36vw; min-width: 280px; min-height: 280px; border-radius: 50%; background: var(--blue); right: -8vw; top: 16%; z-index: 0; mix-blend-mode: multiply; }
+    .poster::after { content: ""; position: absolute; width: 100%; height: 12px; background: var(--red); top: 19%; left: 0; z-index: 0; transform: rotate(-2deg); }
+    header, main, footer { position: relative; z-index: 2; }
+    header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 18px; border-bottom: 1px solid var(--ink); padding-bottom: 10px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+    .brand { font-family: var(--sans); font-size: 11px; font-weight: 800; letter-spacing: -.03em; }
+    .brand span { color: var(--red); }
+    .header-mid { text-align: center; }
+    .header-right { text-align: right; }
+    main { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
+    .masthead { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 22px; padding: clamp(32px, 8vh, 88px) 0 0; }
+    .masthead h1 { margin: 0; font-weight: var(--weight); font-size: clamp(76px, 16vw, 250px); line-height: .64; letter-spacing: var(--track); text-transform: uppercase; transform: skewX(var(--skew)); transform-origin: left bottom; transition: letter-spacing .15s, font-weight .15s, transform .15s; }
+    .masthead h1 .line { display: block; white-space: nowrap; }
+    .masthead h1 .outline { margin-left: clamp(16px, 5vw, 70px); color: transparent; -webkit-text-stroke: clamp(1px, .2vw, 3px) var(--ink); }
+    .masthead h1 .sans { font-size: .52em; letter-spacing: -.055em; margin-left: clamp(0px, 2vw, 20px); vertical-align: .42em; color: var(--blue); }
+    .edition { width: 156px; border-top: 1px solid var(--ink); padding-top: 8px; font-family: var(--mono); font-size: 8px; line-height: 1.7; text-transform: uppercase; }
+    .edition b { display: block; font-family: var(--sans); font-size: 30px; line-height: .9; letter-spacing: -.06em; text-transform: none; color: var(--blue); margin-bottom: 9px; }
+    .stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 255px; align-items: end; gap: 30px; padding: 28px 0 15px; }
+    .headline-play { position: relative; overflow: hidden; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 12px 0 10px; }
+    .play-row { display: flex; white-space: nowrap; width: max-content; font-size: clamp(27px, 4.2vw, 60px); font-weight: 800; text-transform: uppercase; letter-spacing: -.055em; line-height: .94; }
+    .play-row span { display: inline-block; }
+    .play-a { animation: slide-left 18s linear infinite; }
+    .play-b { color: var(--blue); margin-left: -15%; animation: slide-right 23s linear infinite; -webkit-text-stroke: 1px var(--paper); }
+    .play-row .hot { color: var(--red); }
+    .play-row .hollow { color: transparent; -webkit-text-stroke: 1.4px var(--ink); }
+    @keyframes slide-left { to { transform: translateX(-50%); } }
+    @keyframes slide-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+    .lab { background: var(--ink); color: var(--paper); padding: 16px; align-self: stretch; display: flex; flex-direction: column; }
+    .lab-top { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: #b7b4aa; padding-bottom: 11px; border-bottom: 1px solid rgba(241,238,229,.22); }
+    .lab-top b { color: var(--red); font-weight: 400; }
+    .controls { padding: 13px 0 0; display: flex; flex-direction: column; gap: 15px; }
+    .control label { display: flex; justify-content: space-between; gap: 10px; font-family: var(--mono); font-size: 8px; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 7px; }
+    .control output { color: var(--red); }
+    input[type="range"] { width: 100%; height: 2px; appearance: none; background: #555; cursor: ew-resize; accent-color: var(--red); }
+    input[type="range"]::-webkit-slider-thumb { appearance: none; width: 11px; height: 11px; background: var(--red); border-radius: 50%; cursor: ew-resize; }
+    .modes { display: flex; gap: 5px; margin-top: auto; padding-top: 20px; }
+    .modes button { flex: 1; border: 1px solid rgba(241,238,229,.35); background: transparent; color: var(--paper); font: inherit; font-family: var(--mono); font-size: 7px; padding: 7px 4px; text-transform: uppercase; cursor: pointer; transition: background .2s, color .2s; }
+    .modes button:hover, .modes button.active { background: var(--paper); color: var(--ink); }
+    .letter-grid { display: grid; grid-template-columns: repeat(9, 1fr); border-top: 1px solid var(--ink); border-left: 1px solid var(--ink); }
+    .letter-grid span { aspect-ratio: 1; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); display: grid; place-items: center; font-size: clamp(20px, 3vw, 42px); font-weight: 700; transition: background .18s, color .18s, transform .18s; cursor: default; }
+    .letter-grid span:hover { background: var(--blue); color: var(--paper); transform: rotate(-8deg) scale(1.1); }
+    .letter-grid span:nth-child(3n):hover { background: var(--red); color: var(--ink); }
+    .caption { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-top: 10px; font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: .1em; line-height: 1.6; }
+    .caption p { margin: 0; }
+    .caption p:last-child { text-align: right; }
+    .stamp { position: absolute; right: 3vw; top: 40px; width: 82px; height: 82px; border: 1px solid var(--ink); border-radius: 50%; display: grid; place-items: center; text-align: center; font-family: var(--mono); font-size: 7px; line-height: 1.5; text-transform: uppercase; transform: rotate(11deg); z-index: 3; }
+    .stamp::before { content: ""; position: absolute; inset: 5px; border: 1px dashed var(--ink); border-radius: 50%; }
+    footer { display: flex; justify-content: space-between; gap: 14px; font-family: var(--mono); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; border-top: 1px solid var(--ink); padding-top: 8px; }
+    footer span:nth-child(2) { color: var(--blue); }
+    @media (max-width: 900px) {
+      .masthead { grid-template-columns: 1fr; }
+      .edition { display: none; }
+      .stage { grid-template-columns: 1fr; align-items: stretch; gap: 13px; }
+      .lab { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; align-items: start; }
+      .lab-top { grid-column: 1 / -1; }
+      .modes { padding-top: 12px; }
+      .stamp { top: 22px; right: 16px; width: 63px; height: 63px; font-size: 6px; }
+      .letter-grid span { font-size: 27px; }
+    }
+    @media (max-width: 600px) {
+      .poster { padding: 10px; background-size: 28px 28px; }
+      header { font-size: 7px; grid-template-columns: 1fr auto; }
+      .header-mid { display: none; }
+      .masthead { padding-top: 38px; }
+      .masthead h1 { font-size: clamp(65px, 21vw, 115px); line-height: .68; }
+      .masthead h1 .outline { margin-left: 5vw; }
+      .stage { padding-top: 19px; }
+      .play-row { font-size: 37px; }
+      .lab { padding: 12px; }
+      .controls { gap: 12px; }
+      .letter-grid { grid-template-columns: repeat(6, 1fr); }
+      .letter-grid span:nth-child(n+19) { display: none; }
+      .caption { grid-template-columns: 1fr; gap: 4px; font-size: 7px; }
+      .caption p:last-child { text-align: left; }
+      .stamp { display: none; }
+      footer { font-size: 7px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <header>
+      <div class="brand">KERNEL<span>®</span><br>Type foundry</div>
+      <div class="header-mid">Playground / issue 07<br>Letters, behaviours, possibilities</div>
+      <div class="header-right">Specimen 07 / 2026<br>Open edition</div>
+    </header>
+    <main>
+      <div class="masthead">
+        <h1><span class="line">Kinetic</span><span class="line outline">Type</span><span class="line"><span class="sans">Lab</span></span></h1>
+        <aside class="edition"><b id="specNumber">07</b>Variable behaviour<br>Set in Grotesk<br>1,000 possible moods<br>Interactive specimen</aside>
+      </div>
+      <div class="stage">
+        <div>
+          <div class="headline-play" aria-hidden="true">
+            <div class="play-row play-a"><span>Move the letters&nbsp;</span><span class="hot">Move the letters&nbsp;</span><span class="hollow">Move the letters&nbsp;</span><span>Move the letters&nbsp;</span></div>
+            <div class="play-row play-b"><span>Break the grid&nbsp;</span><span class="hot">Break the grid&nbsp;</span><span>Break the grid&nbsp;</span><span class="hollow">Break the grid&nbsp;</span></div>
+          </div>
+          <div class="letter-grid" aria-label="Interactive letter specimen">
+            <span>K</span><span>I</span><span>N</span><span>E</span><span>T</span><span>I</span><span>C</span><span>0</span><span>7</span>
+            <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span><span>I</span>
+            <span>J</span><span>K</span><span>L</span><span>M</span><span>N</span><span>O</span><span>P</span><span>Q</span><span>R</span>
+          </div>
+          <div class="caption"><p>Nine ways to hold a letter.<br>Countless ways to let it go.</p><p>Hover the grid. Push the form.<br>Nothing here needs to be still.</p></div>
+        </div>
+        <aside class="lab" aria-label="Type controls">
+          <div class="lab-top"><span>Form controls</span><b>Live</b></div>
+          <div class="controls">
+            <div class="control"><label for="track">Tracking <output id="trackOut">−0.03em</output></label><input id="track" type="range" min="-10" max="8" value="-3"></div>
+            <div class="control"><label for="weight">Weight <output id="weightOut">800</output></label><input id="weight" type="range" min="100" max="900" step="100" value="800"></div>
+            <div class="control"><label for="skew">Shear <output id="skewOut">0°</output></label><input id="skew" type="range" min="-12" max="12" value="0"></div>
+          </div>
+          <div class="modes"><button type="button" class="active" data-mode="paper">Paper</button><button type="button" data-mode="blue">Blue</button><button type="button" data-mode="night">Night</button></div>
+        </aside>
+      </div>
+      <footer><span>Kernel Type Lab — Vol. 07</span><span>Try · stretch · distort · repeat</span><span>Berlin / everywhere</span></footer>
+    </main>
+    <div class="stamp" aria-hidden="true">Type<br>is a<br>verb</div>
+  </div>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const track = document.getElementById('track');
+      const weight = document.getElementById('weight');
+      const skew = document.getElementById('skew');
+      const trackOut = document.getElementById('trackOut');
+      const weightOut = document.getElementById('weightOut');
+      const skewOut = document.getElementById('skewOut');
+      function update() {
+        const t = Number(track.value) / 100;
+        root.style.setProperty('--track', t.toFixed(2) + 'em');
+        root.style.setProperty('--weight', weight.value);
+        root.style.setProperty('--skew', skew.value + 'deg');
+        trackOut.textContent = (t > 0 ? '+' : t === 0 ? '' : '−') + Math.abs(t).toFixed(2) + 'em';
+        weightOut.textContent = weight.value;
+        skewOut.textContent = skew.value + '°';
+      }
+      [track, weight, skew].forEach(input => input.addEventListener('input', update));
+      const modes = {
+        paper: ['#f1eee5', '#111111', '#1717e8', '#ff4b2b'],
+        blue: ['#1717e8', '#f1eee5', '#ff4b2b', '#f1eee5'],
+        night: ['#111111', '#f1eee5', '#ff4b2b', '#1717e8']
+      };
+      document.querySelectorAll('.modes button').forEach(button => {
+        button.addEventListener('click', () => {
+          const [bg, ink, blue, red] = modes[button.dataset.mode];
+          root.style.setProperty('--paper', bg);
+          root.style.setProperty('--ink', ink);
+          root.style.setProperty('--blue', blue);
+          root.style.setProperty('--red', red);
+          document.querySelectorAll('.modes button').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+        });
+      });
+      document.querySelectorAll('.letter-grid span').forEach((letter) => {
+        letter.addEventListener('click', () => {
+          letter.textContent = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+          letter.animate([{ transform: 'scale(.65) rotate(-14deg)' }, { transform: 'scale(1.15) rotate(5deg)' }, { transform: 'scale(1)' }], { duration: 450, easing: 'ease-out' });
+        });
+      });
+      let pressTimer;
+      document.querySelector('.masthead h1').addEventListener('pointerdown', () => {
+        pressTimer = setTimeout(() => { track.value = -10; weight.value = 100; skew.value = 12; update(); }, 450);
+      });
+      document.querySelector('.masthead h1').addEventListener('pointerup', () => clearTimeout(pressTimer));
+      update();
+    })();
+  </script>
+</body>
+</html>

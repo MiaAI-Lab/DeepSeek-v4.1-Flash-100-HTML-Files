@@ -1,0 +1,17 @@
+TITLE: Kinetic Type Lab — Letters in Motion
+
+PROMPT:
+Design "Kinetic Type Lab," a self-contained interactive type-foundry specimen page with the graphic confidence of an experimental Swiss poster. Use a warm paper ground, ink black, Klein blue and tomato red. Build a gridded composition dominated by massive "Kinetic Type Lab" lettering, two opposing kinetic marquee bands, a letter-grid playground, and a black control console. Add circular type stamps, registry microcopy and a large blue disc bleeding off the right edge. Three custom sliders must live-manipulate tracking, weight and shear across the display masthead, with live outputs; three palette modes (Paper, Blue, Night) restyle the whole composition. Individual letters click to morph into random glyphs with a snappy animation, and holding the masthead triggers an expressive distortion. Everything inline and offline. Responsive and valid HTML5.
+
+DESCRIPTION:
+A loud, joyful type specimen that behaves like a poster and a toy at once. Primary colors, razor grids and a kinetic ticker system make the typography feel athletic, while the control console gives the viewer real authorship over the letterforms.
+
+MAJOR VISUAL TECHNIQUES:
+- Swiss/brutalist poster grid with designed misalignment and oversized glyphs
+- CSS custom properties driving live font weight, letter spacing and shear
+- Opposing marquee animations with hollow and filled type
+- Interactive typographic grid with hover distortion
+- Duotone palette swapping and circular seal details
+
+INTERACTION MODEL:
+Drag the Tracking, Weight and Shear sliders to reshape the masthead in real time. Use the three mode buttons to switch between Paper, Blue and Night colorways. Hover letters in the grid for playful transformations, click a letter to mutate it, and press-and-hold the masthead for a sudden maximalist distortion.

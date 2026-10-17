@@ -1,0 +1,17 @@
+TITLE: Still Water — Objects From the Quiet Deep
+
+PROMPT:
+Create "Still Water," a self-contained luxury glassmorphism concept page for a fictional marine atelier. Use a luminous lagoon palette of seafoam, pale lilac, deep petrol and soft coral. Build a translucent frosted-glass interface containing a tall arched glass vitrine with an ethereal CSS jellyfish, swimming inline-SVG fish, a waterline and tiny rising bubbles. Surround it with elegant Georgia typography, "Still water" headline, editorial product metadata, price, material notes and palette controls (Lagoon, Lilac Dusk, Blue Hour). Add a CTA that releases a flurry of bubble particles. Everything must remain self-contained with no external images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A dreamy collector's object presented inside layers of real glass. Soft aquatic gradients, blurred transparency and a delicate jellyfish create a sense of suspended time, while rigorous micro-typography makes the imaginary product feel credible and covetable.
+
+MAJOR VISUAL TECHNIQUES:
+- Layered glassmorphism with backdrop blur, luminous borders and inner highlights
+- Pure-CSS jellyfish with radial-gradient dome and animated tentacles
+- Inline SVG fish and Canvas bubble field
+- Arched vitrine silhouette and soft atmospheric light blooms
+- Responsive three-column editorial composition
+
+INTERACTION MODEL:
+Hover the page to release tiny bubbles from the pointer. Select Lagoon, Lilac Dusk or Blue Hour to shift the entire atmosphere. Press "Let the tide in" to send a flurry of bubbles rising through the page. The fish, jellyfish and glass reflections continue their quiet motion throughout.

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#121110">
+  <meta name="description" content="Calibre 36 — a self-winding study in precision.">
+  <title>Calibre 36 — A Study in Precision</title>
+  <style>
+    :root {
+      --black: #0d0c0b;
+      --charcoal: #171614;
+      --silver: #d9d5cc;
+      --steel: #8b8880;
+      --gold: #c8a56a;
+      --line: rgba(217,213,204,.18);
+      --serif: "Bodoni 72", Didot, Georgia, serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--black); }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: var(--black); color: var(--silver); font-family: var(--sans); overflow-x: hidden; background-image: radial-gradient(ellipse at 60% 30%, rgba(200,165,106,.1), transparent 52%); }
+    .atelier { min-height: 100vh; padding: 22px clamp(16px, 3.6vw, 52px) 18px; display: flex; flex-direction: column; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 11px; }
+    .brand { font-family: var(--serif); font-size: 19px; letter-spacing: -.04em; line-height: 1; }
+    .brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .18em; text-transform: uppercase; color: var(--steel); }
+    .head { display: flex; gap: clamp(18px, 4vw, 46px); font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--steel); text-align: right; }
+    .head b { color: var(--silver); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(170px, .72fr) minmax(340px, 1.3fr) minmax(165px, .65fr); gap: clamp(16px, 3.4vw, 48px); align-items: center; padding: 20px 0 16px; }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { display: flex; align-items: center; gap: 9px; margin: 0 0 14px; font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .kicker::before { content: ""; width: 22px; height: 1px; background: var(--gold); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(58px, 8.6vw, 120px); line-height: .77; letter-spacing: -.08em; }
+    h1 em { display: block; color: var(--gold); font-style: italic; }
+    .intro p { max-width: 232px; margin: 29px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.6; color: #a09c93; }
+    .watch-stage { display: flex; align-items: center; justify-content: center; position: relative; }
+    .watch { position: relative; width: min(370px, 74%); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 34% 27%, #3a3833, #171614 45%, #0b0a09 83%); padding: 7%; box-shadow: 0 24px 55px rgba(0,0,0,.55), inset 0 0 0 1px rgba(217,213,204,.16), inset 0 0 26px rgba(0,0,0,.7); }
+    .watch::before { content: ""; position: absolute; inset: 2%; border: 1px solid rgba(200,165,106,.26); border-radius: 50%; }
+    .watch::after { content: ""; position: absolute; left: 50%; top: -3.4%; width: 13%; height: 7%; background: linear-gradient(180deg, #6d6a63, #34322e); transform: translateX(-50%); border-radius: 4px 4px 0 0; box-shadow: 0 3px 6px rgba(0,0,0,.5); }
+    .crown { position: absolute; right: -4.6%; top: 47%; width: 4.4%; height: 8%; background: repeating-linear-gradient(0deg, #6d6a63 0 2px, #34322e 2px 4px); border-radius: 2px; z-index: 3; }
+    .dial { position: relative; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 42% 35%, #e5e1d8, #d2cdc2 52%, #b7b2a7 100%); box-shadow: inset 0 0 24px rgba(24,22,19,.35), inset 0 0 0 1px rgba(255,255,255,.5); overflow: hidden; }
+    .dial::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 34% 25%, rgba(255,255,255,.55), transparent 36%), radial-gradient(ellipse at 62% 80%, rgba(40,37,31,.16), transparent 50%); pointer-events: none; }
+    .hand { position: absolute; left: 50%; top: 50%; transform-origin: bottom center; transform: translateX(-50%) rotate(0deg); z-index: 2; }
+    .hour { width: 2.3%; height: 25%; background: #25231f; bottom: 50%; border-radius: 2px 2px 40% 40%; }
+    .minute { width: 1.5%; height: 35%; background: #34312c; bottom: 50%; border-radius: 2px 2px 40% 40%; }
+    .second { width: .7%; height: 38%; background: var(--gold); bottom: 50%; z-index: 4; }
+    .second::after { content: ""; position: absolute; bottom: -19%; left: 50%; transform: translateX(-50%); width: 340%; height: 21%; background: var(--gold); border-radius: 30%; }
+    .center-pin { position: absolute; left: 50%; top: 50%; width: 13px; height: 13px; border-radius: 50%; background: var(--gold); border: 2px solid #d2cdc2; transform: translate(-50%,-50%); z-index: 5; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+    .date-window { position: absolute; right: 14%; top: 45%; width: 12%; height: 7%; background: #f2eee5; border: 1px solid #817c72; border-radius: 1px; z-index: 3; display: grid; place-items: center; font-family: var(--mono); font-size: 9px; color: #25231f; box-shadow: inset 0 1px 3px rgba(0,0,0,.22); }
+    .brandmark { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); font-family: var(--serif); font-size: clamp(8px, 1.3vw, 12px); letter-spacing: .28em; text-transform: uppercase; color: #34312c; z-index: 3; }
+    .submark { position: absolute; left: 50%; top: 24.5%; transform: translateX(-50%); font-family: var(--mono); font-size: 5px; letter-spacing: .16em; text-transform: uppercase; color: #716b61; z-index: 3; }
+    .subdial { position: absolute; left: 50%; bottom: 20%; width: 22%; aspect-ratio: 1; border-radius: 50%; transform: translateX(-50%); border: 1px solid rgba(52,49,44,.28); z-index: 3; }
+    .subdial::before, .subdial::after { content: ""; position: absolute; left: 50%; transform: translateX(-50%); height: 1px; background: #5b574e; }
+    .subdial::before { width: 5%; top: 18%; } .subdial::after { width: 5%; bottom: 18%; }
+    .subdial .tinyhand { position: absolute; left: 50%; top: 50%; width: 1px; height: 30%; background: #3b3832; transform-origin: bottom center; transform: translate(-50%,-100%) rotate(0deg); }
+    .ticks { position: absolute; inset: 0; z-index: 1; }
+    .tick { position: absolute; left: 50%; top: 50%; width: 1px; height: 47%; transform-origin: 0 0; background: transparent; }
+    .tick::before { content: ""; position: absolute; left: -1px; top: 0; width: 1.6px; height: 5.4%; background: #38352f; }
+    .tick.major::before { width: 3px; left: -1.5px; height: 9%; background: #24221e; }
+    .tick.number::before { display: none; }
+    .numeral { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; }
+    .numeral span { display: block; transform: translate(-50%,-50%); font-family: var(--serif); font-size: 15px; color: #2e2b26; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .spec { width: 100%; border-top: 1px solid var(--line); padding: 9px 0; font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--steel); }
+    .spec b { display: block; font-family: var(--serif); font-size: 15px; line-height: 1.15; letter-spacing: -.02em; text-transform: none; color: var(--silver); margin-bottom: 2px; }
+    .calibre { border: 1px solid var(--line); padding: 11px; margin-top: 16px; width: 100%; text-align: center; position: relative; }
+    .calibre::before { content: ""; position: absolute; left: 22%; right: 22%; top: -1px; height: 1px; background: var(--gold); }
+    .calibre span { font-family: var(--mono); font-size: 6px; letter-spacing: .14em; text-transform: uppercase; color: var(--steel); }
+    .calibre b { display: block; font-family: var(--serif); font-size: 32px; font-weight: 400; letter-spacing: -.03em; color: var(--gold); line-height: 1.1; }
+    .calibre small { font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--steel); }
+    footer { display: flex; justify-content: space-between; gap: 17px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--steel); }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .75fr 1.25fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: start; text-align: left; padding-top: 4px; }
+      .calibre { grid-column: 1 / -1; margin-top: 0; display: flex; align-items: baseline; gap: 8px; }
+      .calibre b { font-size: 24px; }
+      .watch { width: min(330px, 82%); }
+    }
+    @media (max-width: 580px) {
+      .atelier { padding: 12px 12px 14px; }
+      header { padding-bottom: 8px; }
+      .head div:nth-child(2) { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding: 16px 0 12px; }
+      h1 { font-size: clamp(56px, 18vw, 90px); }
+      .intro p { display: none; }
+      .watch { width: min(280px, 78%); margin: 0 auto; }
+      aside { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; text-align: left; }
+      .spec { padding: 7px 0; }
+      .spec b { font-size: 12px; }
+      .calibre { display: none; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="atelier">
+    <header>
+      <div class="brand">Calibre 36<span>Atelier horlogerie / Genève</span></div>
+      <div class="head"><div>Series<br><b>Limited / 36 pieces</b></div><div>Movement<br><b>Self-winding</b></div><div>Reference<br><b>Ref. 036</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A quiet measure of the day</p>
+        <h1>Calibre<em>thirty-six</em></h1>
+        <p>Thirty-six jewels. One hundred and forty components. A movement that turns the small passing of time into something worth keeping.</p>
+      </section>
+      <section class="watch-stage" aria-label="Dress watch with live time">
+        <div class="watch">
+          <div class="crown"></div>
+          <div class="dial">
+            <div class="ticks" id="ticks"></div>
+            <div class="brandmark">Calibre</div>
+            <div class="submark">Automatic / Genève</div>
+            <div class="date-window" id="dateWin">17</div>
+            <div class="hour hand" id="hourHand"></div>
+            <div class="minute hand" id="minuteHand"></div>
+            <div class="second hand" id="secondHand"></div>
+            <div class="center-pin"></div>
+            <div class="subdial"><div class="tinyhand" id="tinyHand"></div></div>
+          </div>
+        </div>
+      </section>
+      <aside>
+        <div class="spec"><b>Case / 40 mm steel</b>Polished and brushed by hand<br>Sapphire crystal, anti-reflective</div>
+        <div class="spec"><b>Dial / Galvanic silver</b>Applied gold indexes<br>Small seconds at six</div>
+        <div class="spec"><b>Water resistance</b>Five atmospheres<br>Screw-down crown</div>
+        <div class="calibre"><span>Movement</span><b>36</b><small>jewels / in-house calibre</small></div>
+      </aside>
+    </main>
+    <footer><span><b>Calibre 36</b> / a study in precision</span><span>Assembled in the Jura / regulated by hand</span><span>Reference 036 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const ticks = document.getElementById('ticks');
+      for (let i = 0; i < 60; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
+        tick.style.transform = `translate(-50%,-50%) rotate(${i * 6}deg)`;
+        ticks.appendChild(tick);
+      }
+      const numerals = ['12','1','2','3','4','5','6','7','8','9','10','11'];
+      numerals.forEach((num, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'numeral';
+        const angle = (i / 12) * Math.PI * 2;
+        const r = 40;
+        const x = 50 + Math.sin(angle) * r, y = 50 - Math.cos(angle) * r;
+        wrap.style.left = x + '%'; wrap.style.top = y + '%';
+        wrap.innerHTML = '<span>' + num + '</span>';
+        ticks.appendChild(wrap);
+      });
+      const hourHand = document.getElementById('hourHand');
+      const minuteHand = document.getElementById('minuteHand');
+      const secondHand = document.getElementById('secondHand');
+      const tinyHand = document.getElementById('tinyHand');
+      const dateWin = document.getElementById('dateWin');
+      function tick() {
+        const now = new Date();
+        const ms = now.getMilliseconds() / 1000;
+        const s = now.getSeconds() + ms;
+        const m = now.getMinutes() + s / 60;
+        const h = now.getHours() % 12 + m / 60;
+        hourHand.style.transform = `translateX(-50%) rotate(${h / 12 * 360}deg)`;
+        minuteHand.style.transform = `translateX(-50%) rotate(${m / 60 * 360}deg)`;
+        secondHand.style.transform = `translateX(-50%) rotate(${s / 60 * 360}deg)`;
+        tinyHand.style.transform = `translate(-50%,-100%) rotate(${s / 60 * 360}deg)`;
+        dateWin.textContent = String(now.getDate()).padStart(2, '0');
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+  </script>
+</body>
+</html>

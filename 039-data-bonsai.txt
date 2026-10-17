@@ -1,0 +1,17 @@
+TITLE: Data Bonsai — A Tree Shaped by Numbers
+
+PROMPT:
+Create "Data Bonsai," a self-contained generative cultivation toy that draws a bonsai tree from four environmental inputs. Use warm rice paper, forest ink, moss green, clay and water blue. Compose a three-column layout with a serif "Data bonsai" headline and short notes, a central Canvas-drawn bonsai with curved brown branches, many small green leaves and a terracotta pot, and a right-hand panel with four sliders (Sunlight, Water, Wind, Time) plus a Grow a new specimen button. Each slider should visibly change branch density, leaf count, curvature, wind bias and tree depth, while live statistics show leaf count, branch count and health. The tree must feel organic and hand-drawn, with subtle golden light behind it. Everything inline and offline; no external assets, fonts, libraries or network calls. Responsive, valid HTML5.
+
+DESCRIPTION:
+A horticultural simulator for an imaginary plant that grows from parameters rather than sunlight. The drawing is delicate and diagrammatic, and the controls turn environmental care into a small act of authorship.
+
+MAJOR VISUAL TECHNIQUES:
+- Recursive Canvas 2D branching with randomised curvature and tapering
+- Per-leaf color variation and hand-drawn stem lines
+- Terracotta pot illustration with soil speckles
+- Four live parameters driving growth, health and density
+- Seed-based regeneration and warm radial studio light
+
+INTERACTION MODEL:
+Drag Sunlight, Water, Wind and Time to reshape the tree in real time. Sunlight increases leaf density, water extends branch length, wind bends growth and time deepens the recursive generations. The Grow button generates an entirely new specimen with a fresh random seed.

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0d10">
+  <meta name="description" content="Vanishing Point — a room made entirely of reflections.">
+  <title>Vanishing Point — A Study in Reflection</title>
+  <style>
+    :root {
+      --void: #07090b;
+      --ink: #eef0e8;
+      --dim: #77818a;
+      --cyan: #8ff0e2;
+      --rose: #f4a7b9;
+      --line: rgba(238,240,232,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--cyan); color: var(--void); }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--void); color: var(--ink); font-family: var(--sans); overflow: hidden; }
+    canvas#hall { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; cursor: crosshair; }
+    .grain { position: fixed; inset: 0; z-index: 3; pointer-events: none; opacity: .09; mix-blend-mode: screen; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .ui { position: relative; z-index: 2; height: 100vh; min-height: 520px; display: flex; flex-direction: column; padding: 20px clamp(16px, 3.5vw, 50px) 17px; pointer-events: none; }
+    .ui button, .ui input { pointer-events: auto; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+    .brand { font-family: var(--mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; font-weight: 400; letter-spacing: -.02em; text-transform: none; margin-bottom: 4px; }
+    .head { display: flex; gap: clamp(16px, 3.4vw, 40px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .09em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: flex; align-items: flex-end; justify-content: space-between; gap: 25px; padding: 18px 0 12px; }
+    .hero { max-width: 560px; }
+    .kicker { display: flex; align-items: center; gap: 9px; margin: 0 0 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .17em; text-transform: uppercase; color: var(--cyan); }
+    .kicker::before { content: ""; width: 26px; height: 1px; background: linear-gradient(90deg, var(--cyan), var(--rose)); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(62px, 11vw, 155px); line-height: .7; letter-spacing: -.085em; }
+    h1 em { display: block; margin-left: clamp(24px, 8vw, 110px); color: transparent; -webkit-text-stroke: 1px var(--cyan); font-style: italic; }
+    .hero p { max-width: 280px; margin: 25px 0 0 clamp(0px, 9vw, 120px); font-family: var(--serif); font-size: 13px; line-height: 1.55; color: #a4adb2; }
+    aside { text-align: right; font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); min-width: 150px; }
+    aside b { display: block; font-family: var(--serif); font-size: 21px; font-weight: 400; letter-spacing: -.02em; text-transform: none; color: var(--ink); margin-bottom: 3px; }
+    .control { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 8px; }
+    .control label { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 6px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    input[type="range"] { width: 100%; margin-top: 7px; accent-color: var(--cyan); cursor: ew-resize; }
+    .modes { display: flex; gap: 4px; margin-top: 9px; justify-content: flex-end; }
+    .modes button { border: 1px solid var(--line); background: transparent; color: var(--dim); font: inherit; font-family: var(--mono); font-size: 5px; letter-spacing: .07em; text-transform: uppercase; padding: 5px 6px; cursor: pointer; }
+    .modes button:hover, .modes button.active { color: var(--void); background: var(--cyan); border-color: var(--cyan); }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--cyan); }
+    @media (max-width: 760px) {
+      main { flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 14px; }
+      h1 { font-size: clamp(58px, 17vw, 105px); }
+      h1 em { margin-left: 6vw; }
+      .hero p { margin-left: 0; font-size: 11px; max-width: 260px; }
+      aside { width: 100%; display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; text-align: left; }
+      .control { flex: 1; border-top: 1px solid var(--line); }
+      .modes { justify-content: flex-start; }
+      .head div:nth-child(2) { display: none; }
+    }
+    @media (max-width: 520px) {
+      .ui { padding: 13px 13px 14px; height: 100svh; }
+      .hero p { font-size: 10px; max-width: 225px; }
+      aside { display: block; }
+      aside > div:first-child { display: none; }
+      .control { margin-top: 0; }
+      footer { font-size: 5px; }
+      footer span:nth-child(2) { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="hall" aria-label="A room of infinite mirrors"></canvas>
+  <div class="grain"></div>
+  <div class="ui">
+    <header>
+      <div class="brand"><b>Vanishing Point</b>Mirror study / no. 042</div>
+      <div class="head"><div>Reflections<br><b id="depthRead">24</b></div><div>Room<br><b>Octagonal</b></div><div>Light<br><b id="modeName">Cold</b></div></div>
+    </header>
+    <main>
+      <section class="hero">
+        <p class="kicker">A room made of looking back</p>
+        <h1>Vanish<em>ing point</em></h1>
+        <p>Stand in the centre and the room repeats itself until the light gives up. Move the pointer to lean the mirrors.</p>
+      </section>
+      <aside>
+        <div><b id="countRead">128</b>Visible rooms<br>No exit located</div>
+        <div class="control"><label for="depth"><span>Recursion</span><span id="depthVal">24</span></label><input id="depth" type="range" min="4" max="48" value="24" aria-label="Recursion depth"></div>
+        <div class="modes"><button class="active" type="button" data-mode="cold">Cold</button><button type="button" data-mode="warm">Warm</button><button type="button" data-mode="noir">Noir</button></div>
+      </aside>
+    </main>
+    <footer><span><b>Vanishing Point</b> / a study in reflection</span><span>Click to disturb the light</span><span>No. 042 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const canvas = document.getElementById('hall');
+      const ctx = canvas.getContext('2d');
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const modes = {
+        cold: { mirror: '#8ff0e2', accent: '#f4a7b9', glow: 'rgba(143,240,226,.2)' },
+        warm: { mirror: '#ffcf9e', accent: '#ff9c7a', glow: 'rgba(255,207,158,.22)' },
+        noir: { mirror: '#e8e8e2', accent: '#9c9c96', glow: 'rgba(232,232,226,.12)' }
+      };
+      let w, h, dpr, t = 0, mode = 'cold', pointer = { x: .5, y: .5, tx: .5, ty: .5 };
+      let depth = 24;
+      const ripples = [];
+      function resize() {
+        dpr = Math.min(devicePixelRatio || 1, 2); w = innerWidth; h = innerHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      function frame(cx, cy, size, i, total) {
+        const ratio = i / total;
+        const angle = (t * .04 + ratio * 1.2) * (1 - ratio * .55);
+        const skew = (pointer.x - .5) * .12 * (1 - ratio);
+        const skewY = (pointer.y - .5) * .08 * (1 - ratio);
+        const s = size * .78;
+        const color = modes[mode];
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle * .16);
+        ctx.transform(1, skewY, skew, 1, 0, 0);
+        ctx.strokeStyle = color.mirror;
+        ctx.globalAlpha = .22 + (1 - ratio) * .5;
+        ctx.lineWidth = Math.max(.4, 1.6 - ratio * 1.3);
+        const sides = 8;
+        const r = size * .5;
+        ctx.beginPath();
+        for (let k = 0; k <= sides; k++) {
+          const a = k / sides * Math.PI * 2 + Math.PI / 8;
+          const x = Math.cos(a) * r, y = Math.sin(a) * r * .78;
+          k === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.closePath(); ctx.stroke();
+        if (i % 4 === 0) {
+          ctx.strokeStyle = color.accent; ctx.globalAlpha = .16 + (1 - ratio) * .3;
+          ctx.beginPath(); ctx.moveTo(-r * .28, 0); ctx.lineTo(r * .28, 0); ctx.moveTo(0, -r * .28); ctx.lineTo(0, r * .28); ctx.stroke();
+        }
+        if (i === total - 1) {
+          const g = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(4, s * .35));
+          g.addColorStop(0, color.mirror); g.addColorStop(1, 'transparent');
+          ctx.globalAlpha = .75; ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(0, 0, Math.max(4, s * .35), 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.restore();
+        if (i < total - 1) frame(cx + Math.sin(angle) * size * .03, cy + Math.cos(angle) * size * .02, s, i + 1, total);
+      }
+      function draw() {
+        t += reduce ? .001 : .005;
+        pointer.x += (pointer.tx - pointer.x) * .045; pointer.y += (pointer.ty - pointer.y) * .045;
+        ctx.clearRect(0, 0, w, h);
+        const g = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) * .7);
+        g.addColorStop(0, modes[mode].glow); g.addColorStop(.6, 'rgba(7,9,11,.35)'); g.addColorStop(1, 'rgba(7,9,11,1)');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+        const size = Math.min(w, h) * .93;
+        frame(w / 2 + (pointer.x - .5) * 40, h / 2 + (pointer.y - .5) * 26, size, 0, depth);
+        ripples.forEach((r, i) => {
+          r.r += 2.1; r.life -= .012;
+          if (r.life <= 0) { ripples.splice(i, 1); return; }
+          ctx.globalAlpha = r.life * .45; ctx.strokeStyle = modes[mode].mirror; ctx.lineWidth = .7;
+          ctx.beginPath(); ctx.ellipse(r.x, r.y, r.r, r.r * .55, r.rot, 0, Math.PI * 2); ctx.stroke();
+        });
+        ctx.globalAlpha = 1;
+        document.getElementById('countRead').textContent = Math.pow(2, Math.round(depth / 4));
+        if (!reduce) requestAnimationFrame(draw);
+      }
+      addEventListener('pointermove', (e) => { pointer.tx = e.clientX / w; pointer.ty = e.clientY / h; }, { passive: true });
+      addEventListener('pointerdown', (e) => {
+        ripples.push({ x: e.clientX, y: e.clientY, r: 3, life: 1, rot: Math.random() * Math.PI });
+        document.querySelector('footer span:nth-child(2)').textContent = 'Light disturbed / 1 ripple';
+      });
+      document.getElementById('depth').addEventListener('input', (e) => { depth = Number(e.target.value); document.getElementById('depthVal').textContent = depth; document.getElementById('depthRead').textContent = depth; });
+      document.querySelectorAll('[data-mode]').forEach(button => {
+        button.addEventListener('click', () => {
+          mode = button.dataset.mode;
+          document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          document.getElementById('modeName').textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+        });
+      });
+      addEventListener('resize', resize); resize(); draw();
+    })();
+  </script>
+</body>
+</html>

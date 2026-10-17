@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1120">
+  <meta name="description" content="Midnight Observatory — an atlas of borrowed light.">
+  <title>Midnight Observatory — An Atlas of Borrowed Light</title>
+  <style>
+    :root {
+      --night: #0a101e;
+      --ink: #091020;
+      --cream: #eee8d9;
+      --gold: #cdb27a;
+      --ice: #a5c9d8;
+      --rust: #be5e43;
+      --muted: #7a8798;
+      --line: rgba(238,232,217,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "Courier New", Courier, monospace;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--night); }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: var(--night); color: var(--cream); font-family: var(--sans); overflow: hidden; background-image: radial-gradient(ellipse at 50% 35%, rgba(44,67,102,.4), transparent 55%), radial-gradient(ellipse at 90% 85%, rgba(86,48,64,.18), transparent 42%); }
+    canvas#sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .grain { position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: .1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: screen; }
+    .app { position: relative; z-index: 2; min-height: 100vh; padding: 20px clamp(15px, 3.4vw, 48px) 17px; display: flex; flex-direction: column; }
+    header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 11px; }
+    .mark { font-family: var(--mono); font-size: 8px; line-height: 1.7; letter-spacing: .13em; text-transform: uppercase; color: var(--gold); }
+    .mark b { display: block; font-family: var(--serif); font-size: 18px; font-weight: 400; letter-spacing: -.03em; text-transform: none; color: var(--cream); }
+    .mid { text-align: center; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .right { text-align: right; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .right b { color: var(--ice); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(170px, .72fr) minmax(360px, 1.5fr) minmax(190px, .75fr); align-items: center; gap: clamp(12px, 3vw, 40px); min-height: calc(100vh - 115px); }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { margin: 0 0 13px; display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .kicker::before { content: ""; width: 24px; height: 1px; background: var(--rust); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(54px, 8vw, 119px); line-height: .79; letter-spacing: -.075em; }
+    h1 em { display: block; margin-left: clamp(14px, 4vw, 54px); color: var(--gold); font-size: .82em; }
+    .intro p { max-width: 225px; margin: 27px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.6; color: #abb3ba; }
+    .coordinates { margin-top: 35px; border-top: 1px solid var(--line); padding-top: 10px; max-width: 215px; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .coordinates b { color: var(--ice); font-weight: 400; }
+    .chart-wrap { position: relative; align-self: stretch; display: flex; align-items: center; justify-content: center; min-height: 430px; }
+    #chart { width: 100%; max-width: 700px; aspect-ratio: 1; touch-action: none; cursor: grab; }
+    #chart:active { cursor: grabbing; }
+    .chart-label { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); font-family: var(--mono); font-size: 6px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .crosshair { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; transform: translate(-50%,-50%); border: 1px solid rgba(205,178,122,.4); border-radius: 50%; pointer-events: none; }
+    .crosshair::before, .crosshair::after { content: ""; position: absolute; background: rgba(205,178,122,.4); }
+    .crosshair::before { width: 1px; height: 58px; left: 22px; top: -6px; }
+    .crosshair::after { height: 1px; width: 58px; top: 22px; left: -6px; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .index { width: 100%; border-top: 1px solid var(--line); }
+    .constellation { display: flex; align-items: baseline; justify-content: space-between; width: 100%; gap: 10px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--muted); font: inherit; padding: 10px 0; font-family: var(--mono); text-transform: uppercase; cursor: pointer; transition: color .25s, padding .25s; }
+    .constellation:hover, .constellation.active { color: var(--gold); padding-right: 4px; }
+    .constellation .name { font-size: 8px; letter-spacing: .12em; }
+    .constellation .glyph { font-family: var(--serif); font-size: 17px; color: var(--cream); font-style: italic; letter-spacing: -.02em; }
+    .constellation.active .glyph { color: var(--gold); }
+    .lore { margin-top: 24px; width: 100%; border-top: 1px solid var(--line); padding-top: 12px; min-height: 110px; }
+    .lore .latin { font-family: var(--serif); font-style: italic; font-size: 21px; letter-spacing: -.03em; color: var(--gold); }
+    .lore p { margin: 7px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.5; color: #adb5bb; }
+    .lore small { display: block; margin-top: 8px; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .toggles { display: flex; gap: 6px; margin-top: 15px; width: 100%; justify-content: flex-end; }
+    .toggles button { border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-family: var(--mono); font-size: 6px; padding: 7px 8px; text-transform: uppercase; letter-spacing: .07em; cursor: pointer; transition: all .2s; }
+    .toggles button:hover, .toggles button.active { background: var(--gold); color: var(--night); border-color: var(--gold); }
+    footer { display: flex; justify-content: space-between; align-items: center; gap: 17px; border-top: 1px solid var(--line); margin-top: 8px; padding-top: 10px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    footer span:nth-child(2) { color: var(--gold); }
+    .compass { display: inline-flex; gap: 5px; align-items: center; }
+    .compass::before { content: ""; width: 4px; height: 4px; background: var(--rust); border-radius: 50%; }
+    @media (max-width: 960px) {
+      body { overflow-y: auto; }
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; padding-top: 25px; min-height: 0; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1.2fr .8fr; gap: 25px; align-items: start; padding: 15px 0 0; text-align: left; }
+      .index { border-top: 1px solid var(--line); }
+      .lore { margin-top: 0; }
+      .toggles { grid-column: 1 / -1; justify-content: flex-start; margin-top: 0; }
+      h1 { font-size: clamp(52px, 8.5vw, 89px); }
+      .chart-wrap { min-height: 360px; }
+      footer { margin-top: 20px; }
+    }
+    @media (max-width: 640px) {
+      body { overflow-y: auto; }
+      .app { padding: 12px 12px 14px; }
+      header { grid-template-columns: 1fr auto; }
+      .mid { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding-top: 18px; }
+      .intro { align-self: auto; }
+      h1 { font-size: clamp(56px, 17vw, 90px); }
+      h1 em { margin-left: 3px; }
+      .intro p { font-size: 11px; margin-top: 17px; max-width: 270px; }
+      .coordinates { display: none; }
+      .chart-wrap { min-height: 0; margin: 0 auto; width: 100%; }
+      #chart { width: 96vw; max-width: 100%; }
+      .chart-label { bottom: 0; font-size: 5px; }
+      .crosshair { width: 29px; height: 29px; }
+      .crosshair::before { height: 37px; left: 13px; top: -5px; }
+      .crosshair::after { width: 37px; top: 13px; left: -5px; }
+      aside { display: block; padding-top: 4px; }
+      .index { display: flex; flex-wrap: wrap; }
+      .constellation { width: 50%; border-bottom: 1px solid var(--line); }
+      .constellation:nth-child(odd) { border-right: 1px solid var(--line); padding-right: 10px; }
+      .constellation:nth-child(even) { padding-left: 10px; }
+      .lore { margin-top: 14px; min-height: 0; }
+      .lore .latin { font-size: 18px; }
+      .lore p { font-size: 12px; }
+      .toggles { justify-content: flex-start; }
+      footer { margin-top: 13px; font-size: 6px; }
+      footer span:nth-child(2) { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="grain"></div>
+  <div class="app">
+    <header>
+      <div class="mark"><b>Midnight Observatory</b>Atlas of borrowed light / No. 020</div>
+      <div class="mid">Northern celestial field<br>Latitude 51° 30′ N</div>
+      <div class="right">Sky at 02:40<br><b>Clear · Moonless</b></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A map of ancient light</p>
+        <h1>Midnight<em>observatory</em></h1>
+        <p>Every star is a letter sent long ago. We stand beneath the archive and read by the light that survives the journey.</p>
+        <div class="coordinates"><span>Field centre <b>00h 42m 44s</b><br>Declination <b>+41° 16′ 09″</b></span></div>
+      </section>
+      <section class="chart-wrap" aria-label="Interactive star chart">
+        <canvas id="chart"></canvas>
+        <div class="crosshair" aria-hidden="true"></div>
+        <div class="chart-label">Drag the field to turn the sky · select a constellation</div>
+      </section>
+      <aside>
+        <div class="index" aria-label="Constellations">
+          <button class="constellation active" type="button" data-name="Orion"><span class="name">Orion</span><span class="glyph">Orion</span></button>
+          <button class="constellation" type="button" data-name="Cassiopeia"><span class="name">Cassiopeia</span><span class="glyph">Cassiopeia</span></button>
+          <button class="constellation" type="button" data-name="Cygnus"><span class="name">Cygnus</span><span class="glyph">Cygnus</span></button>
+          <button class="constellation" type="button" data-name="Lyra"><span class="name">Lyra</span><span class="glyph">Lyra</span></button>
+        </div>
+        <div class="lore"><div class="latin" id="latin">Orion</div><p id="story">The hunter, patient in the winter sky. Three bright stars make his belt; the rest is a rumour of shoulders and a sword.</p><small id="loreMeta">Myth / 1,344 light-years · 7 principal stars</small></div>
+        <div class="toggles"><button type="button" class="active" id="linesBtn">Lines on</button><button type="button" id="labelsBtn">Labels on</button></div>
+      </aside>
+    </main>
+    <footer><span><b>Midnight Observatory</b> / edition 020</span><span class="compass">Field live / use your hands</span><span>Optical atlas · reprint 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const sky = document.getElementById('sky');
+      const chart = document.getElementById('chart');
+      const sctx = sky.getContext('2d');
+      const cctx = chart.getContext('2d');
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let w, h, dpr, cw, ch, chartSize, rotation = .18, spin = .0008, drag = false, lastX = 0, targetRot = rotation;
+      let showLines = true, showLabels = true, selected = 'Orion', t = 0;
+      const constellations = {
+        Orion: { mx: .5, my: .45, latin: 'Orion', story: 'The hunter, patient in the winter sky. Three bright stars make his belt; the rest is a rumour of shoulders and a sword.', meta: 'Myth / 1,344 light-years · 7 principal stars', stars: [[.48,.3],[.6,.36],[.54,.46],[.46,.48],[.37,.54],[.47,.57],[.56,.61],[.42,.7]] },
+        Cassiopeia: { mx: .29, my: .32, latin: 'Cassiopeia', story: 'A queen caught mid-turn on her chair. Five stars draw her shape; the sky keeps her vanity in permanent orbit.', meta: 'Myth / 228-550 light-years · 5 principal stars', stars: [[.17,.22],[.24,.3],[.31,.25],[.38,.33],[.46,.27]] },
+        Cygnus: { mx: .7, my: .62, latin: 'Cygnus', story: 'The swan flies down the bright river of the Milky Way. Its long neck points toward the summer triangle.', meta: 'Myth / 1,500-3,000 light-years · 9 principal stars', stars: [[.61,.45],[.63,.55],[.66,.65],[.69,.74],[.51,.55],[.74,.58],[.58,.36],[.77,.7]] },
+        Lyra: { mx: .47, my: .23, latin: 'Lyra', story: 'A small lyre left beside the road of falling stars. Vega is its voice, bright enough to be heard in the dark.', meta: 'Myth / 25 light-years to Vega · 6 principal stars', stars: [[.43,.14],[.49,.19],[.54,.24],[.46,.28],[.42,.34],[.51,.35]] }
+      };
+      const stars = [];
+      function seeded(n) { let s = n; return () => (s = s * 16807 % 2147483647) / 2147483647; }
+      const rand = seeded(204);
+      function generateStars() {
+        stars.length = 0;
+        for (let i = 0; i < 380; i++) {
+          const a = rand() * Math.PI * 2, r = Math.sqrt(rand()) * .94;
+          stars.push({ a, r, s: rand() * 1.4 + .25, tw: rand() * 5 });
+        }
+      }
+      function resize() {
+        dpr = Math.min(devicePixelRatio || 1, 2); w = innerWidth; h = innerHeight;
+        sky.width = w * dpr; sky.height = h * dpr; sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const rect = chart.getBoundingClientRect(); cw = rect.width; ch = rect.height;
+        chart.width = cw * dpr; chart.height = ch * dpr; cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        chartSize = Math.min(cw, ch); generateStars();
+      }
+      function drawBackground() {
+        sctx.clearRect(0, 0, w, h);
+        const aura = sctx.createRadialGradient(w * .5, h * .4, 0, w * .5, h * .4, Math.max(w, h) * .8);
+        aura.addColorStop(0, 'rgba(32,53,83,.4)'); aura.addColorStop(.55, 'rgba(10,16,30,.1)'); aura.addColorStop(1, 'rgba(10,16,30,0)');
+        sctx.fillStyle = aura; sctx.fillRect(0, 0, w, h);
+        sctx.fillStyle = 'rgba(238,232,217,.5)';
+        stars.forEach((s, i) => {
+          const a = s.a + t * (reduce ? 0 : .00025);
+          const x = w * .5 + Math.cos(a) * s.r * Math.min(w, h) * .53;
+          const y = h * .46 + Math.sin(a) * s.r * Math.min(w, h) * .43;
+          const alpha = .15 + Math.abs(Math.sin(t * .9 + s.tw)) * .55;
+          sctx.globalAlpha = alpha; sctx.beginPath(); sctx.arc(x, y, s.s, 0, Math.PI * 2); sctx.fill();
+        });
+        sctx.globalAlpha = 1;
+      }
+      function drawChart() {
+        cctx.clearRect(0, 0, cw, ch);
+        const cx = cw / 2, cy = ch / 2, R = chartSize * .455;
+        if (rotation < targetRot) rotation += .012;
+        if (rotation > targetRot) rotation -= .012;
+        cctx.save(); cctx.translate(cx, cy);
+        const glow = cctx.createRadialGradient(0, 0, R * .1, 0, 0, R * 1.1);
+        glow.addColorStop(0, 'rgba(18,33,56,.4)'); glow.addColorStop(.78, 'rgba(16,25,43,.22)'); glow.addColorStop(1, 'rgba(9,15,28,0)');
+        cctx.fillStyle = glow; cctx.beginPath(); cctx.arc(0, 0, R * 1.1, 0, Math.PI * 2); cctx.fill();
+        [1, .94, .71, .48, .26].forEach((ratio, idx) => {
+          cctx.beginPath(); cctx.arc(0, 0, R * ratio, 0, Math.PI * 2);
+          cctx.strokeStyle = idx === 0 ? 'rgba(205,178,122,.5)' : `rgba(238,232,217,${.08 + idx * .015})`;
+          cctx.lineWidth = idx === 0 ? 1 : .65; cctx.stroke();
+        });
+        for (let i = 0; i < 72; i++) {
+          const a = i / 72 * Math.PI * 2;
+          const long = i % 6 === 0;
+          cctx.beginPath();
+          cctx.moveTo(Math.cos(a) * R * 1.02, Math.sin(a) * R * 1.02);
+          cctx.lineTo(Math.cos(a) * R * (long ? .95 : .98), Math.sin(a) * R * (long ? .95 : .98));
+          cctx.strokeStyle = long ? 'rgba(205,178,122,.55)' : 'rgba(238,232,217,.2)';
+          cctx.lineWidth = long ? 1.1 : .6; cctx.stroke();
+        }
+        const months = ['OCT','NOV','DEC','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP'];
+        months.forEach((m, i) => {
+          const a = i / 12 * Math.PI * 2 - Math.PI / 2;
+          cctx.fillStyle = 'rgba(205,178,122,.7)'; cctx.font = '7px "Courier New", monospace'; cctx.textAlign = 'center';
+          cctx.fillText(m, Math.cos(a) * R * 1.075, Math.sin(a) * R * 1.075 + 2);
+        });
+        for (let i = 0; i < 260; i++) {
+          const a = i * 2.39996 + rotation, r = ((i * 7919) % 1000) / 1000;
+          const radius = Math.sqrt(r) * R * .88;
+          const alpha = .18 + ((i * 13) % 100) / 210;
+          cctx.beginPath(); cctx.arc(Math.cos(a) * radius, Math.sin(a) * radius, (i % 8 === 0 ? 1.45 : .7), 0, Math.PI * 2);
+          cctx.fillStyle = i % 11 === 0 ? 'rgba(190,94,67,.85)' : `rgba(238,232,217,${alpha})`; cctx.fill();
+        }
+        Object.entries(constellations).forEach(([name, c]) => {
+          const active = selected === name;
+          const points = c.stars.map(([x, y]) => {
+            const ang = Math.atan2(y - .5, x - .5) + rotation;
+            const rad = Math.hypot(x - .5, y - .5) * R * 2;
+            return [Math.cos(ang) * rad, Math.sin(ang) * rad];
+          });
+          if (showLines) {
+            cctx.beginPath(); points.forEach((p, i) => i === 0 ? cctx.moveTo(p[0], p[1]) : cctx.lineTo(p[0], p[1]));
+            cctx.strokeStyle = active ? 'rgba(205,178,122,.8)' : 'rgba(165,201,216,.2)'; cctx.lineWidth = active ? 1 : .6; cctx.stroke();
+          }
+          points.forEach(p => {
+            cctx.beginPath(); cctx.arc(p[0], p[1], active ? 3 : 2, 0, Math.PI * 2);
+            cctx.fillStyle = active ? '#e6cf9d' : 'rgba(238,232,217,.6)'; cctx.fill();
+            if (active) { cctx.beginPath(); cctx.arc(p[0], p[1], 7, 0, Math.PI * 2); cctx.strokeStyle = 'rgba(205,178,122,.25)'; cctx.stroke(); }
+          });
+          if (showLabels && active) {
+            const lx = Math.cos(Math.atan2(c.my - .5, c.mx - .5) + rotation) * R * .78;
+            const ly = Math.sin(Math.atan2(c.my - .5, c.mx - .5) + rotation) * R * .78;
+            cctx.fillStyle = '#cdb27a'; cctx.font = 'italic 13px Georgia, serif'; cctx.textAlign = 'center'; cctx.fillText(name, lx, ly - 12);
+          }
+        });
+        cctx.beginPath(); cctx.arc(0, 0, R * .015, 0, Math.PI * 2); cctx.fillStyle = 'rgba(205,178,122,.55)'; cctx.fill();
+        cctx.restore();
+      }
+      function draw() {
+        t += reduce ? 0 : .008;
+        drawBackground(); drawChart();
+        if (!reduce) requestAnimationFrame(draw);
+      }
+      const nameEl = document.querySelector('.latin');
+      const storyEl = document.getElementById('story');
+      const metaEl = document.getElementById('loreMeta');
+      function select(name) {
+        selected = name;
+        const c = constellations[name];
+        nameEl.textContent = c.latin; storyEl.textContent = c.story; metaEl.textContent = c.meta;
+        document.querySelectorAll('.constellation').forEach(b => b.classList.toggle('active', b.dataset.name === name));
+      }
+      document.querySelectorAll('.constellation').forEach(button => button.addEventListener('click', () => select(button.dataset.name)));
+      document.getElementById('linesBtn').addEventListener('click', (e) => { showLines = !showLines; e.currentTarget.textContent = 'Lines ' + (showLines ? 'on' : 'off'); e.currentTarget.classList.toggle('active', showLines); });
+      document.getElementById('labelsBtn').addEventListener('click', (e) => { showLabels = !showLabels; e.currentTarget.textContent = 'Labels ' + (showLabels ? 'on' : 'off'); e.currentTarget.classList.toggle('active', showLabels); });
+      chart.addEventListener('pointerdown', (e) => { drag = true; lastX = e.clientX; chart.setPointerCapture(e.pointerId); });
+      chart.addEventListener('pointermove', (e) => { if (!drag) return; const delta = (e.clientX - lastX) * .008; rotation += delta; targetRot = rotation; lastX = e.clientX; });
+      chart.addEventListener('pointerup', () => { drag = false; });
+      chart.addEventListener('pointercancel', () => { drag = false; });
+      addEventListener('resize', () => { resize(); drawChart(); });
+      resize(); select('Orion'); draw();
+    })();
+  </script>
+</body>
+</html>

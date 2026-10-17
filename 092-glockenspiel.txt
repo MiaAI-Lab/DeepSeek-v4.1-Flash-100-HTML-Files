@@ -1,0 +1,17 @@
+TITLE: The Glockenspiel — A Clock Tower That Performs
+
+PROMPT:
+Create "The Glockenspiel," a self-contained clock-tower page with an hourly performance. Use slate blue-grey stone, brass, cream and oxblood. Compose a three-column square: an editorial "The glockenspiel" title and three mechanism buttons (advance an hour, strike the hour, set to 10:10); a tall tower with spire, belfry containing three swinging bells, a large clock face with twelve numerals and rotating hands, a balcony with king, queen and piper figures, a stone base and a chime ring; and a panel with tower name, history, three figures, build data and a performance log. The hands should advance to the correct angle for each hour; striking should swing the bells, turn the figures, fire the chime ring and write the log, then return to rest. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A small piece of civic theatre. The tower is built from flat, confident geometry, and the performance is short enough to watch — three bells, three figures and a ring of sound made visible.
+
+MAJOR VISUAL TECHNIQUES:
+- CSS clock tower with spire, belfry, clock body and base
+- Clock face with generated numerals and rotating hands
+- Animated bell swings, figure turns and expanding chime ring
+- State machine for rest/performance with log updates
+- Slate, brass and oxblood civic palette
+
+INTERACTION MODEL:
+Press "Advance an hour" to move the hands forward; at twelve the performance starts automatically. Press "Strike the hour" to set the time to the hour and perform. "Set to 10:10" restores the default. The log and state readout follow along.

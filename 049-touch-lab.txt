@@ -1,0 +1,17 @@
+TITLE: Touch Lab — Nine Small Interactions
+
+PROMPT:
+Create "Touch Lab," a self-contained micro-interaction showcase presented as a designer's workbench. Use near-black graphite, off-white type, and three accent colors: lime, pink and sky blue. Build a dense but elegant three-by-three grid of cards, each containing a working interaction: a magnetic button that follows the pointer, an elastic toggle switch, a checkbox with a drawn check stroke, a hold-to-confirm button with a filling progress state, an expanding search field with focus glow, a rolling counter, a slide-to-send pill, a 3D tilt card and a tiny particle celebration button. Each card has a title, subtitle and live readout. No external assets, fonts, libraries or network requests. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A cabinet of small delights. Each specimen isolates one gesture and gives it enough polish to feel expensive: the spring in the toggle, the ink-like check, the deliberate friction of a hold.
+
+MAJOR VISUAL TECHNIQUES:
+- Pointer-tracked magnetic translation
+- Spring-eased toggle and tilt-with-cursor
+- SVG stroke-dashoffset check animation
+- Hold-to-confirm progress fill and state change
+- Particle burst and live readout typography
+
+INTERACTION MODEL:
+Every widget is genuinely interactive: move over the magnetic button, click the switch, approve the checkbox, press and hold to confirm, type in search, increment the counter, slide to send, tilt the card with the pointer, and press the star to release a small celebration.

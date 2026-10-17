@@ -1,0 +1,17 @@
+TITLE: Horizon 068 — A City at Every Hour
+
+PROMPT:
+Create "Horizon 068," a self-contained full-screen city skyline that changes with the time of day. Use midnight blue, dusk violet, sunrise apricot, noon haze and warm window amber. Build the scene from layered SVG building silhouettes generated in JavaScript with deterministic pseudo-random widths, heights, rooftop tanks and antennas, plus a near layer of small amber windows. Add a radial sun that travels an arc between sunrise and sunset, a twinkling star field, a horizon glow, a vignette and a dark ground plane. Overlay an editorial "A city at every hour" title, a large digital clock, a phase label and a bottom glass control bar with a 24-hour slider, sunrise/sunset times and sun elevation. Scrubbing the slider should interpolate sky gradients, sun position and colour, star opacity, window lights and all readouts. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A city viewed from a fixed vantage point across a whole day. The buildings never move; only the light, the windows and the stars do, which is enough to make the place feel inhabited.
+
+MAJOR VISUAL TECHNIQUES:
+- Procedural layered SVG skyline with deterministic building generation
+- Per-window light activation tied to dusk and dawn
+- Colour interpolation across ten time-of-day keyframes
+- Sun arc, radial glow and twinkling star field
+- Glass control bar with live clock, phase and elevation readouts
+
+INTERACTION MODEL:
+Drag the 24-hour slider to move through the day. The sky, sun, stars, horizon haze, window lights, clock, light-phase name and sun elevation all update continuously. The scene begins at golden hour, 18:40.

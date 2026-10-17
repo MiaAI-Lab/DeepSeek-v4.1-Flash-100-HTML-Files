@@ -1,0 +1,17 @@
+TITLE: Ten Words for a Window — Concrete Poetry
+
+PROMPT:
+Create "Ten Words for a Window," a self-contained interactive concrete-poetry broadside. Use a warm paper ground, hard black ink, Klein blue, vermilion and a single sun-yellow. Arrange exactly ten poetic words — "window a sentence city the is light wrote in a" — as an asymmetric typographic sculpture across the page, with one monumental sans "window," an outlined "light," a black boxed "city," and intimate serif fragments. Include broadside masthead, poem score, colophon and register microcopy. Provide three alternate readings called Silence, City and Tide that smoothly reposition the whole poem into distinct visual compositions, plus a Scatter action that disturbs the layout. Individual words should be clickable and movable. Use only inline HTML, CSS and JavaScript; no external assets, fonts or libraries. Responsive, offline, standard HTML5.
+
+DESCRIPTION:
+A living typographic score in which a ten-word poem can be read as three different visual compositions. The restrained paper palette and editorial framing let the spatial choreography of words carry all the emotion.
+
+MAJOR VISUAL TECHNIQUES:
+- Absolute concrete-poetry composition with mixed serif, grotesk and monospace voices
+- Animated re-composition using CSS transitions and custom placement data
+- Outlined display type, solid blocks and rotating text
+- Fine-rule broadside framing and radial pointer light
+- Playful word-level animation and click disruption
+
+INTERACTION MODEL:
+Choose Silence, City or Tide to morph the poem into a new composition and reading number. Press Scatter to add controlled chaos. Click any individual word to nudge it somewhere new; move the pointer to cast a soft yellow light behind the poem.

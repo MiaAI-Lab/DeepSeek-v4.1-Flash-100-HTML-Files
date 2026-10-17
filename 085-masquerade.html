@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f2830">
+  <meta name="description" content="The Masquerade — four masks for one long night.">
+  <title>The Masquerade — Four Masks for One Long Night</title>
+  <style>
+    :root {
+      --teal: #0f2830;
+      --teal2: #173a44;
+      --gold: #c9a25e;
+      --ivory: #efe4cd;
+      --wine: #6e2532;
+      --dim: #8298a0;
+      --line: rgba(239,228,205,.17);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--teal); }
+    body { margin: 0; min-height: 100vh; background: var(--teal); color: var(--ivory); font-family: var(--sans); overflow-x: hidden; }
+    .atelier { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 38%, #1d4652, #08181e 72%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--ivory); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ivory); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .58fr) minmax(280px, 1.15fr) minmax(195px, .78fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 5vw, 62px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--gold); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--wine); }
+    .intro p { max-width: 195px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #bdc6c2; }
+    .masks { margin-top: 14px; border-top: 1px solid var(--line); }
+    .masks h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .mask-btn { display: flex; justify-content: space-between; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 4px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: color .2s, padding .2s; }
+    .mask-btn b { font-family: var(--serif); font-size: 12px; font-weight: 400; color: var(--ivory); }
+    .mask-btn span { font-family: var(--mono); font-size: 4px; letter-spacing: .05em; text-transform: uppercase; }
+    .mask-btn:hover, .mask-btn.active { color: var(--gold); padding-left: 4px; }
+    .mask-btn.active b { color: var(--gold); }
+    .stage { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .mask-frame { position: relative; width: min(100%, 380px); aspect-ratio: .88; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 45%, rgba(201,162,94,.14), transparent 64%); }
+    .mask-frame::before { content: ""; position: absolute; inset: 7%; border: 1px solid rgba(201,162,94,.28); border-radius: 50%; }
+    .mask-frame::after { content: ""; position: absolute; inset: 12%; border: 1px dashed rgba(239,228,205,.1); border-radius: 50%; }
+    .mask-frame svg { width: 85%; height: 85%; overflow: visible; position: relative; z-index: 2; }
+    .mask-face { transition: fill .5s, stroke .5s; }
+    .mask-g { cursor: pointer; }
+    .stage-caption { font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); text-align: center; line-height: 1.8; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .card { border-top: 1px solid var(--line); padding-top: 6px; }
+    .card h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card .name { font-family: var(--serif); font-size: 25px; letter-spacing: -.03em; line-height: 1; color: var(--gold); }
+    .card .sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ivory); margin-top: 2px; }
+    .card .note { margin: 6px 0 0; font-family: var(--serif); font-size: 10.5px; line-height: 1.5; color: #bdc6c2; min-height: 62px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .data div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--ivory); font-weight: 400; }
+    .traits { margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap; }
+    .traits span { border: 1px solid rgba(201,162,94,.4); padding: 2px 5px; font-family: var(--mono); font-size: 3.6px; letter-spacing: .05em; text-transform: uppercase; color: var(--gold); }
+    .note-box { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--mono); font-size: 4px; line-height: 1.8; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .note-box b { color: var(--ivory); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .72fr 1.28fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .card { grid-column: 1; }
+      .data { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .traits { grid-column: 2; }
+      .note-box { grid-column: 1; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .atelier { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .masks { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-top: 7px; }
+      .masks h2 { grid-column: 1 / -1; }
+      .mask-btn { padding: 2px 0; }
+      .mask-btn b { font-size: 9px; }
+      .mask-btn span { display: none; }
+      .stage { order: 2; }
+      .mask-frame { width: 240px; }
+      aside { order: 3; display: block; }
+      .card .name { font-size: 19px; }
+      .card .note { min-height: 0; font-size: 9px; }
+      .data, .traits, .note-box { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="atelier">
+    <header>
+      <div class="brand"><b>The Masquerade</b>Mask atelier / Venice 085</div>
+      <div class="head"><div>Ball<br><b>Palazzo Vero</b></div><div>Masks<br><b>Four</b></div><div>Hour<br><b>Midnight</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Four masks, one long night</p>
+        <h1>The<em>masquerade</em></h1>
+        <p>A mask does not hide the face so much as decide which face is allowed out. These four have been chosen for the twelve hours between the first bell and the last.</p>
+        <div class="masks" id="masks">
+          <h2>Masks</h2>
+          <button class="mask-btn active" type="button" data-m="0"><b>Colombina</b><span>Half</span></button>
+          <button class="mask-btn" type="button" data-m="1"><b>Bauta</b><span>Full</span></button>
+          <button class="mask-btn" type="button" data-m="2"><b>Moretta</b><span>Oval</span></button>
+          <button class="mask-btn" type="button" data-m="3"><b>Medico</b><span>Beak</span></button>
+        </div>
+      </section>
+      <section class="stage">
+        <div class="mask-frame">
+          <svg id="maskSvg" viewBox="0 0 300 340" aria-label="Venetian mask">
+            <defs>
+              <radialGradient id="maskShade" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#fff8e7"/><stop offset=".55" stop-color="#efe1c2"/><stop offset="1" stop-color="#bda77f"/></radialGradient>
+              <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b2b36"/><stop offset="1" stop-color="#4b131b"/></linearGradient>
+            </defs>
+            <path d="M150 30 C96 30 62 68 62 124 C62 180 90 224 124 252 C136 262 144 266 150 266 C156 266 164 262 176 252 C210 224 238 180 238 124 C238 68 204 30 150 30Z" fill="url(#maskShade)" stroke="#8e7a54" stroke-width="1.2" class="mask-face" id="face"/>
+            <path d="M64 130 C46 118 30 126 30 146 C30 166 44 178 62 178 C58 162 58 146 64 130Z" fill="url(#ribbon)" opacity=".85"/>
+            <path d="M236 130 C254 118 270 126 270 146 C270 166 256 178 238 178 C242 162 242 146 236 130Z" fill="url(#ribbon)" opacity=".85"/>
+            <path d="M84 142 C98 126 118 118 136 124 C146 128 150 138 146 148 C138 164 112 176 94 170 C82 166 78 154 84 142Z" fill="#1a1210" opacity=".86"/>
+            <path d="M216 142 C202 126 182 118 164 124 C154 128 150 138 154 148 C162 164 188 176 206 170 C218 166 222 154 216 142Z" fill="#1a1210" opacity=".86"/>
+            <path d="M150 168 C146 178 146 190 150 198 C154 190 154 178 150 168Z" fill="#8e7a54" opacity=".5"/>
+            <g id="extra"></g>
+            <path d="M62 124 C84 116 108 112 150 112 C192 112 216 116 238 124" fill="none" stroke="#c9a25e" stroke-width="1.4" opacity=".8"/>
+            <path d="M84 84 C110 70 190 70 216 84" fill="none" stroke="#c9a25e" stroke-width="1" stroke-dasharray="2 4" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="stage-caption">Atelier 085 / hand-formed leather<br>Trim: gold leaf · ribbon: silk</div>
+      </section>
+      <aside>
+        <div class="card">
+          <h2>Selected mask</h2>
+          <div class="name" id="maskName">Colombina</div>
+          <div class="sub" id="maskSub">The half-mask · commedia</div>
+          <p class="note" id="maskNote">The most flirtatious of the four: a half-mask that leaves the mouth free for talking, drinking and the kind of smile that is meant to be seen.</p>
+        </div>
+        <div class="data">
+          <div><span>Form</span><b id="formRead">Half</b></div>
+          <div><span>Cover</span><b id="coverRead">Eyes</b></div>
+          <div><span>Material</span><b id="matRead">Leather</b></div>
+          <div><span>Weight</span><b id="weightRead">42 g</b></div>
+          <div><span>Voice</span><b id="voiceRead">Clear</b></div>
+          <div><span>Hour</span><b id="hourRead">First</b></div>
+        </div>
+        <div class="traits" id="traits"><span>Flirtation</span><span>Wit</span><span>Concealment</span></div>
+        <div class="note-box"><b>Wearing note</b><br><span id="wearNote">Tie the ribbon snugly at the back of the head. The mask should move with the face, not against it.</span></div>
+      </aside>
+    </main>
+    <footer><span><b>The Masquerade</b> / four masks for one long night</span><span>A face is a costume with a pulse</span><span>Atelier 085 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const masks = [
+        { name: 'Colombina', sub: 'The half-mask · commedia', form: 'Half', cover: 'Eyes', mat: 'Leather', weight: '42 g', voice: 'Clear', hour: 'First', shade: '#efe1c2', note: 'The most flirtatious of the four: a half-mask that leaves the mouth free for talking, drinking and the kind of smile that is meant to be seen.', traits: ['Flirtation','Wit','Concealment'], wear: 'Tie the ribbon snugly at the back of the head. The mask should move with the face, not against it.', extra: '' },
+        { name: 'Bauta', sub: 'The full mask · citizen', form: 'Full', cover: 'Whole face', mat: 'Papier-mâché', weight: '68 g', voice: 'Muffled', hour: 'Second', shade: '#f4ead4', note: 'A full mask with a jutting chin, worn with a tricorn hat and a black cloak. It leaves the mouth free to eat and speak, while making the wearer almost impossible to identify.', traits: ['Anonymity','Civic','Equality'], wear: 'Wear with the cloak closed and the hat low. The chin projects so that the voice carries forward, not down.', extra: '<path d="M150 240 C132 262 118 280 118 300 C118 320 132 330 150 330 C168 330 182 320 182 300 C182 280 168 262 150 240Z" fill="url(#maskShade)" stroke="#8e7a54" stroke-width="1.2"/><path d="M150 268 C144 286 142 304 146 318" fill="none" stroke="#8e7a54" stroke-width=".8" opacity=".6"/>' },
+        { name: 'Moretta', sub: 'The oval · mute', form: 'Oval', cover: 'Whole face', mat: 'Velvet', weight: '35 g', voice: 'Silent', hour: 'Third', shade: '#e7d7b8', note: 'A small black oval held in place by a button between the teeth. It makes silence into a costume, and it turns the whole body into the instrument of expression.', traits: ['Silence','Mystery','Stillness'], wear: 'Hold the inner button gently between the teeth. Do not attempt to speak; that is rather the point.', extra: '<ellipse cx="150" cy="148" rx="88" ry="112" fill="#241a1c" opacity=".85"/><ellipse cx="150" cy="148" rx="74" ry="98" fill="none" stroke="#c9a25e" stroke-width="1" opacity=".55"/>' },
+        { name: 'Medico', sub: 'The beak · plague doctor', form: 'Beak', cover: 'Whole face', mat: 'Leather', weight: '96 g', voice: 'Hollow', hour: 'Last', shade: '#e3d2ae', note: 'A long beak filled with herbs, and two round lenses. Worn by plague doctors in the seventeenth century and by everyone else at parties ever since.', traits: ['Distance','Ritual','Herbs'], wear: 'Fill the beak with dried rosemary and lavender. The lenses are glass; breathe slowly and keep your distance.', extra: '<path d="M150 178 C136 190 120 220 108 250 C104 260 108 268 118 270 C132 272 142 250 150 232 C158 250 168 272 182 270 C192 268 196 260 192 250 C180 220 164 190 150 178Z" fill="url(#maskShade)" stroke="#8e7a54" stroke-width="1.2"/><path d="M132 160 C124 154 112 152 104 158 C112 168 126 170 136 166Z" fill="#3b4a44" opacity=".7"/><path d="M168 160 C176 154 188 152 196 158 C188 168 174 170 164 166Z" fill="#3b4a44" opacity=".7"/>' }
+      ];
+      function select(i) {
+        const m = masks[i];
+        document.querySelectorAll('.mask-btn').forEach((b, k) => b.classList.toggle('active', k === i));
+        document.getElementById('maskName').textContent = m.name;
+        document.getElementById('maskSub').textContent = m.sub;
+        document.getElementById('maskNote').textContent = m.note;
+        document.getElementById('formRead').textContent = m.form;
+        document.getElementById('coverRead').textContent = m.cover;
+        document.getElementById('matRead').textContent = m.mat;
+        document.getElementById('weightRead').textContent = m.weight;
+        document.getElementById('voiceRead').textContent = m.voice;
+        document.getElementById('hourRead').textContent = m.hour;
+        document.getElementById('traits').innerHTML = m.traits.map(t => '<span>' + t + '</span>').join('');
+        document.getElementById('wearNote').textContent = m.wear;
+        document.getElementById('extra').innerHTML = m.extra;
+        document.getElementById('face').setAttribute('fill', m.shade);
+        document.getElementById('face').setAttribute('opacity', i === 2 ? '0' : '1');
+      }
+      document.querySelectorAll('.mask-btn').forEach((b, i) => b.addEventListener('click', () => select(i)));
+      select(0);
+    })();
+  </script>
+</body>
+</html>

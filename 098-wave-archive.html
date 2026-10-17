@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1210">
+  <meta name="description" content="The Wave Archive — eight recordings, one playhead.">
+  <title>The Wave Archive — Eight Recordings, One Playhead</title>
+  <style>
+    :root {
+      --studio: #0a1210;
+      --studio2: #101c19;
+      --cream: #e9f0e4;
+      --phosphor: #7fe0c0;
+      --amber: #e0b25e;
+      --dim: #7f968c;
+      --line: rgba(233,240,228,.15);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--phosphor); color: var(--studio); }
+    body { margin: 0; min-height: 100vh; background: var(--studio); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .archive { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 42%, #18302a, #060c0b 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--phosphor); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(155px, .55fr) minmax(310px, 1.45fr) minmax(185px, .7fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.7vw, 58px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--phosphor); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--amber); }
+    .intro p { max-width: 185px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #b4c4bb; }
+    .records { margin-top: 14px; border-top: 1px solid var(--line); }
+    .records h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .rec-btn { display: flex; justify-content: space-between; align-items: baseline; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 3.5px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: color .2s, padding .2s; }
+    .rec-btn b { font-family: var(--serif); font-size: 10px; font-weight: 400; color: var(--cream); }
+    .rec-btn span { font-family: var(--mono); font-size: 4px; letter-spacing: .04em; text-transform: uppercase; }
+    .rec-btn:hover, .rec-btn.active { color: var(--phosphor); padding-left: 4px; }
+    .rec-btn.active b { color: var(--phosphor); }
+    .scope { border: 1px solid var(--line); background: #08110f; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .scope-top { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    .scope-top b { color: var(--phosphor); font-weight: 400; }
+    .wave-wrap { position: relative; height: clamp(150px, 24vh, 220px); background: repeating-linear-gradient(0deg, rgba(127,224,192,.04) 0 1px, transparent 1px 24px), repeating-linear-gradient(90deg, rgba(127,224,192,.04) 0 1px, transparent 1px 40px); overflow: hidden; }
+    .wave-wrap svg { width: 100%; height: 100%; display: block; }
+    .wave-line { fill: none; stroke: var(--phosphor); stroke-width: .7; vector-effect: non-scaling-stroke; }
+    .wave-fill { fill: rgba(127,224,192,.08); }
+    .playhead { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--amber); left: 0; opacity: 0; }
+    .playhead.on { opacity: 1; animation: sweep linear forwards; }
+    @keyframes sweep { from { left: 0; } to { left: 100%; } }
+    .scope-foot { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+    .scope-foot b { color: var(--cream); font-weight: 400; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .card { border-top: 1px solid var(--line); padding-top: 6px; }
+    .card h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card .name { font-family: var(--serif); font-size: 21px; letter-spacing: -.02em; line-height: 1.05; color: var(--phosphor); }
+    .card .sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--amber); margin-top: 2px; }
+    .card .note { margin: 6px 0 0; font-family: var(--serif); font-size: 10px; line-height: 1.5; color: #b4c4bb; min-height: 52px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 6px; border-top: 1px solid var(--line); padding-top: 4px; }
+    .data div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--cream); font-weight: 400; }
+    .actions { display: flex; gap: 4px; margin-top: 7px; }
+    .actions button { flex: 1; border: 1px solid rgba(127,224,192,.5); background: transparent; color: var(--phosphor); font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 3px; cursor: pointer; transition: background .2s, color .2s; }
+    .actions button:hover { background: var(--phosphor); color: var(--studio); }
+    .actions button.primary { background: var(--phosphor); color: var(--studio); }
+    .spectrum { display: flex; gap: 2px; align-items: flex-end; height: 24px; margin-top: 7px; }
+    .spectrum i { flex: 1; background: var(--phosphor); opacity: .55; transition: height .4s; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--phosphor); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .card { grid-column: 1; }
+      .data { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .actions { grid-column: 2; }
+      .spectrum { grid-column: 1 / -1; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .archive { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 32px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .records { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; }
+      .records h2 { grid-column: 1 / -1; }
+      .rec-btn { padding: 2px 0; }
+      .rec-btn b { font-size: 9px; }
+      .rec-btn span { display: none; }
+      .scope { order: 2; padding: 6px; }
+      .wave-wrap { height: 120px; }
+      aside { order: 3; display: block; }
+      .card .name { font-size: 18px; }
+      .card .note { min-height: 0; font-size: 9px; }
+      .data { display: none; }
+      .spectrum { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="archive">
+    <header>
+      <div class="brand"><b>The Wave Archive</b>Field recordings / reel 098</div>
+      <div class="head"><div>Recordings<br><b>Eight</b></div><div>Medium<br><b>1/4-inch tape</b></div><div>Playback<br><b id="playHead">Stopped</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Eight recordings, one playhead</p>
+        <h1>The wave<em>archive</em></h1>
+        <p>A catalogue of saved sounds: a harbour, a stairwell, a kettle, a field at night. Select a reel and watch the shape of it.</p>
+        <div class="records" id="records">
+          <h2>Reels</h2>
+        </div>
+      </section>
+      <section class="scope">
+        <div class="scope-top"><span id="scopeName">Harbour at 5 a.m.</span><span id="scopeTime">00:00 / 02:14</span></div>
+        <div class="wave-wrap">
+          <svg id="waveSvg" viewBox="0 0 800 200" preserveAspectRatio="none" aria-label="Waveform"><path class="wave-fill" id="waveFill" d=""/><path class="wave-line" id="waveLine" d=""/></svg>
+          <span class="playhead" id="playhead"></span>
+        </div>
+        <div class="scope-foot"><span>Channels <b>1 · mono</b></span><span>Gain <b>−6 dB</b></span><span id="freqRead">Low tide, gulls</span></div>
+        <div class="spectrum" id="spectrum"></div>
+      </section>
+      <aside>
+        <div class="card">
+          <h2>Reel record</h2>
+          <div class="name" id="recName">Harbour at 5 a.m.</div>
+          <div class="sub" id="recSub">Vela harbour · recorded 1968</div>
+          <p class="note" id="recNote">A fishing boat, a rope against a mast, and the small clatter of a harbour waking up. Recorded on a single microphone left on the quay overnight.</p>
+        </div>
+        <div class="data">
+          <div><span>Duration</span><b id="durRead">2:14</b></div>
+          <div><span>Year</span><b id="yearRead">1968</b></div>
+          <div><span>Medium</span><b id="mediumRead">Tape</b></div>
+          <div><span>Character</span><b id="charRead">Distant</b></div>
+          <div><span>Location</span><b id="locRead">Vela</b></div>
+          <div><span>Reel</span><b id="reelRead">098-A</b></div>
+        </div>
+        <div class="actions"><button type="button" class="primary" id="play">Play the reel</button><button type="button" id="stop">Stop</button></div>
+        <div class="spectrum" id="spectrum2" style="height:20px"></div>
+      </aside>
+    </main>
+    <footer><span><b>The Wave Archive</b> / eight recordings, one playhead</span><span>The sound is gone; the shape remains</span><span>Reel 098 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const records = [
+        { name: 'Harbour at 5 a.m.', sub: 'Vela harbour · recorded 1968', dur: 134, year: '1968', medium: 'Tape', char: 'Distant', loc: 'Vela', reel: '098-A', note: 'A fishing boat, a rope against a mast, and the small clatter of a harbour waking up. Recorded on a single microphone left on the quay overnight.', freq: 'Low tide, gulls', shape: 'harbour' },
+        { name: 'Stairwell, four floors', sub: 'Municipal building · 1971', dur: 96, year: '1971', medium: 'Tape', char: 'Reverberant', loc: 'Vela', reel: '098-B', note: 'A door, a cough, and footsteps that take much longer to arrive than they should. The stairwell had a six-second tail and no soft surfaces at all.', freq: 'Footsteps, door', shape: 'stair' },
+        { name: 'Kettle, first boil', sub: 'Kitchen · 1974', dur: 47, year: '1974', medium: 'Cassette', char: 'Intimate', loc: 'Vela', reel: '098-C', note: 'The rising note of a kettle coming to the boil, recorded close enough to hear the element tick as it cools. A domestic sound with an operatic build.', freq: 'Kettle, gas', shape: 'kettle' },
+        { name: 'Field at night', sub: 'Hinterland · 1979', dur: 302, year: '1979', medium: 'Tape', char: 'Wide', loc: 'Hinterland', reel: '098-D', note: 'Crickets, a distant dog, and the wind moving through a hedge. The recordist fell asleep; the tape ran for five hours and this is the last usable minute.', freq: 'Crickets, wind', shape: 'field' },
+        { name: 'Rain on a tin roof', sub: 'Shed on the point · 1983', dur: 181, year: '1983', medium: 'Tape', char: 'Close', loc: 'The Point', reel: '098-E', note: 'A rainstorm recorded from inside a shed, with the microphone under a metal roof. The pattern changes as the storm moves across, and then stops all at once.', freq: 'Rain, thunder', shape: 'rain' },
+        { name: 'Bicycle bell, one street', sub: 'Old town · 1990', dur: 28, year: '1990', medium: 'Cassette', char: 'Bright', loc: 'Vela', reel: '098-F', note: 'One bell, two pushes, and a street of stone that answers back. The shortest recording in the archive and the one most often requested.', freq: 'Bell, stone', shape: 'bell' },
+        { name: 'The market at eleven', sub: 'Market square · 1996', dur: 244, year: '1996', medium: 'Digital', char: 'Dense', loc: 'Vela', reel: '098-G', note: 'A market in full voice: weights, coins, laughter, a crate of lemons going over. There is no single event to listen for, which is exactly what makes it a record.', freq: 'Voices, coins', shape: 'market' },
+        { name: 'Snow, and nothing else', sub: 'Hill road · 2004', dur: 158, year: '2004', medium: 'Digital', char: 'Silent', loc: 'Above Vela', reel: '098-H', note: 'Recorded on a hill road during a heavy snowfall. The microphone picked up almost nothing, which is the point: the silence has a texture and a weight.', freq: 'Silence, snow', shape: 'snow' }
+      ];
+      let current = 0, playing = false, timer = null, elapsed = 0;
+      function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+      const list = document.getElementById('records');
+      records.forEach((r, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'rec-btn' + (i === 0 ? ' active' : '');
+        b.innerHTML = '<b>' + r.name + '</b><span>' + r.reel + '</span>';
+        b.addEventListener('click', () => select(i));
+        list.appendChild(b);
+      });
+      function amps(shape, n) {
+        const out = [];
+        for (let i = 0; i < n; i++) {
+          const t = i / n;
+          let v = .25;
+          if (shape === 'harbour') v = .22 + .2 * Math.sin(t * 8) + .14 * Math.sin(t * 33.3);
+          if (shape === 'stair') v = .5 * Math.exp(-t * 3) + .18 * Math.sin(t * 6);
+          if (shape === 'kettle') v = .12 + .7 * Math.pow(t, 2) + .12 * Math.sin(t * 40);
+          if (shape === 'field') v = .2 + .16 * Math.sin(t * 3) + .1 * Math.sin(t * 17 + 2);
+          if (shape === 'rain') v = .45 + .25 * Math.sin(t * 9) + .18 * Math.sin(t * 27);
+          if (shape === 'bell') v = .6 * Math.exp(-t * 7) + .25 * Math.exp(-t * 2.5);
+          if (shape === 'market') v = .4 + .22 * Math.sin(t * 11) + .16 * Math.sin(t * 29);
+          if (shape === 'snow') v = .05 + .03 * Math.sin(t * 2);
+          out.push(Math.max(.03, Math.min(1, Math.abs(v))));
+        }
+        return out;
+      }
+      function draw() {
+        const r = records[current];
+        const a = amps(r.shape, 200);
+        let line = 'M0 100 ', fill = 'M0 100 ';
+        a.forEach((v, i) => {
+          const x = (i / (a.length - 1)) * 800;
+          const y = 100 - v * 82;
+          line += 'L' + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+          fill += 'L' + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+        });
+        for (let i = a.length - 1; i >= 0; i--) {
+          fill += 'L' + ((i / (a.length - 1)) * 800).toFixed(1) + ' ' + (100 + a[i] * 82).toFixed(1) + ' ';
+        }
+        fill += 'Z';
+        document.getElementById('waveLine').setAttribute('d', line);
+        document.getElementById('waveFill').setAttribute('d', fill);
+        const spec = document.getElementById('spectrum');
+        const spec2 = document.getElementById('spectrum2');
+        const bars = a.filter((_, i) => i % 10 === 0).slice(0, 26);
+        const markup = bars.map(v => '<i style="height:' + Math.round(v * 100) + '%"></i>').join('');
+        spec.innerHTML = markup; spec2.innerHTML = markup;
+      }
+      function select(i) {
+        stopPlayback();
+        current = i;
+        const r = records[i];
+        document.querySelectorAll('.rec-btn').forEach((b, k) => b.classList.toggle('active', k === i));
+        document.getElementById('scopeName').textContent = r.name;
+        document.getElementById('recName').textContent = r.name;
+        document.getElementById('recSub').textContent = r.sub;
+        document.getElementById('recNote').textContent = r.note;
+        document.getElementById('durRead').textContent = fmt(r.dur);
+        document.getElementById('yearRead').textContent = r.year;
+        document.getElementById('mediumRead').textContent = r.medium;
+        document.getElementById('charRead').textContent = r.char;
+        document.getElementById('locRead').textContent = r.loc;
+        document.getElementById('reelRead').textContent = r.reel;
+        document.getElementById('freqRead').textContent = r.freq;
+        document.getElementById('scopeTime').textContent = '00:00 / ' + fmt(r.dur);
+        draw();
+      }
+      function stopPlayback() {
+        playing = false; clearInterval(timer);
+        elapsed = 0;
+        const ph = document.getElementById('playhead');
+        ph.classList.remove('on'); ph.style.animationDuration = '0s';
+        document.getElementById('playHead').textContent = 'Stopped';
+        document.getElementById('play').textContent = 'Play the reel';
+        document.getElementById('scopeTime').textContent = '00:00 / ' + fmt(records[current].dur);
+      }
+      document.getElementById('play').addEventListener('click', () => {
+        if (playing) { stopPlayback(); return; }
+        playing = true;
+        const r = records[current];
+        const ph = document.getElementById('playhead');
+        ph.classList.remove('on'); void ph.offsetWidth;
+        ph.style.animationDuration = Math.min(14, Math.max(4, r.dur / 12)) + 's';
+        ph.classList.add('on');
+        document.getElementById('playHead').textContent = 'Playing';
+        document.getElementById('play').textContent = 'Pause';
+        elapsed = 0;
+        clearInterval(timer);
+        timer = setInterval(() => {
+          elapsed++;
+          document.getElementById('scopeTime').textContent = fmt(elapsed) + ' / ' + fmt(r.dur);
+          if (elapsed >= Math.min(r.dur, 30)) {
+            clearInterval(timer);
+            setTimeout(() => { if (playing) stopPlayback(); }, 400);
+          }
+        }, 400);
+      });
+      document.getElementById('stop').addEventListener('click', stopPlayback);
+      select(0);
+      const bars = document.getElementById('spectrum');
+      for (let i = 0; i < 26; i++) { const b = document.createElement('i'); b.style.height = '30%'; bars.appendChild(b); }
+    })();
+  </script>
+</body>
+</html>

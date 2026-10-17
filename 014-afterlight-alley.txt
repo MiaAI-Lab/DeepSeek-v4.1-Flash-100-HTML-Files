@@ -1,0 +1,17 @@
+TITLE: Afterlight Alley — Open Until the Last Train
+
+PROMPT:
+Create "Afterlight Alley," a self-contained cyberpunk night-market landing page with cinematic depth. Use an almost-black plum sky, hot magenta, electric cyan, amber and rain-washed lilac. Build the scene entirely in CSS: a hazy moon, leaning tower silhouettes with tiny lit windows, a perspective alley with neon signs, a glowing doorway, wet street reflections and overhead wires. Overlay a bold condensed "Open after hours" headline, a time stamp, venue details and a small "Enter the alley" button. Add a Canvas rain layer, scanlines and flickering neon typography. Clicking the signs triggers flickers and signal messages; an Enter action shifts the page atmosphere; a Rain/Clear toggle calms the weather. No external images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A cinematic slice of a nocturnal city that exists only after midnight. Deep plum perspective geometry, neon signage and relentless rain create an atmospheric invitation, while editorial microtype and an understated venue card keep the scene believable.
+
+MAJOR VISUAL TECHNIQUES:
+- Pure-CSS architecture with perspective-transformed alley walls and glowing windows
+- Neon text shadows, flicker keyframes and chromatic cyan/magenta contrast
+- Canvas rain streaks and wet-street gradient reflections
+- Condensed display typography against monospaced wayfinding metadata
+- Scanline overlay and interactive sign pulses
+
+INTERACTION MODEL:
+Hover over or tap any neon sign to make it stutter and reveal a signal message. Press "Enter the alley" to shift the headline color and receive a welcome transmission. Use the Rain / Clear toggle to calm the precipitation and lower the scene's saturation.

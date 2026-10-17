@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2b0d14">
+  <meta name="description" content="Château Verdanne — three vintages from one hillside.">
+  <title>Château Verdanne — Three Vintages from One Hillside</title>
+  <style>
+    :root {
+      --wine: #2b0d14;
+      --oxblood: #561c26;
+      --cream: #f0e6d2;
+      --gold: #c3a267;
+      --sage: #8d9478;
+      --dim: #a58f8c;
+      --line: rgba(240,230,210,.18);
+      --serif: "Bodoni 72", Didot, Georgia, serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--wine); }
+    body { margin: 0; min-height: 100vh; background: var(--wine); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .estate { min-height: 100vh; display: flex; flex-direction: column; padding: 18px clamp(14px, 3vw, 44px) 14px; background: radial-gradient(ellipse at 30% 0%, rgba(86,28,38,.55), transparent 60%), radial-gradient(ellipse at 90% 100%, rgba(86,28,38,.3), transparent 55%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 9px; }
+    .brand { font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .brand b { display: block; font-family: var(--serif); font-size: 17px; letter-spacing: .01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 32px); font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(170px, .7fr) minmax(250px, .92fr) minmax(230px, 1fr); gap: clamp(16px, 3vw, 42px); align-items: center; padding: 14px 0 10px; }
+    .title h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(46px, 6.4vw, 86px); line-height: .78; letter-spacing: -.06em; }
+    .title h1 em { display: block; color: var(--gold); font-style: italic; font-size: .9em; }
+    .title .kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 11px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .title .kicker::before { content: ""; width: 18px; height: 1px; background: var(--gold); }
+    .title p { max-width: 205px; margin: 19px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #c3b0aa; }
+    .vintages { margin-top: 20px; border-top: 1px solid var(--line); }
+    .vintage { display: flex; justify-content: space-between; align-items: baseline; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--dim); padding: 7px 0; cursor: pointer; font: inherit; font-family: var(--mono); text-align: left; transition: color .2s, padding .2s; }
+    .vintage:hover, .vintage.active { color: var(--cream); padding-left: 6px; }
+    .vintage b { font-family: var(--serif); font-size: 21px; font-weight: 400; letter-spacing: -.01em; color: var(--cream); }
+    .vintage.active b { color: var(--gold); }
+    .vintage span { font-size: 5px; letter-spacing: .1em; text-transform: uppercase; }
+    .bottle-stage { display: flex; flex-direction: column; align-items: center; gap: 11px; }
+    .bottle { position: relative; width: clamp(105px, 13vw, 158px); aspect-ratio: .33; filter: drop-shadow(0 22px 28px rgba(0,0,0,.5)); transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+    .bottle:hover { transform: translateY(-6px); }
+    .neck { position: absolute; left: 37%; top: 0; width: 26%; height: 32%; background: linear-gradient(90deg, #1c0a0e, #4b1c25 45%, #211014 60%, #120608); border-radius: 3px 3px 0 0; }
+    .lip { position: absolute; left: 35%; top: 0; width: 30%; height: 5%; background: linear-gradient(90deg, #0f0507, #7c3a3f 50%, #170809); border-radius: 2px; z-index: 2; }
+    .shoulder { position: absolute; left: 0; top: 29%; width: 100%; height: 17%; background: linear-gradient(90deg, #180a0e, #4a1a23 40%, #260f15 70%, #0f0508); border-radius: 42% 42% 12% 12% / 60% 60% 20% 20%; }
+    .bottle-body { position: absolute; left: 0; top: 41%; width: 100%; height: 59%; background: linear-gradient(90deg, #150709, #421720 22%, #2b0e14 55%, #4a1a22 82%, #120608); border-radius: 3px 3px 6px 6px; overflow: hidden; }
+    .bottle-body::before { content: ""; position: absolute; left: 12%; top: 4%; width: 8%; height: 88%; background: linear-gradient(180deg, rgba(240,230,210,.22), rgba(240,230,210,.03)); filter: blur(2px); }
+    .bottle-body::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: rgba(10,3,5,.5); }
+    .label { position: absolute; left: 8%; top: 19%; width: 84%; height: 56%; background: var(--cream); color: var(--wine); z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 5px 3px; box-shadow: 0 2px 7px rgba(0,0,0,.3); }
+    .label .crest { width: 24px; height: 24px; border: 1px solid var(--wine); border-radius: 50%; display: grid; place-items: center; font-family: var(--serif); font-size: 10px; }
+    .label .name { font-family: var(--serif); font-size: clamp(7px, .85vw, 10px); letter-spacing: .08em; line-height: 1; text-align: center; }
+    .label .year { font-family: var(--serif); font-style: italic; font-size: clamp(9px, 1.1vw, 13px); }
+    .label .sub { font-family: var(--mono); font-size: 3.2px; letter-spacing: .1em; text-transform: uppercase; text-align: center; }
+    .label .rule { width: 60%; height: .5px; background: rgba(43,13,20,.5); }
+    .bottle-meta { font-family: var(--mono); font-size: 5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); text-align: center; line-height: 1.9; }
+    .bottle-meta b { color: var(--cream); font-weight: 400; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .tasting { border-top: 1px solid var(--line); padding-top: 8px; }
+    .tasting h2, .blend h2, .soil h2 { margin: 0 0 5px; font-family: var(--mono); font-size: 5px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+    .tasting p { margin: 0; font-family: var(--serif); font-size: 12.5px; line-height: 1.55; color: #cbb9b2; min-height: 74px; }
+    .notes { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
+    .notes span { border: 1px solid rgba(195,162,103,.4); padding: 3px 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+    .blend { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+    .bar { display: flex; height: 7px; margin: 6px 0 5px; border: 1px solid rgba(240,230,210,.22); }
+    .bar div { height: 100%; transition: width .8s ease; }
+    .blend-key { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+    .soil { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+    .soil svg { width: 100%; height: 54px; display: block; }
+    .soil .key { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-top: 2px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .data div { display: flex; justify-content: space-between; gap: 6px; font-family: var(--mono); font-size: 4.5px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--cream); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 7px; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; padding-top: 4px; }
+      .tasting { grid-column: 1; }
+      .blend { grid-column: 2; margin-top: 0; }
+      .soil { grid-column: 2; }
+      .data { grid-column: 1; }
+      .title p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .estate { padding: 10px 11px 12px; }
+      .head div:nth-child(2) { display: none; }
+      .title h1 { font-size: clamp(38px, 13vw, 58px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 9px; padding: 11px 0 9px; }
+      .vintages { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 8px; margin-top: 8px; }
+      .vintage { display: block; border-bottom: 1px solid var(--line); padding: 4px 0; }
+      .vintage b { font-size: 17px; }
+      .vintage span { display: none; }
+      .bottle-stage { order: 2; margin: -4px 0; }
+      .bottle { width: 96px; }
+      aside { order: 3; display: block; }
+      .tasting { padding-top: 6px; }
+      .tasting p { min-height: 0; font-size: 11px; }
+      .notes { margin-top: 5px; }
+      .blend, .soil { margin-top: 8px; padding-top: 6px; }
+      .data { display: none; }
+      footer { font-size: 4.5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="estate">
+    <header>
+      <div class="brand"><b>Château Verdanne</b>Côtes de Garonne / estate no. 059</div>
+      <div class="head"><div>Appellation<br><b>Côtes de Garonne</b></div><div>Soil<br><b>Clay / limestone</b></div><div>Bottles<br><b>4,800</b></div></div>
+    </header>
+    <main>
+      <section class="title">
+        <p class="kicker">One hillside, three years</p>
+        <h1>Château<em>Verdanne</em></h1>
+        <p>A small estate on a south-facing slope above the Garonne. The same vines, the same hands, and three years that could not agree on anything.</p>
+        <div class="vintages" id="vintages">
+          <button class="vintage active" type="button" data-v="0"><b>2019</b><span>Warm / structured</span></button>
+          <button class="vintage" type="button" data-v="1"><b>2020</b><span>Cool / aromatic</span></button>
+          <button class="vintage" type="button" data-v="2"><b>2021</b><span>Late / mineral</span></button>
+        </div>
+      </section>
+      <section class="bottle-stage">
+        <div class="bottle" role="img" aria-label="Bottle of Château Verdanne">
+          <div class="lip"></div><div class="neck"></div><div class="shoulder"></div>
+          <div class="bottle-body">
+            <div class="label">
+              <div class="crest">V</div>
+              <div class="name">CHÂTEAU<br>VERDANNE</div>
+              <div class="rule"></div>
+              <div class="year" id="labelYear">2019</div>
+              <div class="sub" id="labelSub">Côtes de Garonne<br>Mis en bouteille au château</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottle-meta"><span id="bottleBlend">Merlot 62% · Cabernet 30% · Malbec 8%</span><br><b>75 cl</b> · 13.5% vol.</div>
+      </section>
+      <aside>
+        <div class="tasting">
+          <h2>Tasting note</h2>
+          <p id="tastingNote">Black cherry and crushed violet, with a warm note of bay leaf and graphite. The tannins are fine but firm, and the finish stays for a long time.</p>
+          <div class="notes" id="noteTags"><span>Black cherry</span><span>Violet</span><span>Graphite</span><span>Bay</span></div>
+        </div>
+        <div class="blend">
+          <h2>Assemblage</h2>
+          <div class="bar" id="blendBar"><div style="width:62%;background:#6b2330"></div><div style="width:30%;background:#8c3a3a"></div><div style="width:8%;background:#c3a267"></div></div>
+          <div class="blend-key"><span id="blendKey">Merlot 62 / Cab 30 / Malbec 8</span><span id="blendAlt">Aged 14 months</span></div>
+        </div>
+        <div class="soil">
+          <h2>Soil section</h2>
+          <svg viewBox="0 0 300 60" preserveAspectRatio="none" aria-label="Soil cross section">
+            <rect x="0" y="0" width="300" height="12" fill="#5a5540"/>
+            <rect x="0" y="12" width="300" height="16" fill="#7c6f52"/>
+            <rect x="0" y="28" width="300" height="16" fill="#a08a66"/>
+            <rect x="0" y="44" width="300" height="16" fill="#c9c1a8"/>
+            <g stroke="rgba(43,13,20,.35)" stroke-width=".7">
+              <path d="M40 0 v60 M110 0 v60 M190 0 v60 M250 0 v60"/>
+              <path d="M0 12 h300 M0 28 h300 M0 44 h300"/>
+            </g>
+            <g fill="#2b0d14" opacity=".55"><circle cx="62" cy="18" r="1.2"/><circle cx="140" cy="35" r="1.4"/><circle cx="220" cy="22" r="1.1"/><circle cx="270" cy="50" r="1.5"/><circle cx="88" cy="52" r="1.1"/></g>
+            <path d="M0 6 C60 3 100 10 150 7 C200 4 250 9 300 5" fill="none" stroke="#8d9478" stroke-width="1.2"/>
+          </svg>
+          <div class="key"><span>Gravel / topsoil</span><span>Clay</span><span>Limestone</span></div>
+        </div>
+        <div class="data">
+          <div><span>Harvest</span><b id="harvest">Sep 21</b></div><div><span>Alcohol</span><b id="abv">13.5%</b></div>
+          <div><span>Aged</span><b id="aged">14 mo</b></div><div><span>Cases</span><b id="cases">400</b></div>
+        </div>
+      </aside>
+    </main>
+    <footer><span><b>Château Verdanne</b> / three vintages from one hillside</span><span>Hand-picked · fermented in concrete · bottled unfiltered</span><span>Estate 059 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const years = [
+        {
+          year: '2019', note: 'Black cherry and crushed violet, with a warm note of bay leaf and graphite. The tannins are fine but firm, and the finish stays for a long time.',
+          tags: ['Black cherry', 'Violet', 'Graphite', 'Bay'], blend: [62, 30, 8], key: 'Merlot 62 / Cab 30 / Malbec 8', alt: 'Aged 14 months', harvest: 'Sep 21', abv: '13.5%', aged: '14 mo', cases: '400'
+        },
+        {
+          year: '2020', note: 'Cooler and more lifted: redcurrant, rose petal and a fine dusting of white pepper. Lighter on its feet, with acidity that keeps the wine awake.',
+          tags: ['Redcurrant', 'Rose', 'White pepper'], blend: [48, 44, 8], key: 'Merlot 48 / Cab 44 / Malbec 8', alt: 'Aged 11 months', harvest: 'Oct 2', abv: '12.5%', aged: '11 mo', cases: '320'
+        },
+        {
+          year: '2021', note: 'A late, wet-vintage wine that found its footing in October: blackberry, wet stone and a long, savoury line. The most mineral of the three.',
+          tags: ['Blackberry', 'Wet stone', 'Sage'], blend: [55, 25, 20], key: 'Merlot 55 / Cab 25 / Malbec 20', alt: 'Aged 17 months', harvest: 'Oct 9', abv: '13.0%', aged: '17 mo', cases: '260'
+        }
+      ];
+      const buttons = [...document.querySelectorAll('.vintage')];
+      function apply(i) {
+        const v = years[i];
+        buttons.forEach((b, k) => b.classList.toggle('active', k === i));
+        document.getElementById('labelYear').textContent = v.year;
+        document.getElementById('tastingNote').textContent = v.note;
+        document.getElementById('noteTags').innerHTML = v.tags.map(t => '<span>' + t + '</span>').join('');
+        const bar = document.getElementById('blendBar');
+        bar.children[0].style.width = v.blend[0] + '%';
+        bar.children[1].style.width = v.blend[1] + '%';
+        bar.children[2].style.width = v.blend[2] + '%';
+        document.getElementById('blendKey').textContent = v.key;
+        document.getElementById('blendAlt').textContent = v.alt;
+        document.getElementById('bottleBlend').textContent = v.key.replace(/ /g, ' ').replace('Cab ', 'Cabernet ');
+        document.getElementById('harvest').textContent = v.harvest;
+        document.getElementById('abv').textContent = v.abv;
+        document.getElementById('aged').textContent = v.aged;
+        document.getElementById('cases').textContent = v.cases;
+      }
+      buttons.forEach((b, i) => b.addEventListener('click', () => apply(i)));
+      apply(0);
+    })();
+  </script>
+</body>
+</html>

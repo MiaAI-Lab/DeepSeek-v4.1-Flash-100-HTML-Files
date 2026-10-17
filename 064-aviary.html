@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e2d2">
+  <meta name="description" content="The Aviary — three birds of the northern field.">
+  <title>The Aviary — Three Birds of the Northern Field</title>
+  <style>
+    :root {
+      --paper: #e9e2d2;
+      --sheet: #f3eee2;
+      --ink: #20261f;
+      --sky: #a9c4c9;
+      --sky2: #d9e2dc;
+      --rust: #b4553a;
+      --moss: #5c6b4d;
+      --dim: #7d7f70;
+      --line: rgba(32,38,31,.22);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--rust); color: var(--sheet); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); padding: clamp(8px, 1.6vw, 20px); display: flex; justify-content: center; background-image: radial-gradient(rgba(60,55,40,.1) .5px, transparent .7px); background-size: 4px 4px; }
+    .guide { width: min(1200px, 100%); min-height: calc(100vh - clamp(16px, 3.2vw, 40px)); background: var(--sheet); box-shadow: 0 16px 40px rgba(60,50,32,.2); display: flex; flex-direction: column; padding: clamp(14px, 2.6vw, 32px) clamp(14px, 3vw, 44px) clamp(12px, 2vw, 22px); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--ink); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--ink); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 32px); font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(150px, .58fr) minmax(290px, 1.3fr) minmax(200px, .8fr); gap: clamp(14px, 2.8vw, 36px); align-items: center; padding: 13px 0 9px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.4vw, 68px); line-height: .8; letter-spacing: -.06em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--moss); font-size: .94em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 10px; font-family: var(--mono); font-size: 5px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 16px; height: 1px; background: var(--rust); }
+    .intro p { max-width: 190px; margin: 17px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #5e6356; }
+    .species { margin-top: 17px; border-top: 1px solid var(--line); }
+    .sp-btn { display: block; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--dim); padding: 6px 0; cursor: pointer; font: inherit; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; transition: color .2s, padding .2s; }
+    .sp-btn b { display: block; font-family: var(--serif); font-size: 17px; font-weight: 400; letter-spacing: -.02em; text-transform: none; color: var(--ink); line-height: 1.1; margin-bottom: 1px; }
+    .sp-btn:hover, .sp-btn.active { color: var(--rust); padding-left: 6px; }
+    .sp-btn.active b { color: var(--rust); }
+    .plate { position: relative; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .sky { position: relative; width: 100%; max-width: 470px; aspect-ratio: 1.18; background: linear-gradient(170deg, var(--sky2), var(--sky) 62%, #c7d1c3); overflow: hidden; border: 1px solid rgba(32,38,31,.3); }
+    .sky::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 70% 24%, rgba(255,250,235,.75), transparent 26%), linear-gradient(0deg, rgba(92,107,77,.45), transparent 34%); }
+    .sky::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(0deg, rgba(70,84,58,.55), transparent); }
+    svg#bird { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+    .bird-g { display: none; }
+    .bird-g.on { display: block; }
+    .bird-body { fill: #252b23; }
+    .bird-accent { fill: var(--rust); }
+    .plate-label { display: flex; justify-content: space-between; width: 100%; max-width: 470px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .bird-head h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 26px; letter-spacing: -.03em; line-height: 1; }
+    .bird-head .latin { font-family: var(--serif); font-style: italic; font-size: 11px; color: var(--rust); margin-top: 3px; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-top: 9px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .facts div { display: flex; justify-content: space-between; gap: 5px; font-family: var(--mono); font-size: 4.5px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .facts b { color: var(--ink); font-weight: 400; }
+    .song { margin-top: 9px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .song h3, .season h3 { margin: 0 0 3px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .song svg { width: 100%; height: 34px; display: block; }
+    .song .wave { fill: none; stroke: var(--rust); stroke-width: 1.4; }
+    .song .base { stroke: rgba(32,38,31,.2); stroke-width: .7; }
+    .season { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; }
+    .months span { height: 13px; background: rgba(32,38,31,.12); position: relative; }
+    .months span.on { background: var(--moss); }
+    .months span.peak { background: var(--rust); }
+    .month-labels { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; font-family: var(--mono); font-size: 3.6px; color: var(--dim); text-align: center; margin-top: 2px; }
+    .note { margin-top: 9px; font-family: var(--serif); font-size: 11px; line-height: 1.5; color: #5e6356; border-top: 1px solid var(--line); padding-top: 6px; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 7px; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--moss); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+      .bird-head, .facts { grid-column: 1; }
+      .facts { margin-top: 0; }
+      .song { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .season { grid-column: 2; }
+      .note { grid-column: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .guide { padding: 11px 11px 12px; min-height: 100vh; box-shadow: none; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(34px, 11vw, 50px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0 8px; }
+      .species { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 8px; margin-top: 7px; }
+      .sp-btn { padding: 3px 0; }
+      .sp-btn b { font-size: 12px; }
+      .sp-btn span { display: none; }
+      .plate { order: 2; }
+      .sky { aspect-ratio: 1.3; }
+      aside { order: 3; display: block; }
+      .bird-head h2 { font-size: 20px; }
+      .facts { display: none; }
+      .song { margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--line); }
+      .season { margin-top: 6px; }
+      .note { display: none; }
+      footer { font-size: 4.5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="guide">
+    <header>
+      <div class="brand"><b>The Aviary</b>Field guide / plate 064</div>
+      <div class="head"><div>Region<br><b>Northern field</b></div><div>Season<br><b>Autumn passage</b></div><div>Species<br><b>Three</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Notes from the field</p>
+        <h1>Three<em>birds</em></h1>
+        <p>A swift that never lands, a lark that sings upward, and a kingfisher that arrives like a thrown jewel. Three ways of occupying the same air.</p>
+        <div class="species" id="species">
+          <button class="sp-btn active" type="button" data-b="0"><b>Swift</b><span>01 / Apus apus</span></button>
+          <button class="sp-btn" type="button" data-b="1"><b>Skylark</b><span>02 / Alauda arvensis</span></button>
+          <button class="sp-btn" type="button" data-b="2"><b>Kingfisher</b><span>03 / Alcedo atthis</span></button>
+        </div>
+      </section>
+      <section class="plate">
+        <div class="sky">
+          <svg id="bird" viewBox="0 0 400 340" aria-label="Bird illustration">
+            <g class="bird-g on" data-b="0">
+              <path class="bird-body" d="M118 196 C142 178 176 172 204 182 C232 192 254 210 284 206 C264 222 236 226 212 218 C196 232 168 236 146 224 C128 214 116 206 118 196 Z"/>
+              <path class="bird-body" d="M190 184 C158 150 120 138 74 148 C112 166 140 188 164 210 Z"/>
+              <path class="bird-body" d="M204 184 C236 148 276 136 326 146 C288 166 258 188 232 212 Z"/>
+              <path class="bird-body" d="M136 218 L104 250 L142 240 Z"/>
+              <path class="bird-body" d="M208 216 L212 244 L228 220 Z"/>
+              <circle cx="150" cy="202" r="1.6" fill="#e9e2d2"/>
+              <path class="bird-accent" d="M138 208 L132 210 L138 212 Z"/>
+            </g>
+            <g class="bird-g" data-b="1">
+              <path class="bird-body" d="M196 190 C182 176 172 156 176 136 C180 118 194 108 208 114 C222 120 226 136 220 152 C214 168 206 180 196 190 Z"/>
+              <path class="bird-body" d="M190 188 C168 200 146 214 120 216 C140 200 162 186 186 178 Z"/>
+              <path class="bird-body" d="M202 190 C224 202 246 216 272 218 C252 202 230 188 206 180 Z"/>
+              <path class="bird-body" d="M188 190 L168 228 L194 208 Z"/>
+              <path class="bird-accent" d="M164 190 C150 182 138 168 136 154 C150 164 162 174 172 184 Z"/>
+              <circle cx="205" cy="126" r="1.6" fill="#e9e2d2"/>
+              <path class="bird-accent" d="M212 130 L220 132 L212 135 Z"/>
+              <g stroke="#4a5442" stroke-width=".8" opacity=".55"><path d="M196 158 l-8 4"/><path d="M188 170 l-8 4"/><path d="M180 182 l-8 4"/></g>
+            </g>
+            <g class="bird-g" data-b="2">
+              <path class="bird-body" d="M168 214 C170 190 184 172 204 166 C224 160 244 170 250 188 C254 202 246 214 232 218 C216 222 198 222 184 220 Z"/>
+              <path class="bird-body" d="M202 168 C204 148 210 132 222 120 C226 136 224 152 218 166 Z"/>
+              <circle cx="222" cy="118" r="17" fill="#252b23"/>
+              <path class="bird-accent" d="M236 112 L266 116 L236 122 Z"/>
+              <path class="bird-accent" d="M184 208 C174 202 166 194 162 184 C176 188 188 196 196 206 Z"/>
+              <path class="bird-body" d="M248 196 C268 196 286 202 300 214 C284 214 268 212 252 208 Z"/>
+              <circle cx="226" cy="114" r="1.7" fill="#e9e2d2"/>
+              <g stroke="#b4553a" stroke-width="1.1" opacity=".7"><path d="M222 100 l-4 -12"/><path d="M228 100 l2 -12"/><path d="M232 102 l8 -10"/></g>
+            </g>
+          </svg>
+        </div>
+        <div class="plate-label"><span id="plateName">Apus apus / in flight</span><span>Plate 064 · scale approx. 1:1</span></div>
+      </section>
+      <aside>
+        <div class="bird-head"><h2 id="birdName">Swift</h2><div class="latin" id="birdLatin">Apus apus</div></div>
+        <div class="facts">
+          <div><span>Length</span><b id="length">16 cm</b></div><div><span>Wingspan</span><b id="span">40 cm</b></div>
+          <div><span>Status</span><b id="status">Summer</b></div><div><span>Flight</span><b id="flight">Aerial</b></div>
+        </div>
+        <div class="song"><h3>Call</h3>
+          <svg viewBox="0 0 300 40" preserveAspectRatio="none" aria-label="Sound trace">
+            <line class="base" x1="0" y1="20" x2="300" y2="20"/>
+            <polyline class="wave" id="wave" points="0,20 20,14 30,26 46,10 58,30 70,18 90,22 110,8 126,32 140,20 160,16 180,24 200,12 220,28 240,18 260,22 280,15 300,20"/>
+          </svg>
+        </div>
+        <div class="season"><h3>Presence</h3>
+          <div class="months" id="months"></div>
+          <div class="month-labels"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+        </div>
+        <p class="note" id="note">“Screaming over the rooftops on a July evening, never touching the ground unless it must.”</p>
+      </aside>
+    </main>
+    <footer><span><b>The Aviary</b> / three birds of the northern field</span><span>Observed from one kitchen window, autumn 2026</span><span>Plate 064 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const birds = [
+        { name: 'Swift', latin: 'Apus apus', plate: 'Apus apus / in flight', len: '16 cm', span: '40 cm', status: 'Summer', flight: 'Aerial', note: '“Screaming over the rooftops on a July evening, never touching the ground unless it must.”',
+          wave: '0,20 14,18 26,8 38,30 52,12 66,26 80,18 96,22 112,10 126,30 140,20 158,16 176,24 194,12 212,28 230,18 250,22 272,14 300,20',
+          months: [0,0,0,1,2,2,2,2,1,0,0,0] },
+        { name: 'Skylark', latin: 'Alauda arvensis', plate: 'Alauda arvensis / in song flight', len: '18 cm', span: '35 cm', status: 'Resident', flight: 'Song flight', note: '“A small brown bird that climbs until it is only a sound, then folds itself back into the field.”',
+          wave: '0,20 10,16 24,24 38,12 54,28 70,14 84,22 100,10 116,26 132,16 148,24 164,12 182,28 200,18 220,22 240,14 260,26 280,18 300,20',
+          months: [1,1,1,2,2,1,1,1,1,1,1,1] },
+        { name: 'Kingfisher', latin: 'Alcedo atthis', plate: 'Alcedo atthis / perched', len: '17 cm', span: '25 cm', status: 'Resident', flight: 'Direct, low', note: '“You hear the whistle before you see it, and then it is already on the other side of the river.”',
+          wave: '0,20 8,20 14,6 20,34 26,20 40,20 48,20 56,10 62,30 68,20 84,20 92,14 100,26 108,20 124,20 132,8 138,32 144,20 160,20 170,18 180,22 190,20 210,20 220,12 226,28 232,20 260,20 300,20',
+          months: [1,1,1,1,1,1,1,1,1,1,1,1] }
+      ];
+      let current = 0;
+      const monthsEl = document.getElementById('months');
+      function renderMonths(m) {
+        monthsEl.innerHTML = m.map(v => '<span class="' + (v === 2 ? 'peak' : v === 1 ? 'on' : '') + '"></span>').join('');
+      }
+      function select(i) {
+        current = i;
+        const b = birds[i];
+        document.querySelectorAll('.bird-g').forEach((g, k) => g.classList.toggle('on', k === i));
+        document.querySelectorAll('.sp-btn').forEach((btn, k) => btn.classList.toggle('active', k === i));
+        document.getElementById('birdName').textContent = b.name;
+        document.getElementById('birdLatin').textContent = b.latin;
+        document.getElementById('plateName').textContent = b.plate;
+        document.getElementById('length').textContent = b.len;
+        document.getElementById('span').textContent = b.span;
+        document.getElementById('status').textContent = b.status;
+        document.getElementById('flight').textContent = b.flight;
+        document.getElementById('note').textContent = b.note;
+        document.getElementById('wave').setAttribute('points', b.wave);
+        renderMonths(b.months);
+      }
+      document.querySelectorAll('.sp-btn').forEach((b, i) => b.addEventListener('click', () => select(i)));
+      select(0);
+    })();
+  </script>
+</body>
+</html>

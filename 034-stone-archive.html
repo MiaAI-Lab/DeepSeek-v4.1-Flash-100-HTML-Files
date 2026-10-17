@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e4db">
+  <meta name="description" content="Marl — a material archive of stone and time.">
+  <title>Marl — A Material Archive of Stone and Time</title>
+  <style>
+    :root {
+      --paper: #e9e4db;
+      --card: #f4f0e7;
+      --ink: #22211d;
+      --stone: #8e8e84;
+      --clay: #b57a5e;
+      --sage: #8d9682;
+      --line: rgba(34,33,29,.2);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--ink); color: var(--card); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); overflow-x: hidden; }
+    .archive { min-height: 100vh; padding: 20px clamp(15px, 3.4vw, 48px) 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .archive::before { content: ""; position: fixed; inset: 0; opacity: .2; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E"); mix-blend-mode: multiply; z-index: 5; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 10px; position: relative; z-index: 2; }
+    .brand { font-family: var(--serif); font-size: 18px; letter-spacing: -.03em; line-height: 1; }
+    .brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .17em; text-transform: uppercase; color: #837d71; }
+    .head { display: flex; gap: clamp(18px, 4vw, 46px); font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: #837d71; text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .65fr) minmax(370px, 1.7fr) minmax(150px, .6fr); gap: clamp(16px, 3vw, 45px); align-items: center; padding: 18px 0 14px; position: relative; z-index: 2; }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { margin: 0 0 14px; font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: #7a7568; }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(57px, 8.4vw, 111px); line-height: .78; letter-spacing: -.075em; }
+    h1 em { display: block; color: var(--clay); font-style: italic; }
+    .intro p { max-width: 218px; margin: 26px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.6; color: #6e695f; }
+    .specimen { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .slab { position: relative; aspect-ratio: .8; overflow: hidden; background: #b0aaa0; cursor: pointer; border: 0; padding: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); transition: flex .3s, transform .3s; }
+    .slab:nth-child(1) { border-radius: 47% 47% 4px 4px; aspect-ratio: .72; grid-row: span 1; }
+    .slab:nth-child(2) { aspect-ratio: 1; margin-top: 22px; }
+    .slab:nth-child(3) { aspect-ratio: 1.1; margin-top: -12px; }
+    .slab:nth-child(4) { aspect-ratio: .85; margin-top: 16px; border-radius: 12px; }
+    .slab:hover, .slab.active { outline: 1px solid var(--ink); outline-offset: 3px; }
+    .slab .tex { position: absolute; inset: 0; transition: transform .8s; }
+    .slab:hover .tex { transform: scale(1.06); }
+    .slab .num { position: absolute; left: 8px; top: 7px; z-index: 2; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; color: rgba(255,255,255,.8); mix-blend-mode: difference; }
+    .slab .cap { position: absolute; left: 8px; right: 8px; bottom: 7px; z-index: 2; display: flex; justify-content: space-between; gap: 5px; font-family: var(--mono); font-size: 5px; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.9); mix-blend-mode: difference; }
+    .slab.a .tex { background: linear-gradient(128deg, #cbc4b7, #a9a195 46%, #8e877b); }
+    .slab.a .tex::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 33% 24%, rgba(255,255,255,.5), transparent 23%), radial-gradient(ellipse at 70% 66%, rgba(83,74,63,.5), transparent 24%), radial-gradient(ellipse at 22% 72%, rgba(255,255,255,.3), transparent 18%); }
+    .slab.a .tex::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(112deg, transparent 0 17px, rgba(255,255,255,.14) 18px 19px, transparent 20px 34px), repeating-linear-gradient(19deg, transparent 0 28px, rgba(70,60,50,.12) 29px 30px, transparent 31px 52px); }
+    .slab.b .tex { background: linear-gradient(160deg, #8b8c82, #6e7068 52%, #565850); }
+    .slab.b .tex::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 22% 26%, rgba(250,250,240,.48) 0 3px, transparent 4px), radial-gradient(circle at 58% 41%, rgba(250,250,240,.3) 0 5px, transparent 6px), radial-gradient(circle at 77% 70%, rgba(250,250,240,.32) 0 2px, transparent 3px), radial-gradient(circle at 33% 72%, rgba(250,250,240,.24) 0 4px, transparent 5px); background-size: 41px 37px, 63px 57px, 29px 31px, 71px 67px; }
+    .slab.b .tex::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(40,42,36,.2) .6px, transparent .8px); background-size: 3px 3px; }
+    .slab.c .tex { background: linear-gradient(135deg, #c19a80, #b57a5e 50%, #8c5d49); }
+    .slab.c .tex::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(8deg, transparent 0 9px, rgba(255,227,207,.2) 10px 12px, transparent 13px 21px); }
+    .slab.c .tex::after { content: ""; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='m'%3E%3CfeTurbulence baseFrequency='.03' numOctaves='5' seed='8'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .16 0 0 0 0 .1 0 0 0 .8 0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23m)'/%3E%3C/svg%3E"); opacity: .8; }
+    .slab.d .tex { background: linear-gradient(155deg, #b8b8a8, #8d9682 47%, #626b5b); }
+    .slab.d .tex::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(82deg, transparent 0 3px, rgba(245,245,225,.16) 4px 5px, transparent 6px 13px), repeating-linear-gradient(-12deg, transparent 0 22px, rgba(40,45,34,.14) 23px 25px, transparent 26px 48px); }
+    .slab.d .tex::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(30,32,26,.3) .5px, transparent .7px); background-size: 2.5px 2.5px; opacity: .4; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .record { width: 100%; border-top: 1px solid var(--line); padding-top: 10px; }
+    .record .no { font-family: var(--mono); font-size: 6px; letter-spacing: .1em; text-transform: uppercase; color: #837d71; }
+    .record h2 { font-family: var(--serif); font-size: 30px; font-weight: 400; letter-spacing: -.04em; margin: 4px 0 8px; line-height: .95; }
+    .record p { margin: 0; font-family: var(--serif); font-size: 12px; line-height: 1.5; color: #6b665c; min-height: 54px; }
+    .data { width: 100%; margin-top: 15px; font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .07em; text-transform: uppercase; color: #837d71; }
+    .data div { display: flex; justify-content: space-between; gap: 7px; border-top: 1px solid var(--line); padding: 5px 0; }
+    .data b { color: var(--ink); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: #837d71; position: relative; z-index: 2; }
+    footer span:nth-child(2) { color: var(--ink); }
+    @media (max-width: 880px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: start; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: end; text-align: left; padding-top: 12px; }
+      .record { border-top: 0; padding-top: 0; }
+      .data { margin-top: 0; }
+      .record p { min-height: 0; }
+    }
+    @media (max-width: 610px) {
+      .archive { padding: 11px 11px 13px; }
+      header { padding-bottom: 8px; }
+      .head div:nth-child(2) { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 15px 0 12px; }
+      h1 { font-size: clamp(53px, 17vw, 84px); }
+      .intro p { display: none; }
+      .specimen { order: 2; gap: 5px; }
+      .slab:nth-child(2) { margin-top: 14px; }
+      .slab:nth-child(3) { margin-top: -6px; }
+      .slab:nth-child(4) { margin-top: 10px; }
+      aside { order: 3; display: block; padding-top: 5px; }
+      .record { display: flex; align-items: baseline; gap: 8px; border-top: 1px solid var(--line); padding-top: 7px; }
+      .record .no { flex: 0 0 auto; }
+      .record h2 { font-size: 21px; margin: 0; }
+      .record p { display: none; }
+      .data { display: flex; gap: 10px; border-top: 1px solid var(--line); padding-top: 5px; margin-top: 7px; }
+      .data div { flex: 1; border-top: 0; padding: 0; display: block; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="archive">
+    <header>
+      <div class="brand">Marl<span>Material archive / stone &amp; time</span></div>
+      <div class="head"><div>Collection<br><b>34 geological samples</b></div><div>Location<br><b>Reading room 02</b></div><div>Accession<br><b>No. 034</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A collection of ordinary permanence</p>
+        <h1>Stone<em>archive</em></h1>
+        <p>Four materials, each with a different relationship to time. Select a slab to read its history.</p>
+      </section>
+      <section class="specimen" aria-label="Stone specimens">
+        <button class="slab a active" type="button" data-stone="limestone"><div class="tex"></div><span class="num">01 / A</span><span class="cap"><span>Limestone</span><span>Sedimentary</span></span></button>
+        <button class="slab b" type="button" data-stone="granite"><div class="tex"></div><span class="num">02 / B</span><span class="cap"><span>Granite</span><span>Igneous</span></span></button>
+        <button class="slab c" type="button" data-stone="sandstone"><div class="tex"></div><span class="num">03 / C</span><span class="cap"><span>Sandstone</span><span>Clastic</span></span></button>
+        <button class="slab d" type="button" data-stone="slate"><div class="tex"></div><span class="num">04 / D</span><span class="cap"><span>Slate</span><span>Metamorphic</span></span></button>
+      </section>
+      <aside>
+        <div class="record">
+          <span class="no" id="stoneNo">Specimen 01 / A</span>
+          <h2 id="stoneName">Limestone</h2>
+          <p id="stoneDesc">A quiet stone made from the compressed remains of ancient seas. It remembers water the way a room remembers a voice.</p>
+        </div>
+        <div class="data">
+          <div><span>Origin</span><b id="stoneOrigin">Shallow sea</b></div>
+          <div><span>Age</span><b id="stoneAge">≈ 145 Ma</b></div>
+          <div><span>Density</span><b id="stoneDensity">2.6 g/cm³</b></div>
+          <div><span>Finishing</span><b id="stoneFinish">Honed</b></div>
+        </div>
+      </aside>
+    </main>
+    <footer><span><b>Marl</b> / a material archive</span><span>Every stone is a very slow sentence</span><span>Reading room 034</span></footer>
+  </div>
+  <script>
+    (() => {
+      const data = {
+        limestone: { no: 'Specimen 01 / A', name: 'Limestone', desc: 'A quiet stone made from the compressed remains of ancient seas. It remembers water the way a room remembers a voice.', origin: 'Shallow sea', age: '≈ 145 Ma', density: '2.6 g/cm³', finish: 'Honed' },
+        granite: { no: 'Specimen 02 / B', name: 'Granite', desc: 'Cooled slowly beneath the earth, granite is a rock of visible patience. Each speck is a mineral that waited millions of years to meet the others.', origin: 'Deep crust', age: '≈ 300 Ma', density: '2.7 g/cm³', finish: 'Flamed' },
+        sandstone: { no: 'Specimen 03 / C', name: 'Sandstone', desc: 'Desert, dune and river, pressed into a single warm block. Hold it to the light and you can almost hear the wind that made it.', origin: 'River delta', age: '≈ 210 Ma', density: '2.3 g/cm³', finish: 'Sawn' },
+        slate: { no: 'Specimen 04 / D', name: 'Slate', desc: 'Mud transformed by pressure into something that splits cleanly. A stone with a grain, and therefore a direction.', origin: 'Marine mud', age: '≈ 400 Ma', density: '2.8 g/cm³', finish: 'Split' }
+      };
+      document.querySelectorAll('[data-stone]').forEach(button => {
+        button.addEventListener('click', () => {
+          const d = data[button.dataset.stone];
+          document.querySelectorAll('[data-stone]').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          document.getElementById('stoneNo').textContent = d.no;
+          document.getElementById('stoneName').textContent = d.name;
+          document.getElementById('stoneDesc').textContent = d.desc;
+          document.getElementById('stoneOrigin').textContent = d.origin;
+          document.getElementById('stoneAge').textContent = d.age;
+          document.getElementById('stoneDensity').textContent = d.density;
+          document.getElementById('stoneFinish').textContent = d.finish;
+          document.querySelector('.record').animate([{ opacity: .4 }, { opacity: 1 }], { duration: 480, easing: 'ease-out' });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+TITLE: Maison Verre — Private Capital Ledger
+
+PROMPT:
+Create "Maison Verre," a self-contained luxury private-wealth dashboard with the restraint of a Swiss family office. Use near-black forest green, deep panel greens, antique gold, warm cream and muted moss. Compose a full-screen ledger with a slim monogram rail, a refined header, a hero net-asset figure in an elegant Bodoni-style serif, a responsive SVG performance curve with gradient area fill, period controls, a holdings table with fine allocation bars, and a private steward's note column. Add live clock, printed page metadata, grain, and a "Discretion" control that blurs all sensitive figures. Everything must feel understated, expensive and quietly alive. Use pure HTML, CSS, inline SVG and vanilla JavaScript. No external fonts, images, icons or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A private banking statement reimagined as a digital object. Deep green lacquer, hairline rules and antique gold create a hush around the numbers, while a hand-built performance curve and editorial notes lend the page the intimacy of a partner's desk.
+
+MAJOR VISUAL TECHNIQUES:
+- Dark-luxury editorial grid with fine borders and generous negative space
+- Elegant display serif numerals paired with monospaced ledger data
+- Dynamically redrawn SVG performance curve with soft gold gradient
+- Staggered allocation bars and restrained motion
+- Discretion mode that blurs confidential values
+
+INTERACTION MODEL:
+Switch 1M / 6M / 1Y / 5Y / All to redraw the portfolio curve and update the return. Press Discretion to blur all private figures, then Reveal to restore them. A live clock updates the statement header. Hovering holdings produces a subtle indent and highlights the position.

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1712">
+  <meta name="description" content="Bloom Machine — a floral sequencer for growing small melodies.">
+  <title>Bloom Machine — A Floral Sequencer</title>
+  <style>
+    :root {
+      --night: #0b1511;
+      --panel: #101f18;
+      --panel2: #14261d;
+      --cream: #f0ebd9;
+      --mint: #9ce6b8;
+      --pink: #ff8fa8;
+      --yellow: #f1d681;
+      --violet: #b9a3e8;
+      --line: rgba(240,235,217,.16);
+      --muted: #7d9585;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--mint); color: var(--night); }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: var(--night); color: var(--cream); font-family: var(--sans); overflow-x: hidden; background-image: radial-gradient(ellipse at 20% 10%, rgba(66,119,81,.22), transparent 44%), radial-gradient(ellipse at 86% 85%, rgba(130,83,126,.18), transparent 40%); }
+    .vine { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .4; }
+    .vine path { fill: none; stroke: rgba(156,230,184,.18); stroke-width: 1; }
+    .vine circle { fill: rgba(255,143,168,.28); }
+    .site { position: relative; z-index: 2; min-height: 100vh; padding: 21px clamp(15px, 3.5vw, 50px) 17px; display: flex; flex-direction: column; }
+    header { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+    .brand { display: flex; gap: 9px; align-items: center; font-family: var(--mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--mint); }
+    .brand-mark { width: 22px; height: 22px; border: 1px solid var(--mint); border-radius: 50%; position: relative; }
+    .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 7px; height: 7px; border: 1px solid var(--pink); border-radius: 50%; left: 8px; top: 2px; }
+    .brand-mark::after { top: 12px; left: 3px; border-color: var(--yellow); }
+    .head-meta { display: flex; gap: clamp(18px, 4vw, 48px); font-family: var(--mono); font-size: 7px; line-height: 1.7; letter-spacing: .08em; text-transform: uppercase; text-align: right; color: var(--muted); }
+    .head-meta b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(170px, .7fr) minmax(390px, 1.55fr) minmax(170px, .65fr); gap: clamp(17px, 3vw, 42px); align-items: center; padding: clamp(20px, 4vh, 41px) 0 18px; }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { display: flex; gap: 9px; align-items: center; margin: 0 0 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--pink); }
+    .kicker::before { content: ""; width: 22px; height: 1px; background: var(--pink); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(53px, 8.2vw, 124px); line-height: .76; letter-spacing: -.075em; }
+    h1 em { display: block; color: var(--mint); font-style: italic; margin-left: 8px; }
+    .intro p { max-width: 225px; margin: 28px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.62; color: #a4b4a8; }
+    .status { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 10px; max-width: 210px; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .status b { display: flex; align-items: center; gap: 5px; color: var(--mint); font-weight: 400; }
+    .status b::before { content: ""; width: 4px; height: 4px; background: var(--pink); border-radius: 50%; animation: blink 1.3s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: .2; } }
+    .sequencer { background: rgba(15,31,24,.74); border: 1px solid var(--line); border-radius: 4px; padding: clamp(12px, 2vw, 19px); position: relative; backdrop-filter: blur(8px); box-shadow: 0 24px 45px rgba(0,0,0,.18); }
+    .seq-head { display: flex; justify-content: space-between; align-items: center; gap: 13px; padding-bottom: 11px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .seq-head b { color: var(--cream); font-weight: 400; }
+    .steps { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-top: 14px; }
+    .step { text-align: center; font-family: var(--mono); font-size: 7px; color: var(--muted); padding-bottom: 6px; }
+    .step.active { color: var(--mint); }
+    .grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; }
+    .pad { aspect-ratio: 1; border: 1px solid rgba(240,235,217,.18); background: rgba(255,255,255,.012); position: relative; cursor: pointer; overflow: hidden; transition: border .2s, background .2s, transform .15s; padding: 0; }
+    .pad:hover { border-color: rgba(240,235,217,.5); transform: scale(1.03); }
+    .pad.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .pad.on .bloom { transform: scale(1) rotate(0); opacity: 1; }
+    .pad.on .stem { height: 62%; opacity: .8; }
+    .pad.active { box-shadow: 0 0 15px color-mix(in srgb, var(--accent) 45%, transparent); }
+    .stem { position: absolute; bottom: 0; left: 50%; width: 1px; height: 30%; background: linear-gradient(var(--accent), transparent); opacity: .32; transform-origin: bottom; transition: height .45s cubic-bezier(.2,.8,.2,1), opacity .3s; }
+    .bloom { position: absolute; left: 50%; top: 41%; width: 55%; aspect-ratio: 1; transform: translate(-50%,-50%) scale(.25) rotate(-30deg); opacity: .16; transition: transform .55s cubic-bezier(.2,1.4,.4,1), opacity .4s; }
+    .bloom i { position: absolute; width: 44%; height: 33%; border-radius: 50%; background: var(--accent); left: 28%; top: 7%; transform-origin: 50% 145%; opacity: .72; }
+    .bloom i:nth-child(2) { transform: rotate(72deg); }
+    .bloom i:nth-child(3) { transform: rotate(144deg); }
+    .bloom i:nth-child(4) { transform: rotate(216deg); }
+    .bloom i:nth-child(5) { transform: rotate(288deg); }
+    .bloom::after { content: ""; position: absolute; width: 24%; height: 24%; border-radius: 50%; background: var(--yellow); left: 38%; top: 38%; }
+    .row-labels { display: grid; grid-template-columns: 42px 1fr; gap: 5px; margin-top: 5px; align-items: center; }
+    .row-label { font-family: var(--mono); font-size: 6px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; }
+    .transport { display: flex; align-items: center; gap: 8px; margin-top: 15px; border-top: 1px solid var(--line); padding-top: 12px; flex-wrap: wrap; }
+    .play { border: 1px solid var(--mint); background: var(--mint); color: var(--night); font: inherit; font-family: var(--mono); font-size: 8px; letter-spacing: .09em; text-transform: uppercase; padding: 9px 15px; cursor: pointer; transition: background .2s, color .2s; }
+    .play:hover { background: var(--pink); border-color: var(--pink); }
+    .transport .read { font-family: var(--mono); font-size: 7px; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; margin-left: auto; }
+    .transport .read b { color: var(--cream); font-weight: 400; }
+    .presets { display: flex; gap: 5px; margin-top: 11px; flex-wrap: wrap; }
+    .preset { border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 8px; cursor: pointer; transition: all .2s; }
+    .preset:hover { color: var(--cream); border-color: var(--cream); }
+    .preset.active { border-color: var(--pink); color: var(--pink); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .control-block { width: 100%; border-top: 1px solid var(--line); padding-top: 10px; margin-bottom: 25px; }
+    .control-block label { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .control-block label b { color: var(--cream); font-family: var(--serif); font-size: 17px; font-weight: 400; letter-spacing: -.02em; }
+    input[type="range"] { width: 100%; margin-top: 10px; accent-color: var(--pink); cursor: ew-resize; }
+    .legend { font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .legend div { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .legend i { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); }
+    .legend div:nth-child(2) i { background: var(--pink); } .legend div:nth-child(3) i { background: var(--yellow); } .legend div:nth-child(4) i { background: var(--violet); }
+    .recipe { margin-top: 27px; width: 100%; border-top: 1px solid var(--line); padding-top: 10px; font-family: var(--serif); font-size: 13px; line-height: 1.45; font-style: italic; color: #a3b1a5; }
+    .recipe small { display: block; margin-top: 8px; font-family: var(--mono); font-size: 6px; font-style: normal; letter-spacing: .1em; line-height: 1.7; text-transform: uppercase; color: var(--muted); }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    footer span:nth-child(2) { color: var(--mint); }
+    @media (max-width: 960px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; text-align: left; padding-top: 10px; }
+      .control-block { margin-bottom: 0; }
+      .recipe { margin-top: 0; }
+      .legend { grid-column: 1 / -1; display: flex; gap: 18px; }
+      .legend div { justify-content: flex-start; }
+      .sequencer { padding: 12px; }
+    }
+    @media (max-width: 680px) {
+      .site { padding: 12px 12px 14px; }
+      header { padding-bottom: 9px; }
+      .head-meta div:nth-child(2) { display: none; }
+      .head-meta { font-size: 6px; gap: 11px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 15px; padding: 18px 0 15px; }
+      .intro { align-self: auto; }
+      h1 { font-size: clamp(55px, 18vw, 92px); }
+      .intro p { font-size: 11px; margin-top: 18px; max-width: 270px; }
+      .status { display: none; }
+      .sequencer { order: 1; }
+      aside { order: 2; display: block; }
+      .control-block { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); margin-bottom: 12px; padding-top: 8px; }
+      .control-block label { flex: 0 0 auto; }
+      .control-block label b { font-size: 14px; }
+      input[type="range"] { margin-top: 0; }
+      .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0; }
+      .legend div { gap: 4px; }
+      .recipe { display: none; }
+      .row-labels { grid-template-columns: 30px 1fr; }
+      .steps, .grid { gap: 3px; }
+      .step { font-size: 6px; }
+      .pad { border-color: rgba(240,235,217,.25); }
+      .transport { gap: 7px; }
+      .play { padding: 8px 11px; font-size: 7px; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="vine" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path d="M-100 780 C80 680 100 510 230 480 S430 570 520 390 S620 80 780 40"/>
+    <path d="M1700 120 C1500 210 1510 400 1360 430 S1130 340 1050 500 S990 790 820 870"/>
+    <path d="M-50 160 C160 200 220 300 350 310 S560 230 650 260"/>
+    <circle cx="230" cy="480" r="5"/><circle cx="350" cy="310" r="4"/><circle cx="520" cy="390" r="6"/><circle cx="1050" cy="500" r="5"/><circle cx="1360" cy="430" r="4"/><circle cx="780" cy="40" r="4"/><circle cx="650" cy="260" r="3"/>
+  </svg>
+  <div class="site">
+    <header>
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Bloom Machine / Floral instrument 022</div>
+      <div class="head-meta"><div>Current key<br><b>A minor pentatonic</b></div><div>Pattern<br><b id="patternName">Night Garden</b></div><div>Status<br><b id="status">Ready to grow</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Small melodies, grown from seeds</p>
+        <h1>Bloom<em>machine</em></h1>
+        <p>Plant a few notes. Let the pattern flower. A sequencer that treats repetition like a garden instead of a machine.</p>
+        <div class="status"><b>Greenhouse open</b>Eight steps · four voices<br>Audio grows after play</div>
+      </section>
+      <section class="sequencer" aria-label="Bloom Machine sequencer">
+        <div class="seq-head"><span><b>Pattern 01</b> / 4 × 8</span><span id="sequenceLabel">A minor / 84 BPM</span></div>
+        <div class="steps" id="steps" aria-hidden="true"><span class="step">01</span><span class="step">02</span><span class="step">03</span><span class="step">04</span><span class="step">05</span><span class="step">06</span><span class="step">07</span><span class="step">08</span></div>
+        <div class="grid" id="grid"></div>
+        <div class="row-labels">
+          <span class="row-label">Root</span><div class="row" id="rowA"></div>
+          <span class="row-label">Third</span><div class="row" id="rowB"></div>
+          <span class="row-label">Fifth</span><div class="row" id="rowC"></div>
+          <span class="row-label">Seventh</span><div class="row" id="rowD"></div>
+        </div>
+        <div class="transport">
+          <button class="play" type="button" id="play">Play the garden</button>
+          <button class="preset" type="button" id="clear">Clear soil</button>
+          <span class="read">Step <b id="stepRead">01</b> / 08 · <b id="bpmRead">84</b> bpm</span>
+        </div>
+        <div class="presets" aria-label="Pattern presets"><button class="preset active" type="button" data-preset="night">Night garden</button><button class="preset" type="button" data-preset="glass">Glasshouse</button><button class="preset" type="button" data-preset="frost">First frost</button></div>
+      </section>
+      <aside>
+        <div class="control-block"><label for="bpm"><span>Tempo</span><b id="bpmValue">84</b></label><input id="bpm" type="range" min="48" max="132" value="84" aria-label="Tempo"></div>
+        <div class="legend"><div><i></i>Root / A</div><div><i></i>Third / C</div><div><i></i>Fifth / E</div><div><i></i>Seventh / G</div></div>
+        <div class="recipe">“A garden is a machine that has learned to be patient.”<small>House rule / play less, listen more<br>Every empty space is intentional</small></div>
+      </aside>
+    </main>
+    <footer><span><b>Bloom Machine</b> / generative floral sequencer</span><span>One seed, eight possible blooms</span><span>No. 022 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const rowNames = ['A', 'B', 'C', 'D'];
+      const rowEls = [document.getElementById('rowA'), document.getElementById('rowB'), document.getElementById('rowC'), document.getElementById('rowD')];
+      const pads = [];
+      const rowColors = ['var(--mint)', 'var(--pink)', 'var(--yellow)', 'var(--violet)'];
+      const notes = { A: [220, 261.63, 329.63, 392], B: [246.94, 293.66, 369.99, 440], C: [261.63, 329.63, 392, 493.88], D: [196, 246.94, 293.66, 392] };
+      const presets = {
+        night: [[1,0,0,1,0,0,1,0],[0,1,0,0,1,0,0,1],[0,0,1,0,0,1,0,0],[1,0,0,0,1,0,0,0]],
+        glass: [[1,0,1,0,1,0,1,0],[0,0,1,0,0,0,1,0],[0,1,0,0,0,1,0,0],[0,0,0,1,0,0,0,1]],
+        frost: [[1,0,0,0,1,0,0,0],[0,1,0,1,0,0,0,1],[0,0,1,0,0,1,0,0],[0,0,0,0,1,0,0,0]]
+      };
+      let playing = false, timer = null, step = 0, audio = null;
+      function buildGrid() {
+        rowEls.forEach((row, r) => {
+          row.innerHTML = '';
+          for (let c = 0; c < 8; c++) {
+            const pad = document.createElement('button');
+            pad.className = 'pad'; pad.type = 'button'; pad.dataset.row = r; pad.dataset.col = c;
+            pad.style.setProperty('--accent', rowColors[r]);
+            pad.setAttribute('aria-label', rowNames[r] + ' row, step ' + (c + 1));
+            pad.innerHTML = '<span class="stem"></span><span class="bloom"><i></i><i></i><i></i><i></i><i></i></span>';
+            pad.addEventListener('click', () => {
+              pad.classList.toggle('on');
+              if (playing) tone(notes[rowNames[r]][r], .2);
+            });
+            row.appendChild(pad); pads.push(pad);
+          }
+        });
+      }
+      function tone(freq, duration = .55) {
+        if (!audio) return;
+        const now = audio.currentTime;
+        const osc = audio.createOscillator(), gain = audio.createGain();
+        osc.type = 'sine'; osc.frequency.value = freq;
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(.065, now + .012);
+        gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+        osc.connect(gain); gain.connect(audio.destination); osc.start(now); osc.stop(now + duration + .02);
+        const harmonic = audio.createOscillator(), hg = audio.createGain();
+        harmonic.type = 'triangle'; harmonic.frequency.value = freq * 2.01;
+        hg.gain.setValueAtTime(.0001, now); hg.gain.exponentialRampToValueAtTime(.018, now + .015); hg.gain.exponentialRampToValueAtTime(.0001, now + duration * .65);
+        harmonic.connect(hg); hg.connect(audio.destination); harmonic.start(now); harmonic.stop(now + duration);
+      }
+      function setStepUI(s) {
+        document.querySelectorAll('#steps .step').forEach((el, i) => el.classList.toggle('active', i === s));
+        document.querySelectorAll('.pad').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.pad').forEach(p => { if (Number(p.dataset.col) === s && p.classList.contains('on')) p.classList.add('active'); });
+        document.getElementById('stepRead').textContent = String(s + 1).padStart(2, '0');
+      }
+      function tick() {
+        setStepUI(step);
+        rowEls.forEach((row, r) => {
+          const pad = row.children[step];
+          if (pad.classList.contains('on')) tone(notes[rowNames[r]][r], .5);
+        });
+        step = (step + 1) % 8;
+      }
+      function start() {
+        if (playing) {
+          playing = false; clearInterval(timer); document.getElementById('play').textContent = 'Play the garden';
+          document.getElementById('status').textContent = 'Paused / soil resting';
+          document.querySelectorAll('.pad').forEach(p => p.classList.remove('active'));
+          return;
+        }
+        if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+        playing = true; step = 0; document.getElementById('play').textContent = 'Pause the garden';
+        document.getElementById('status').textContent = 'Growing / audio live';
+        tick();
+        schedule();
+      }
+      function schedule() {
+        clearInterval(timer);
+        timer = setInterval(tick, 60000 / Number(document.getElementById('bpm').value) / 2);
+      }
+      function applyPreset(name) {
+        const pattern = presets[name];
+        rowEls.forEach((row, r) => [...row.children].forEach((pad, c) => pad.classList.toggle('on', !!pattern[r][c])));
+        document.querySelectorAll('.preset').forEach(b => b.classList.toggle('active', b.dataset.preset === name));
+        document.getElementById('patternName').textContent = name === 'night' ? 'Night Garden' : name === 'glass' ? 'Glasshouse' : 'First Frost';
+        document.getElementById('status').textContent = 'New seed planted';
+      }
+      document.getElementById('play').addEventListener('click', start);
+      document.getElementById('bpm').addEventListener('input', (e) => {
+        document.getElementById('bpmValue').textContent = e.target.value;
+        document.getElementById('bpmRead').textContent = e.target.value;
+        document.getElementById('sequenceLabel').textContent = 'A minor / ' + e.target.value + ' BPM';
+        if (playing) schedule();
+      });
+      document.getElementById('clear').addEventListener('click', () => {
+        document.querySelectorAll('.pad').forEach(p => p.classList.remove('on'));
+        document.getElementById('status').textContent = 'Soil cleared / ready';
+        document.querySelectorAll('.preset').forEach(b => b.classList.remove('active'));
+        document.getElementById('patternName').textContent = 'Untitled garden';
+      });
+      document.querySelectorAll('[data-preset]').forEach(button => button.addEventListener('click', () => applyPreset(button.dataset.preset)));
+      buildGrid(); applyPreset('night'); setStepUI(0);
+    })();
+  </script>
+</body>
+</html>

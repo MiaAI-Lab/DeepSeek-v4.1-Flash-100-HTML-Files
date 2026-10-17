@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#bcd9dc">
+  <meta name="description" content="Still Water — glass objects from the quiet deep.">
+  <title>Still Water — Objects From the Quiet Deep</title>
+  <style>
+    :root {
+      --sky: #b9d9db;
+      --lilac: #ded2e9;
+      --deep: #153c45;
+      --glass: rgba(255,255,255,.24);
+      --glass-edge: rgba(255,255,255,.6);
+      --ink: #173940;
+      --soft: #4f7278;
+      --coral: #f18f78;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--deep); color: #eef7f4; }
+    html, body { margin: 0; min-height: 100%; }
+    body { color: var(--ink); font-family: var(--sans); overflow-x: hidden; background: linear-gradient(135deg, var(--sky), #d8e4dc 42%, var(--lilac)); transition: background 1.2s; }
+    .atmosphere { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .atmosphere::before, .atmosphere::after { content: ""; position: absolute; border-radius: 50%; filter: blur(10px); opacity: .64; }
+    .atmosphere::before { width: 56vw; height: 56vw; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.8), rgba(182,226,222,.16) 55%, transparent 70%); left: -13vw; top: -18vw; }
+    .atmosphere::after { width: 42vw; height: 42vw; background: radial-gradient(circle at 42% 45%, rgba(232,192,214,.55), transparent 68%); right: -9vw; bottom: -12vw; }
+    canvas#bubbles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+    .surface { position: fixed; top: 0; left: 0; right: 0; height: 42vh; background: linear-gradient(180deg, rgba(255,255,255,.32), transparent); z-index: 1; pointer-events: none; }
+    .page { position: relative; z-index: 3; min-height: 100vh; padding: 22px clamp(16px, 3.3vw, 47px) 17px; display: flex; flex-direction: column; }
+    header { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: start; padding: 14px 17px; background: var(--glass); border: 1px solid var(--glass-edge); border-radius: 3px; backdrop-filter: blur(18px) saturate(1.15); box-shadow: 0 8px 30px rgba(49,86,90,.07), inset 0 1px 0 rgba(255,255,255,.5); }
+    .brand { font-family: var(--serif); font-size: 16px; letter-spacing: -.03em; }
+    .brand span { display: block; font-family: var(--mono); font-size: 6px; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); margin-top: 5px; }
+    .header-center { font-family: var(--mono); font-size: 7px; letter-spacing: .12em; text-transform: uppercase; text-align: center; line-height: 1.7; color: var(--soft); }
+    .header-right { text-align: right; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; line-height: 1.7; color: var(--soft); }
+    .header-right b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(0, .95fr) minmax(300px, 1.1fr) minmax(160px, .55fr); gap: clamp(18px, 3vw, 44px); align-items: center; padding: clamp(24px, 4vh, 45px) 0 20px; }
+    .intro { padding-left: clamp(0px, 2vw, 27px); }
+    .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-family: var(--mono); font-size: 7px; letter-spacing: .17em; text-transform: uppercase; color: var(--soft); }
+    .kicker::before { content: ""; width: 23px; height: 1px; background: var(--coral); }
+    h1 { margin: 0; font-family: var(--serif); font-size: clamp(65px, 10.5vw, 149px); line-height: .74; font-weight: 400; letter-spacing: -.08em; }
+    h1 em { display: block; margin-left: clamp(16px, 4vw, 48px); font-weight: 400; color: var(--coral); }
+    .intro p { max-width: 260px; margin: 28px 0 0; font-family: var(--serif); font-size: 14px; line-height: 1.55; color: #41636a; }
+    .cta { display: flex; align-items: center; gap: 13px; margin-top: 26px; }
+    .cta button { border: 1px solid rgba(23,57,64,.5); background: rgba(255,255,255,.2); backdrop-filter: blur(8px); font: inherit; font-family: var(--mono); font-size: 8px; letter-spacing: .09em; text-transform: uppercase; padding: 11px 14px; color: var(--ink); cursor: pointer; transition: background .25s, color .25s, transform .25s; }
+    .cta button:hover { background: var(--ink); color: #f5fbf8; transform: translateY(-2px); }
+    .cta span { font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); line-height: 1.6; }
+    .vitrine { position: relative; width: 100%; max-width: 520px; justify-self: center; aspect-ratio: .85; border-radius: 260px 260px 24px 24px; background: linear-gradient(155deg, rgba(255,255,255,.43), rgba(255,255,255,.11) 48%, rgba(188,225,222,.24)); border: 1px solid var(--glass-edge); box-shadow: 0 28px 70px rgba(38,77,80,.18), inset 0 1px 0 rgba(255,255,255,.8), inset -14px 0 40px rgba(255,255,255,.15); backdrop-filter: blur(12px); overflow: hidden; }
+    .vitrine::before { content: ""; position: absolute; top: 4%; left: 8%; width: 30%; height: 65%; border-radius: 50%; background: linear-gradient(120deg, rgba(255,255,255,.52), transparent); filter: blur(7px); transform: rotate(7deg); pointer-events: none; z-index: 5; }
+    .vitrine::after { content: ""; position: absolute; inset: 13px; border: 1px solid rgba(255,255,255,.38); border-radius: 255px 255px 15px 15px; pointer-events: none; z-index: 6; }
+    .waterline { position: absolute; top: 13%; left: 0; right: 0; height: 1px; background: rgba(255,255,255,.68); z-index: 4; }
+    .waterline::before { content: ""; position: absolute; inset: 2px 20% auto 7%; height: 1px; background: rgba(255,255,255,.32); }
+    .jelly { position: absolute; left: 50%; top: 37%; transform: translate(-50%,-50%); width: 47%; aspect-ratio: .8; z-index: 2; animation: float 6s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translate(-50%,-50%) rotate(-2deg); } 50% { transform: translate(-50%,-56%) rotate(2deg); } }
+    .jelly .dome { position: absolute; width: 100%; height: 46%; left: 0; top: 0; border-radius: 52% 52% 37% 37% / 78% 78% 19% 19%; background: radial-gradient(ellipse at 42% 27%, rgba(255,255,255,.88), rgba(242,160,152,.45) 45%, rgba(218,128,129,.2) 75%, transparent); box-shadow: inset 0 -11px 18px rgba(255,255,255,.35), 0 15px 28px rgba(255,147,133,.2); filter: blur(.2px); }
+    .jelly .dome::before { content: ""; position: absolute; inset: 13% 17% auto 20%; height: 28%; border-radius: 50%; border-top: 2px solid rgba(255,255,255,.8); }
+    .jelly .dome::after { content: ""; position: absolute; width: 78%; height: 37%; left: 11%; top: 42%; border-radius: 50%; border-top: 1px solid rgba(255,255,255,.6); opacity: .8; }
+    .tentacles { position: absolute; width: 54%; left: 23%; top: 42%; height: 55%; display: flex; justify-content: space-between; }
+    .tentacles i { display: block; width: 1px; height: 100%; background: linear-gradient(rgba(255,238,233,.8), rgba(218,139,136,.15)); transform-origin: top; animation: sway 4s ease-in-out infinite; }
+    .tentacles i:nth-child(2) { height: 86%; animation-delay: -.7s; }
+    .tentacles i:nth-child(3) { height: 96%; animation-delay: -1.2s; }
+    .tentacles i:nth-child(4) { height: 78%; animation-delay: -1.8s; }
+    .tentacles i:nth-child(5) { height: 91%; animation-delay: -.3s; }
+    @keyframes sway { 0%,100% { transform: rotate(-4deg) scaleY(.94); } 50% { transform: rotate(5deg) scaleY(1.03); } }
+    .fish { position: absolute; z-index: 3; opacity: .8; }
+    .fish svg { width: 100%; height: auto; filter: blur(.3px); }
+    .fish.one { width: 17%; top: 26%; left: 11%; animation: swim 12s ease-in-out infinite; }
+    .fish.two { width: 10%; top: 62%; right: 13%; animation: swim2 16s ease-in-out infinite; opacity: .5; }
+    .fish.three { width: 7%; top: 45%; left: 21%; animation: swim 18s ease-in-out infinite reverse; opacity: .45; }
+    @keyframes swim { 0%,100% { transform: translate(0,0) scaleX(1); } 32% { transform: translate(220%, -13px) scaleX(1); } 50% { transform: translate(220%, -13px) scaleX(-1); } 82% { transform: translate(0, 4px) scaleX(-1); } }
+    @keyframes swim2 { 0%,100% { transform: translate(0,0) scaleX(-1); } 45% { transform: translate(-230%, 8px) scaleX(-1); } 55% { transform: translate(-230%, 8px) scaleX(1); } 95% { transform: translate(0,0) scaleX(1); } }
+    .specimen { position: absolute; left: 18px; bottom: 18px; z-index: 7; font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .1em; text-transform: uppercase; color: rgba(23,57,64,.7); }
+    .specimen b { display: block; font-family: var(--serif); font-size: 13px; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.01em; color: var(--ink); margin-bottom: 3px; }
+    .price { position: absolute; right: 18px; bottom: 18px; z-index: 7; font-family: var(--mono); font-size: 7px; letter-spacing: .07em; text-transform: uppercase; text-align: right; color: rgba(23,57,64,.7); }
+    .price b { display: block; font-family: var(--serif); font-size: 22px; letter-spacing: -.03em; color: var(--ink); }
+    .side { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; padding-right: clamp(0px, 1.4vw, 20px); }
+    .side-label { margin: 0 0 17px; font-family: var(--mono); font-size: 7px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+    .palettes { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .palettes button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; border: 1px solid rgba(23,57,64,.18); background: rgba(255,255,255,.18); padding: 9px 10px; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 7px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: background .25s, border .25s; }
+    .palettes button:hover, .palettes button.active { background: rgba(255,255,255,.54); border-color: rgba(23,57,64,.5); }
+    .swatches { display: flex; }
+    .swatches i { display: block; width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(255,255,255,.6); margin-left: -3px; }
+    .note { margin-top: 27px; border-top: 1px solid rgba(23,57,64,.2); padding-top: 12px; width: 100%; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+    .note b { display: block; font-family: var(--serif); font-style: italic; font-size: 16px; font-weight: 400; letter-spacing: -.01em; text-transform: none; color: var(--ink); margin-bottom: 5px; }
+    footer { display: flex; justify-content: space-between; gap: 17px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); border-top: 1px solid rgba(23,57,64,.22); padding-top: 11px; }
+    footer b { color: var(--ink); font-weight: 400; }
+    .drop { position: fixed; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.5); box-shadow: 0 0 6px rgba(255,255,255,.6); pointer-events: none; z-index: 2; animation: bubble 3s ease-in forwards; }
+    @keyframes bubble { from { transform: translateY(0) scale(.5); opacity: 0; } 20% { opacity: .8; } to { transform: translateY(-55vh) scale(1.2); opacity: 0; } }
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr 1fr; align-items: center; }
+      .side { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start; text-align: left; padding: 6px 0 0; }
+      .side-label { grid-column: 1 / -1; margin-bottom: -5px; }
+      .palettes { flex-direction: row; grid-column: 1 / -1; }
+      .palettes button { flex: 1; }
+      .note { margin-top: 0; }
+      h1 { font-size: clamp(65px, 12vw, 105px); }
+    }
+    @media (max-width: 650px) {
+      .page { padding: 10px 11px 14px; }
+      header { grid-template-columns: 1fr auto; padding: 10px; }
+      .header-center { display: none; }
+      .header-right { font-size: 6px; }
+      main { display: flex; flex-direction: column; align-items: stretch; padding: 20px 0 14px; gap: 17px; }
+      .intro { padding-left: 2px; }
+      h1 { font-size: clamp(62px, 21vw, 103px); }
+      h1 em { margin-left: 7vw; }
+      .intro p { font-size: 12px; margin-top: 18px; max-width: 280px; }
+      .cta { margin-top: 18px; }
+      .vitrine { order: 2; max-width: 100%; aspect-ratio: .9; }
+      .side { order: 3; display: block; }
+      .palettes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+      .palettes button { padding: 8px 5px; font-size: 6px; }
+      .note { display: none; }
+      .specimen { font-size: 5px; left: 13px; bottom: 13px; }
+      .specimen b { font-size: 11px; }
+      .price { font-size: 6px; right: 13px; bottom: 13px; }
+      .price b { font-size: 18px; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="atmosphere"></div><div class="surface"></div>
+  <canvas id="bubbles" aria-hidden="true"></canvas>
+  <div class="page">
+    <header>
+      <div class="brand">Still Water<span>Objects from the quiet deep</span></div>
+      <div class="header-center">Atelier glass / no. 016<br>An imagined marine collection</div>
+      <div class="header-right">Shipped in sea-foam<br><b>Edition of 40</b></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A small collection of living glass</p>
+        <h1>Still<em>water</em></h1>
+        <p>An object that holds the memory of a tide. Hand-blown, softly lit, and occupied by a creature that never needs feeding.</p>
+        <div class="cta"><button type="button" id="tideBtn">Let the tide in ↗</button><span>Move the page<br>Bubbles follow</span></div>
+      </section>
+      <section class="vitrine" aria-label="A glass vessel containing a jellyfish">
+        <div class="waterline"></div>
+        <div class="fish one"><svg viewBox="0 0 80 40" aria-hidden="true"><path d="M4 20 C18 3 48 5 64 17 C50 34 18 36 4 20Z" fill="rgba(240,170,155,.62)" stroke="rgba(255,255,255,.62)" stroke-width=".8"/><path d="M64 17 L78 7 L73 20 L78 33Z" fill="rgba(240,170,155,.4)"/><circle cx="20" cy="18" r="1.3" fill="#173940"/></svg></div>
+        <div class="fish two"><svg viewBox="0 0 80 40" aria-hidden="true"><path d="M5 20 C22 7 47 8 63 19 C48 30 22 32 5 20Z" fill="rgba(149,196,202,.62)" stroke="rgba(255,255,255,.55)" stroke-width=".7"/><path d="M63 19 L78 9 L73 20 L78 31Z" fill="rgba(149,196,202,.44)"/><circle cx="21" cy="18" r="1.1" fill="#173940"/></svg></div>
+        <div class="fish three"><svg viewBox="0 0 80 40" aria-hidden="true"><path d="M5 20 C19 6 45 8 62 18 C47 31 20 32 5 20Z" fill="rgba(232,220,245,.65)" stroke="rgba(255,255,255,.6)" stroke-width=".7"/><path d="M62 18 L77 8 L72 20 L77 31Z" fill="rgba(232,220,245,.4)"/><circle cx="19" cy="18" r="1.1" fill="#173940"/></svg></div>
+        <div class="jelly" aria-hidden="true"><div class="dome"></div><div class="tentacles"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="specimen"><b>Aurelia vitrea</b>Hand-blown specimen no. 016<br>Living light / 22 cm</div>
+        <div class="price">From the quiet deep<b>€ 1,440</b></div>
+      </section>
+      <aside class="side">
+        <p class="side-label">Choose the room<br>for your object</p>
+        <div class="palettes">
+          <button type="button" class="active" data-palette="lagoon"><span>Lagoon</span><span class="swatches"><i style="background:#b9d9db"></i><i style="background:#e3c6c4"></i><i style="background:#f0a08f"></i></span></button>
+          <button type="button" data-palette="dusk"><span>Lilac dusk</span><span class="swatches"><i style="background:#ded2e9"></i><i style="background:#c6c4dd"></i><i style="background:#fa9d87"></i></span></button>
+          <button type="button" data-palette="abyss"><span>Blue hour</span><span class="swatches"><i style="background:#8cbfc2"></i><i style="background:#618f97"></i><i style="background:#e89485"></i></span></button>
+        </div>
+        <div class="note"><b>A note on stillness</b>Each vessel is made one at a time. Small bubbles are left inside the glass on purpose; they are the signature of the breath that shaped it.</div>
+      </aside>
+    </main>
+    <footer><span><b>Still Water</b> / a fictional marine atelier</span><span>Hand-blown glass · driftwood base</span><span>Open edition / 016</span></footer>
+  </div>
+  <script>
+    (() => {
+      const canvas = document.getElementById('bubbles');
+      const ctx = canvas.getContext('2d');
+      const palettes = {
+        lagoon: ['#b9d9db', '#ded2e9'],
+        dusk: ['#ded2e9', '#efd7d4'],
+        abyss: ['#9fc8cb', '#b8c2dd']
+      };
+      let w, h, dpr, bubbles = [], t = 0;
+      function resize() {
+        dpr = Math.min(devicePixelRatio || 1, 2); w = innerWidth; h = innerHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      function seed() {
+        bubbles = Array.from({ length: innerWidth > 700 ? 27 : 15 }, () => ({ x: Math.random() * w, y: Math.random() * h, r: 1 + Math.random() * 4, s: .15 + Math.random() * .5, a: .12 + Math.random() * .36, w: Math.random() * 6 }));
+      }
+      function draw() {
+        t += .01; ctx.clearRect(0, 0, w, h);
+        bubbles.forEach(b => {
+          b.y -= b.s; b.x += Math.sin(t + b.w) * .15;
+          if (b.y < -10) { b.y = h + 8; b.x = Math.random() * w; }
+          ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255,255,255,${b.a})`; ctx.lineWidth = .7; ctx.stroke();
+          ctx.fillStyle = `rgba(255,255,255,${b.a * .2})`; ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      addEventListener('pointermove', (e) => {
+        if (Math.random() > .6) bubbles.push({ x: e.clientX + (Math.random() - .5) * 30, y: e.clientY, r: 1 + Math.random() * 3, s: .4 + Math.random() * .5, a: .2 + Math.random() * .5, w: Math.random() * 6 });
+        if (bubbles.length > 90) bubbles.splice(0, 8);
+      }, { passive: true });
+      document.querySelectorAll('[data-palette]').forEach(button => {
+        button.addEventListener('click', () => {
+          const [a, b] = palettes[button.dataset.palette];
+          document.documentElement.style.setProperty('--sky', a);
+          document.documentElement.style.setProperty('--lilac', b);
+          document.querySelectorAll('[data-palette]').forEach(x => x.classList.remove('active'));
+          button.classList.add('active');
+        });
+      });
+      document.getElementById('tideBtn').addEventListener('click', () => {
+        for (let i = 0; i < 28; i++) {
+          const drop = document.createElement('span'); drop.className = 'drop';
+          drop.style.left = (20 + Math.random() * 60) + 'vw'; drop.style.top = (72 + Math.random() * 20) + 'vh';
+          drop.style.animationDelay = (Math.random() * 1.2) + 's'; document.body.appendChild(drop);
+          setTimeout(() => drop.remove(), 4500);
+        }
+      });
+      addEventListener('resize', () => { resize(); seed(); });
+      resize(); seed(); draw();
+    })();
+  </script>
+</body>
+</html>

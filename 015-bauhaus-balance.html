@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f1ede2">
+  <meta name="description" content="Bauhaus Balance — a kinetic composition in primary colors.">
+  <title>Bauhaus Balance — A Study in Visual Weight</title>
+  <style>
+    :root {
+      --paper: #f1ede2;
+      --ink: #121211;
+      --red: #e63a24;
+      --blue: #1352ce;
+      --yellow: #f1c928;
+      --cream: #f8f4e9;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--blue); color: var(--cream); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); overflow-x: hidden; }
+    .poster { min-height: 100vh; padding: clamp(13px, 2.4vw, 28px) clamp(14px, 3.4vw, 48px) 17px; display: flex; flex-direction: column; position: relative; overflow: hidden; background-image: linear-gradient(rgba(18,18,17,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(18,18,17,.08) 1px, transparent 1px); background-size: 58px 58px; }
+    .disc { position: absolute; width: 34vw; height: 34vw; min-width: 280px; min-height: 280px; background: var(--yellow); border-radius: 50%; right: -11vw; top: 19%; z-index: 0; }
+    .bar { position: absolute; width: 18%; height: 23vh; background: var(--blue); left: -3%; bottom: 15%; transform: rotate(17deg); z-index: 0; }
+    header, main, footer { position: relative; z-index: 2; }
+    header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 18px; font-family: var(--mono); font-size: 8px; letter-spacing: .1em; line-height: 1.7; text-transform: uppercase; border-bottom: 1px solid var(--ink); padding-bottom: 10px; }
+    .brand { font-family: var(--sans); font-size: 11px; font-weight: 800; letter-spacing: -.025em; text-transform: none; }
+    .brand span { font-family: var(--mono); font-size: 7px; font-weight: 400; letter-spacing: .13em; text-transform: uppercase; margin-left: 6px; }
+    .mid { text-align: center; }
+    .right { text-align: right; }
+    main { flex: 1; display: flex; flex-direction: column; padding: 19px 0 8px; }
+    .masthead { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
+    .kicker { margin: 0 0 9px; font-family: var(--mono); font-size: 8px; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(61px, 11vw, 161px); line-height: .69; letter-spacing: -.085em; font-weight: 800; text-transform: uppercase; }
+    h1 span { display: inline-block; color: var(--red); }
+    .intro { max-width: 227px; font-family: var(--mono); font-size: 8px; line-height: 1.8; text-transform: uppercase; letter-spacing: .04em; padding-bottom: 10px; }
+    .intro b { display: block; font-family: var(--sans); font-size: 13px; letter-spacing: -.01em; text-transform: none; margin-bottom: 7px; }
+    .stage { flex: 1; min-height: 360px; position: relative; display: flex; justify-content: center; align-items: flex-end; padding: 24px 0 0; }
+    .mobile { position: relative; width: min(760px, 82vw); height: clamp(300px, 43vh, 440px); }
+    .fulcrum { position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%); width: 0; height: 0; border-left: 49px solid transparent; border-right: 49px solid transparent; border-bottom: 114px solid var(--ink); }
+    .ground { position: absolute; left: 8%; right: 8%; bottom: 14px; height: 2px; background: var(--ink); }
+    .ground::before { content: "BALANCE / 0.00"; position: absolute; right: 0; top: 8px; font-family: var(--mono); font-size: 7px; letter-spacing: .11em; color: #7e7a6f; }
+    .beam-wrap { position: absolute; left: 50%; bottom: 147px; width: min(620px, 80%); height: 4px; transform: translateX(-50%) rotate(var(--angle, 0deg)); transform-origin: 50% 50%; transition: transform 1.15s cubic-bezier(.22,.86,.28,1); }
+    .beam { position: absolute; inset: 0; background: var(--ink); }
+    .beam::before, .beam::after { content: ""; position: absolute; top: -5px; width: 14px; height: 14px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); }
+    .beam::before { left: -7px; } .beam::after { right: -7px; }
+    .pivot { position: absolute; left: 50%; top: -8px; transform: translateX(-50%); width: 19px; height: 19px; border-radius: 50%; background: var(--red); border: 3px solid var(--paper); outline: 2px solid var(--ink); z-index: 3; }
+    .hanging { position: absolute; top: 4px; width: 50%; height: 240px; transition: opacity .2s; }
+    .hanging.left { left: 0; } .hanging.right { right: 0; }
+    .load-list { position: absolute; inset: 0; }
+    .load { position: absolute; top: 0; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 10px; transform: translateX(-50%); transform-origin: top center; transition: left .45s, transform .6s; }
+    .load .string { width: 1px; background: var(--ink); height: 43px; transform-origin: top; }
+    .load .shape { width: var(--size); height: var(--size); border-radius: 50%; background: var(--color); border: 2px solid var(--ink); box-shadow: 4px 4px 0 rgba(18,18,17,.15); animation: drop .55s cubic-bezier(.3,1.6,.55,1) both; }
+    .load .shape.square { border-radius: 2px; transform: rotate(12deg); }
+    .load .shape.triangle { border-radius: 0; background: transparent; width: 0; height: 0; border-left: calc(var(--size)/2) solid transparent; border-right: calc(var(--size)/2) solid transparent; border-bottom: var(--size) solid var(--color); border-top: 0; box-shadow: none; }
+    .load .shape.half { border-radius: 100% 0 0 100%; }
+    @keyframes drop { from { transform: translateY(-45px) scale(.3); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    .stack { position: absolute; bottom: 0; display: flex; flex-wrap: wrap-reverse; justify-content: center; gap: 4px; width: 100%; }
+    .weight { display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: var(--mono); font-size: 6px; letter-spacing: .04em; opacity: .8; }
+    .weight i { display: block; width: 15px; height: 15px; background: var(--ink); border-radius: 50%; }
+    .weight:nth-child(3n) i { background: var(--red); }
+    .weight:nth-child(4n) i { background: var(--blue); }
+    .weight:nth-child(5n) i { background: var(--yellow); border: 1px solid var(--ink); }
+    .sidetag { position: absolute; top: 34%; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: #77736a; writing-mode: vertical-rl; }
+    .sidetag.left { left: 3%; transform: rotate(180deg); }
+    .sidetag.right { right: 3%; }
+    .meta-line { position: absolute; left: 9%; right: 9%; top: 13%; height: 1px; background: rgba(18,18,17,.18); }
+    .meta-line::before { content: "A POEM IN EQUILIBRIUM"; position: absolute; left: 0; top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .15em; color: #77736a; }
+    .meta-line::after { content: "FORM / COUNTERFORM"; position: absolute; right: 0; top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .15em; color: #77736a; }
+    .controls { position: relative; z-index: 3; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; border-top: 1px solid var(--ink); padding-top: 11px; }
+    .side { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .side.right { justify-content: flex-end; }
+    .side label { width: 100%; font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: #77736a; }
+    .add { border: 1px solid var(--ink); background: transparent; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 7px; letter-spacing: .05em; text-transform: uppercase; padding: 8px 9px; cursor: pointer; transition: background .2s, color .2s, transform .2s; }
+    .add:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+    .add.red:hover { background: var(--red); border-color: var(--red); }
+    .add.blue:hover { background: var(--blue); border-color: var(--blue); }
+    .readout { text-align: center; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: #77736a; }
+    .readout b { display: block; font-family: var(--sans); font-size: 28px; letter-spacing: -.05em; color: var(--ink); line-height: 1; font-weight: 600; }
+    .readout b.even { color: var(--blue); }
+    .reset { border: 0; background: transparent; color: #77736a; font: inherit; font-family: var(--mono); font-size: 7px; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--ink); padding-top: 9px; margin-top: 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: #77736a; }
+    footer span:nth-child(2) { color: var(--ink); }
+    @media (max-width: 790px) {
+      .masthead { display: block; }
+      .intro { margin-top: 18px; max-width: 300px; display: flex; gap: 13px; }
+      .intro b { min-width: 120px; margin-bottom: 0; }
+      .stage { min-height: 360px; }
+      .mobile { width: 95%; }
+      .side label { display: none; }
+      .readout { font-size: 6px; }
+      .readout b { font-size: 23px; }
+    }
+    @media (max-width: 580px) {
+      .poster { padding: 11px 11px 13px; background-size: 40px 40px; }
+      header { grid-template-columns: 1fr auto; font-size: 7px; }
+      .mid { display: none; }
+      main { padding-top: 13px; }
+      h1 { font-size: clamp(60px, 21vw, 97px); line-height: .72; }
+      .intro { display: block; font-size: 7px; }
+      .intro b { margin-bottom: 5px; font-size: 12px; }
+      .stage { min-height: 300px; padding-top: 16px; }
+      .mobile { height: 287px; width: 100%; }
+      .fulcrum { bottom: 28px; border-left-width: 34px; border-right-width: 34px; border-bottom-width: 83px; }
+      .beam-wrap { bottom: 103px; width: 82%; }
+      .load .string { height: 31px; }
+      .meta-line { top: 9%; }
+      .meta-line::before { font-size: 5px; }
+      .meta-line::after { display: none; }
+      .sidetag { display: none; }
+      .ground { left: 2%; right: 2%; }
+      .controls { grid-template-columns: 1fr 1fr; gap: 15px; }
+      .readout { grid-column: 1 / -1; grid-row: 1; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+      .readout b { font-size: 21px; display: inline; }
+      .readout b::after { content: " / torque"; font-family: var(--mono); font-size: 6px; letter-spacing: .1em; color: #77736a; text-transform: uppercase; }
+      .side { align-items: flex-start; }
+      .side.right { justify-content: flex-end; }
+      .add { padding: 7px 6px; font-size: 6px; }
+      .reset { position: absolute; right: 0; bottom: -19px; }
+      footer { margin-top: 29px; font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <div class="disc" aria-hidden="true"></div><div class="bar" aria-hidden="true"></div>
+    <header>
+      <div class="brand">Bauhaus<span>Balance no. 015</span></div>
+      <div class="mid">A study in visual weight<br>Primary colours / open form</div>
+      <div class="right">Weimar → everywhere<br>17 · X · 2026</div>
+    </header>
+    <main>
+      <div class="masthead">
+        <div>
+          <p class="kicker">An interactive composition</p>
+          <h1>Bau<span>haus</span><br>Balance</h1>
+        </div>
+        <p class="intro"><b>Form follows play.</b>Add mass to one side, then the other. A composition is never finished, only held for a moment.</p>
+      </div>
+      <div class="stage">
+        <div class="meta-line"></div>
+        <span class="sidetag left">Left / visual mass</span><span class="sidetag right">Right / counterform</span>
+        <div class="mobile" id="mobile">
+          <div class="ground"></div>
+          <div class="fulcrum"></div>
+          <div class="beam-wrap" id="beamWrap">
+            <div class="beam"></div><div class="pivot"></div>
+            <div class="hanging left"><div class="load-list" id="loadLeft"></div></div>
+            <div class="hanging right"><div class="load-list" id="loadRight"></div></div>
+          </div>
+          <div class="stack" id="stackLeft" aria-label="Left weights"></div>
+          <div class="stack" id="stackRight" style="justify-self:end" aria-label="Right weights"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="side"><label>Add to the left</label><button class="add red" type="button" data-side="left" data-weight="1" data-shape="circle">+ 1 circle</button><button class="add blue" type="button" data-side="left" data-weight="2" data-shape="square">+ 2 square</button><button class="add" type="button" data-side="left" data-weight="3" data-shape="triangle">+ 3 triangle</button></div>
+        <div class="readout"><span>Left <b id="leftTotal">0</b></span><span>Torque <b id="angleReadout">0.0°</b></span><span>Right <b id="rightTotal">0</b></span></div>
+        <div class="side right"><label>Add to the right</label><button class="add" type="button" data-side="right" data-weight="1" data-shape="half">+ 1 half</button><button class="add red" type="button" data-side="right" data-weight="2" data-shape="circle">+ 2 circle</button><button class="add blue" type="button" data-side="right" data-weight="3" data-shape="square">+ 3 square</button><button class="reset" type="button" id="reset">Reset composition</button></div>
+      </div>
+    </main>
+    <footer><span>Bauhaus Balance — a digital mobile</span><span id="stateText">In equilibrium</span><span>Tap the weights / find the poise</span></footer>
+  </div>
+  <script>
+    (() => {
+      const left = [], right = [];
+      const colors = ['#e63a24', '#1352ce', '#f1c928'];
+      const beamWrap = document.getElementById('beamWrap');
+      const loadLeft = document.getElementById('loadLeft');
+      const loadRight = document.getElementById('loadRight');
+      const stackLeft = document.getElementById('stackLeft');
+      const stackRight = document.getElementById('stackRight');
+      const leftTotal = document.getElementById('leftTotal');
+      const rightTotal = document.getElementById('rightTotal');
+      const angleReadout = document.getElementById('angleReadout');
+      const stateText = document.getElementById('stateText');
+      function total(arr) { return arr.reduce((s, x) => s + x.weight, 0); }
+      function render() {
+        const lt = total(left), rt = total(right);
+        const diff = rt - lt;
+        const angle = Math.max(-14, Math.min(14, diff * 3.1));
+        beamWrap.style.setProperty('--angle', angle.toFixed(2) + 'deg');
+        leftTotal.textContent = lt;
+        rightTotal.textContent = rt;
+        angleReadout.textContent = Math.abs(angle).toFixed(1) + '°';
+        angleReadout.classList.toggle('even', angle === 0);
+        stateText.textContent = angle === 0 ? 'In equilibrium' : diff > 0 ? 'Leaning right / ' + diff + ' units' : 'Leaning left / ' + Math.abs(diff) + ' units';
+        document.getElementById('leftTotal').textContent = lt;
+        document.getElementById('rightTotal').textContent = rt;
+      }
+      function add(side, weight, shape) {
+        const arr = side === 'left' ? left : right;
+        arr.push({ weight, shape });
+        render();
+        const load = side === 'left' ? loadLeft : loadRight;
+        load.innerHTML = '';
+        const sorted = [...arr].sort((a, b) => b.weight - a.weight);
+        sorted.forEach((item, i) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'load';
+          wrap.style.left = 'calc(50% + ' + (i * 28 - (sorted.length - 1) * 14) + 'px)';
+          const string = document.createElement('span'); string.className = 'string';
+          const shapeEl = document.createElement('span'); shapeEl.className = 'shape ' + item.shape;
+          shapeEl.style.setProperty('--size', (18 + item.weight * 8) + 'px');
+          shapeEl.style.setProperty('--color', colors[(item.weight - 1) % 3]);
+          wrap.append(string, shapeEl); load.append(wrap);
+        });
+        const stack = side === 'left' ? stackLeft : stackRight;
+        const w = document.createElement('span'); w.className = 'weight'; w.innerHTML = '<i></i>' + weight;
+        stack.append(w);
+      }
+      document.querySelectorAll('.add[data-side]').forEach(button => {
+        button.addEventListener('click', () => add(button.dataset.side, Number(button.dataset.weight), button.dataset.shape));
+      });
+      document.getElementById('reset').addEventListener('click', () => {
+        left.length = 0; right.length = 0;
+        loadLeft.innerHTML = ''; loadRight.innerHTML = ''; stackLeft.innerHTML = ''; stackRight.innerHTML = '';
+        beamWrap.style.setProperty('--angle', '0deg'); render();
+        document.querySelectorAll('.shape').forEach(el => el.remove());
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

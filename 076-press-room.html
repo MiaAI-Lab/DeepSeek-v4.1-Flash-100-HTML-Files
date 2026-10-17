@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e1ce">
+  <meta name="description" content="The Press Room — a letterpress poster, set by hand.">
+  <title>The Press Room — A Letterpress Poster, Set by Hand</title>
+  <style>
+    :root {
+      --paper: #e9e1ce;
+      --sheet: #f4eddb;
+      --ink: #171512;
+      --red: #b13a2b;
+      --ochre: #c08b2e;
+      --dim: #837a68;
+      --line: rgba(23,21,18,.25);
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--red); color: var(--sheet); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); padding: clamp(8px, 1.5vw, 18px); display: flex; justify-content: center; }
+    .press-room { width: min(1240px, 100%); min-height: calc(100vh - clamp(16px, 3vw, 36px)); background: #f7f1e2; border: 1px solid var(--ink); display: flex; flex-direction: column; padding: clamp(12px, 2.2vw, 26px) clamp(12px, 2.6vw, 34px) clamp(10px, 1.6vw, 16px); }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 7px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--serif); font-size: 17px; letter-spacing: -.02em; text-transform: none; color: var(--ink); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 2.8vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .55fr) minmax(300px, 1.5fr) minmax(165px, .58fr); gap: clamp(12px, 2.4vw, 32px); align-items: center; padding: 10px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--sans); font-weight: 700; font-size: clamp(36px, 4.8vw, 62px); line-height: .82; letter-spacing: -.06em; }
+    .intro h1 em { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--red); font-size: .82em; letter-spacing: -.03em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 8px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 14px; height: 1px; background: var(--red); }
+    .intro p { margin: 12px 0 0; max-width: 185px; font-family: var(--serif); font-size: 10.5px; line-height: 1.55; color: #5d5648; }
+    .type-case { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .type-case h2 { margin: 0 0 4px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .sorts { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+    .sort { aspect-ratio: 1; border: 1px solid rgba(23,21,18,.3); background: #e6dcc6; font-family: var(--serif); font-size: 9px; display: grid; place-items: center; cursor: default; box-shadow: inset 0 -2px 0 rgba(23,21,18,.15); }
+    .sort.hot { background: var(--ink); color: var(--sheet); }
+    .proof-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .proof { position: relative; width: min(100%, 430px); aspect-ratio: .74; background: var(--sheet); box-shadow: 0 14px 26px rgba(40,32,18,.25); padding: 6.5%; overflow: hidden; transition: box-shadow .3s, transform .3s; }
+    .proof::before { content: ""; position: absolute; inset: 4.5%; border: 1px solid rgba(23,21,18,.35); pointer-events: none; }
+    .proof::after { content: ""; position: absolute; inset: 0; background: radial-gradient(rgba(60,48,26,.08) .5px, transparent .8px); background-size: 3px 3px; opacity: .45; pointer-events: none; }
+    .reg { position: absolute; width: 9px; height: 9px; border: 1px solid var(--red); border-radius: 50%; }
+    .reg::before, .reg::after { content: ""; position: absolute; background: var(--red); }
+    .reg::before { left: 50%; top: -4px; bottom: -4px; width: 1px; }
+    .reg::after { top: 50%; left: -4px; right: -4px; height: 1px; }
+    .reg.tl { left: 2%; top: 2%; } .reg.tr { right: 2%; top: 2%; } .reg.bl { left: 2%; bottom: 2%; } .reg.br { right: 2%; bottom: 2%; }
+    .proof-inner { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; }
+    .kicker-line { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 3px; }
+    .poster-title { margin: auto 0 0; font-family: var(--sans); font-weight: 700; font-size: clamp(30px, 5vw, 55px); line-height: .82; letter-spacing: -.055em; text-transform: uppercase; word-break: break-word; }
+    .poster-title .accent { color: var(--ink-ink, #b13a2b); }
+    .poster-sub { margin: 8px 0 0; font-family: var(--serif); font-size: clamp(9px, 1.2vw, 13px); line-height: 1.35; color: var(--ink); max-width: 90%; }
+    .poster-foot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; border-top: 2px solid var(--ink); padding-top: 4px; font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; }
+    .poster-foot b { font-family: var(--serif); font-size: 10px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+    .proof.printed { box-shadow: 0 14px 30px rgba(40,32,18,.3), 2px 2px 0 rgba(177,58,43,.18), -1px -1px 0 rgba(23,21,18,.12); }
+    .impression { position: absolute; inset: 0; z-index: 1; background: repeating-linear-gradient(0deg, rgba(23,21,18,.035) 0 1px, transparent 1px 3px); opacity: 0; transition: opacity .5s; pointer-events: none; }
+    .proof.printed .impression { opacity: 1; }
+    .proof-caption { font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); display: flex; justify-content: space-between; width: 100%; }
+    .controls { display: flex; flex-direction: column; justify-content: center; }
+    .controls h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .field { margin-bottom: 6px; }
+    .field label { display: block; font-family: var(--mono); font-size: 3.8px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+    .field input { width: 100%; border: 0; border-bottom: 1px solid var(--ink); background: transparent; font-family: var(--sans); font-weight: 700; font-size: 10px; letter-spacing: -.01em; padding: 1px 0 3px; color: var(--ink); outline: none; }
+    .field input:focus { border-color: var(--red); }
+    .inks { display: flex; gap: 4px; margin-top: 2px; }
+    .ink { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(23,21,18,.3); cursor: pointer; padding: 0; position: relative; }
+    .ink.active::after { content: ""; position: absolute; inset: -3px; border: 1px solid var(--ink); border-radius: 50%; }
+    .stocks { display: flex; gap: 3px; margin-top: 2px; }
+    .stock { flex: 1; border: 1px solid rgba(23,21,18,.3); background: #f4eddb; font-family: var(--mono); font-size: 3.6px; letter-spacing: .05em; text-transform: uppercase; padding: 4px 2px; cursor: pointer; color: var(--dim); }
+    .stock.active { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+    .print-btn { width: 100%; margin-top: 7px; border: 1px solid var(--ink); background: var(--ink); color: var(--sheet); font-family: var(--mono); font-size: 5px; letter-spacing: .1em; text-transform: uppercase; padding: 7px; cursor: pointer; transition: background .2s; }
+    .print-btn:hover { background: var(--red); border-color: var(--red); }
+    .press-info { margin-top: 7px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--mono); font-size: 3.8px; line-height: 1.9; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .press-info div { display: flex; justify-content: space-between; gap: 4px; }
+    .press-info b { color: var(--ink); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--red); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      .controls { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 16px; align-items: start; }
+      .controls h2 { grid-column: 1 / -1; }
+      .field.title-field { grid-column: 1 / span 2; }
+      .field.ink-field, .field.stock-field { grid-column: span 1; }
+      .print-btn { grid-column: 2; margin-top: 4px; }
+      .press-info { grid-column: 3; grid-row: 3; margin-top: 0; border-top: 0; padding-top: 0; }
+      .type-case { display: none; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .press-room { padding: 10px 10px 11px; min-height: 100vh; border: 0; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 38px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .proof-wrap { order: 2; }
+      .proof { width: min(100%, 300px); }
+      .controls { order: 3; display: block; }
+      .print-btn { margin-top: 5px; }
+      .press-info { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="press-room">
+    <header>
+      <div class="brand"><b>The Press Room</b>Letterpress workshop / proof 076</div>
+      <div class="head"><div>Press<br><b>Albion, 1851</b></div><div>Type<br><b>Grotesque 48</b></div><div>Sheet<br><b>A2</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Set it, lock it, pull it</p>
+        <h1>The<em>press room</em></h1>
+        <p>Every poster begins as a drawer of metal sorts and a decision about ink. Change the words, choose a colour, and pull a proof.</p>
+        <div class="type-case">
+          <h2>Sorts</h2>
+          <div class="sorts" id="sorts"></div>
+        </div>
+      </section>
+      <section class="proof-wrap">
+        <div class="proof" id="proof">
+          <span class="reg tl"></span><span class="reg tr"></span><span class="reg bl"></span><span class="reg br"></span>
+          <div class="impression"></div>
+          <div class="proof-inner">
+            <div class="kicker-line"><span id="proofKicker">Press Room / new work</span><span>No. 076</span></div>
+            <h2 class="poster-title" id="posterTitle">PRINT<br>IS A<br>SLOW<br><span class="accent">ARGUMENT</span></h2>
+            <p class="poster-sub" id="posterSub">An exhibition of letterpress, wood type and patience. Opens Friday at the old works on Quay Street.</p>
+            <div class="poster-foot"><b id="posterVenue">The Old Works</b><span id="posterDate">17.10.26 — 30.11.26</span></div>
+          </div>
+        </div>
+        <div class="proof-caption"><span id="proofStamp">Proof · not yet printed</span><span id="proofCount">0 impressions</span></div>
+      </section>
+      <section class="controls">
+        <h2>Press settings</h2>
+        <div class="field title-field"><label for="titleInput">Poster line</label><input id="titleInput" type="text" value="PRINT IS A SLOW ARGUMENT" maxlength="40" spellcheck="false"></div>
+        <div class="field ink-field"><label>Ink</label><div class="inks" id="inks"><button class="ink active" type="button" data-ink="#b13a2b" style="background:#b13a2b" aria-label="Vermilion"></button><button class="ink" type="button" data-ink="#171512" style="background:#171512" aria-label="Black"></button><button class="ink" type="button" data-ink="#c08b2e" style="background:#c08b2e" aria-label="Ochre"></button><button class="ink" type="button" data-ink="#2c5f9e" style="background:#2c5f9e" aria-label="Cobalt"></button></div></div>
+        <div class="field stock-field"><label>Stock</label><div class="stocks" id="stocks"><button class="stock active" type="button" data-bg="#f4eddb">Cream</button><button class="stock" type="button" data-bg="#e9dfc7">Wove</button><button class="stock" type="button" data-bg="#dcd3bd">Grey</button></div></div>
+        <button class="print-btn" type="button" id="print">Pull a proof</button>
+        <div class="press-info">
+          <div><span>Paper</span><b id="paperRead">300 gsm</b></div>
+          <div><span>Ink</span><b id="inkRead">Vermilion</b></div>
+          <div><span>Impressions</span><b id="impRead">0</b></div>
+          <div><span>Pressman</span><b>J. Marlowe</b></div>
+        </div>
+      </section>
+    </main>
+    <footer><span><b>The Press Room</b> / a letterpress poster, set by hand</span><span>Type is a tool; the impression is the evidence</span><span>Proof 076 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const sorts = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const sortsEl = document.getElementById('sorts');
+      sorts.split('').forEach(L => { const d = document.createElement('div'); d.className = 'sort' + (L === 'R' || L === 'E' ? ' hot' : ''); d.textContent = L; sortsEl.appendChild(d); });
+      const titleInput = document.getElementById('titleInput');
+      const posterTitle = document.getElementById('posterTitle');
+      let printed = 0;
+      function renderTitle() {
+        const words = titleInput.value.trim().split(/\s+/);
+        if (words.length <= 1) { posterTitle.innerHTML = (titleInput.value || 'PRINT').toUpperCase() + '<br><span class="accent">IS THE POINT</span>'; return; }
+        const mid = Math.ceil(words.length / 2);
+        const a = words.slice(0, mid).join(' ').toUpperCase();
+        const b = words.slice(mid).join(' ').toUpperCase();
+        posterTitle.innerHTML = a + '<br><span class="accent">' + b + '</span>';
+      }
+      titleInput.addEventListener('input', renderTitle);
+      document.querySelectorAll('.ink').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.ink').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        document.documentElement.style.setProperty('--ink-ink', b.dataset.ink);
+        posterTitle.querySelector('.accent')?.style.setProperty('color', b.dataset.ink);
+        document.getElementById('inkRead').textContent = b.getAttribute('aria-label');
+      }));
+      document.querySelectorAll('.stock').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.stock').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        document.getElementById('proof').style.background = b.dataset.bg;
+        document.getElementById('paperRead').textContent = b.textContent === 'Cream' ? '300 gsm' : b.textContent === 'Wove' ? '250 gsm' : '350 gsm';
+      }));
+      document.getElementById('print').addEventListener('click', () => {
+        printed++;
+        const proof = document.getElementById('proof');
+        proof.classList.add('printed');
+        proof.animate([{ transform: 'translateY(-3px) scale(.995)' }, { transform: 'none' }], { duration: 280, easing: 'ease-out' });
+        document.getElementById('proofCount').textContent = printed + ' impression' + (printed === 1 ? '' : 's');
+        document.getElementById('impRead').textContent = printed;
+        document.getElementById('proofStamp').textContent = 'Printed ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' · proof ' + printed;
+      });
+      renderTitle();
+    })();
+  </script>
+</body>
+</html>

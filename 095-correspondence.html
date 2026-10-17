@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2a2b21">
+  <meta name="description" content="The Correspondence — three letters, one letter knife.">
+  <title>The Correspondence — Three Letters, One Letter Knife</title>
+  <style>
+    :root {
+      --desk: #2a2b21;
+      --desk2: #35362a;
+      --paper: #f2ead6;
+      --paper2: #e7dcc3;
+      --ink: #2b2a1f;
+      --wax: #8d3b31;
+      --olive: #71765a;
+      --dim: #9c9a86;
+      --line: rgba(242,234,214,.18);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--wax); color: var(--paper); }
+    body { margin: 0; min-height: 100vh; background: var(--desk); color: var(--paper); font-family: var(--sans); overflow-x: hidden; }
+    .writing-desk { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 42%, #454636, #1b1c15 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--wax); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--paper); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--paper); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(155px, .55fr) minmax(310px, 1.35fr) minmax(185px, .7fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(35px, 4.8vw, 60px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--wax); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--wax); }
+    .intro p { max-width: 190px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #c0bba9; }
+    .letters { margin-top: 14px; border-top: 1px solid var(--line); }
+    .letters h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .letter-btn { display: flex; justify-content: space-between; align-items: baseline; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 4px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: color .2s, padding .2s; }
+    .letter-btn b { font-family: var(--serif); font-size: 10px; font-weight: 400; color: var(--paper); }
+    .letter-btn span { font-family: var(--mono); font-size: 4px; letter-spacing: .04em; text-transform: uppercase; }
+    .letter-btn:hover, .letter-btn.active { color: var(--wax); padding-left: 4px; }
+    .letter-btn.active b { color: #d8a08f; }
+    .desk-stage { display: flex; align-items: center; justify-content: center; }
+    .envelope { position: relative; width: min(100%, 420px); aspect-ratio: 1.5; background: #d9cbae; box-shadow: 0 18px 34px rgba(0,0,0,.45); cursor: pointer; }
+    .envelope::before { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, #e4d7bd, #cbbb9b 70%, #b5a483); }
+    .envelope::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 44%; background: linear-gradient(155deg, transparent 48%, rgba(120,100,70,.18) 49%, transparent 52%), linear-gradient(205deg, transparent 48%, rgba(120,100,70,.18) 49%, transparent 52%); }
+    .flap { position: absolute; left: 0; right: 0; top: 0; height: 52%; background: linear-gradient(180deg, #e7dac0, #d2c1a1); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; transition: transform .9s cubic-bezier(.4,.2,.2,1); z-index: 4; }
+    .envelope.open .flap { transform: rotateX(180deg); z-index: 1; }
+    .seal { position: absolute; left: 50%; top: 44%; transform: translate(-50%,-50%); width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #b15546, var(--wax) 55%, #5e241d); box-shadow: 0 3px 6px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,220,200,.18); z-index: 6; display: grid; place-items: center; font-family: var(--serif); font-size: 13px; color: rgba(255,230,210,.7); transition: opacity .4s, transform .4s; }
+    .envelope.open .seal { opacity: 0; transform: translate(-50%,-50%) scale(.6); }
+    .seal::before { content: ""; position: absolute; inset: 5px; border: 1px dashed rgba(255,220,200,.3); border-radius: 50%; }
+    .letter-paper { position: absolute; left: 7%; right: 7%; bottom: 8%; height: 74%; background: var(--paper); z-index: 3; padding: 8% 9%; box-shadow: 0 6px 14px rgba(0,0,0,.2); transform: translateY(0); transition: transform .9s cubic-bezier(.4,.2,.2,1), height .9s; overflow: hidden; }
+    .envelope.open .letter-paper { transform: translateY(-42%); height: 92%; z-index: 5; }
+    .letter-paper::before { content: ""; position: absolute; inset: 5%; border: 1px solid rgba(43,42,31,.14); pointer-events: none; }
+    .lp-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 3.5px; letter-spacing: .06em; text-transform: uppercase; color: #7e7560; border-bottom: 1px solid rgba(43,42,31,.2); padding-bottom: 2px; }
+    .lp-body { margin-top: 6%; font-family: var(--serif); font-size: 8px; line-height: 1.65; color: #3a372a; }
+    .lp-body p { margin: 0 0 5px; }
+    .lp-sign { margin-top: 7px; font-family: var(--serif); font-style: italic; font-size: 11px; color: #3a372a; text-align: right; }
+    .envelope-meta { display: flex; justify-content: space-between; width: 100%; max-width: 420px; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); margin-top: 7px; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .card { border-top: 1px solid var(--line); padding-top: 6px; }
+    .card h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card .name { font-family: var(--serif); font-size: 20px; letter-spacing: -.02em; line-height: 1.05; color: #d8a08f; }
+    .card .sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--paper); margin-top: 2px; }
+    .card .note { margin: 6px 0 0; font-family: var(--serif); font-size: 10px; line-height: 1.5; color: #c0bba9; min-height: 46px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .data div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--paper); font-weight: 400; }
+    .actions { display: flex; gap: 4px; margin-top: 8px; }
+    .actions button { flex: 1; border: 1px solid rgba(141,59,49,.7); background: transparent; color: #d8a08f; font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 3px; cursor: pointer; transition: background .2s, color .2s; }
+    .actions button:hover { background: var(--wax); color: var(--paper); }
+    .actions button.primary { background: var(--wax); color: var(--paper); }
+    .stamp { margin-top: 7px; border: 1px solid rgba(113,118,90,.5); padding: 4px 6px; font-family: var(--mono); font-size: 3.8px; line-height: 1.7; letter-spacing: .05em; text-transform: uppercase; color: #b3b59a; transform: rotate(-2deg); }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: #d8a08f; }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .72fr 1.28fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .card { grid-column: 1; }
+      .data { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .actions { grid-column: 2; }
+      .stamp { grid-column: 1; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .writing-desk { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .letters { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 7px; }
+      .letters h2 { grid-column: 1 / -1; }
+      .letter-btn { padding: 2px 0; }
+      .letter-btn b { font-size: 9px; }
+      .letter-btn span { display: none; }
+      .desk-stage { order: 2; }
+      .envelope { width: 270px; }
+      .letter-paper { padding: 7%; }
+      .lp-body { font-size: 6.5px; }
+      aside { order: 3; display: block; }
+      .card .name { font-size: 17px; }
+      .card .note { min-height: 0; font-size: 9px; }
+      .data, .stamp { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="writing-desk">
+    <header>
+      <div class="brand"><b>The Correspondence</b>Letters / bundle 095</div>
+      <div class="head"><div>Letters<br><b>Three</b></div><div>Post<br><b>Vela, 1958</b></div><div>Seal<br><b>Wax</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Three letters, one letter knife</p>
+        <h1>The<em>correspondence</em></h1>
+        <p>Some letters are kept for what they say and some for the fact that they were sent at all. Select one, then break the seal.</p>
+        <div class="letters" id="letters">
+          <h2>Bundle</h2>
+        </div>
+      </section>
+      <section class="desk-stage">
+        <div class="envelope" id="envelope">
+          <div class="letter-paper" id="letterPaper">
+            <div class="lp-head"><span id="lpFrom">A. to B.</span><span id="lpDate">14 March 1958</span></div>
+            <div class="lp-body" id="lpBody"></div>
+          </div>
+          <div class="flap"></div>
+          <div class="seal" id="seal">V</div>
+        </div>
+        <div class="envelope-meta"><span id="metaFrom">From A. Voss</span><span id="metaPost">Postmarked Vela</span></div>
+      </section>
+      <aside>
+        <div class="card">
+          <h2>Envelope</h2>
+          <div class="name" id="envName">A. Voss to B. Marchetti</div>
+          <div class="sub" id="envSub">14 March 1958 · Vela</div>
+          <p class="note" id="envNote">A short letter about a borrowed book and a longer one about the weather. The writer apologises for the delay, which was not the writer's fault.</p>
+        </div>
+        <div class="data">
+          <div><span>Sender</span><b id="senderRead">A. Voss</b></div>
+          <div><span>Recipient</span><b id="recipRead">B. Marchetti</b></div>
+          <div><span>Paper</span><b id="paperRead">Laid</b></div>
+          <div><span>Ink</span><b id="inkRead">Iron gall</b></div>
+          <div><span>Seal</span><b id="sealRead">V</b></div>
+          <div><span>Pages</span><b id="pagesRead">1</b></div>
+        </div>
+        <div class="actions"><button type="button" class="primary" id="openBtn">Open the letter</button><button type="button" id="closeBtn">Fold it away</button></div>
+        <div class="stamp">Received / Vela post office<br>15 March 1958 · before noon</div>
+      </aside>
+    </main>
+    <footer><span><b>The Correspondence</b> / three letters, one letter knife</span><span>Keep the envelope; the letter can look after itself</span><span>Bundle 095 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const letters = [
+        { from: 'A. Voss', to: 'B. Marchetti', date: '14 March 1958', post: 'Postmarked Vela', paper: 'Laid', ink: 'Iron gall', seal: 'V', pages: '1', note: 'A short letter about a borrowed book and a longer one about the weather. The writer apologises for the delay, which was not the writer\u2019s fault.',
+          body: '<p>Dear B.,</p><p>I have your copy of the letters and I am sorry to have kept it so long. The weather has been the kind that makes reading feel like a form of work, and I have been doing very little of either.</p><p>The book is better than I remembered. The passage about the harbour at night is still the best thing in it.</p><p>Come for lunch when the rain stops. Bring nothing.</p><p class="lp-sign">— A.</p>' },
+        { from: 'B. Marchetti', to: 'A. Voss', date: '2 June 1958', post: 'Postmarked Vela', paper: 'Wove', ink: 'Blue-black', seal: 'M', pages: '2', note: 'A reply, written over two evenings. The first page is about the book; the second is about a room that has become available above the bakery.',
+          body: '<p>Dear A.,</p><p>The book is yours to keep. I have another copy, and the harbour passage reads better in your handwriting in the margin.</p><p>There is a room above the bakery, two windows and a stove. I thought of you before I thought of anyone.</p><p>If you come and see it, come on a Thursday. The bread is better on Thursdays.</p><p class="lp-sign">— B.</p>' },
+        { from: 'The Harbour Office', to: 'A. Voss', date: '19 October 1958', post: 'Hand delivered', paper: 'Cotton', ink: 'Black', seal: 'H', pages: '1', note: 'An official letter, folded twice and sealed. It concerns a mooring fee, a lost dinghy and a date by which both must be settled.',
+          body: '<p>Dear Sir,</p><p>Our records show that the mooring fee for the dinghy <em>Perdida</em> remains outstanding for the quarter ending September. The vessel was also reported adrift on the 3rd inst. and recovered by the harbour launch.</p><p>Please settle the account, and collect the oars, by the end of the month.</p><p class="lp-sign">— The Harbour Office</p>' }
+      ];
+      let current = 0, open = false;
+      const list = document.getElementById('letters');
+      letters.forEach((l, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'letter-btn' + (i === 0 ? ' active' : '');
+        b.innerHTML = '<b>' + l.from + ' → ' + l.to + '</b><span>' + l.date + '</span>';
+        b.addEventListener('click', () => select(i));
+        list.appendChild(b);
+      });
+      function render() {
+        const l = letters[current];
+        document.getElementById('lpFrom').textContent = l.from + ' → ' + l.to;
+        document.getElementById('lpDate').textContent = l.date;
+        document.getElementById('lpBody').innerHTML = l.body;
+        document.getElementById('envName').textContent = l.from + ' to ' + l.to;
+        document.getElementById('envSub').textContent = l.date + ' · ' + l.post;
+        document.getElementById('envNote').textContent = l.note;
+        document.getElementById('senderRead').textContent = l.from;
+        document.getElementById('recipRead').textContent = l.to;
+        document.getElementById('paperRead').textContent = l.paper;
+        document.getElementById('inkRead').textContent = l.ink;
+        document.getElementById('sealRead').textContent = l.seal;
+        document.getElementById('pagesRead').textContent = l.pages;
+        document.getElementById('metaFrom').textContent = 'From ' + l.from;
+        document.getElementById('metaPost').textContent = l.post;
+        document.getElementById('seal').textContent = l.seal;
+        document.querySelectorAll('.letter-btn').forEach((b, i) => b.classList.toggle('active', i === current));
+        document.getElementById('envelope').classList.toggle('open', open);
+        document.getElementById('openBtn').textContent = open ? 'Letter open' : 'Open the letter';
+      }
+      function select(i) { current = i; open = false; render(); }
+      function toggleOpen() { open = !open; render(); }
+      document.getElementById('openBtn').addEventListener('click', toggleOpen);
+      document.getElementById('closeBtn').addEventListener('click', () => { open = false; render(); });
+      document.getElementById('envelope').addEventListener('click', toggleOpen);
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+  <meta name="description" content="One Hundred — colophon and index of the collection.">
+  <title>One Hundred — Colophon and Index</title>
+  <style>
+    :root {
+      --ink: #101014;
+      --panel: #17171c;
+      --cream: #eee7d6;
+      --gold: #c9a45c;
+      --rust: #a85238;
+      --dim: #8c887c;
+      --line: rgba(238,231,214,.15);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: var(--ink); }
+    body { margin: 0; min-height: 100vh; background: var(--ink); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .colophon { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 26%, #26262e, #0a0a0d 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(175px, .7fr) minmax(330px, 1.5fr) minmax(185px, .66fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(52px, 7.4vw, 96px); line-height: .76; letter-spacing: -.075em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--gold); font-size: .86em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--rust); }
+    .intro p { max-width: 210px; margin: 14px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #b7b2a5; }
+    .intro .counts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-top: 14px; border-top: 1px solid var(--line); padding-top: 6px; }
+    .counts div { font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .counts b { display: block; font-family: var(--serif); font-size: 21px; color: var(--cream); font-weight: 400; }
+    .index { border: 1px solid var(--line); background: #141419; padding: 8px; }
+    .index-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin-bottom: 5px; }
+    .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; }
+    .cell { aspect-ratio: 1; border: 1px solid rgba(238,231,214,.13); background: #1a1a20; cursor: pointer; padding: 2px; display: flex; flex-direction: column; justify-content: space-between; transition: background .15s, border-color .15s; overflow: hidden; }
+    .cell:hover, .cell.sel { background: #2a2a33; border-color: var(--gold); }
+    .cell .n { font-family: var(--mono); font-size: 4px; letter-spacing: .04em; color: var(--dim); }
+    .cell .t { font-family: var(--serif); font-size: 4.4px; line-height: 1.1; color: var(--cream); }
+    .cell.sel .n { color: var(--gold); }
+    .index-foot { display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--mono); font-size: 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .detail { border-top: 1px solid var(--line); padding-top: 6px; }
+    .detail h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .detail .num { font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; color: var(--gold); }
+    .detail .title { font-family: var(--serif); font-size: 20px; line-height: 1.05; letter-spacing: -.02em; color: var(--cream); margin-top: 2px; min-height: 22px; }
+    .detail .desc { margin: 6px 0 0; font-family: var(--serif); font-size: 10px; line-height: 1.5; color: #b7b2a5; min-height: 42px; }
+    .detail .file { margin-top: 6px; font-family: var(--mono); font-size: 4px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .detail .file b { color: var(--cream); font-weight: 400; }
+    .rules { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--mono); font-size: 4px; line-height: 1.85; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .rules div { display: flex; justify-content: space-between; }
+    .rules b { color: var(--cream); font-weight: 400; }
+    .sign { margin-top: 9px; font-family: var(--serif); font-style: italic; font-size: 10px; line-height: 1.5; color: #b7b2a5; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--gold); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .8fr 1.2fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .detail { grid-column: 1; }
+      .rules { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .sign { grid-column: 2; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      .colophon { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(48px, 17vw, 72px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .intro .counts { display: none; }
+      .index { order: 2; padding: 5px; }
+      .grid { grid-template-columns: repeat(5, 1fr); }
+      .cell { aspect-ratio: 1.1; }
+      .cell .t { font-size: 4.2px; }
+      aside { order: 3; display: block; }
+      .detail .title { font-size: 16px; }
+      .detail .desc { min-height: 0; font-size: 9px; }
+      .rules { display: none; }
+      .sign { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="colophon">
+    <header>
+      <div class="brand"><b>One Hundred</b>Colophon and index / collection 100</div>
+      <div class="head"><div>Pieces<br><b>100</b></div><div>Files<br><b>200</b></div><div>External requests<br><b>0</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">The collection, closed</p>
+        <h1>One<em>hundred</em></h1>
+        <p>A hundred self-contained pages and the prompts that made them. No shared stylesheet, no library, no font, no image, no network. Each page carries everything it needs.</p>
+        <div class="counts">
+          <div>Pages<b>100</b></div><div>Prompts<b>100</b></div>
+          <div>Files<b>200</b></div><div>Dependencies<b>0</b></div>
+        </div>
+      </section>
+      <section class="index">
+        <div class="index-head"><span>Index 001 — 100</span><span>Hover to read / click to hold</span></div>
+        <div class="grid" id="grid"></div>
+        <div class="index-foot"><span>Everything in this folder</span><span>Standalone by construction</span></div>
+      </section>
+      <aside>
+        <div class="detail">
+          <h2>Selected piece</h2>
+          <div class="num" id="selNum">100 / 100</div>
+          <div class="title" id="selTitle">Colophon</div>
+          <p class="desc" id="selDesc">The last page is an index and a statement of method: one hundred pages, one hundred prompts, and nothing loaded from outside this folder.</p>
+          <div class="file"><b id="selFile">100-colophon.html</b><br><span id="selTxt">100-colophon.txt</span></div>
+        </div>
+        <div class="rules">
+          <div><span>HTML</span><b>inline CSS + JS</b></div>
+          <div><span>Assets</span><b>none external</b></div>
+          <div><span>Fonts</span><b>system only</b></div>
+          <div><span>Network</span><b>never</b></div>
+          <div><span>Viewport</span><b>responsive</b></div>
+          <div><span>Files</span><b>001 — 100</b></div>
+        </div>
+        <p class="sign">“A page is finished when it can be opened on a machine with no internet and still be itself.”</p>
+      </aside>
+    </main>
+    <footer><span><b>One Hundred</b> / colophon and index</span><span>Made one at a time, by hand</span><span>Collection 100 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const titles = ['Aurora Veil','Daily Signal','Lunar Orrery','Terra Serial','Liquid Chrome','Cyanotype Herbarium','Kinetic Type Lab','Maison Verre','Cellwave','Ten Words','Echo Field','One Orbit','Hanami Room','Afterlight Alley','Bauhaus Balance','Still Water','Meridian','Nightwave FM','Terrazzo Studio','Midnight Observatory','Paper Horizon','Bloom Machine','Bloom Index','Velvet House','Salt & Silence','Blues','Loom Room','Forest Signal','Lumen No. 29','Endless Corridor','Prism','Dust Letters','Receipt','Marl','Weather Service','Calibre 36','Audio Guide','Riso Club','Data Bonsai','Hôtel Astor','Patchbay','Vanishing Point','Cloud Atlas','Marginalia','Neon Sumi','Paper City','Borrowed Library','Chroma Field','Touch Lab','Long Scale','Motif Mill','Maison Sillage','The Board','After the Light','Herbarium 55','Nodal','Grotesk No. 7','Tide Table','Château Verdanne','Lot 60','The Opposition','Rope Room','Shipping Forecast','The Aviary','Major Arcana','Hot Shop','Thirty-Three','Horizon 068','Osteria 069','Isla Perdida','Vela Metro','Signal Tower','Lanterns','Apiary','Book of Hours','Press Room','The Descent','Orchard','Last Lighthouse','Dérive','Orrery','The Nickel','Paper Mill','The Rialto','Masquerade','Night Train','Tea House','Seed Vault','Pigment Archive','Night Market','Almanac','Glockenspiel','Aquarium','Moon Map','Correspondence','Broken Orchestra','Contact Sheet','Wave Archive','Small Things','Colophon'];
+      const descs = {
+        1: 'An atmospheric light study, built from layered gradients and a slow aurora.', 12: 'A game of small adjustments, played with one orbit and a great deal of patience.', 33: 'Everyday poetry, printed on a receipt that keeps getting longer.', 50: 'A solar system at human pace, with the long scale made visible.', 77: 'Eleven thousand metres of water, from sunlight to the hadal zone.', 100: 'The last page is an index and a statement of method: one hundred pages, one hundred prompts, and nothing loaded from outside this folder.'
+      };
+      const files = {
+        53: '053-the-board', 56: '056-nodal', 77: '077-descent', 96: '096-broken-orchestra', 99: '099-small-things'
+      };
+      let selected = 100;
+      const grid = document.getElementById('grid');
+      titles.forEach((t, i) => {
+        const n = i + 1;
+        const el = document.createElement('div');
+        el.className = 'cell' + (n === 100 ? ' sel' : '');
+        el.dataset.n = n;
+        el.innerHTML = '<span class="n">' + String(n).padStart(3, '0') + '</span><span class="t">' + t + '</span>';
+        el.addEventListener('mouseenter', () => show(n, false));
+        el.addEventListener('click', () => show(n, true));
+        grid.appendChild(el);
+      });
+      function fileFor(n) {
+        if (files[n]) return files[n];
+        const t = titles[n - 1].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        return String(n).padStart(3, '0') + '-' + t;
+      }
+      function show(n, hold) {
+        if (hold) { selected = n; document.querySelectorAll('.cell').forEach(c => c.classList.toggle('sel', +c.dataset.n === n)); }
+        const t = titles[n - 1];
+        document.getElementById('selNum').textContent = String(n).padStart(3, '0') + ' / 100';
+        document.getElementById('selTitle').textContent = t;
+        document.getElementById('selDesc').textContent = descs[n] || ('Piece ' + String(n).padStart(3, '0') + ' of the collection. A single authored page, with its own composition, palette, typography and interaction.');
+        document.getElementById('selFile').textContent = fileFor(n) + '.html';
+        document.getElementById('selTxt').textContent = fileFor(n) + '.txt';
+      }
+      show(100, false);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+TITLE: Forest Signal — The Canopy Is Speaking
+
+PROMPT:
+Create "Forest Signal," a self-contained cinematic environmental landing page about listening to the hidden network of a forest. Use near-black forest greens, moss, pale cream, acid-lime bioluminescence and a small rust accent. Build a deep-forest scene in pure CSS: tall tree trunks with bark texture, volumetric light shafts, drifting mist and a field of floating spores on Canvas. Overlay a poetic Georgia serif headline "Forest signal," supporting text, a Tune In button, and a live signal console with animated waveform bars, frequency, tree age and underground depth. Tune In should brighten the beams, activate the waveform, increase spore glow and change the status copy. Buttons for Oak, Birch and Fir update the station name and frequency; selecting one while dormant activates listening. No external assets, fonts, images, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A forest imagined as a quiet transmission. Vertical trunks and soft beams create cathedral-like depth, while acid-lime spores and a clinical signal console make ecology feel like an act of tuning in.
+
+MAJOR VISUAL TECHNIQUES:
+- Layered CSS forest with bark textures, volumetric beams and breathing mist
+- Canvas spore field with variable glow and drift
+- CSS equalizer bars representing mycorrhizal signal
+- Fixed cinematic composition with experimental vertical label
+- Responsive console relocation and reduced-motion support
+
+INTERACTION MODEL:
+Press "Tune in to the canopy" to shift the atmosphere into listening mode: brighter beams, active signal bars and an increase in luminous spores. Select Oak, Birch or Fir to retune the station; the tree name and frequency update, and the console activates if it is dormant.

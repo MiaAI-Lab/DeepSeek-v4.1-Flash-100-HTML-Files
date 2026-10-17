@@ -1,0 +1,17 @@
+TITLE: The Seed Vault — Five Packets, One Short Season
+
+PROMPT:
+Create "The Seed Vault," a self-contained kitchen-garden seed packet page. Use kraft paper, cream, ink, sage green, rust and mustard. Compose a three-column vault sheet: an editorial "The seed vault" title and five packet buttons (winter lettuce, broad bean, rainbow chard, garlic, cornflower); a seed packet in packet colours with a brand line, variety and Latin name, a hand-drawn botanical illustration (leaf, bean, chard, garlic, cornflower), sowing window and seed count; and a panel with seed note, depth, spacing, germination, harvest, position, hardiness, companion plants and a "Sow this packet" button feeding a small plot book. Selecting a packet should change the packet colour, drawing, Latin name and every data field; sowing should add a dated entry to the plot book. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A seed catalogue that behaves like a real packet: paper, type, a drawing and a sowing window. The plot book at the end turns browsing into a small act of planning.
+
+MAJOR VISUAL TECHNIQUES:
+- Packet design with paper fold lines, serrated base and print registration
+- Five hand-drawn inline-SVG botanical illustrations
+- Packets recoloured per variety
+- Sowing model with depth, spacing, germination and hardiness
+- Plot book entries with dates and variety names
+
+INTERACTION MODEL:
+Choose any of the five packets; the packet artwork, colour, Latin name, sowing window and all growing data update. Press "Sow this packet" to add a dated entry to the plot book and confirm the sowing.

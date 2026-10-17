@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1b1c1e">
+  <meta name="description" content="Patchbay — a modular instrument for curious hands.">
+  <title>Patchbay — A Modular Instrument</title>
+  <style>
+    :root {
+      --panel: #202226;
+      --panel2: #2a2d31;
+      --edge: #3b3f45;
+      --cream: #eee9db;
+      --dim: #908f86;
+      --orange: #ff8a3d;
+      --mint: #7fe0b2;
+      --blue: #6ea8ff;
+      --pink: #ff79a8;
+      --yellow: #ffd25e;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--orange); color: #16171a; }
+    body { margin: 0; min-height: 100vh; background: #141518; color: var(--cream); font-family: var(--sans); background-image: radial-gradient(ellipse at 50% 0%, #26282c, #141518 70%); }
+    .app { min-height: 100vh; padding: 20px clamp(14px, 3.2vw, 44px) 16px; display: flex; flex-direction: column; }
+    header { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; border-bottom: 1px solid rgba(238,233,219,.15); padding-bottom: 10px; }
+    .brand { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
+    .brand b { font-family: var(--sans); font-weight: 700; font-size: 16px; letter-spacing: -.04em; text-transform: none; }
+    .led { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px var(--orange); animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .3; } }
+    .head { display: flex; gap: clamp(16px, 3.4vw, 40px); font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .09em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(180px, .62fr) minmax(480px, 1.7fr) minmax(150px, .5fr); gap: clamp(16px, 2.6vw, 32px); align-items: center; padding: 16px 0 12px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 5.6vw, 73px); line-height: .86; letter-spacing: -.065em; }
+    .intro h1 em { display: block; color: var(--orange); font-style: italic; }
+    .intro p { max-width: 210px; margin: 20px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #a5a49b; }
+    .intro .hint { margin-top: 23px; border-top: 1px solid rgba(238,233,219,.15); padding-top: 8px; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    .hint b { color: var(--mint); font-weight: 400; }
+    .rack { position: relative; background: var(--panel); border: 1px solid var(--edge); border-radius: 4px; padding: 9px; box-shadow: 0 18px 35px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05); display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+    .module { background: linear-gradient(180deg, #2b2e33, #22252a); border: 1px solid #3d4147; border-radius: 3px; padding: 8px 7px 9px; position: relative; min-height: 142px; display: flex; flex-direction: column; }
+    .module h2 { margin: 0 0 2px; font-family: var(--sans); font-size: 8px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; color: var(--cream); }
+    .module small { display: block; font-family: var(--mono); font-size: 5px; letter-spacing: .1em; text-transform: uppercase; color: #77766f; margin-bottom: 8px; }
+    .knobs { display: flex; gap: 5px; justify-content: space-between; padding: 4px 0 6px; }
+    .knob { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 36% 30%, #555a61, #24272b 68%); border: 1px solid #101114; position: relative; cursor: grab; flex: 0 0 auto; box-shadow: 1px 2px 3px rgba(0,0,0,.4); }
+    .knob::after { content: ""; position: absolute; width: 1.5px; height: 32%; background: var(--cream); left: 50%; top: 8%; transform-origin: 50% 320%; transform: translateX(-50%) rotate(var(--rot, -40deg)); }
+    .knob.o::after { background: var(--orange); } .knob.m::after { background: var(--mint); } .knob.b::after { background: var(--blue); } .knob.p::after { background: var(--pink); }
+    .jacks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: auto; }
+    .jack { width: 100%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #0c0d0f 38%, #34383e 42%, #1a1c20 100%); border: 1px solid #4a4e54; position: relative; cursor: pointer; padding: 0; transition: border-color .2s, box-shadow .2s; }
+    .jack::after { content: attr(data-label); position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); font-family: var(--mono); font-size: 4px; letter-spacing: .05em; color: #7a7972; text-transform: uppercase; white-space: nowrap; }
+    .jack:hover, .jack.selected { border-color: var(--mint); box-shadow: 0 0 8px rgba(127,224,178,.5); }
+    .jack.cabled { border-color: rgba(238,233,219,.5); }
+    .wave-module { grid-column: span 2; }
+    canvas#scope { width: 100%; height: 56px; display: block; margin-top: 4px; border: 1px solid #383c42; background: #16181b; border-radius: 2px; }
+    .seq { display: flex; gap: 4px; margin-top: 7px; }
+    .seq button { flex: 1; border: 1px solid #43474e; background: #1c1e22; height: 18px; cursor: pointer; border-radius: 2px; position: relative; padding: 0; }
+    .seq button.on { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 6px rgba(255,138,61,.5); }
+    .seq button.ph { box-shadow: inset 0 0 0 1px var(--mint); }
+    .transport { display: flex; gap: 6px; margin-top: 7px; }
+    .transport button { flex: 1; border: 1px solid #4b4f56; background: transparent; color: var(--cream); font: inherit; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; padding: 5px 2px; cursor: pointer; }
+    .transport button:hover { background: #34383e; }
+    .transport button.rec { color: var(--orange); border-color: var(--orange); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; text-align: right; }
+    .meter { width: 100%; border-top: 1px solid rgba(238,233,219,.15); padding: 8px 0; font-family: var(--mono); font-size: 6px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    .meter b { display: block; font-family: var(--serif); font-size: 22px; letter-spacing: -.03em; color: var(--cream); line-height: 1; margin-bottom: 3px; }
+    .meter .bar { height: 2px; background: rgba(238,233,219,.12); margin-top: 6px; overflow: hidden; }
+    .meter .bar i { display: block; height: 100%; background: var(--mint); width: 40%; transition: width .2s; }
+    .patch-list { margin-top: 14px; width: 100%; font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); text-align: left; }
+    .patch-list div { border-bottom: 1px solid rgba(238,233,219,.1); padding: 4px 0; }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid rgba(238,233,219,.15); padding-top: 9px; font-family: var(--mono); font-size: 6px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--orange); }
+    .toast { position: fixed; bottom: 22px; left: 50%; transform: translate(-50%,10px); background: #0f1012; border: 1px solid var(--mint); color: var(--mint); font-family: var(--mono); font-size: 7px; letter-spacing: .1em; text-transform: uppercase; padding: 9px 13px; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 9; }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; gap: 14px; }
+      .intro { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+      .intro h1 { font-size: clamp(38px, 6vw, 54px); }
+      .intro p { margin: 0; max-width: 330px; font-size: 11px; }
+      .intro .hint { display: none; }
+      aside { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; padding-top: 6px; }
+      .meter { padding: 5px 0; }
+      .patch-list { display: none; }
+    }
+    @media (max-width: 600px) {
+      .app { padding: 11px 10px 13px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 34px; }
+      .intro p { display: none; }
+      .rack { grid-template-columns: repeat(2, 1fr); gap: 5px; padding: 6px; }
+      .module { min-height: 126px; padding: 7px 6px 9px; }
+      .wave-module { grid-column: span 2; }
+      .module h2 { font-size: 7px; }
+      .knobs { gap: 4px; }
+      .knob { width: 19px; height: 19px; }
+      aside { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .meter b { font-size: 17px; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand"><span class="led"></span><b>Patchbay</b>&nbsp;/ modular inst. 041</div>
+      <div class="head"><div>Voices<br><b>4 modules</b></div><div>Patch<br><b id="patchCount">00 cables</b></div><div>Status<br><b id="status">Idle</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <h1>Patch<em>bay</em></h1>
+        <p>A small modular instrument that makes more sense with your hands than in words. Connect any two jacks.</p>
+        <div class="hint"><b>How to patch</b>Click one jack, then another<br>Knobs turn the sound<br>Scroll does nothing here — good.</div>
+      </section>
+      <section class="rack" id="rack" aria-label="Modular synthesiser rack">
+        <div class="module" data-module="osc">
+          <h2>Oscillator</h2><small>VCO / saw</small>
+          <div class="knobs"><span class="knob o" data-knob="pitch" style="--rot:-38deg" title="Pitch"></span><span class="knob o" data-knob="fine" style="--rot:10deg" title="Fine"></span><span class="knob o" data-knob="fold" style="--rot:-55deg" title="Fold"></span></div>
+          <div class="jacks"><button class="jack" data-jack="osc.out" data-label="Out" type="button"></button><button class="jack" data-jack="osc.fm" data-label="FM" type="button"></button><button class="jack" data-jack="osc.sync" data-label="Sync" type="button"></button></div>
+        </div>
+        <div class="module" data-module="filter">
+          <h2>Filter</h2><small>VCF / 24 dB</small>
+          <div class="knobs"><span class="knob m" data-knob="cut-off" style="--rot:-20deg" title="Cutoff"></span><span class="knob m" data-knob="res" style="--rot:35deg" title="Resonance"></span><span class="knob m" data-knob="drive" style="--rot:-50deg" title="Drive"></span></div>
+          <div class="jacks"><button class="jack" data-jack="filter.in" data-label="In" type="button"></button><button class="jack" data-jack="filter.cv" data-label="CV" type="button"></button><button class="jack" data-jack="filter.out" data-label="Out" type="button"></button></div>
+        </div>
+        <div class="module" data-module="env">
+          <h2>Envelope</h2><small>ADSR / contour</small>
+          <div class="knobs"><span class="knob b" data-knob="attack" style="--rot:-45deg" title="Attack"></span><span class="knob b" data-knob="decay" style="--rot:5deg" title="Decay"></span><span class="knob b" data-knob="release" style="--rot:28deg" title="Release"></span></div>
+          <div class="jacks"><button class="jack" data-jack="env.out" data-label="Out" type="button"></button><button class="jack" data-jack="env.gate" data-label="Gate" type="button"></button><button class="jack" data-jack="env.inv" data-label="Inv" type="button"></button></div>
+        </div>
+        <div class="module" data-module="fx">
+          <h2>Echo</h2><small>FX / tape</small>
+          <div class="knobs"><span class="knob p" data-knob="time" style="--rot:-15deg" title="Time"></span><span class="knob p" data-knob="feed" style="--rot:44deg" title="Feedback"></span><span class="knob p" data-knob="mix" style="--rot:-30deg" title="Mix"></span></div>
+          <div class="jacks"><button class="jack" data-jack="fx.in" data-label="In" type="button"></button><button class="jack" data-jack="fx.cv" data-label="CV" type="button"></button><button class="jack" data-jack="fx.out" data-label="Out" type="button"></button></div>
+        </div>
+        <div class="module wave-module">
+          <h2>Waveform / 8-step</h2><small>Sequence + scope</small>
+          <canvas id="scope" aria-label="Live oscilloscope"></canvas>
+          <div class="seq" id="seq" aria-label="Step sequencer"></div>
+          <div class="transport"><button type="button" id="run" class="rec">Run</button><button type="button" id="random">Randomise</button><button type="button" id="clearPatch">Clear patch</button></div>
+        </div>
+        <div class="module"><h2>Input</h2><small>External source</small><div class="knobs"><span class="knob o" data-knob="gain" style="--rot:10deg" title="Gain"></span><span class="knob o" data-knob="tone" style="--rot:-20deg" title="Tone"></span></div><div class="jacks"><button class="jack" data-jack="in.audio" data-label="Audio" type="button"></button><button class="jack" data-jack="in.cv" data-label="CV" type="button"></button><button class="jack" data-jack="in.gnd" data-label="GND" type="button"></button></div></div>
+        <div class="module"><h2>Mixer</h2><small>3 channel</small><div class="knobs"><span class="knob m" data-knob="ch1" style="--rot:-35deg" title="Channel 1"></span><span class="knob m" data-knob="ch2" style="--rot:15deg" title="Channel 2"></span><span class="knob m" data-knob="ch3" style="--rot:-5deg" title="Channel 3"></span></div><div class="jacks"><button class="jack" data-jack="mix.in1" data-label="1" type="button"></button><button class="jack" data-jack="mix.in2" data-label="2" type="button"></button><button class="jack" data-jack="mix.out" data-label="Out" type="button"></button></div></div>
+        <div class="module"><h2>Output</h2><small>Master</small><div class="knobs"><span class="knob p" data-knob="level" style="--rot:8deg" title="Level"></span><span class="knob p" data-knob="pan" style="--rot:-42deg" title="Pan"></span></div><div class="jacks"><button class="jack" data-jack="out.l" data-label="L" type="button"></button><button class="jack" data-jack="out.r" data-label="R" type="button"></button><button class="jack" data-jack="out.hp" data-label="HP" type="button"></button></div></div>
+      </section>
+      <aside>
+        <div class="meter"><b id="bpmRead">94</b>Beats per minute<div class="bar"><i id="bpmBar"></i></div></div>
+        <div class="meter"><b id="voiceRead">02</b>Active voices<div class="bar"><i id="voiceBar" style="background:var(--blue)"></i></div></div>
+        <div class="meter"><b id="levelRead">−12</b>Master level / dB<div class="bar"><i id="levelBar" style="background:var(--orange);width:62%"></i></div></div>
+        <div class="patch-list" id="patchList" aria-label="Patch cables"></div>
+      </aside>
+    </main>
+    <footer><span><b>Patchbay</b> / a modular instrument</span><span id="footnote">Listening, not making sound — yet</span><span>Module set 041</span></footer>
+  </div>
+  <div class="toast" id="toast">Cable connected</div>
+  <script>
+    (() => {
+      const jacks = [...document.querySelectorAll('.jack')];
+      const patches = [];
+      let selected = null, running = false, step = 0, seqTimer = null;
+      const seq = document.getElementById('seq');
+      let sequence = [1, 0, 0, 1, 0, 1, 0, 0];
+      sequence.forEach((v, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = v ? 'on' : '';
+        b.setAttribute('aria-label', 'Step ' + (i + 1));
+        b.addEventListener('click', () => { b.classList.toggle('on'); sequence[i] = b.classList.contains('on') ? 1 : 0; });
+        seq.appendChild(b);
+      });
+      function toast(text) { const t = document.getElementById('toast'); t.textContent = text; t.classList.add('show'); clearTimeout(window.__toastT); window.__toastT = setTimeout(() => t.classList.remove('show'), 1400); }
+      function refreshPatchList() {
+        document.getElementById('patchCount').textContent = String(patches.length).padStart(2, '0') + ' cables';
+        const list = document.getElementById('patchList');
+        list.innerHTML = patches.slice(-5).map(p => '<div>' + p.a + ' → ' + p.b + '</div>').join('') || '<div>No cables yet</div>';
+      }
+      jacks.forEach(jack => {
+        jack.addEventListener('click', () => {
+          if (!selected) {
+            selected = jack; jack.classList.add('selected'); document.getElementById('status').textContent = 'Patching';
+            return;
+          }
+          if (selected === jack) { jack.classList.remove('selected'); selected = null; document.getElementById('status').textContent = 'Idle'; return; }
+          const patch = { a: selected.dataset.jack, b: jack.dataset.jack };
+          patches.push(patch);
+          selected.classList.remove('selected'); jack.classList.add('cabled'); selected.classList.add('cabled');
+          selected = null;
+          refreshPatchList();
+          toast(patch.a + ' → ' + patch.b);
+          document.getElementById('status').textContent = 'Patched';
+          renderScope();
+        });
+      });
+      document.querySelectorAll('.knob').forEach(knob => {
+        knob.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const current = parseFloat(knob.style.getPropertyValue('--rot')) || 0;
+          const next = Math.max(-140, Math.min(140, current + (e.deltaY > 0 ? 9 : -9)));
+          knob.style.setProperty('--rot', next + 'deg');
+        }, { passive: false });
+        knob.addEventListener('click', () => {
+          const next = (Math.random() * 240 - 120).toFixed(0) + 'deg';
+          knob.style.setProperty('--rot', next);
+          document.getElementById('levelRead').textContent = '−' + (4 + Math.round(Math.random() * 16));
+        });
+      });
+      const canvas = document.getElementById('scope');
+      const ctx = canvas.getContext('2d');
+      function renderScope() {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = Math.max(1, rect.width * dpr); canvas.height = Math.max(1, rect.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        ctx.strokeStyle = 'rgba(127,224,178,.75)'; ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = 0; x <= rect.width; x += 2) {
+          const y = rect.height * .5 + Math.sin(x * .06 + patches.length) * rect.height * .22 * Math.sin(x * .013 + 1) + (running ? Math.sin(x * .2) * 2 : 0);
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(238,233,219,.35)'; ctx.font = '5px "Courier New", monospace';
+        ctx.fillText((patches.length ? 'PATCH ' + patches.length : 'NO SIGNAL') + ' / 8 STEPS', 5, 9);
+      }
+      const steps = [...seq.children];
+      document.getElementById('run').addEventListener('click', (e) => {
+        running = !running;
+        e.currentTarget.classList.toggle('rec', running);
+        e.currentTarget.textContent = running ? 'Stop' : 'Run';
+        document.getElementById('status').textContent = running ? 'Sequencing' : 'Idle';
+        document.getElementById('footnote').textContent = running ? 'Sequencing an imaginary patch' : 'Listening, not making sound — yet';
+        if (running) seqTimer = setInterval(() => {
+          steps.forEach((s, i) => s.classList.toggle('ph', i === step));
+          step = (step + 1) % 8;
+        }, 60000 / 94 / 2); else { clearInterval(seqTimer); steps.forEach(s => s.classList.remove('ph')); }
+        renderScope();
+      });
+      document.getElementById('random').addEventListener('click', () => {
+        steps.forEach((s, i) => { const on = Math.random() > .55; s.classList.toggle('on', on); sequence[i] = on ? 1 : 0; });
+        document.getElementById('bpmRead').textContent = String(68 + Math.round(Math.random() * 60));
+        document.getElementById('bpmBar').style.width = (35 + Math.random() * 55) + '%';
+        toast('New pattern planted');
+        renderScope();
+      });
+      document.getElementById('clearPatch').addEventListener('click', () => {
+        patches.length = 0;
+        jacks.forEach(j => j.classList.remove('cabled', 'selected'));
+        refreshPatchList(); toast('Patch cleared'); renderScope();
+      });
+      addEventListener('resize', renderScope);
+      refreshPatchList(); renderScope();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+TITLE: Marl — A Material Archive of Stone and Time
+
+PROMPT:
+Create "Marl," a self-contained material archive presented as a quiet museum reading room. Use warm paper, chalky whites, cool granite grey, terracotta sandstone and mossy slate. Compose a three-column editorial layout with a serif "Stone archive" headline, an asymmetric grid of four CSS-generated stone specimens in different shapes, and a right-hand accession record with name, description, origin, age, density and finish. Each specimen should have its own CSS texture: limestone strata, speckled granite, layered sandstone and split slate. Clicking a specimen selects it, updates the record and gives the stone a slight outline. Include archive labels, specimen numbers, grain overlay and a footer. No external images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A tactile geological archive where material samples are shown as objects, not photographs. The grid is deliberately irregular, like stones laid out on a curator's table, and the typography is quiet enough to let the textures speak.
+
+MAJOR VISUAL TECHNIQUES:
+- Four distinct CSS stone textures using layered gradients, repeating gradients and SVG turbulence
+- Asymmetric specimen grid with varied aspect ratios
+- Editorial accession record and live data updates
+- Paper grain overlay and specimen micro-labels
+- Responsive reflow preserving the specimen rhythm
+
+INTERACTION MODEL:
+Click any of the four stone slabs to select it. The accession record, origin, geological age, density and finish update together with a soft crossfade, while the active specimen receives a fine outline.

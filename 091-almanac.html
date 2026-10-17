@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ece4d1">
+  <meta name="description" content="The Almanac — October, day by day.">
+  <title>The Almanac — October, Day by Day</title>
+  <style>
+    :root {
+      --paper: #ece4d1;
+      --sheet: #f6f0e0;
+      --ink: #262b25;
+      --rust: #a5502f;
+      --blue: #48687e;
+      --gold: #b8913f;
+      --dim: #837e6d;
+      --line: rgba(38,43,37,.22);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--rust); color: var(--sheet); }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--sans); padding: clamp(8px, 1.5vw, 18px); display: flex; justify-content: center; }
+    .almanac { width: min(1200px, 100%); min-height: calc(100vh - clamp(16px, 3vw, 36px)); background: var(--sheet); box-shadow: 0 16px 38px rgba(50,44,28,.24); display: flex; flex-direction: column; padding: clamp(12px, 2.2vw, 28px) clamp(12px, 2.8vw, 38px) clamp(10px, 1.6vw, 17px); }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 7px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--ink); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 2.8vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--ink); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .6fr) minmax(300px, 1.35fr) minmax(185px, .72fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 11px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5.2vw, 66px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--rust); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--rust); }
+    .intro p { max-width: 195px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #5d5f50; }
+    .notable { margin-top: 14px; border-top: 1px solid var(--line); }
+    .notable h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .note-row { display: grid; grid-template-columns: 26px 1fr; gap: 5px; border-bottom: 1px solid var(--line); padding: 3.5px 0; cursor: pointer; }
+    .note-row .d { font-family: var(--mono); font-size: 4.5px; color: var(--rust); padding-top: 1px; }
+    .note-row .t { font-family: var(--serif); font-size: 10px; line-height: 1.3; color: #4a4e42; }
+    .note-row:hover .t { color: var(--rust); }
+    .calendar { display: flex; flex-direction: column; gap: 5px; }
+    .weekday { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: center; }
+    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .day { position: relative; aspect-ratio: 1; border: 1px solid var(--line); background: #f1ead9; cursor: pointer; padding: 3px; display: flex; flex-direction: column; justify-content: space-between; transition: background .2s, border-color .2s; }
+    .day:hover { border-color: var(--rust); }
+    .day.blank { background: transparent; border-color: transparent; cursor: default; }
+    .day .num { font-family: var(--serif); font-size: 11px; line-height: 1; color: var(--ink); }
+    .day .moon { width: 7px; height: 7px; border-radius: 50%; background: #e9dfc4; box-shadow: inset -3px 0 0 #6b6655; }
+    .day .moon.full { background: #e9dfc4; box-shadow: none; }
+    .day .moon.new { background: #4a4a40; box-shadow: none; }
+    .day .wx { position: absolute; right: 3px; top: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .day .wx.rain { background: var(--blue); border-radius: 50% 50% 40% 40%; }
+    .day .wx.cloud { background: #a9a89a; border-radius: 3px; }
+    .day .temp { font-family: var(--mono); font-size: 3.6px; color: var(--dim); letter-spacing: .03em; }
+    .day.sel { background: var(--rust); border-color: var(--rust); }
+    .day.sel .num, .day.sel .temp { color: var(--sheet); }
+    .day.sel .wx { background: var(--sheet); }
+    .day.today { box-shadow: inset 0 0 0 2px var(--gold); }
+    .cal-meta { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .card { border-top: 1px solid var(--line); padding-top: 6px; }
+    .card h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .card .date { font-family: var(--serif); font-size: 22px; letter-spacing: -.03em; line-height: 1; color: var(--rust); }
+    .card .sub { font-family: var(--mono); font-size: 4.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--blue); margin-top: 2px; }
+    .card .note { margin: 6px 0 0; font-family: var(--serif); font-size: 10.5px; line-height: 1.5; color: #5d5f50; min-height: 54px; }
+    .data { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 6px; border-top: 1px solid var(--line); padding-top: 4px; }
+    .data div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .03em; text-transform: uppercase; color: var(--dim); }
+    .data b { color: var(--ink); font-weight: 400; }
+    .spark { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .spark h2 { margin: 0 0 2px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .spark svg { width: 100%; height: 46px; display: block; }
+    .proverb { margin-top: 7px; font-family: var(--serif); font-style: italic; font-size: 9.5px; line-height: 1.5; color: #5d5f50; border-top: 1px solid var(--line); padding-top: 5px; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--ink); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--rust); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .72fr 1.28fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .card { grid-column: 1; }
+      .data { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .spark { grid-column: 2; }
+      .proverb { grid-column: 1; }
+      .intro p { display: none; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0; }
+      .almanac { padding: 10px 10px 11px; min-height: 100vh; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(34px, 11vw, 48px); }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .notable { display: none; }
+      .day .num { font-size: 9px; }
+      .day { padding: 2px; }
+      aside { order: 3; display: block; }
+      .card .date { font-size: 18px; }
+      .card .note { min-height: 0; font-size: 9px; }
+      .data { display: none; }
+      .proverb { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="almanac">
+    <header>
+      <div class="brand"><b>The Almanac</b>Vela observations / October 2026</div>
+      <div class="head"><div>Month<br><b>October</b></div><div>Days<br><b>31</b></div><div>Rain<br><b id="rainHead">9 days</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">October, day by day</p>
+        <h1>The<em>almanac</em></h1>
+        <p>A month kept by hand: weather, moon, temperature and the small things worth writing down. Select a day to read the entry.</p>
+        <div class="notable" id="notable">
+          <h2>Notable days</h2>
+        </div>
+      </section>
+      <section class="calendar">
+        <div class="weekday"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+        <div class="days" id="days"></div>
+        <div class="cal-meta"><span>Sunrise 07:12 → 06:44</span><span>Sunset 18:24 → 16:58</span></div>
+      </section>
+      <aside>
+        <div class="card">
+          <h2>Selected day</h2>
+          <div class="date" id="dayDate">1 October</div>
+          <div class="sub" id="daySub">Waxing gibbous · 14 °C</div>
+          <p class="note" id="dayNote">A soft, still morning with mist in the low fields. The first of the month arrived without wind, which the almanac takes as a good sign.</p>
+        </div>
+        <div class="data">
+          <div><span>High</span><b id="highRead">17 °C</b></div>
+          <div><span>Low</span><b id="lowRead">9 °C</b></div>
+          <div><span>Rain</span><b id="rainRead">0 mm</b></div>
+          <div><span>Wind</span><b id="windRead">W 2</b></div>
+          <div><span>Moon</span><b id="moonRead">Gibbous</b></div>
+          <div><span>Light</span><b id="lightRead">10 h 12</b></div>
+        </div>
+        <div class="spark"><h2>Temperature, the month</h2>
+          <svg viewBox="0 0 260 50" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 30 L22 26 L44 32 L66 22 L88 25 L110 18 L132 24 L154 28 L176 20 L198 26 L220 30 L242 24 L260 28" fill="none" stroke="#a5502f" stroke-width="1.4"/>
+            <path d="M0 38 L22 34 L44 40 L66 32 L88 34 L110 30 L132 36 L154 38 L176 32 L198 36 L220 40 L242 36 L260 40" fill="none" stroke="#48687e" stroke-width="1" opacity=".7"/>
+          </svg>
+        </div>
+        <p class="proverb" id="proverb">“A still first day makes a windy month,” says the almanac, which has been wrong before.</p>
+      </aside>
+    </main>
+    <footer><span><b>The Almanac</b> / October, day by day</span><span>Kept at Vela, 51° 12′ N</span><span>October 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const data = [];
+      const notes = [
+        'A soft, still morning with mist in the low fields. The first of the month arrived without wind, which the almanac takes as a good sign.',
+        'Rain before dawn, then a bright afternoon. The gutters ran for an hour and the birds came out as if nothing had happened.',
+        'Cold enough for a second jumper. The moon was high and very clear, and the dog barked at it for reasons of her own.',
+        'A day of low cloud and no rain. The sort of weather that makes the town look like a photograph of itself.',
+        'Wind from the west, warm and restless. Three apples fell before they were ready, which the wasps appreciated.',
+        'Frost on the shed roof, gone by nine. The last of the tomatoes came in and sat on the windowsill, refusing to ripen.',
+        'A long walk to the point and back. The sea was the colour of pewter and the lighthouse was visible for the first time this month.',
+        'Rain, steady and unhurried. The kind of day that makes reading feel like a form of work.',
+        'Mist all day. Sounds arrived from further away than they should have. The church bell rang at eleven and again at noon, or perhaps the same bell twice.'
+      ];
+      for (let d = 1; d <= 31; d++) {
+        const phase = ['New','Waxing crescent','First quarter','Gibbous','Full','Waning gibbous','Last quarter','Waning crescent'][Math.floor(((d + 2) / 31) * 8) % 8];
+        const wx = d % 7 === 0 || d % 11 === 0 ? 'rain' : d % 5 === 0 ? 'cloud' : 'clear';
+        data.push({ d, high: 12 + (d * 3) % 8, low: 4 + (d * 5) % 7, rain: wx === 'rain' ? (d % 4 + 1) * 2 : 0, wind: ['W 2','SW 3','NW 4','S 1'][d % 4], phase, wx, note: notes[(d - 1) % notes.length] });
+      }
+      const notableDays = [3, 9, 17, 24, 31];
+      let selected = 1;
+      function render() {
+        const days = document.getElementById('days');
+        days.innerHTML = '';
+        const firstDay = 3; // October 1, 2026 is a Thursday (Mon-first index 3)
+        for (let i = 0; i < firstDay; i++) { const b = document.createElement('div'); b.className = 'day blank'; days.appendChild(b); }
+        data.forEach(day => {
+          const el = document.createElement('div');
+          el.className = 'day' + (day.d === selected ? ' sel' : '') + (day.d === 17 ? ' today' : '');
+          el.innerHTML = '<div class="num">' + day.d + '</div><div class="moon ' + (day.phase === 'Full' ? 'full' : day.phase === 'New' ? 'new' : '') + '"></div><span class="wx ' + (day.wx === 'rain' ? 'rain' : day.wx === 'cloud' ? 'cloud' : '') + '"></span><div class="temp">' + day.high + '° / ' + day.low + '°</div>';
+          el.addEventListener('click', () => { selected = day.d; render(); });
+          days.appendChild(el);
+        });
+        const day = data[selected - 1];
+        document.getElementById('dayDate').textContent = selected + ' October';
+        document.getElementById('daySub').textContent = day.phase + ' · ' + day.high + ' °C';
+        document.getElementById('dayNote').textContent = day.note;
+        document.getElementById('highRead').textContent = day.high + ' °C';
+        document.getElementById('lowRead').textContent = day.low + ' °C';
+        document.getElementById('rainRead').textContent = day.rain + ' mm';
+        document.getElementById('windRead').textContent = day.wind;
+        document.getElementById('moonRead').textContent = day.phase;
+        document.getElementById('lightRead').textContent = (10 - Math.floor(selected / 10)) + ' h ' + (12 - selected % 12) + ' m';
+        document.getElementById('rainHead').textContent = data.filter(d => d.rain > 0).length + ' days';
+      }
+      const notable = document.getElementById('notable');
+      notableDays.forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'note-row';
+        const labels = { 3: 'First frost', 9: 'Full moon', 17: 'The almanac is written', 24: 'Clock change', 31: 'Last of October' };
+        row.innerHTML = '<div class="d">' + String(d).padStart(2, '0') + '</div><div class="t">' + labels[d] + '</div>';
+        row.addEventListener('click', () => { selected = d; render(); });
+        notable.appendChild(row);
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

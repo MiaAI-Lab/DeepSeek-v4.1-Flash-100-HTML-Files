@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111014">
+  <meta name="description" content="Thirty-three and a third — a record, a sleeve, a side.">
+  <title>Thirty-Three &amp; a Third — A Record and a Sleeve</title>
+  <style>
+    :root {
+      --black: #111014;
+      --vinyl: #17161b;
+      --cream: #efe7d6;
+      --coral: #e2664a;
+      --cobalt: #2f4f8f;
+      --dim: #8a8389;
+      --line: rgba(239,231,214,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--coral); color: var(--black); }
+    body { margin: 0; min-height: 100vh; background: var(--black); color: var(--cream); font-family: var(--sans); overflow-x: hidden; }
+    .pressing { min-height: 100vh; display: flex; flex-direction: column; padding: 17px clamp(14px, 3vw, 40px) 13px; background: radial-gradient(ellipse at 62% 42%, #22202a, #0c0b0f 72%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--coral); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--cream); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 32px); font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--cream); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(190px, .78fr) minmax(280px, 1.2fr) minmax(180px, .66fr); gap: clamp(16px, 3vw, 42px); align-items: center; padding: 13px 0 9px; }
+    .sleeve-col { display: flex; flex-direction: column; gap: 9px; }
+    .sleeve { position: relative; width: 100%; aspect-ratio: 1; background: var(--cream); overflow: hidden; box-shadow: 0 16px 30px rgba(0,0,0,.45); }
+    .sleeve::after { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255,255,255,.22), transparent 45%, rgba(0,0,0,.08)); pointer-events: none; }
+    .sleeve svg { display: block; width: 100%; height: 100%; }
+    .sleeve-caption { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    .turntable { position: relative; width: 100%; max-width: 430px; aspect-ratio: 1; justify-self: center; background: linear-gradient(150deg, #2a282d, #17161a 60%); border-radius: 4px; box-shadow: 0 24px 44px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.09); padding: 5%; }
+    .platter { position: relative; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #2a292e, #19181c 62%, #0d0c10); box-shadow: inset 0 0 18px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04); }
+    .record { position: absolute; inset: 4%; border-radius: 50%; background: repeating-radial-gradient(circle at 50% 50%, #131217 0 1px, #1b1a20 1px 3px); box-shadow: 0 4px 16px rgba(0,0,0,.6); animation: spin 1.8s linear infinite; animation-play-state: paused; }
+    .record.spinning { animation-play-state: running; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .record::before { content: ""; position: absolute; inset: 8%; border-radius: 50%; border: 1px solid rgba(239,231,214,.05); }
+    .record::after { content: ""; position: absolute; left: 8%; top: 14%; width: 34%; height: 12%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); transform: rotate(-28deg); border-radius: 50%; }
+    .label { position: absolute; inset: 31%; border-radius: 50%; background: var(--coral); display: grid; place-items: center; text-align: center; padding: 6%; box-shadow: inset 0 0 0 2px rgba(17,16,20,.35); }
+    .label .cat { font-family: var(--mono); font-size: 3.6px; letter-spacing: .18em; color: #3a1712; text-transform: uppercase; }
+    .label .t { font-family: var(--serif); font-size: clamp(8px, 1vw, 12px); line-height: .95; color: #2a1210; }
+    .label .s { font-family: var(--mono); font-size: 3.2px; letter-spacing: .12em; color: #4a1e17; text-transform: uppercase; margin-top: 2px; }
+    .spindle { position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; border-radius: 50%; background: #c9c3b6; transform: translate(-50%,-50%); box-shadow: 0 1px 2px rgba(0,0,0,.6); z-index: 3; }
+    .tonearm { position: absolute; right: 2.5%; top: 6%; width: 7%; height: 52%; transform-origin: 50% 6%; transform: rotate(-24deg); transition: transform .9s cubic-bezier(.3,.8,.3,1); z-index: 4; }
+    .tonearm.playing { transform: rotate(6deg); }
+    .tonearm::before { content: ""; position: absolute; left: 50%; top: 0; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: linear-gradient(140deg, #d6d0c2, #6d6a63); box-shadow: 0 1px 3px rgba(0,0,0,.5); }
+    .tonearm::after { content: ""; position: absolute; left: 50%; top: 8px; bottom: 12%; width: 2px; margin-left: -1px; background: linear-gradient(180deg, #b9b3a7, #77736b); border-radius: 1px; }
+    .headshell { position: absolute; left: 50%; bottom: 0; width: 14px; height: 18px; margin-left: -7px; background: #26242a; border: 1px solid #55515a; border-radius: 1px; transform: rotate(-8deg); }
+    .headshell::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 2px; height: 5px; background: #c9c3b6; margin-left: -1px; }
+    .strobe { position: absolute; left: 6%; bottom: 6%; width: 9px; height: 9px; border-radius: 50%; background: #3a3630; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+    .strobe.on { background: var(--coral); box-shadow: 0 0 8px rgba(226,102,74,.7); }
+    .speed { position: absolute; left: 6%; bottom: 15%; display: flex; gap: 3px; }
+    .speed button { border: 1px solid rgba(239,231,214,.25); background: transparent; color: var(--dim); font-family: var(--mono); font-size: 4px; letter-spacing: .06em; padding: 3px 4px; cursor: pointer; }
+    .speed button.active { border-color: var(--coral); color: var(--coral); }
+    .tracklist h2, .deck-info h2 { margin: 0 0 5px; font-family: var(--mono); font-size: 4.5px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--coral); }
+    .track { display: flex; align-items: baseline; gap: 7px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--dim); padding: 5px 0; cursor: pointer; font: inherit; text-align: left; transition: color .2s, padding .2s; }
+    .track .no { font-family: var(--mono); font-size: 4.5px; color: var(--dim); width: 14px; flex: 0 0 14px; }
+    .track .tt { font-family: var(--serif); font-size: 13px; letter-spacing: -.01em; color: var(--cream); flex: 1; }
+    .track .dur { font-family: var(--mono); font-size: 4.5px; letter-spacing: .04em; }
+    .track:hover, .track.active { color: var(--coral); padding-left: 4px; }
+    .track.active .tt { color: var(--coral); }
+    .deck-info { margin-top: 9px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .deck-info div { display: flex; justify-content: space-between; }
+    .deck-info b { color: var(--cream); font-weight: 400; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .now { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 6px 0; }
+    .now .k { font-family: var(--mono); font-size: 4.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .now .n { font-family: var(--serif); font-size: 17px; line-height: 1.1; margin-top: 2px; }
+    .now .time { font-family: var(--mono); font-size: 5px; letter-spacing: .08em; color: var(--coral); margin-top: 2px; }
+    .controls { display: flex; gap: 5px; margin-top: 9px; }
+    .controls button { flex: 1; border: 1px solid rgba(239,231,214,.3); background: transparent; color: var(--cream); font-family: var(--mono); font-size: 4.5px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 3px; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+    .controls button:hover { border-color: var(--coral); color: var(--coral); }
+    .controls button.primary { background: var(--coral); border-color: var(--coral); color: var(--black); }
+    .controls button.primary:hover { background: var(--cream); border-color: var(--cream); color: var(--black); }
+    .levels { display: flex; align-items: flex-end; gap: 2px; height: 24px; margin-top: 9px; }
+    .levels span { flex: 1; background: var(--coral); opacity: .7; animation: level 1.1s ease-in-out infinite; }
+    .levels span:nth-child(2n) { animation-delay: .2s; } .levels span:nth-child(3n) { animation-delay: .45s; }
+    @keyframes level { 0%,100% { height: 20%; } 50% { height: 100%; } }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 7px; font-family: var(--mono); font-size: 5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--coral); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .85fr 1.15fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+      .now { grid-row: 1; }
+      .controls { margin-top: 0; }
+      .levels { display: none; }
+      .turntable { max-width: 360px; }
+    }
+    @media (max-width: 560px) {
+      .pressing { padding: 10px 10px 12px; }
+      .head div:nth-child(2) { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0 8px; }
+      .sleeve-col { flex-direction: row; align-items: center; gap: 10px; }
+      .sleeve { width: 112px; flex: 0 0 112px; }
+      .sleeve-caption { display: none; }
+      .turntable { order: 2; max-width: 280px; }
+      .tracklist { order: 3; }
+      .track { padding: 3px 0; }
+      .track .tt { font-size: 11px; }
+      aside { order: 4; display: block; }
+      .now { padding: 5px 0; }
+      .now .n { font-size: 14px; }
+      .controls { margin-top: 7px; }
+      .deck-info { display: none; }
+      footer { font-size: 4.5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="pressing">
+    <header>
+      <div class="brand"><b>Thirty-Three &amp; a Third</b>Record pressing / sleeve 067</div>
+      <div class="head"><div>Label<br><b>Coral Sound</b></div><div>Speed<br><b>33⅓ rpm</b></div><div>Side<br><b id="sideRead">A</b></div></div>
+    </header>
+    <main>
+      <section class="sleeve-col">
+        <div class="sleeve">
+          <svg viewBox="0 0 400 400" aria-label="Album sleeve">
+            <rect width="400" height="400" fill="#efe7d6"/>
+            <circle cx="286" cy="118" r="74" fill="#e2664a"/>
+            <rect x="42" y="58" width="164" height="164" fill="#2f4f8f"/>
+            <path d="M42 222 L206 222 L206 342 L42 342 Z" fill="#17161b"/>
+            <circle cx="124" cy="282" r="40" fill="#efe7d6"/>
+            <circle cx="124" cy="282" r="13" fill="#17161b"/>
+            <g stroke="#17161b" stroke-width="1.4"><path d="M42 40 H358"/><path d="M42 360 H358"/></g>
+            <text x="42" y="382" font-family="Courier New, monospace" font-size="10" letter-spacing="2" fill="#17161b">THIRTY-THREE &amp; A THIRD / CORAL SOUND 067</text>
+            <text x="42" y="30" font-family="Courier New, monospace" font-size="9" letter-spacing="2" fill="#17161b">A RECORD IN TWO PARTS</text>
+            <text x="212" y="240" font-family="Georgia, serif" font-size="30" fill="#efe7d6" font-style="italic">Low</text>
+            <text x="212" y="272" font-family="Georgia, serif" font-size="30" fill="#efe7d6" font-style="italic">Tide</text>
+          </svg>
+        </div>
+        <div class="sleeve-caption"><span>Coral Sound CS-067</span><span>Stereo / 2026</span></div>
+      </section>
+      <section class="turntable" aria-label="Record player">
+        <div class="platter">
+          <div class="record" id="record">
+            <div class="label"><div><div class="cat">CS-067</div><div class="t">Low<br>Tide</div><div class="s">Side A · 33⅓</div></div></div>
+          </div>
+          <div class="spindle"></div>
+          <div class="tonearm" id="tonearm"><div class="headshell"></div></div>
+          <div class="speed"><button type="button" class="active" data-speed="33">33</button><button type="button" data-speed="45">45</button></div>
+          <div class="strobe" id="strobe"></div>
+        </div>
+      </section>
+      <aside>
+        <div class="tracklist">
+          <h2>Side A</h2>
+          <div id="tracks"></div>
+          <div class="deck-info"><div><span>Artist</span><b>The Quiet Assembly</b></div><div><span>Recorded</span><b>Spring 2026</b></div><div><span>Pressed</span><b>180 g black</b></div></div>
+        </div>
+        <div class="now"><div class="k" id="nowK">Now playing</div><div class="n" id="nowName">Low Tide</div><div class="time" id="nowTime">00:00 / 04:12</div></div>
+        <div class="controls"><button type="button" class="primary" id="play">Play</button><button type="button" id="next">Next track</button></div>
+        <div class="levels" id="levels"></div>
+      </aside>
+    </main>
+    <footer><span><b>Thirty-Three &amp; a Third</b> / a record and a sleeve</span><span>The B-side is where the good songs hide</span><span>Sleeve 067 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const tracks = [
+        { name: 'Low Tide', dur: 252 }, { name: 'Harbour Lights', dur: 218 }, { name: 'Salt in the Wiring', dur: 265 }, { name: 'Slow Arrow', dur: 197 }, { name: 'A Room of Water', dur: 301 }
+      ];
+      let index = 0, playing = false, elapsed = 0, timer = null, speed = 33;
+      const record = document.getElementById('record'), tonearm = document.getElementById('tonearm');
+      const tracksEl = document.getElementById('tracks');
+      const fmt = t => Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+      function renderTracks() {
+        tracksEl.innerHTML = tracks.map((t, i) => '<button class="track' + (i === index ? ' active' : '') + '" type="button" data-t="' + i + '"><span class="no">0' + (i + 1) + '</span><span class="tt">' + t.name + '</span><span class="dur">' + fmt(t.dur) + '</span></button>').join('');
+        tracksEl.querySelectorAll('.track').forEach(b => b.addEventListener('click', () => select(+b.dataset.t)));
+      }
+      function select(i) {
+        index = i; elapsed = 0;
+        document.getElementById('nowName').textContent = tracks[i].name;
+        document.getElementById('nowK').textContent = playing ? 'Now playing' : 'Cued';
+        document.getElementById('nowTime').textContent = '00:00 / ' + fmt(tracks[i].dur);
+        renderTracks();
+      }
+      function playState(p) {
+        playing = p;
+        record.classList.toggle('spinning', p);
+        tonearm.classList.toggle('playing', p);
+        document.getElementById('strobe').classList.toggle('on', p);
+        document.getElementById('play').textContent = p ? 'Pause' : 'Play';
+        document.getElementById('nowK').textContent = p ? 'Now playing' : 'Paused';
+        document.querySelectorAll('.levels span').forEach(s => s.style.animationPlayState = p ? 'running' : 'paused');
+        if (p) { clearInterval(timer); timer = setInterval(tick, 1000); }
+        else clearInterval(timer);
+      }
+      function tick() {
+        elapsed++;
+        if (elapsed >= tracks[index].dur) { elapsed = 0; select((index + 1) % tracks.length); playState(true); return; }
+        document.getElementById('nowTime').textContent = fmt(elapsed) + ' / ' + fmt(tracks[index].dur);
+      }
+      document.getElementById('play').addEventListener('click', () => playState(!playing));
+      document.getElementById('next').addEventListener('click', () => { select((index + 1) % tracks.length); playState(playing); });
+      document.querySelectorAll('.speed button').forEach(b => b.addEventListener('click', () => {
+        speed = +b.dataset.speed;
+        document.querySelectorAll('.speed button').forEach(x => x.classList.toggle('active', x === b));
+        record.style.animationDuration = (speed === 33 ? 1.8 : 1.32) + 's';
+        document.querySelector('.label .s').textContent = 'Side A · ' + speed + '⅓';
+      }));
+      renderTracks();
+      const levels = document.getElementById('levels');
+      for (let i = 0; i < 22; i++) { const s = document.createElement('span'); s.style.height = (20 + Math.random() * 80) + '%'; s.style.animationPlayState = 'paused'; levels.appendChild(s); }
+      playState(false);
+    })();
+  </script>
+</body>
+</html>

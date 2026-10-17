@@ -1,0 +1,17 @@
+TITLE: Paper City — A Cardboard Metropolis
+
+PROMPT:
+Create "Paper City," a self-contained interactive cardboard architectural model. Use kraft board browns, corrugated texture, masking tape cream, blueprint blue and a single red accent. Build a diorama of nine CSS buildings of varied widths and heights on a cardboard ground plane, with visible corrugation, taped tops, cut/fold lines, windows and numbered tags. Each building click lifts it slightly and updates a plot card with its name, description, height, floors and glue quality. Add a cut-lines toggle that overlays dashed fold marks and a lights toggle that switches the windows. Include a model-scale header, editorial title and footer. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+Architecture as craft hour. The city is deliberately imperfect — tape shows, corners are a little soft — and that imperfection is what makes it feel made by a person rather than rendered by a machine.
+
+MAJOR VISUAL TECHNIQUES:
+- Pure-CSS cardboard towers with corrugated repeating gradients
+- Per-building lift and selection states
+- Plot card data switching
+- Cut-line and window-light modes
+- Kraft-paper collage layout and tactile micro-labels
+
+INTERACTION MODEL:
+Click any building to select it and read its plot card. Toggle Cut lines to reveal fold/cut marks across the model. Toggle Lights on/off to switch the city windows between lit and dark.

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06131f">
+  <meta name="description" content="The Last Lighthouse — a keeper's log in three weathers.">
+  <title>The Last Lighthouse — A Keeper’s Log in Three Weathers</title>
+  <style>
+    :root {
+      --night: #06131f;
+      --sea: #0b2c3a;
+      --tower: #e9e2d0;
+      --red: #a8442f;
+      --beam: #ffdca0;
+      --dim: #7f95a0;
+      --line: rgba(233,226,208,.17);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--beam); color: var(--night); }
+    body { margin: 0; min-height: 100vh; background: var(--night); color: var(--tower); font-family: var(--sans); overflow-x: hidden; }
+    .station { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 30%, #123448, #040c14 74%); position: relative; overflow: hidden; }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; position: relative; z-index: 6; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--beam); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--tower); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--tower); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(150px, .52fr) minmax(300px, 1.35fr) minmax(190px, .72fr); gap: clamp(14px, 2.8vw, 36px); align-items: center; padding: 11px 0 8px; position: relative; z-index: 4; }
+    .side h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.8vw, 60px); line-height: .8; letter-spacing: -.06em; }
+    .side h1 em { display: block; font-style: italic; color: var(--beam); font-size: .9em; }
+    .side .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .side .kicker::before { content: ""; width: 15px; height: 1px; background: var(--red); }
+    .side p { max-width: 185px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #b7c1bc; }
+    .weathers { margin-top: 14px; border-top: 1px solid var(--line); }
+    .weathers h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .weather-btn { display: flex; justify-content: space-between; align-items: baseline; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 4px 0; cursor: pointer; font: inherit; text-align: left; color: var(--dim); transition: color .2s, padding .2s; }
+    .weather-btn b { font-family: var(--serif); font-size: 12px; font-weight: 400; color: var(--tower); }
+    .weather-btn span { font-family: var(--mono); font-size: 4px; letter-spacing: .05em; text-transform: uppercase; }
+    .weather-btn:hover, .weather-btn.active { color: var(--beam); padding-left: 4px; }
+    .weather-btn.active b { color: var(--beam); }
+    .scene { position: relative; display: flex; align-items: flex-end; justify-content: center; min-height: 420px; overflow: visible; }
+    .beacon { position: absolute; left: 50%; top: 16%; width: 32vmin; height: 32vmin; margin-left: -16vmin; border-radius: 50%; background: radial-gradient(circle, rgba(255,220,160,.9), rgba(255,200,120,.28) 24%, transparent 62%); filter: blur(6px); z-index: 3; transition: opacity .5s, transform .5s; }
+    .beam { position: absolute; left: 50%; top: 22%; width: 150vmax; height: 17vmin; margin-left: -2vmin; transform-origin: 0 50%; background: linear-gradient(90deg, rgba(255,220,160,.55), rgba(255,220,160,.16) 38%, transparent 72%); clip-path: polygon(0 46%, 100% 0, 100% 100%, 0 54%); animation: sweep 9s linear infinite; z-index: 2; opacity: .9; transition: opacity .6s, height .6s; }
+    .beam.two { animation-delay: -4.5s; transform: rotate(180deg); }
+    @keyframes sweep { from { transform: rotate(-8deg); } to { transform: rotate(360deg); } }
+    .fog { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(180,195,195,.28), transparent 30%, transparent 70%, rgba(180,195,195,.28)); opacity: 0; transition: opacity .8s; z-index: 5; pointer-events: none; }
+    .rain { position: absolute; inset: -10%; opacity: 0; transition: opacity .6s; z-index: 5; pointer-events: none; background-image: repeating-linear-gradient(105deg, rgba(210,225,225,.35) 0 1px, transparent 1px 9px); animation: rain 1s linear infinite; }
+    @keyframes rain { from { transform: translateY(-9px); } to { transform: translateY(9px); } }
+    .station.fog .fog { opacity: 1; }
+    .station.storm .rain { opacity: .5; }
+    .station.storm .fog { opacity: .35; }
+    .station.storm .sea { background: linear-gradient(180deg, #0d3441, #04141c); }
+    .station.fog .beam { opacity: .5; }
+    .station.off .beam, .station.off .beacon { opacity: 0; }
+    .sea { position: absolute; left: -8%; right: -8%; bottom: 0; height: 22%; background: linear-gradient(180deg, #0e3644, #051720); z-index: 1; }
+    .sea::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(233,226,208,.28); }
+    .waves { position: absolute; left: 0; right: 0; bottom: 6%; height: 16%; z-index: 1; opacity: .5; background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(233,226,208,.16) 5px 6px); clip-path: polygon(0 40%, 12% 30%, 24% 46%, 38% 28%, 52% 44%, 66% 26%, 80% 42%, 94% 30%, 100% 38%, 100% 100%, 0 100%); }
+    .rocks { position: absolute; left: 0; right: 0; bottom: 0; height: 10%; background: #030a0f; clip-path: polygon(0 60%, 10% 40%, 18% 66%, 28% 34%, 40% 58%, 52% 44%, 64% 70%, 76% 40%, 86% 62%, 94% 46%, 100% 60%, 100% 100%, 0 100%); z-index: 2; }
+    .tower { position: relative; z-index: 3; width: clamp(74px, 10vw, 120px); margin-bottom: 9%; }
+    .lantern { position: relative; margin: 0 auto; width: 52%; height: 34px; background: linear-gradient(180deg, #223039, #17232a); border: 2px solid var(--tower); border-radius: 3px 3px 0 0; }
+    .lantern::before { content: ""; position: absolute; inset: 4px 5px; background: linear-gradient(180deg, #ffe6b4, #f0b45e); box-shadow: 0 0 18px rgba(255,220,160,.9); }
+    .lantern::after { content: ""; position: absolute; left: -18%; right: -18%; top: -9px; height: 10px; background: var(--tower); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+    .tower-body { width: 100%; height: clamp(150px, 19vw, 230px); background: linear-gradient(90deg, #cfc7b5, #f4eddc 38%, #d9d1bd 68%, #b7ae9b); clip-path: polygon(22% 0, 78% 0, 96% 100%, 4% 100%); position: relative; }
+    .tower-body::before { content: ""; position: absolute; left: 0; right: 0; top: 24%; height: 15%; background: var(--red); }
+    .tower-body::after { content: ""; position: absolute; left: 0; right: 0; top: 58%; height: 9%; background: var(--red); opacity: .85; }
+    .gallery { position: absolute; left: 50%; bottom: -4px; transform: translateX(-50%); width: 118%; height: 10px; background: #2b3a40; border-top: 2px solid var(--tower); }
+    .base { width: 140%; margin-left: -20%; height: 12px; background: #16242a; }
+    .lamp-btn { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 6; border: 1px solid rgba(255,220,160,.6); background: rgba(6,19,31,.7); color: var(--beam); font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; cursor: pointer; backdrop-filter: blur(4px); }
+    .lamp-btn:hover { background: var(--beam); color: var(--night); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .log { border-top: 1px solid var(--line); padding-top: 6px; }
+    .log h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .log .entry { font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #b7c1bc; min-height: 86px; }
+    .log .entry b { display: block; font-family: var(--mono); font-size: 4px; letter-spacing: .08em; text-transform: uppercase; color: var(--beam); font-weight: 400; margin-bottom: 3px; }
+    .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; }
+    .readouts div { display: flex; justify-content: space-between; gap: 4px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .readouts b { color: var(--tower); font-weight: 400; }
+    .rota { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .rota div { display: flex; justify-content: space-between; }
+    .rota b { color: var(--tower); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); position: relative; z-index: 6; }
+    footer span:nth-child(2) { color: var(--beam); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .75fr 1.25fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .log, .rota { grid-column: 1; }
+      .readouts { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .side p { display: none; }
+      .scene { min-height: 340px; }
+    }
+    @media (max-width: 560px) {
+      .station { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .side h1 { font-size: 34px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .weathers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 8px; margin-top: 7px; }
+      .weather-btn { padding: 3px 0; }
+      .weather-btn b { font-size: 10px; }
+      .weather-btn span { display: none; }
+      .scene { order: 2; min-height: 250px; }
+      aside { order: 3; display: block; }
+      .log .entry { min-height: 0; font-size: 10px; }
+      .readouts { margin-top: 6px; }
+      .rota { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="station" id="station">
+    <header>
+      <div class="brand"><b>The Last Lighthouse</b>Keeper's log / station 079</div>
+      <div class="head"><div>Light<br><b>Fl(2) 10s</b></div><div>Range<br><b>18 nautical miles</b></div><div>Watch<br><b id="watchRead">18:00 — 00:00</b></div></div>
+    </header>
+    <main>
+      <section class="side">
+        <p class="kicker">A light, kept</p>
+        <h1>The last<em>lighthouse</em></h1>
+        <p>The lamp does not need to be watched, but it is watched anyway. Choose a weather and read what the keeper wrote in the book.</p>
+        <div class="weathers" id="weathers">
+          <h2>Weather</h2>
+          <button class="weather-btn active" type="button" data-w="0"><b>Clear</b><span>Visibility 18 nm</span></button>
+          <button class="weather-btn" type="button" data-w="1"><b>Fog</b><span>Visibility 400 m</span></button>
+          <button class="weather-btn" type="button" data-w="2"><b>Squall</b><span>Visibility 2 nm</span></button>
+        </div>
+      </section>
+      <section class="scene">
+        <div class="beacon"></div>
+        <div class="beam"></div>
+        <div class="beam two"></div>
+        <div class="fog"></div>
+        <div class="rain"></div>
+        <div class="sea"></div>
+        <div class="waves"></div>
+        <div class="rocks"></div>
+        <div class="tower">
+          <div class="lantern"></div>
+          <div class="tower-body"><div class="gallery"></div></div>
+          <div class="base"></div>
+        </div>
+        <button class="lamp-btn" type="button" id="lamp">Lamp on</button>
+      </section>
+      <aside>
+        <div class="log">
+          <h2>Extract from the log</h2>
+          <div class="entry" id="entry"><b>17 Oct · 18:40 · clear</b>“Wind west, two. Sea slight. The light is running clean and the horizon is doing that thing it does at this hour, where the water is darker than the sky.”</div>
+        </div>
+        <div class="readouts">
+          <div><span>Wind</span><b id="windRead">W 2</b></div>
+          <div><span>Sea</span><b id="seaRead">Slight</b></div>
+          <div><span>Visibility</span><b id="visRead">18 nm</b></div>
+          <div><span>Pressure</span><b id="pressRead">1018</b></div>
+        </div>
+        <div class="rota"><div><span>Keeper</span><b>E. Voss</b></div><div><span>Relief</span><b>Thursday, 09:00</b></div><div><span>Lamp hours</span><b id="hoursRead">1,842</b></div></div>
+      </aside>
+    </main>
+    <footer><span><b>The Last Lighthouse</b> / a keeper's log in three weathers</span><span>Keep the light. Write it down.</span><span>Station 079 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const weathers = [
+        { name: 'clear', label: 'clear', entry: '“Wind west, two. Sea slight. The light is running clean and the horizon is doing that thing it does at this hour, where the water is darker than the sky.”', wind: 'W 2', sea: 'Slight', vis: '18 nm', press: '1018', watch: '18:00 — 00:00' },
+        { name: 'fog', label: 'fog', entry: '“Fog, thick as wool, came in at six and stayed. The beam is doing very little beyond the rocks, so I ran the bell until midnight. A ship answered once, a long way off, and then did not answer again.”', wind: 'SW 1', sea: 'Calm', vis: '400 m', press: '1014', watch: '18:00 — 00:00' },
+        { name: 'storm', label: 'squall', entry: '“Squall from the south-west, force eight. Spray over the gallery and the lamp shaking in its housing. I have logged the light as steady, because it is. The rest of the station is a matter of opinion.”', wind: 'SW 8', sea: 'Very rough', vis: '2 nm', press: '992', watch: '18:00 — 00:00' }
+      ];
+      let current = 0, lampOn = true;
+      function apply(i) {
+        current = i;
+        const w = weathers[i];
+        const station = document.getElementById('station');
+        station.classList.remove('fog', 'storm');
+        if (w.name === 'fog') station.classList.add('fog');
+        if (w.name === 'storm') station.classList.add('storm');
+        station.classList.toggle('off', !lampOn);
+        document.getElementById('entry').innerHTML = '<b>17 Oct · 18:40 · ' + w.label + '</b>' + w.entry;
+        document.getElementById('windRead').textContent = w.wind;
+        document.getElementById('seaRead').textContent = w.sea;
+        document.getElementById('visRead').textContent = w.vis;
+        document.getElementById('pressRead').textContent = w.press;
+        document.querySelectorAll('.weather-btn').forEach((b, k) => b.classList.toggle('active', k === i));
+        document.getElementById('hoursRead').textContent = (1842 + i * 7).toLocaleString('en-GB');
+      }
+      document.querySelectorAll('.weather-btn').forEach((b, i) => b.addEventListener('click', () => apply(i)));
+      document.getElementById('lamp').addEventListener('click', (e) => {
+        lampOn = !lampOn;
+        document.getElementById('station').classList.toggle('off', !lampOn);
+        e.currentTarget.textContent = lampOn ? 'Lamp on' : 'Lamp off';
+        document.getElementById('entry').innerHTML = '<b>17 Oct · lamp</b>' + (lampOn ? '“Lamp re-lit. The flash is timed at ten seconds, and the sea took up the light again at once.”' : '“Lamp extinguished for the annual test. The dark outside the glass was complete, and the station felt considerably older.”');
+      });
+      apply(0);
+    })();
+  </script>
+</body>
+</html>

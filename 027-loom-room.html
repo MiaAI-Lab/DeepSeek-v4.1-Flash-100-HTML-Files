@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e8dcc8">
+  <meta name="description" content="The Loom Room — a digital textile study in colour and thread.">
+  <title>The Loom Room — A Digital Textile Study</title>
+  <style>
+    :root {
+      --linen: #e8dcc8;
+      --paper: #f3e9d8;
+      --ink: #2d2b25;
+      --muted: #827969;
+      --thread-dark: #473f34;
+      --red: #b84837;
+      --indigo: #354b72;
+      --ochre: #d29b4a;
+      --sage: #8b9a72;
+      --rose: #dca8a0;
+      --cream: #f1e6cf;
+      --line: rgba(45,43,37,.24);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--red); color: var(--cream); }
+    body { margin: 0; min-height: 100vh; background: var(--linen); color: var(--ink); font-family: var(--sans); overflow-x: hidden; }
+    .room { min-height: 100vh; padding: clamp(14px, 2.5vw, 29px) clamp(14px, 3.4vw, 48px) 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; background-image: repeating-linear-gradient(0deg, rgba(45,43,37,.035) 0 1px, transparent 1px 4px); }
+    .loom-halo { position: fixed; width: 55vw; height: 55vw; border: 1px solid rgba(45,43,37,.12); border-radius: 50%; right: 5%; top: 15%; pointer-events: none; }
+    header, main, footer { position: relative; z-index: 2; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 19px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+    .brand { font-family: var(--serif); font-size: 18px; letter-spacing: -.03em; }
+    .brand span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 6px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+    .headmid { font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .1em; text-transform: uppercase; text-align: center; color: var(--muted); }
+    .headright { text-align: right; font-family: var(--mono); font-size: 7px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .headright b { color: var(--red); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(175px, .68fr) minmax(360px, 1.6fr) minmax(155px, .58fr); gap: clamp(16px, 3.3vw, 48px); align-items: center; padding: clamp(17px, 3.3vh, 31px) 0 14px; }
+    .intro { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .kicker { display: flex; align-items: center; gap: 9px; margin: 0 0 13px; font-family: var(--mono); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; color: var(--red); }
+    .kicker::before { content: ""; width: 21px; height: 1px; background: var(--red); }
+    h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(52px, 7.4vw, 104px); line-height: .77; letter-spacing: -.075em; }
+    h1 em { display: block; color: var(--red); margin-left: 6px; }
+    .intro p { max-width: 222px; margin: 27px 0 0; font-family: var(--serif); font-size: 13px; line-height: 1.6; color: #6a6253; }
+    .instructions { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 9px; max-width: 200px; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+    .instructions b { color: var(--ink); font-weight: 400; }
+    .loom-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; align-self: stretch; }
+    .loom { width: 100%; max-width: 610px; background: #9f7d51; padding: clamp(8px, 1.2vw, 13px); box-shadow: 0 22px 40px rgba(61,46,29,.18), inset 0 0 0 1px rgba(255,244,216,.25); position: relative; transform: rotate(-.3deg); }
+    .loom::before, .loom::after { content: ""; position: absolute; top: 5px; bottom: 5px; width: 7px; background: repeating-linear-gradient(0deg, #674b2e 0 7px, #c19a69 7px 10px); }
+    .loom::before { left: 3px; } .loom::after { right: 3px; }
+    .cloth { background: #d7c7ab; overflow: hidden; position: relative; box-shadow: inset 0 0 24px rgba(66,46,26,.15); }
+    .warp { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(75,61,46,.26) 0 1px, transparent 1px 9px), repeating-linear-gradient(0deg, rgba(255,255,255,.11) 0 1px, transparent 1px 7px); z-index: 1; pointer-events: none; }
+    .weave { display: grid; grid-template-columns: repeat(16, 1fr); grid-template-rows: repeat(16, 1fr); width: 100%; aspect-ratio: 1; position: relative; z-index: 2; touch-action: none; }
+    .cell { border-right: 1px solid rgba(45,43,37,.03); border-bottom: 1px solid rgba(45,43,37,.03); background: transparent; cursor: crosshair; transition: background .18s, transform .18s; position: relative; }
+    .cell:hover { transform: scale(1.13); z-index: 3; box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
+    .cell.woven { background-color: var(--c); background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.12) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 1px, transparent 1px 3px); }
+    .cell.sel { box-shadow: inset 0 0 0 1px var(--cream); }
+    .fringe { height: 25px; display: flex; justify-content: space-around; align-items: flex-start; background: #9f7d51; padding: 0 6%; }
+    .fringe i { display: block; width: 2px; height: 17px; background: #e2cda6; opacity: .8; transform-origin: top; animation: sway 4s ease-in-out infinite; }
+    .fringe i:nth-child(3n) { background: var(--red); height: 14px; animation-delay: -1s; }
+    .fringe i:nth-child(4n) { background: var(--indigo); height: 19px; animation-delay: -.5s; }
+    @keyframes sway { 50% { transform: rotate(6deg); } }
+    .loom-label { display: flex; justify-content: space-between; gap: 14px; width: 100%; max-width: 610px; margin-top: 9px; font-family: var(--mono); font-size: 6px; line-height: 1.7; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .loom-label b { color: var(--ink); font-weight: 400; }
+    .loom-label span:last-child { text-align: right; }
+    .palette-panel { align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; }
+    .palette-title { font-family: var(--mono); font-size: 7px; letter-spacing: .11em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+    .palette { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; }
+    .swatch { width: 100%; aspect-ratio: 1; border: 1px solid rgba(45,43,37,.28); background: var(--c); cursor: pointer; position: relative; transition: transform .2s, box-shadow .2s; }
+    .swatch:hover { transform: translateY(-2px) rotate(-2deg); }
+    .swatch.active { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .swatch.active::after { content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; color: #fff6e8; font-size: 10px; font-weight: 700; text-shadow: 0 0 3px rgba(0,0,0,.6); }
+    .swatch:nth-child(5)::after, .swatch:nth-child(6)::after { color: var(--ink); text-shadow: none; }
+    .count { margin-top: 17px; border-top: 1px solid var(--line); padding-top: 9px; width: 100%; font-family: var(--mono); font-size: 6px; line-height: 1.9; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+    .count b { display: block; font-family: var(--serif); font-size: 28px; letter-spacing: -.04em; line-height: 1; color: var(--ink); }
+    .presets { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 17px; }
+    .presets button { border: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .07em; text-transform: uppercase; padding: 7px 8px; cursor: pointer; transition: background .2s, color .2s; }
+    .presets button:hover { background: var(--ink); color: var(--paper); }
+    .clear { border: 0; background: transparent; color: var(--muted); font: inherit; font-family: var(--mono); font-size: 6px; letter-spacing: .07em; text-transform: uppercase; text-align: right; margin-top: 8px; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    footer { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding-top: 9px; font-family: var(--mono); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    footer span:nth-child(2) { color: var(--red); }
+    .toast { position: fixed; z-index: 10; left: 50%; bottom: 30px; transform: translate(-50%, 9px); background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; padding: 10px 14px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 930px) {
+      main { grid-template-columns: .75fr 1.25fr; }
+      .palette-panel { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: end; text-align: left; padding-top: 7px; }
+      .palette-title { grid-column: 1 / -1; margin-bottom: -8px; }
+      .palette { display: flex; gap: 5px; }
+      .swatch { width: 33px; height: 33px; }
+      .count { margin-top: 0; border-top: 0; padding-top: 0; }
+      .presets { flex-direction: row; margin-top: 0; }
+      .presets button { flex: 1; }
+      .clear { position: absolute; right: 3.6vw; bottom: 80px; }
+      .loom-wrap { min-height: 390px; }
+    }
+    @media (max-width: 640px) {
+      .room { padding: 11px 11px 13px; }
+      header { padding-bottom: 8px; }
+      .headmid { display: none; }
+      .headright { font-size: 6px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding: 17px 0 13px; }
+      .intro { align-self: auto; }
+      h1 { font-size: clamp(56px, 18vw, 94px); }
+      .intro p { font-size: 11px; margin-top: 17px; max-width: 275px; }
+      .instructions { display: none; }
+      .loom-wrap { order: 2; min-height: 0; }
+      .loom { padding: 7px; }
+      .fringe { height: 19px; }
+      .fringe i { height: 13px; }
+      .loom-label { font-size: 5px; }
+      .palette-panel { order: 3; display: block; padding-top: 4px; }
+      .palette-title { margin-bottom: 7px; }
+      .palette { display: flex; justify-content: space-between; gap: 4px; }
+      .swatch { width: 14.6%; aspect-ratio: 1; height: auto; }
+      .count { margin-top: 13px; border-top: 1px solid var(--line); padding-top: 7px; display: flex; align-items: baseline; gap: 8px; }
+      .count b { display: inline; font-size: 20px; }
+      .presets { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-top: 12px; }
+      .presets button { padding: 7px 4px; font-size: 5px; }
+      .clear { position: static; text-align: left; margin-top: 10px; }
+      footer { font-size: 6px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="room">
+    <div class="loom-halo" aria-hidden="true"></div>
+    <header>
+      <div class="brand">The Loom Room<span>Digital textile study / No. 027</span></div>
+      <div class="headmid">Warp, weft &amp; the space between<br>An interactive weaving atelier</div>
+      <div class="headright">Loom 02 / weight 280 g<br><b>Wool, cotton, patience</b></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">A small weaving room</p>
+        <h1>The<em>loom room</em></h1>
+        <p>A cloth is only a conversation between two directions. Choose a thread, pull it across the light, and make a small world you can touch.</p>
+        <div class="instructions"><b>To weave</b>Pick a colour<br>Click or drag across the loom<br>Every square is a thread crossing</div>
+      </section>
+      <section class="loom-wrap">
+        <div class="loom">
+          <div class="cloth">
+            <div class="warp"></div>
+            <div class="weave" id="weave" aria-label="Interactive 16 by 16 weaving loom"></div>
+          </div>
+          <div class="fringe" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="loom-label"><span><b>Cloth 027</b> / hand-woven study</span><span>16 × 16 crossings<br><span id="threadsUsed">0</span> threads placed</span></div>
+      </section>
+      <aside class="palette-panel">
+        <p class="palette-title">Thread cabinet</p>
+        <div class="palette" aria-label="Thread colours">
+          <button class="swatch active" type="button" data-color="#b84837" style="--c:#b84837" aria-label="Madder red"></button>
+          <button class="swatch" type="button" data-color="#354b72" style="--c:#354b72" aria-label="Indigo blue"></button>
+          <button class="swatch" type="button" data-color="#d29b4a" style="--c:#d29b4a" aria-label="Ochre"></button>
+          <button class="swatch" type="button" data-color="#8b9a72" style="--c:#8b9a72" aria-label="Sage"></button>
+          <button class="swatch" type="button" data-color="#dca8a0" style="--c:#dca8a0" aria-label="Dusty rose"></button>
+          <button class="swatch" type="button" data-color="#f1e6cf" style="--c:#f1e6cf" aria-label="Undyed cream"></button>
+        </div>
+        <div class="count"><b id="count">000</b><br>Crossings woven<br>Cloth growing slowly</div>
+        <div class="presets"><button type="button" data-preset="tide">Tide</button><button type="button" data-preset="meadow">Meadow</button><button type="button" data-preset="kilim">Kilim</button></div>
+        <button class="clear" type="button" id="clear">Unravel the cloth</button>
+      </aside>
+    </main>
+    <footer><span><b>The Loom Room</b> / digital craft, analogue patience</span><span>Warp 16 / weft 16 · one small textile</span><span>Collection 027</span></footer>
+  </div>
+  <div class="toast" id="toast">A thread crosses the light</div>
+  <script>
+    (() => {
+      const weave = document.getElementById('weave');
+      const cells = [];
+      let selected = '#b84837', drawing = false, count = 0;
+      const toast = document.getElementById('toast');
+      let toastTimer;
+      for (let i = 0; i < 256; i++) {
+        const cell = document.createElement('button');
+        cell.type = 'button'; cell.className = 'cell'; cell.dataset.index = i;
+        cell.setAttribute('aria-label', 'Weave crossing ' + (i + 1));
+        cell.addEventListener('pointerdown', (e) => { e.preventDefault(); drawing = true; paint(cell); });
+        cell.addEventListener('pointerenter', () => { if (drawing) paint(cell); });
+        weave.appendChild(cell); cells.push(cell);
+      }
+      function paint(cell) {
+        const already = cell.classList.contains('woven');
+        cell.style.setProperty('--c', selected);
+        cell.classList.add('woven');
+        if (!already) { count++; document.getElementById('count').textContent = String(count).padStart(3, '0'); document.getElementById('threadsUsed').textContent = count; }
+        updateToast();
+      }
+      function updateToast() {
+        toast.textContent = 'A thread crosses the light · ' + count + ' crossings';
+        toast.classList.add('show'); clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 1300);
+      }
+      document.addEventListener('pointerup', () => drawing = false);
+      document.querySelectorAll('.swatch').forEach(button => {
+        button.addEventListener('click', () => {
+          selected = button.dataset.color;
+          document.querySelectorAll('.swatch').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+        });
+      });
+      function preset(name) {
+        const colors = { tide: ['#354b72', '#8b9a72', '#f1e6cf'], meadow: ['#8b9a72', '#d29b4a', '#dca8a0'], kilim: ['#b84837', '#354b72', '#d29b4a'] };
+        const pal = colors[name];
+        count = 0;
+        cells.forEach((cell, i) => {
+          const row = Math.floor(i / 16), col = i % 16;
+          const band = row < 4 ? 0 : row < 10 ? 1 : 2;
+          const active = name === 'tide' ? ((row + col) % 7 < 2) : name === 'meadow' ? (row > 2 && row < 13 && Math.sin(col * .6 + row * .3) > -.2) : ((col % 5 < 2) !== (row % 5 < 2));
+          if (active) {
+            cell.style.setProperty('--c', pal[band]);
+            cell.classList.add('woven');
+            count++;
+          } else {
+            cell.classList.remove('woven');
+          }
+        });
+        document.getElementById('count').textContent = String(count).padStart(3, '0');
+        document.getElementById('threadsUsed').textContent = count;
+        toast.textContent = name.charAt(0).toUpperCase() + name.slice(1) + ' pattern placed on the loom';
+        toast.classList.add('show'); clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 1500);
+      }
+      document.querySelectorAll('[data-preset]').forEach(button => button.addEventListener('click', () => preset(button.dataset.preset)));
+      document.getElementById('clear').addEventListener('click', () => {
+        cells.forEach(cell => { cell.classList.remove('woven'); cell.style.removeProperty('--c'); });
+        count = 0; document.getElementById('count').textContent = '000'; document.getElementById('threadsUsed').textContent = '0';
+        toast.textContent = 'The cloth returns to thread'; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 1500);
+      });
+    })();
+  </script>
+</body>
+</html>

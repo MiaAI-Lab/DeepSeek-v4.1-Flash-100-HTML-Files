@@ -1,0 +1,17 @@
+TITLE: Endless Corridor — An Architecture of Almost
+
+PROMPT:
+Create "Endless Corridor," a self-contained immersive architectural experience of moving through an infinite passage. Use near-black umber, warm cream, antique gold, ember orange and moss green. Build the tunnel entirely in CSS and JavaScript from fifteen nested rectangular gate frames, each with fine edge lines, glowing lintels, thresholds and tiny door numbers, all converging toward a luminous doorway. Animate the gates slowly toward the viewer in an endless loop, with parallax dust, film grain and a pulsing center. Overlay an editorial composition: a huge high-contrast serif "Endless corridor," a corridor poem, a pause control, a walking-pace range, distance walked, current room name and a light temperature indicator. Scrolling should quicken the walk; clicking emits a ripple; pressing C changes the room's temperature between Ember, Moss and Dusk. All inline; no external assets, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A dreamlike passage with no destination, realized as a sequence of dark architectural frames. Warm light, dust and enormous typography turn a simple perspective trick into a meditative, cinematic descent.
+
+MAJOR VISUAL TECHNIQUES:
+- Endless nested-frame corridor driven by requestAnimationFrame
+- Per-frame scale, opacity, depth ordering and glowing architectural accents
+- Ambient dust field, luminous far door and film grain
+- Editorial oversized serif type over a dark architectural field
+- Wheel and keyboard interaction with room-temperature color states
+
+INTERACTION MODEL:
+The corridor walks automatically; scroll to speed up, use the pause button or P to stop, and adjust the pace slider. Clicking anywhere makes a ripple and adds momentum. Press C or the pace room control to cycle Ember, Moss and Dusk lighting palettes while the distance counter keeps accumulating.

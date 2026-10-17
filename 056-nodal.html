@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0c0b09">
+  <meta name="description" content="Nodal — Chladni figures in sand, drawn by sound.">
+  <title>Nodal — Chladni Figures in Sand</title>
+  <style>
+    :root {
+      --black: #0c0b09;
+      --iron: #17150f;
+      --sand: #e7dcc4;
+      --brass: #b99a5f;
+      --dim: #7e7462;
+      --line: rgba(231,220,196,.14);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--brass); color: var(--black); }
+    body { margin: 0; min-height: 100vh; background: var(--black); color: var(--sand); font-family: var(--sans); overflow-x: hidden; }
+    .lab { min-height: 100vh; display: flex; flex-direction: column; padding: 17px clamp(14px, 3vw, 40px) 14px; background: radial-gradient(ellipse at 46% 46%, #1c1a14, #0a0908 68%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 9px; }
+    .brand { font-family: var(--mono); font-size: 6px; line-height: 1.8; letter-spacing: .15em; text-transform: uppercase; color: var(--brass); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.02em; text-transform: none; color: var(--sand); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 32px); font-family: var(--mono); font-size: 5.5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--sand); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(160px, .6fr) minmax(340px, 1.6fr) minmax(180px, .62fr); gap: clamp(15px, 3vw, 40px); align-items: center; padding: 14px 0 10px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 6.4vw, 80px); line-height: .8; letter-spacing: -.07em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--brass); }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 11px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 18px; height: 1px; background: var(--brass); }
+    .intro p { max-width: 195px; margin: 20px 0 0; font-family: var(--serif); font-size: 12px; line-height: 1.6; color: #a89c85; }
+    .plate-wrap { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+    .plate { position: relative; width: min(100%, 470px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 38% 30%, #2a2820, #12110d 62%, #090907); border: 1px solid #3a362a; box-shadow: 0 25px 48px rgba(0,0,0,.55), inset 0 0 42px rgba(0,0,0,.65), inset 0 1px 0 rgba(231,220,196,.12); }
+    canvas { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; }
+    .plate::after { content: ""; position: absolute; inset: 4%; border-radius: 50%; border: 1px solid rgba(231,220,196,.07); pointer-events: none; }
+    .signal { width: min(100%, 470px); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .signal b { color: var(--brass); font-weight: 400; }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .readouts { border-top: 1px solid var(--line); }
+    .readout { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding: 7px 0; font-family: var(--mono); font-size: 5.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+    .readout b { font-family: var(--serif); font-size: 19px; font-weight: 400; color: var(--sand); letter-spacing: -.02em; }
+    .sweep { border-top: 1px solid var(--line); padding-top: 11px; margin-top: 12px; }
+    .sweep h2 { margin: 0 0 7px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); font-weight: 400; }
+    .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .presets button { border: 1px solid rgba(185,154,95,.4); background: transparent; color: var(--sand); font-family: var(--mono); font-size: 5.5px; letter-spacing: .06em; padding: 6px 3px; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+    .presets button:hover, .presets button.active { background: var(--brass); border-color: var(--brass); color: var(--black); }
+    .hint { margin-top: 11px; font-family: var(--serif); font-style: italic; font-size: 11px; line-height: 1.5; color: #a89c85; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 8px; font-family: var(--mono); font-size: 5.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--brass); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .75fr 1.25fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1.2fr; gap: 18px; align-items: start; padding-top: 4px; }
+      .readouts { grid-column: 1; }
+      .sweep { grid-column: 2; margin: 0; border-top: 0; padding-top: 0; }
+      .hint { display: none; }
+    }
+    @media (max-width: 580px) {
+      .lab { padding: 10px 11px 12px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: clamp(40px, 14vw, 62px); }
+      .intro p { display: none; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 11px 0 9px; }
+      .plate { width: min(100%, 330px); margin: 0 auto; }
+      .signal { width: 100%; font-size: 4.5px; }
+      aside { order: 3; display: block; }
+      .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+      .readout b { font-size: 15px; }
+      .sweep { margin-top: 9px; padding-top: 8px; }
+      .presets button { padding: 5px 2px; font-size: 5px; }
+      footer { font-size: 5px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lab">
+    <header>
+      <div class="brand"><b>Nodal</b>Acoustic laboratory / instrument 056</div>
+      <div class="head"><div>Plate<br><b>Brass / 24 cm</b></div><div>Medium<br><b>Fine sand</b></div><div>Drive<br><b id="driveState">Sine</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Sound made visible</p>
+        <h1>Chladni<em>figures</em></h1>
+        <p>Sand on a brass plate, a violin bow at the edge. Where the plate is still, the grains gather; where it sings, they flee. Change the ratio and the pattern redraws itself.</p>
+      </section>
+      <section class="plate-wrap">
+        <div class="plate"><canvas id="sand" width="900" height="900" aria-label="Chladni sand pattern"></canvas></div>
+        <div class="signal"><span>Mode <b id="modeRead">n 3 / m 5</b></span><span><b id="freqRead">192 Hz</b> · 0.42 s settle</span></div>
+      </section>
+      <aside>
+        <div class="readouts">
+          <div class="readout"><span>Mode n</span><b id="nRead">3</b></div>
+          <div class="readout"><span>Mode m</span><b id="mRead">5</b></div>
+          <div class="readout"><span>Grain</span><b id="grainRead">2,400</b></div>
+          <div class="readout"><span>Symmetry</span><b id="symRead">8-fold</b></div>
+        </div>
+        <div class="sweep">
+          <h2>Resonant presets</h2>
+          <div class="presets" id="presets">
+            <button type="button" data-n="1" data-m="2">Cross</button>
+            <button type="button" data-n="2" data-m="3">Star</button>
+            <button type="button" data-n="3" data-m="5">Web</button>
+            <button type="button" data-n="4" data-m="7">Lace</button>
+            <button type="button" data-n="5" data-m="8">Quilt</button>
+            <button type="button" data-n="7" data-m="10">Filigree</button>
+          </div>
+          <p class="hint">Each figure is a standing wave: the sand marks the lines where the plate never moves.</p>
+        </div>
+      </aside>
+    </main>
+    <footer><span><b>Nodal</b> / Chladni figures in sand</span><span>The quiet places are the ones that show</span><span>Instrument 056 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const canvas = document.getElementById('sand');
+      const ctx = canvas.getContext('2d');
+      const N = 2400;
+      let n = 3, m = 5, jitter = 1, particles = [];
+      for (let i = 0; i < N; i++) {
+        const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * .96;
+        particles.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
+      }
+      function chladni(x, y, nn, mm) {
+        return Math.cos(nn * Math.PI * x) * Math.cos(mm * Math.PI * y) - Math.cos(mm * Math.PI * x) * Math.cos(nn * Math.PI * y);
+      }
+      function step() {
+        const settle = Math.max(0, jitter);
+        for (const p of particles) {
+          const f = chladni(p.x, p.y, n, m);
+          const e = .0012;
+          const dx = chladni(p.x + e, p.y, n, m) - f;
+          const dy = chladni(p.x, p.y + e, n, m) - f;
+          const g = Math.hypot(dx, dy) || 1;
+          const push = Math.min(.012, Math.abs(f) * .035) * .004 / g * 100;
+          p.x -= (dx / g) * (f > 0 ? 1 : -1) * push * 0.9;
+          p.y -= (dy / g) * (f > 0 ? 1 : -1) * push * 0.9;
+          if (settle > .01) {
+            p.x += (Math.random() - .5) * .004 * settle;
+            p.y += (Math.random() - .5) * .004 * settle;
+          }
+          const d = Math.hypot(p.x, p.y);
+          if (d > .97) { p.x *= .97 / d; p.y *= .97 / d; }
+        }
+        jitter *= .985;
+        draw();
+        requestAnimationFrame(step);
+      }
+      function draw() {
+        const size = canvas.width, c = size / 2, R = size * .475;
+        ctx.clearRect(0, 0, size, size);
+        ctx.save();
+        ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.clip();
+        const grd = ctx.createRadialGradient(c * .8, c * .7, 10, c, c, R * 1.2);
+        grd.addColorStop(0, '#2a271f'); grd.addColorStop(1, '#0b0a08');
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = 'rgba(231,220,196,.82)';
+        for (const p of particles) {
+          const px = c + p.x * R, py = c + p.y * R;
+          ctx.fillRect(px, py, 1.7, 1.7);
+        }
+        ctx.restore();
+      }
+      const presets = [...document.querySelectorAll('#presets button')];
+      function setMode(nn, mm) {
+        n = nn; m = mm; jitter = 1.1;
+        document.getElementById('nRead').textContent = n;
+        document.getElementById('mRead').textContent = m;
+        document.getElementById('modeRead').textContent = 'n ' + n + ' / m ' + m;
+        document.getElementById('freqRead').textContent = Math.round(48 + n * m * 4.1) + ' Hz';
+        const g = ((n * m) % 3 === 0 ? 2 : 1) * n;
+        document.getElementById('symRead').textContent = (g % 2 === 0 ? g : g + 1) + '-fold';
+        presets.forEach(b => b.classList.toggle('active', +b.dataset.n === n && +b.dataset.m === m));
+      }
+      presets.forEach(b => b.addEventListener('click', () => setMode(+b.dataset.n, +b.dataset.m)));
+      setMode(3, 5);
+      requestAnimationFrame(step);
+    })();
+  </script>
+</body>
+</html>

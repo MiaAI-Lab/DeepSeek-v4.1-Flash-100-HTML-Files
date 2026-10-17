@@ -1,0 +1,17 @@
+TITLE: The Paper Mill — A Sample Book of Five Stocks
+
+PROMPT:
+Create "The Paper Mill," a self-contained paper sample book. Use warm desk grey, paper cream, mill green, ink and a red seal. Compose a three-column mill sheet: an editorial "The mill" title, five stock buttons (Laid, Wove, Vellum, Cotton, Recycled) and four weight buttons (90, 120, 160, 250); a large specimen sheet with deckle edge, subtle fibre texture, a fold line, a torn watermark, printed sample text, spec block and red mill seal; and a side panel with the stock name, subtitle, note, finish, grain, opacity, pH, use and a watermark toggle. Selecting a stock or weight should change the texture, paper tone, shadow depth, watermark word, printed copy and all readouts. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A material study rather than a poster. The sheet is the hero, and the small changes in texture, tone and shadow are the evidence that paper is a physical substance with opinions.
+
+MAJOR VISUAL TECHNIQUES:
+- Layered CSS fibre textures per stock type
+- Deckle edge and fold-line furniture
+- Weight-driven paper tone and shadow depth
+- Rotated watermark and printed specimen block
+- Mill-green and red-seal palette with engraved metadata
+
+INTERACTION MODEL:
+Choose any of the five stocks and any of the four weights. The sheet changes texture, tone and shadow; the watermark, sample title and copy update; and finish, grain, opacity, pH, rag content and use change in the panel. Toggle the watermark on or off.

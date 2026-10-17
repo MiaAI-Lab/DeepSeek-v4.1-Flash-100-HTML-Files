@@ -1,0 +1,17 @@
+TITLE: Marlowe & Vance — Lot 60, Composition in Ochre
+
+PROMPT:
+Create "Marlowe & Vance," a self-contained auction catalogue page for Lot 60: Hélène Marchetti's "Composition in Ochre," 1961. Use gallery ivory, warm wall grey, near-black ink, vermilion and ochre. Compose a framed catalogue sheet: an auction-house header with sale metadata; a lot title with artist, medium, date, dimensions, signature and provenance; a centre-stage painting in a gilt frame and deep mat, drawn as an inline-SVG abstract composition of ochre, rust and black shapes; and a bidding panel with current bid, estimate, increment, countdown, bid history, Place Bid and Reset controls. Clicking Place Bid should raise the bid by £1,000, add a bid row, flash the amount and animate it. The countdown should run from ten minutes and close the lot at zero. Add a condition note and a footer stating that bidding is a demonstration. No external assets, images, fonts or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+Auction-room tension compressed into a catalogue page. The painting is given wall space and proper framing, while the bidding panel supplies the only thing a catalogue lacks: a pulse.
+
+MAJOR VISUAL TECHNIQUES:
+- Inline-SVG abstract painting in a layered CSS frame, mat and plaque
+- Live bidding state with animated amount and history list
+- Countdown timer with lot open/closed/sold states
+- Auction-catalogue typography with ruled fact tables
+- Responsive recomposition with the bid panel promoted on mobile
+
+INTERACTION MODEL:
+Press "Place bid" to raise the current bid by the £1,000 increment; the amount flashes, a "You" bid row appears and the next bid value updates. The ten-minute countdown ticks down and disables bidding when it reaches zero. "Reset lot" restores the opening state and timer.

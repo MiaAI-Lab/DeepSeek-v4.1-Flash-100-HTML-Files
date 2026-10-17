@@ -1,0 +1,17 @@
+TITLE: The Press Room — A Letterpress Poster, Set by Hand
+
+PROMPT:
+Create "The Press Room," a self-contained letterpress poster studio. Use warm paper, near-black ink, vermilion, ochre and cobalt. Compose a workshop sheet: an editorial "The press room" title with a drawer of metal type sorts; an A2 poster proof with registration marks, a ruled inner border, a small header, a large stacked grotesque headline, a serif subtitle and a footer, plus a subtle impression texture; and a press settings panel with a poster line field, four ink swatches, three paper stocks, a "Pull a proof" button and press metadata. Editing the line should re-break and show it on the poster; choosing an ink should recolour the accent line; choosing stock should change the poster paper; printing should add misregistration and impression texture and increment the count. No external assets, images, fonts, libraries or network calls. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+A print shop in miniature. The proof is the hero and the controls are deliberately few, so the pleasure is in watching a line of type change weight, colour and paper under the hand.
+
+MAJOR VISUAL TECHNIQUES:
+- Live text re-breaking into a stacked poster headline
+- Ink and stock choices applied directly to the proof
+- Misregistration shadows and an impression texture on print
+- Registration marks, rules and type-drawer furniture
+- Grotesque and serif poster typography on a workshop grid
+
+INTERACTION MODEL:
+Type a new poster line; choose vermilion, black, ochre or cobalt ink; choose cream, wove or grey stock. Press "Pull a proof" to add the printed texture, capture a timestamp and increment the impression count and press readout.

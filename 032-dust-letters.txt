@@ -1,0 +1,17 @@
+TITLE: Dust Letters — A Particle Study
+
+PROMPT:
+Create "Dust Letters," a self-contained particle-typography experiment in a pitch-black room. Render a few thousand tiny warm-white particles that assemble into a word sampled from rendered text on an offscreen canvas. Use the word "BREATHE" by default, with alternate words "SOFTLY" and "AGAIN", plus a Disperse action that throws every particle home to a random point and then reassembles. The pointer should push particles away within a small radius. Overlay a minimal editorial interface: brand and metadata, a right-aligned poetic line, particle count, settling percentage, word controls and a footer. All visuals must come from Canvas and inline CSS. No external fonts, images or libraries. Responsive, offline, valid HTML5.
+
+DESCRIPTION:
+An ephemeral typographic sculpture, made and unmade by thousands of points of light. The black field gives every grain weight, and the interaction treats reading as a physical disturbance rather than a fixed act.
+
+MAJOR VISUAL TECHNIQUES:
+- Offscreen canvas text sampling mapped to particle targets
+- Per-particle spring physics with pointer repulsion
+- Motion-trail compositing for a dusty, luminous look
+- Long-exposure vignette, grain and monochrome editorial framing
+- Live settling metric and word morphing
+
+INTERACTION MODEL:
+Move the pointer through the letters to push grains out of formation. Click anywhere to scatter them; choose Breathe, Softly or Again to reform the type. The Disperse control sends the entire cloud away for a moment before the word reassembles itself.

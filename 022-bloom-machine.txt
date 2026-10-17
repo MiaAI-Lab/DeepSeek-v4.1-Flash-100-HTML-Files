@@ -1,0 +1,17 @@
+TITLE: Bloom Machine — A Floral Sequencer
+
+PROMPT:
+Create "Bloom Machine," a self-contained generative floral music sequencer. Use a deep greenhouse green palette with warm cream, mint, blush pink, butter yellow and soft violet. Compose a three-column instrument: poetic serif title "Bloom machine" and instructions on the left; a central 4 × 8 step sequencer whose cells are dark pads with growing stems and geometric five-petal blossoms; and a right-hand tempo and color legend. Add a generous ornamental vine drawing behind the interface, a transport with Play/Pause, Clear Soil, three presets (Night Garden, Glasshouse, First Frost), and a live step counter. Clicking pads plants notes; pressing play loops the garden with gentle synthesized bell tones and visual blooms. Use only inline CSS, SVG and JavaScript with Web Audio; no external assets or libraries. Responsive and offline-ready.
+
+DESCRIPTION:
+A sequencer that behaves like a small nocturnal greenhouse. Each cell is a seed, each loop a season; mint, blush and violet flowers light up in rhythm while soft bell tones make the pattern feel grown rather than programmed.
+
+MAJOR VISUAL TECHNIQUES:
+- CSS-drawn five-petal blossoms with layered stem growth animations
+- Responsive 4×8 sequencer grid with per-voice color coding
+- Web Audio synthesis with sine and triangle plucks
+- Decorative inline-SVG vine system and botanical microcopy
+- Live transport state, tempo slider and preset pattern morphing
+
+INTERACTION MODEL:
+Toggle pads in the grid to plant notes, then press Play the Garden to start the loop. Adjust tempo in real time, choose a preset to plant a new pattern, or clear the soil entirely. Each active pad blooms on its step and sounds a soft harmonic tone.

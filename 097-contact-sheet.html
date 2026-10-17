@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#121110">
+  <meta name="description" content="Contact Sheet 097 — twelve frames from a film that was never finished.">
+  <title>Contact Sheet 097 — Twelve Frames from an Unfinished Film</title>
+  <style>
+    :root {
+      --black: #121110;
+      --dark: #1b1918;
+      --paper: #e9dfc8;
+      --amber: #d9a45e;
+      --red: #a8432f;
+      --dim: #8e8578;
+      --line: rgba(233,223,200,.16);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "Courier New", Courier, monospace;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--amber); color: var(--black); }
+    body { margin: 0; min-height: 100vh; background: var(--black); color: var(--paper); font-family: var(--sans); overflow-x: hidden; }
+    .darkroom { min-height: 100vh; display: flex; flex-direction: column; padding: 16px clamp(14px, 3vw, 40px) 12px; background: radial-gradient(ellipse at 50% 40%, #262322, #0b0a0a 74%); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .brand { font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); }
+    .brand b { display: block; font-family: var(--serif); font-size: 16px; letter-spacing: -.01em; text-transform: none; color: var(--paper); font-weight: 400; }
+    .head { display: flex; gap: clamp(14px, 3vw, 30px); font-family: var(--mono); font-size: 5px; line-height: 1.8; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); text-align: right; }
+    .head b { color: var(--paper); font-weight: 400; }
+    main { flex: 1; display: grid; grid-template-columns: minmax(150px, .52fr) minmax(330px, 1.5fr) minmax(175px, .66fr); gap: clamp(13px, 2.6vw, 34px); align-items: center; padding: 10px 0 8px; }
+    .intro h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.7vw, 58px); line-height: .8; letter-spacing: -.065em; }
+    .intro h1 em { display: block; font-style: italic; color: var(--amber); font-size: .9em; }
+    .intro .kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 9px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+    .intro .kicker::before { content: ""; width: 15px; height: 1px; background: var(--red); }
+    .intro p { max-width: 185px; margin: 13px 0 0; font-family: var(--serif); font-size: 11px; line-height: 1.55; color: #c0b6a5; }
+    .film-meta { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4px; line-height: 1.9; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .film-meta b { color: var(--paper); font-weight: 400; }
+    .sheet-wrap { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+    .sheet { background: #232120; padding: 8px; border: 1px solid #3b3735; box-shadow: 0 16px 30px rgba(0,0,0,.45); display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: min(100%, 470px); }
+    .frame { position: relative; aspect-ratio: 1.35; background: #0d0c0b; overflow: hidden; cursor: pointer; border: 1px solid rgba(233,223,200,.12); }
+    .frame svg { width: 100%; height: 100%; display: block; }
+    .frame::after { content: attr(data-n); position: absolute; left: 3px; bottom: 2px; font-family: var(--mono); font-size: 3.6px; color: rgba(233,223,200,.6); letter-spacing: .06em; }
+    .frame:hover { border-color: var(--amber); }
+    .sheet-caption { display: flex; justify-content: space-between; width: 100%; max-width: 470px; font-family: var(--mono); font-size: 4px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); }
+    aside { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .viewer { border-top: 1px solid var(--line); padding-top: 6px; }
+    .viewer h2 { margin: 0 0 3px; font-family: var(--mono); font-size: 4px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .viewer .big { width: 100%; aspect-ratio: 1.3; background: #0d0c0b; border: 1px solid rgba(233,223,200,.18); overflow: hidden; }
+    .viewer .big svg { width: 100%; height: 100%; display: block; }
+    .viewer .cap { margin: 5px 0 0; font-family: var(--serif); font-size: 10.5px; line-height: 1.5; color: #c0b6a5; min-height: 42px; }
+    .viewer .meta { display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--mono); font-size: 4px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); }
+    .notes { margin-top: 7px; border-top: 1px solid var(--line); padding-top: 5px; font-family: var(--mono); font-size: 4px; line-height: 1.8; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+    .notes b { color: var(--paper); font-weight: 400; }
+    footer { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 6px; font-family: var(--mono); font-size: 4.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+    footer span:nth-child(2) { color: var(--amber); }
+    @media (max-width: 900px) {
+      main { grid-template-columns: .7fr 1.3fr; align-items: center; }
+      aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .viewer { grid-column: 1; }
+      .notes { grid-column: 2; grid-row: 1; margin-top: 0; border-top: 0; padding-top: 0; }
+      .intro p { display: none; }
+      .film-meta { display: none; }
+    }
+    @media (max-width: 560px) {
+      .darkroom { padding: 10px 10px 11px; }
+      .head div:nth-child(2) { display: none; }
+      .intro h1 { font-size: 32px; }
+      main { display: flex; flex-direction: column; align-items: stretch; gap: 7px; padding: 9px 0 7px; }
+      .sheet-wrap { order: 2; }
+      .sheet { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 6px; }
+      aside { order: 3; display: block; }
+      .viewer .big { display: none; }
+      .viewer .cap { font-size: 9px; min-height: 0; }
+      .notes { display: none; }
+      footer { font-size: 4px; }
+      footer span:last-child { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="darkroom">
+    <header>
+      <div class="brand"><b>Contact Sheet 097</b>Unfinished film / roll 097</div>
+      <div class="head"><div>Stock<br><b>Ilford FP4</b></div><div>Frames<br><b>Twelve</b></div><div>Roll<br><b>07 / 12</b></div></div>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="kicker">Twelve frames, one unfinished film</p>
+        <h1>Contact<em>sheet</em></h1>
+        <p>A roll from a film that was never edited. Select a frame to see it at size and read the note the director wrote in the margin.</p>
+        <div class="film-meta"><b>After the Light</b><br>Dir. M. Voss · 1963<br>Location: Vela, the harbour<br>Unused footage · 12 frames</div>
+      </section>
+      <section class="sheet-wrap">
+        <div class="sheet" id="sheet"></div>
+        <div class="sheet-caption"><span>Roll 097 / FP4 / 12 exposures</span><span>Printed at the darkroom, 2026</span></div>
+      </section>
+      <aside>
+        <div class="viewer">
+          <h2>Selected frame</h2>
+          <div class="big" id="big"></div>
+          <p class="cap" id="cap">A woman waits at the edge of the harbour, facing away from the camera. The light is doing most of the acting.</p>
+          <div class="meta"><span id="frameNo">Frame 01</span><span id="frameTime">00:04:12</span></div>
+        </div>
+        <div class="notes" id="notes"><b>Margin note</b><br>“Hold this one. She is not waiting for a boat; she is waiting for the light to change.”</div>
+      </aside>
+    </main>
+    <footer><span><b>Contact Sheet 097</b> / twelve frames from an unfinished film</span><span>The film was never finished; the light was</span><span>Roll 097 · 2026</span></footer>
+  </div>
+  <script>
+    (() => {
+      const frames = [
+        { caption: 'A woman waits at the edge of the harbour, facing away from the camera. The light is doing most of the acting.', note: '“Hold this one. She is not waiting for a boat; she is waiting for the light to change.”', time: '00:04:12', sky: '#7c8c8c', sea: '#3d5559', land: '#222e2e', accent: '#d9a45e' },
+        { caption: 'The harbour wall, empty. A rope and a ring, and the low sun making a long shadow out of very little.', note: '“The town is a character in this film, but it does not know its lines.”', time: '00:07:30', sky: '#9a8f7c', sea: '#4a5a5c', land: '#2b302c', accent: '#c27a4a' },
+        { caption: 'A window, seen from outside. A lamp is on in the room, and the reflection of the sea is over everything.', note: '“Two exposures, one for the room and one for the reflection. Print them together.”', time: '00:11:02', sky: '#6f7f86', sea: '#33484f', land: '#201e1d', accent: '#e0c084' },
+        { caption: 'A man on a bicycle, out of focus, moving left. The camera was not ready; the film keeps him anyway.', note: '“Accident. Keep it. The film needs one thing that does not wait.”', time: '00:14:48', sky: '#a9a08b', sea: '#576a6a', land: '#2f2f27', accent: '#8a4c35' },
+        { caption: 'The breakwater at dusk, with two figures too far apart to be talking.', note: '“This is the end of the film, if the film had an end.”', time: '00:18:20', sky: '#4d5c6b', sea: '#283b44', land: '#171a19', accent: '#c9a45c' },
+        { caption: 'A table with two cups, one full. The window behind it is overexposed, as requested.', note: '“The empty chair is doing more than the actor.”', time: '00:21:55', sky: '#d8cbb2', sea: '#6b7774', land: '#333029', accent: '#a8432f' },
+        { caption: 'A gull on a post, wings half-open, about to make a decision.', note: '“If the bird moves, we lose the frame. Wait for the bird.”', time: '00:24:10', sky: '#b5b6a8', sea: '#5b6d6d', land: '#2e332e', accent: '#f0e6d0' },
+        { caption: 'The lighthouse, unlit, in daylight. It looks like a building that has forgotten its job.', note: '“We will come back at night. We never came back at night.”', time: '00:27:36', sky: '#9aa7a6', sea: '#4e6567', land: '#242b28', accent: '#b4553a' },
+        { caption: 'A hand on a railing, close. The background is all sea and no horizon.', note: '“No face. We know whose hand it is by then.”', time: '00:31:04', sky: '#7f8e8c', sea: '#3a4f52', land: '#1e2524', accent: '#d0a37a' },
+        { caption: 'A street after rain, with the lamps just coming on and nobody in it.', note: '“The town at the hour when it belongs to itself.”', time: '00:34:22', sky: '#3a4650', sea: '#28343a', land: '#15181a', accent: '#e3b56a' },
+        { caption: 'Two chairs on a balcony, facing the sea. One has a coat over it.', note: '“This is the last frame we shot. Print it last.”', time: '00:38:15', sky: '#8c8f88', sea: '#45585a', land: '#262b28', accent: '#b98a42' },
+        { caption: 'The harbour again, at first light, with the camera left running after everyone went home.', note: '“No note. Sometimes the film knows when to stop.”', time: '00:41:50', sky: '#c3c1ae', sea: '#586b6c', land: '#2c322e', accent: '#e9dfc8' }
+      ];
+      function art(f, i) {
+        const h = 100, w = 135;
+        return '<svg viewBox="0 0 135 100" preserveAspectRatio="none">' +
+          '<rect width="135" height="100" fill="' + f.sky + '"/>' +
+          '<rect y="56" width="135" height="44" fill="' + f.sea + '"/>' +
+          '<path d="M0 58 C24 50 40 62 62 56 C86 50 108 60 135 54 L135 100 L0 100Z" fill="' + f.land + '" opacity=".85"/>' +
+          '<circle cx="' + (96 + (i % 3) * 8) + '" cy="' + (22 + (i % 4) * 4) + '" r="' + (5 + i % 4) + '" fill="' + f.accent + '" opacity=".85"/>' +
+          '<path d="M' + (20 + i * 3) + ' 62 L' + (26 + i * 3) + ' 40 L' + (32 + i * 3) + ' 62Z" fill="' + f.land + '" opacity=".55"/>' +
+          '<rect x="' + (58 + i % 4 * 9) + '" y="44" width="10" height="24" fill="' + f.land + '" opacity=".4"/>' +
+          '<path d="M0 84 C30 80 60 88 90 84 C110 82 125 86 135 84" fill="none" stroke="' + f.accent + '" stroke-width=".7" opacity=".45"/>' +
+          '</svg>';
+      }
+      let selected = 0;
+      const sheet = document.getElementById('sheet');
+      frames.forEach((f, i) => {
+        const el = document.createElement('div');
+        el.className = 'frame'; el.dataset.n = String(i + 1).padStart(2, '0');
+        el.innerHTML = art(f, i);
+        el.addEventListener('click', () => select(i));
+        sheet.appendChild(el);
+      });
+      function select(i) {
+        selected = i;
+        document.getElementById('big').innerHTML = art(frames[i], i);
+        document.getElementById('cap').textContent = frames[i].caption;
+        document.getElementById('notes').innerHTML = '<b>Margin note</b><br>' + frames[i].note;
+        document.getElementById('frameNo').textContent = 'Frame ' + String(i + 1).padStart(2, '0');
+        document.getElementById('frameTime').textContent = frames[i].time;
+        document.querySelectorAll('.frame').forEach((el, k) => el.style.borderColor = k === i ? '#d9a45e' : 'rgba(233,223,200,.12)');
+      }
+      select(0);
+    })();
+  </script>
+</body>
+</html>
