@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Costa Lenta — a slow travel atelier on the Mediterranean. Take the long afternoon.">
+<title>Costa Lenta — Take the Long Afternoon</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f2e9d7; --paper2:#e8dcc6; --ink:#2b2820; --olive:#5d6a3e; --terra:#bf6441; --sea:#4d8fa3; --dim:rgba(43,40,32,.55); --line:rgba(43,40,32,.22);
+    --accent:#bf6441;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --hand:"Segoe Print","Bradley Hand",cursive;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 20% 0%,#fbf6ea,transparent 60%),radial-gradient(800px 600px at 90% 100%,#e4d4b9,transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.08rem;letter-spacing:.04em}
+  .brand .sun{width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(191,100,65,.12);transition:background .5s}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  nav{display:flex;gap:24px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--ink)}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--ink);font-weight:400}
+
+  .hero{flex:1;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4vw,54px);align-items:center;padding:clamp(22px,4vw,44px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--accent);margin-bottom:16px;transition:color .5s}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--accent);transition:background .5s}
+  h1{font-family:var(--serif);font-size:clamp(3rem,6.4vw,5.8rem);line-height:.94;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--accent);transition:color .5s}
+  .intro p{margin-top:18px;max-width:36ch;font-size:.78rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .now{margin-top:20px;display:flex;align-items:baseline;gap:10px;padding-top:10px;border-top:1px solid var(--line);max-width:320px}
+  .now .lbl{color:var(--dim);font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;text-transform:uppercase}
+  .now b{font-family:var(--serif);font-size:1.05rem;font-style:italic;font-weight:400}
+  .now .co{color:var(--dim);font-family:var(--mono);font-size:.4rem;margin-left:auto}
+  .ctaRow{display:flex;gap:14px;align-items:center;margin-top:22px;flex-wrap:wrap}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:100px;font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;transition:background .3s}
+  .cta:hover{background:var(--accent)}
+  .hand{font-family:var(--hand);font-size:.82rem;color:var(--dim);transform:rotate(-2deg)}
+
+  .postcards{position:relative;min-height:clamp(360px,52vh,480px);display:flex;align-items:center;justify-content:center}
+  .postcard{position:absolute;width:min(78%,390px);aspect-ratio:1.5;background:#fbf4e4;border:1px solid rgba(43,40,32,.18);padding:8px;
+    box-shadow:0 18px 36px rgba(57,43,22,.22);transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .55s,opacity .4s;cursor:pointer;text-align:left}
+  .postcard .frame{position:relative;width:100%;height:100%;overflow:hidden;background:var(--sea)}
+  .postcard .frame svg{width:100%;height:100%;display:block}
+  .postcard .cap{position:absolute;left:12px;bottom:10px;font-family:var(--hand);font-size:.75rem;color:#4c3a26;z-index:3}
+  .postcard .stampBox{position:absolute;right:9px;top:9px;width:34px;height:40px;border:1px dashed rgba(43,40,32,.35);z-index:3;display:grid;place-items:center;font-family:var(--mono);font-size:.34rem;color:rgba(43,40,32,.5);background:rgba(255,250,238,.6)}
+  .postcard .pcnum{position:absolute;right:10px;bottom:9px;font-family:var(--mono);font-size:.32rem;letter-spacing:.06em;color:rgba(43,40,32,.45);z-index:3}
+  .postcard:nth-child(1){transform:rotate(-7deg) translate(-24px,10px) scale(.94);z-index:1}
+  .postcard:nth-child(2){transform:rotate(3deg) translate(14px,-12px) scale(.97);z-index:2}
+  .postcard:nth-child(3){transform:rotate(8deg) translate(34px,20px) scale(.93);z-index:1}
+  .postcard.active{transform:rotate(-1deg) translate(0,0) scale(1);z-index:5;box-shadow:0 26px 50px rgba(57,43,22,.28)}
+  .postcard:not(.active):hover{transform:rotate(0deg) translate(0,-8px) scale(.98);z-index:4}
+
+  .itinerary{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:20px}
+  .stop{padding:14px clamp(12px,2vw,22px);border-right:1px solid var(--line);text-align:left;transition:background .25s}
+  .stop:last-child{border-right:0}
+  .stop:hover{background:rgba(255,255,255,.25)}
+  .stop .no{color:var(--accent);font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;text-transform:uppercase}
+  .stop h2{font-family:var(--serif);font-weight:400;font-size:1.06rem;margin:4px 0 3px}
+  .stop p{color:var(--dim);font-size:.64rem;line-height:1.6}
+  .stop .km{display:block;margin-top:6px;font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;color:var(--dim)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 0 20px;color:var(--dim)}
+
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;gap:22px}
+    .postcards{order:2;min-height:330px}
+    .intro{order:1}
+    nav{display:none}
+    .postcard{width:min(72%,360px)}
+  }
+  @media(max-width:600px){
+    h1{font-size:12vw}
+    .postcards{min-height:270px}
+    .postcard{width:82%;padding:6px}
+    .postcard .cap{font-size:.65rem}
+    .itinerary{grid-template-columns:1fr}
+    .stop{border-right:0;border-bottom:1px solid var(--line);padding-left:0}
+    .stop:last-child{border-bottom:0}
+    .headRight{display:none}
+    .brand{font-size:.92rem}
+    footer span:nth-child(2){display:none}
+    .now{max-width:100%}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="sun" aria-hidden="true"></span><span>Costa Lenta<small>Slow travel atelier / est. 2019</small></span></a>
+    <nav aria-label="Primary"><a href="#itinerary">Routes</a><a href="#itinerary">Houses</a><a href="#itinerary">Journal</a></nav>
+    <div class="headRight mono">Mediterranean, mostly<br><b>Open May — October</b></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">Routes with room to breathe</p>
+        <h1>Take the<br><em>long afternoon.</em></h1>
+        <p>We plan journeys at the speed of a second coffee: one town, one long walk, one sea to swim in before dinner. <b>No itinerary survives contact with a good view.</b></p>
+        <div class="now"><span class="lbl">Now showing</span><b id="nowName">Cadaqués</b><span class="co" id="nowCo">42° 17′ N</span></div>
+        <div class="ctaRow"><button class="cta" id="cycle">Show me another <span aria-hidden="true">↗</span></button><span class="hand">go on, take the long way</span></div>
+      </div>
+
+      <div class="postcards" id="postcards" aria-label="Postcard destinations">
+        <button class="postcard" data-place="Positano" data-co="40° 37′ N" style="--sky:#8cc7d8;--sea2:#4c93aa;--house:#f8f0dd;--roof:#c4784f">
+          <span class="stampBox">POST<br>€1</span><span class="frame"><svg viewBox="0 0 380 240" aria-hidden="true"><rect width="380" height="240" fill="var(--sky)"/><circle cx="300" cy="52" r="26" fill="#ffe6a8"/><rect y="130" width="380" height="110" fill="var(--sea2)"/><path d="M0,150 C60,140 120,160 180,150 C250,138 320,155 380,145 L380,240 L0,240Z" fill="#3d7f96"/><g fill="var(--house)"><rect x="40" y="96" width="72" height="86"/><rect x="108" y="78" width="60" height="104"/><rect x="164" y="106" width="48" height="76"/><rect x="228" y="86" width="66" height="96"/><rect x="288" y="112" width="42" height="70"/></g><g fill="var(--roof)"><path d="M34 96 L76 76 L118 96Z"/><path d="M102 78 L138 62 L174 78Z"/><path d="M222 86 L261 68 L300 86Z"/></g><g fill="#4b6f7c"><rect x="54" y="116" width="12" height="18"/><rect x="82" y="116" width="12" height="18"/><rect x="120" y="102" width="10" height="16"/><rect x="146" y="102" width="10" height="16"/><rect x="240" y="108" width="12" height="18"/><rect x="268" y="108" width="12" height="18"/></g><path d="M0,182 C80,176 120,188 200,180 C280,172 330,184 380,178" stroke="rgba(255,255,255,.4)" fill="none"/></svg><span class="cap">Positano, late June</span><span class="pcnum">01 / 03</span></span>
+        </button>
+        <button class="postcard" data-place="Cadaqués" data-co="42° 17′ N" style="--sky:#a9cfda;--sea2:#4b8ea4;--house:#f6eedb;--roof:#b56a47">
+          <span class="stampBox">POST<br>€1</span><span class="frame"><svg viewBox="0 0 380 240" aria-hidden="true"><rect width="380" height="240" fill="var(--sky)"/><circle cx="70" cy="48" r="22" fill="#fff1c4"/><rect y="142" width="380" height="98" fill="var(--sea2)"/><path d="M0,158 C70,148 140,166 210,156 C280,146 330,160 380,150 L380,240 L0,240Z" fill="#397e92"/><g fill="var(--house)"><rect x="150" y="76" width="76" height="102"/><rect x="220" y="94" width="52" height="84"/><rect x="266" y="112" width="46" height="66"/></g><g fill="var(--roof)"><path d="M142 76 L188 54 L234 76Z"/><path d="M214 94 L246 80 L278 94Z"/></g><g fill="#4b6f7c"><rect x="166" y="96" width="12" height="18"/><rect x="198" y="96" width="12" height="18"/><rect x="166" y="126" width="12" height="18"/><rect x="198" y="126" width="12" height="18"/></g><path d="M40,130 C48,118 60,116 68,126 C76,114 90,116 96,128 C100,136 94,142 86,142 L48,142 C42,140 38,136 40,130Z" fill="#7fa36c"/><path d="M0,190 C80,184 140,194 220,188 C300,182 340,190 380,186" stroke="rgba(255,255,255,.4)" fill="none"/></svg><span class="cap">Cadaqués, first swim</span><span class="pcnum">02 / 03</span></span>
+        </button>
+        <button class="postcard" data-place="Éze" data-co="43° 43′ N" style="--sky:#c8d9d2;--sea2:#5e95a0;--house:#f6ecd8;--roof:#b97652">
+          <span class="stampBox">POST<br>€1</span><span class="frame"><svg viewBox="0 0 380 240" aria-hidden="true"><rect width="380" height="240" fill="var(--sky)"/><circle cx="310" cy="46" r="20" fill="#ffe4a0"/><path d="M0,156 C70,116 150,124 220,148 C290,172 340,142 380,154 L380,240 L0,240Z" fill="#7e9a6d"/><path d="M0,178 C80,156 170,162 250,180 C310,192 350,186 380,178 L380,240 L0,240Z" fill="#5e7d57"/><g fill="var(--house)"><rect x="190" y="100" width="44" height="58"/><rect x="230" y="88" width="38" height="70"/><rect x="264" y="108" width="34" height="50"/><rect x="150" y="120" width="40" height="38"/></g><g fill="var(--roof)"><path d="M184 100 L212 84 L240 100Z"/><path d="M224 88 L249 74 L274 88Z"/><path d="M258 108 L281 96 L304 108Z"/></g><g fill="#54706f"><rect x="200" y="114" width="8" height="12"/><rect x="216" y="114" width="8" height="12"/><rect x="240" y="102" width="8" height="12"/><rect x="254" y="102" width="8" height="12"/></g><path d="M0,204 C80,188 170,196 260,208 C310,214 350,210 380,204" stroke="rgba(255,255,255,.35)" fill="none"/><path d="M56,116 C64,104 76,102 84,112 C92,100 106,102 112,114 C116,122 110,128 102,128 L64,128 C58,126 54,122 56,116Z" fill="#93aa7c"/></svg><span class="cap">Éze, the hill road</span><span class="pcnum">03 / 03</span></span>
+        </button>
+      </div>
+    </section>
+
+    <section class="itinerary" id="itinerary" aria-label="Suggested route">
+      <button class="stop" data-place="Positano"><span class="no">01 — Amalfi</span><h2>Positano</h2><p>Three days, one stairway, a sea that is colder than it looks.</p><span class="km">⏱ 04 days · 12 km walking</span></button>
+      <button class="stop" data-place="Cadaqués"><span class="no">02 — Costa Brava</span><h2>Cadaqués</h2><p>White walls, blue doors, lunch that lasts until the light changes.</p><span class="km">⏱ 06 days · 18 km walking</span></button>
+      <button class="stop" data-place="Éze"><span class="no">03 — Côte d’Azur</span><h2>Éze</h2><p>A hill town above the sea. Take the path, not the lift.</p><span class="km">⏱ 03 days · 09 km walking</span></button>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Costa Lenta — a fictional travel atelier</span>
+    <span>Drawn in one file · no flights included</span>
+    <span>© 2026 · the long way is the point</span>
+  </footer>
+</div>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.postcard'));
+  const nowName = document.getElementById('nowName');
+  const nowCo = document.getElementById('nowCo');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let active = 1;
+
+  function select(place){
+    const idx = cards.findIndex(c => c.dataset.place === place);
+    if (idx < 0) return;
+    active = idx;
+    cards.forEach((c, i) => c.classList.toggle('active', i === idx));
+    nowName.textContent = place;
+    nowCo.textContent = cards[idx].dataset.co;
+    const accent = getComputedStyle(cards[idx]).getPropertyValue('--roof').trim() || '#bf6441';
+    document.documentElement.style.setProperty('--accent', accent);
+  }
+  cards.forEach(c => c.addEventListener('click', () => select(c.dataset.place)));
+  document.querySelectorAll('.stop').forEach(s => s.addEventListener('click', () => select(s.dataset.place)));
+  document.getElementById('cycle').addEventListener('click', () => {
+    const next = (active + 1) % cards.length;
+    select(cards[next].dataset.place);
+  });
+  select('Cadaqués');
+</script>
+</body>
+</html>

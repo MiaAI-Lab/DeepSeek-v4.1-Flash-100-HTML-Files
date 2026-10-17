@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Still — a quiet room, a breathing circle and a timer with nowhere else to be.">
+<title>Still — A Room to Breathe</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --night:#0c1418; --night2:#121f22; --cream:#e9f1ee; --dim:rgba(233,241,238,.5); --line:rgba(233,241,238,.16);
+    --accent:#8fe3cf; --warm:#e7c89a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--night);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(700px 700px at 50% 42%,rgba(60,120,110,.25),transparent 62%),radial-gradient(900px 700px at 80% 0%,rgba(80,70,120,.16),transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:var(--night)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .page{height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,40px);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.66rem;letter-spacing:.33em;text-transform:uppercase}
+  .brand .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);flex:none}
+  .headRight{display:flex;gap:22px;color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--cream);font-weight:400}
+
+  .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-height:0}
+  .intro{position:absolute;top:clamp(12px,3vh,28px);left:0;right:0;text-align:center;pointer-events:none}
+  .intro h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.3rem,2.4vw,1.9rem);letter-spacing:-.02em;color:rgba(233,241,238,.9)}
+  .intro h1 em{font-style:italic;color:var(--accent)}
+  .intro p{margin-top:5px;color:var(--dim);font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;text-transform:uppercase}
+  .breath{position:relative;width:min(64vw,390px);aspect-ratio:1;display:grid;place-items:center;margin-top:20px}
+  .aura{position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(circle,rgba(143,227,207,.13),transparent 66%);filter:blur(18px);opacity:.8}
+  .ringOuter{position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--accent) var(--p,0%),rgba(233,241,238,.08) 0);
+    -webkit-mask:radial-gradient(circle,transparent 0 92%,#000 92.4% 98%,transparent 98.4%);
+    mask:radial-gradient(circle,transparent 0 92%,#000 92.4% 98%,transparent 98.4%);transition:background .5s}
+  .orbit{position:absolute;inset:3%;border-radius:50%;border:1px solid rgba(233,241,238,.13)}
+  .orbit two{inset:9%}
+  .circle{position:absolute;inset:11%;border-radius:50%;background:radial-gradient(circle at 42% 36%,rgba(210,255,244,.22),rgba(143,227,207,.1) 38%,rgba(20,45,42,.45) 72%);
+    border:1px solid rgba(143,227,207,.25);display:grid;place-items:center;box-shadow:inset 0 0 60px rgba(143,227,207,.1),0 0 60px rgba(143,227,207,.06);
+    animation:breathe 8s ease-in-out infinite;animation-play-state:paused}
+  .running .circle{animation-play-state:running}
+  @keyframes breathe{0%,100%{transform:scale(.9);opacity:.8}50%{transform:scale(1.08);opacity:1}}
+  .circleInner{position:absolute;inset:16%;border-radius:50%;border:1px dashed rgba(233,241,238,.15)}
+  .phase{position:relative;z-index:2;text-align:center}
+  .phase .label{font-family:var(--serif);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--cream);min-height:1.2em;transition:color .4s}
+  .phase .time{margin-top:5px;font-family:var(--mono);font-size:clamp(1.6rem,3.6vw,2.4rem);letter-spacing:.06em;font-weight:400;color:var(--accent);font-variant-numeric:tabular-nums}
+  .phase .sub{margin-top:3px;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;text-transform:uppercase}
+  .orbits{position:absolute;inset:-7%;border-radius:50%;pointer-events:none;animation:orbit 40s linear infinite}
+  .orbits i{position:absolute;left:50%;top:0;width:4px;height:4px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);opacity:.6}
+  @keyframes orbit{to{transform:rotate(360deg)}}
+
+  .dock{flex:none;display:flex;flex-direction:column;align-items:center;gap:12px;padding:clamp(10px,2vh,16px) 0 14px;border-top:1px solid var(--line)}
+  .presets{display:flex;gap:6px}
+  .preset{border:1px solid var(--line);padding:7px 11px;border-radius:100px;font-family:var(--mono);font-size:.38rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .preset:hover{color:var(--cream);border-color:var(--cream)}
+  .preset[aria-pressed="true"]{background:rgba(143,227,207,.12);border-color:var(--accent);color:var(--accent)}
+  .actions{display:flex;align-items:center;gap:10px}
+  .start{border:1px solid var(--accent);color:var(--night);background:var(--accent);padding:10px 22px;border-radius:100px;font-family:var(--mono);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;transition:background .25s,color .25s}
+  .start:hover{background:transparent;color:var(--accent)}
+  .reset{border:1px solid var(--line);padding:9px 12px;border-radius:100px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s}
+  .reset:hover{color:var(--cream);border-color:var(--cream)}
+  .note{color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;min-height:1em}
+  footer{display:flex;justify-content:space-between;gap:16px;padding:0 0 12px;color:rgba(233,241,238,.3);flex-wrap:wrap}
+
+  @media(max-width:600px){
+    .brand{font-size:.55rem;letter-spacing:.24em}
+    .headRight{display:none}
+    .intro{position:static;margin-bottom:12px}
+    .intro h1{font-size:1.2rem}
+    .main{justify-content:flex-start;padding-top:10px}
+    .breath{width:min(78vw,320px);margin-top:6px}
+    .dock{gap:9px}
+    .preset{font-size:.33rem;padding:6px 9px}
+    .start{font-size:.4rem;padding:9px 18px}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important} .circle{animation:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Still</a>
+    <div class="headRight mono">A room to breathe<br>Session <b id="sessionNo">03</b> · <b>no notifications</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro"><h1>A room to <em>breathe.</em></h1><p>Four seconds in · four seconds out</p></div>
+    <div class="breath" id="breath">
+      <div class="aura" aria-hidden="true"></div>
+      <div class="ringOuter" id="ring" aria-hidden="true"></div>
+      <div class="orbit" aria-hidden="true"></div><div class="orbit two" aria-hidden="true"></div>
+      <div class="orbits" aria-hidden="true"><i></i></div>
+      <div class="circle"><div class="circleInner" aria-hidden="true"></div>
+        <div class="phase"><div class="label" id="phaseLabel">Breathe in</div><div class="time" id="time">03:00</div><div class="sub" id="phaseSub">ready when you are</div></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="dock">
+    <div class="presets" role="group" aria-label="Session length">
+      <button class="preset" data-min="1" aria-pressed="false">1 min</button>
+      <button class="preset" data-min="3" aria-pressed="true">3 min</button>
+      <button class="preset" data-min="5" aria-pressed="false">5 min</button>
+    </div>
+    <div class="actions"><button class="start" id="start">Begin</button><button class="reset" id="reset">Reset</button></div>
+    <p class="note" id="note" aria-live="polite">Nothing to do. Nowhere to be.</p>
+  </div>
+
+  <footer class="mono">
+    <span>Still / a fictional room</span>
+    <span>One breath at a time</span>
+    <span>© 2026 · silence included</span>
+  </footer>
+</div>
+
+<script>
+  const presets = Array.from(document.querySelectorAll('.preset'));
+  const phaseLabel = document.getElementById('phaseLabel');
+  const phaseSub = document.getElementById('phaseSub');
+  const timeEl = document.getElementById('time');
+  const note = document.getElementById('note');
+  const breath = document.getElementById('breath');
+  const ring = document.getElementById('ring');
+  const startBtn = document.getElementById('start');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let minutes = 3, total = 180, remaining = 180, running = false;
+  let tick = null, phaseTimer = null, phaseIndex = 0;
+  const phases = ['Breathe in','Hold','Breathe out','Hold'];
+  let audioCtx = null;
+
+  function fmt(s){ return String(Math.floor(s / 60)).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0'); }
+  function paint(){
+    timeEl.textContent = fmt(remaining);
+    const p = total ? (1 - remaining / total) * 100 : 0;
+    ring.style.background = 'conic-gradient(var(--accent) ' + p.toFixed(2) + '%, rgba(233,241,238,.08) 0)';
+    ring.style.setProperty('--p', p.toFixed(2) + '%');
+  }
+  function setPhase(i){
+    phaseIndex = i % phases.length;
+    phaseLabel.textContent = phases[phaseIndex];
+    phaseSub.textContent = phaseIndex % 2 === 0 ? 'four seconds, slowly' : 'rest here';
+  }
+  function chime(){
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const t = audioCtx.currentTime;
+      [523.25, 392.00].forEach((f, i) => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(.0001, t + i * .35);
+        g.gain.exponentialRampToValueAtTime(.045, t + i * .35 + .04);
+        g.gain.exponentialRampToValueAtTime(.0001, t + i * .35 + 1.4);
+        o.connect(g).connect(audioCtx.destination);
+        o.start(t + i * .35); o.stop(t + i * .35 + 1.5);
+      });
+    } catch (e) {}
+  }
+  function start(){
+    if (running) return;
+    running = true;
+    breath.classList.add('running');
+    startBtn.textContent = 'Pause';
+    note.textContent = 'Breathe with the circle.';
+    startBtn.setAttribute('aria-pressed', 'true');
+    phaseTimer = setInterval(() => setPhase(phaseIndex + 1), 4000);
+    tick = setInterval(() => {
+      remaining--;
+      paint();
+      if (remaining <= 0){
+        clearInterval(tick); clearInterval(phaseTimer);
+        running = false;
+        breath.classList.remove('running');
+        startBtn.textContent = 'Begin again';
+        phaseLabel.textContent = 'Complete';
+        phaseSub.textContent = 'stay a moment';
+        note.textContent = 'Complete. Stay a moment.';
+        phaseLabel.style.color = 'var(--warm)';
+        chime();
+      }
+    }, 1000);
+  }
+  function pause(){
+    running = false;
+    breath.classList.remove('running');
+    startBtn.textContent = 'Continue';
+    clearInterval(tick); clearInterval(phaseTimer);
+    note.textContent = 'Paused. The room is still here.';
+  }
+  startBtn.addEventListener('click', () => {
+    if (running) pause();
+    else {
+      if (remaining <= 0) remaining = total;
+      start();
+    }
+  });
+  document.getElementById('reset').addEventListener('click', () => {
+    pause();
+    remaining = total;
+    startBtn.textContent = 'Begin';
+    phaseLabel.style.color = '';
+    phaseLabel.textContent = 'Breathe in';
+    phaseSub.textContent = 'ready when you are';
+    note.textContent = 'Nothing to do. Nowhere to be.';
+    setPhase(0);
+    paint();
+  });
+  presets.forEach(b => {
+    b.addEventListener('click', () => {
+      pause();
+      minutes = Number(b.dataset.min);
+      total = minutes * 60;
+      remaining = total;
+      startBtn.textContent = 'Begin';
+      presets.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      phaseLabel.textContent = 'Breathe in'; phaseSub.textContent = 'ready when you are';
+      phaseLabel.style.color = '';
+      note.textContent = 'Nothing to do. Nowhere to be.';
+      paint();
+    });
+  });
+  paint();
+  setPhase(0);
+  if (reduce) breath.classList.remove('running');
+</script>
+</body>
+</html>

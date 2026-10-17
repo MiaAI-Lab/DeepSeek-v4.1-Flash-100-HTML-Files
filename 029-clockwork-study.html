@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Calibre 07 — a mechanical clock study in brass, forest green and real time.">
+<title>Calibre 07 — A Machine for Noticing</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --green:#0b1d16; --green2:#122a20; --brass:#c9a24a; --brass2:#8f6d2b; --ivory:#ece3cd; --dim:rgba(236,227,205,.5);
+    --line:rgba(236,227,205,.16);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--green);color:var(--ivory);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 68% 30%,rgba(201,162,74,.13),transparent 62%),radial-gradient(700px 500px at 5% 90%,rgba(35,80,60,.45),transparent 68%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--brass);color:var(--green)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--brass);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1340px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px)}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.64rem;letter-spacing:.26em;text-transform:uppercase}
+  .brand .poin{width:14px;height:14px;border:1px solid var(--brass);transform:rotate(45deg);display:grid;place-items:center}
+  .brand .poin::after{content:"";width:4px;height:4px;background:var(--brass)}
+  .brand span{font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;color:var(--dim)}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headRight{text-align:right;color:var(--dim)}
+  .headRight b{color:var(--brass);font-weight:400}
+
+  .hero{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(24px,4.4vw,60px);align-items:center;padding:clamp(28px,5vh,52px) 0 clamp(28px,4vh,46px)}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--brass);margin-bottom:20px}
+  .kicker::before{content:"";width:24px;height:1px;background:var(--brass)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,5.4vw,5.2rem);line-height:.96;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--brass)}
+  .intro p{margin-top:20px;max-width:36ch;font-size:.8rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ivory);font-weight:400}
+  .readouts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .readouts div{background:var(--green);padding:10px 6px 11px}
+  .readouts span{display:block;color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+  .readouts b{display:block;margin-top:5px;font-family:var(--serif);font-size:.98rem;font-weight:400;letter-spacing:.01em}
+  .readouts b small{font-family:var(--mono);font-size:.4rem;color:var(--dim);letter-spacing:.05em}
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,162,74,.55);padding:9px 13px;font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);transition:background .25s,color .25s}
+  .btn:hover{background:var(--brass);color:var(--green)}
+  .btn[aria-pressed="true"]{background:var(--brass);color:var(--green)}
+  .btn.ghost{border-color:var(--line);color:var(--dim)}
+  .btn.ghost:hover{border-color:var(--ivory);background:transparent;color:var(--ivory)}
+  .serial{margin-top:20px;color:var(--dim);line-height:1.8}
+  .serial b{color:var(--ivory);font-weight:400}
+
+  .clockWrap{position:relative;display:grid;place-items:center;min-height:clamp(380px,58vh,580px)}
+  .clockGlow{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,162,74,.16),transparent 68%);filter:blur(10px)}
+  .clock{width:min(100%,560px);height:auto;display:block;overflow:visible;filter:drop-shadow(0 24px 60px rgba(0,0,0,.45))}
+  .gear{transform-origin:center;animation:spin 40s linear infinite}
+  .g1{animation-duration:36s}.g2{animation-duration:24s;animation-direction:reverse}.g3{animation-duration:48s}
+  .paused .gear{animation-play-state:paused}
+  .wound .gear{animation-duration:9s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hand{transform-origin:280px 280px}
+  .second{transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+  .paused .second{transition:none}
+  .digital{display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;max-width:560px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line);color:var(--dim)}
+  .digital .time{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:var(--ivory);font-variant-numeric:tabular-nums}
+  .digital .beat{display:flex;align-items:center;gap:6px}
+  .digital .beat i{width:5px;height:5px;border-radius:50%;background:var(--brass);animation:beat 1s steps(1) infinite}
+  .paused .digital .beat i{animation-play-state:paused;opacity:.3}
+  @keyframes beat{50%{opacity:.2}}
+  .engrave{position:absolute;left:6%;bottom:8%;color:rgba(201,162,74,.5);font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7;transform:rotate(-90deg);transform-origin:left bottom}
+
+  .mech{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0;display:grid;grid-template-columns:1.1fr 1fr .8fr;gap:clamp(18px,3vw,40px)}
+  .mech h2{font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;font-weight:400;color:var(--brass);margin-bottom:9px}
+  .mech p{font-size:.72rem;line-height:1.8;color:var(--dim)}
+  .mech p b{color:var(--ivory);font-weight:400}
+  .mech .spec div{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid rgba(236,227,205,.08);font-family:var(--mono);font-size:.44rem;letter-spacing:.05em;color:var(--dim);text-transform:uppercase}
+  .mech .spec b{color:var(--ivory);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:15px 0 26px;color:var(--dim)}
+
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;gap:24px}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;align-items:start}
+    .kicker,.intro h1{grid-column:1}
+    .intro p{grid-column:1}
+    .readouts{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .controls{grid-column:1}
+    .serial{grid-column:1}
+    .mech{grid-template-columns:1fr 1fr}
+    .mech div:last-child{grid-column:1/-1}
+    .clockWrap{max-width:520px;margin:0 auto;width:100%}
+    .headMid{display:none}
+  }
+  @media(max-width:620px){
+    .intro{grid-template-columns:1fr}
+    .readouts{grid-column:1;grid-row:auto;margin-top:14px}
+    .headRight{display:none}
+    h1{font-size:12vw}
+    .mech{grid-template-columns:1fr}
+    .mech div:last-child{grid-column:auto}
+    .clockWrap{min-height:330px}
+    .digital{font-size:.44rem}
+    .engrave{display:none}
+    footer span:nth-child(2){display:none}
+    .serial{font-size:.44rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="poin" aria-hidden="true"></span>Atelier Horlogerie <span>/ calibre 07</span></a>
+    <div class="headMid mono"><span>Hand-wound</span><span>31 jewels</span><span>Serial 07 · 1184</span></div>
+    <div class="headRight mono">Synchronised to local time<br><b id="dateLine">—</b></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">A study in mechanical patience</p>
+        <h1>A machine<br>for <em>noticing.</em></h1>
+        <p>Seven gears, one mainspring and a small brass heart that has been keeping the same promise since 1948. Wind it, stop it, listen to the escapement — <b>the time is still the time.</b></p>
+        <div class="readouts mono">
+          <div><span>Amplitude</span><b>287° <small>/ degrees</small></b></div>
+          <div><span>Beat rate</span><b>21,600 <small>/ vph</small></b></div>
+          <div><span>Reserve</span><b>42 <small>/ hours</small></b></div>
+          <div><span>Jewels</span><b>31 <small>/ rubies</small></b></div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="wind">Wind the calibre ↻</button>
+          <button class="btn ghost" id="stop" aria-pressed="false">Stop the escapement</button>
+        </div>
+        <p class="serial mono">Atelier Horlogerie · Vallée de Joux<br>Movement <b>Cal. 07</b> · Case <b>38.5 mm</b> · Dial <b>forest enamel</b></p>
+      </div>
+
+      <div class="clockWrap" id="clockWrap">
+        <div class="clockGlow" aria-hidden="true"></div>
+        <svg class="clock" viewBox="0 0 560 560" role="img" aria-label="A mechanical clock with rotating brass gears showing the current time">
+          <defs>
+            <radialGradient id="plate" cx="42%" cy="38%">
+              <stop offset="0" stop-color="#1b3529"/><stop offset=".7" stop-color="#0e221a"/><stop offset="1" stop-color="#081710"/>
+            </radialGradient>
+            <linearGradient id="brassG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f0d38a"/><stop offset=".35" stop-color="#c9a24a"/><stop offset=".62" stop-color="#8f6d2b"/><stop offset="1" stop-color="#e1c47b"/>
+            </linearGradient>
+            <radialGradient id="dialG" cx="45%" cy="38%">
+              <stop offset="0" stop-color="#f4eeda"/><stop offset=".8" stop-color="#e2d7bd"/><stop offset="1" stop-color="#cbbc9b"/>
+            </radialGradient>
+            <filter id="inner"><feGaussianBlur stdDeviation="4" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
+          </defs>
+          <circle cx="280" cy="280" r="266" fill="url(#plate)" stroke="rgba(201,162,74,.28)"/>
+          <circle cx="280" cy="280" r="248" fill="none" stroke="rgba(236,227,205,.1)"/>
+          <g id="gears" fill="url(#brassG)" stroke="#6e5322" stroke-width=".8" opacity=".95"></g>
+          <circle cx="280" cy="280" r="202" fill="url(#dialG)"/>
+          <circle cx="280" cy="280" r="202" fill="none" stroke="#b3a281" stroke-width="1"/>
+          <circle cx="280" cy="280" r="193" fill="none" stroke="rgba(60,50,35,.28)"/>
+          <g id="ticks" stroke="rgba(45,38,28,.6)"></g>
+          <g id="romans" fill="rgba(45,38,28,.7)" font-family="Georgia, serif" font-size="13" text-anchor="middle"></g>
+          <text x="280" y="235" text-anchor="middle" font-family="Georgia, serif" font-size="11" letter-spacing="3" fill="rgba(45,38,28,.55)">ATELIER</text>
+          <text x="280" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="8" letter-spacing="2" fill="rgba(45,38,28,.45)">HORLOGERIE</text>
+          <g class="hand" id="hourHand"><line x1="280" y1="300" x2="280" y2="180" stroke="#2d261c" stroke-width="5" stroke-linecap="round"/><circle cx="280" cy="280" r="6" fill="#2d261c"/></g>
+          <g class="hand" id="minuteHand"><line x1="280" y1="306" x2="280" y2="118" stroke="#2d261c" stroke-width="3" stroke-linecap="round"/></g>
+          <g class="hand second" id="secondHand"><line x1="280" y1="318" x2="280" y2="96" stroke="#b4552f" stroke-width="1.2" stroke-linecap="round"/><circle cx="280" cy="318" r="3" fill="#b4552f"/></g>
+          <circle cx="280" cy="280" r="4" fill="#c9a24a" stroke="#2d261c"/>
+          <text x="280" y="392" text-anchor="middle" font-family="Georgia, serif" font-size="9" letter-spacing="4" fill="rgba(45,38,28,.45)">CAL. 07</text>
+          <text x="280" y="408" text-anchor="middle" font-family="Georgia, serif" font-size="6.5" letter-spacing="2" fill="rgba(45,38,28,.35)">SWISS MADE</text>
+        </svg>
+        <span class="engrave">N° 1184 / 1948 — 2026</span>
+        <div class="digital mono">
+          <span class="time" id="digital">--:--:--</span>
+          <span class="beat"><i aria-hidden="true"></i> 6 beats / sec</span>
+          <span>Local · <span id="tz">UTC</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mech">
+      <div><h2>The train</h2><p>Power leaves the barrel through the centre wheel, the third wheel and the escape wheel. <b>Each reduction is a small act of restraint.</b> Nothing is direct; everything arrives on time anyway.</p></div>
+      <div class="spec"><h2>Specification</h2>
+        <div><span>Frequency</span><b>3 Hz</b></div><div><span>Power reserve</span><b>42 h</b></div><div><span>Winding</span><b>Manual</b></div><div><span>Finishing</span><b>Côtes de Genève</b></div>
+      </div>
+      <div><h2>The sound</h2><p>Six beats per second, 518,400 a day. A quiet room makes them audible, which is the whole point of owning a mechanical object in a digital house.</p></div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Calibre 07 / a fictional horology study</span>
+    <span>Brass, enamel and one HTML file</span>
+    <span>© 2026 · time is the only dependency</span>
+  </footer>
+</div>
+
+<script>
+  const gears = document.getElementById('gears');
+  const ticks = document.getElementById('ticks');
+  const romans = document.getElementById('romans');
+  const NS = 'http://www.w3.org/2000/svg';
+  const cx = 280, cy = 280;
+
+  function gearPath(cx, cy, r, teeth, toothDepth){
+    const pts = [];
+    const n = teeth * 4;
+    for (let i = 0; i < n; i++){
+      const a = i / n * Math.PI * 2;
+      const outer = i % 4 < 2 ? r : r - toothDepth;
+      pts.push([cx + Math.cos(a) * outer, cy + Math.sin(a) * outer]);
+    }
+    let d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+    pts.slice(1).forEach(p => { d += ' L' + p[0].toFixed(1) + ',' + p[1].toFixed(1); });
+    return d + ' Z';
+  }
+
+  const gearDefs = [
+    { cx: 400, cy: 190, r: 58, teeth: 18, depth: 7, cls: 'g1' },
+    { cx: 430, cy: 330, r: 42, teeth: 14, depth: 6, cls: 'g2' },
+    { cx: 172, cy: 380, r: 48, teeth: 16, depth: 6, cls: 'g3' }
+  ];
+  gearDefs.forEach(g => {
+    const el = document.createElementNS(NS, 'g');
+    el.setAttribute('class', 'gear ' + g.cls);
+    const body = document.createElementNS(NS, 'path');
+    body.setAttribute('d', gearPath(g.cx, g.cy, g.r, g.teeth, g.depth));
+    el.appendChild(body);
+    const hole = document.createElementNS(NS, 'circle');
+    hole.setAttribute('cx', g.cx); hole.setAttribute('cy', g.cy); hole.setAttribute('r', g.r * .34);
+    hole.setAttribute('fill', '#0e221a'); hole.setAttribute('stroke', 'rgba(236,227,205,.2)');
+    el.appendChild(hole);
+    const hub = document.createElementNS(NS, 'circle');
+    hub.setAttribute('cx', g.cx); hub.setAttribute('cy', g.cy); hub.setAttribute('r', g.r * .12);
+    hub.setAttribute('fill', '#c9a24a'); el.appendChild(hub);
+    for (let s = 0; s < 4; s++){
+      const a = s / 4 * Math.PI * 2;
+      const spoke = document.createElementNS(NS, 'line');
+      spoke.setAttribute('x1', g.cx + Math.cos(a) * g.r * .18); spoke.setAttribute('y1', g.cy + Math.sin(a) * g.r * .18);
+      spoke.setAttribute('x2', g.cx + Math.cos(a) * g.r * .78); spoke.setAttribute('y2', g.cy + Math.sin(a) * g.r * .78);
+      spoke.setAttribute('stroke', 'rgba(110,83,34,.55)'); spoke.setAttribute('stroke-width', '1.4');
+      el.appendChild(spoke);
+    }
+    gears.appendChild(el);
+  });
+
+  for (let i = 0; i < 60; i++){
+    const a = i / 60 * Math.PI * 2;
+    const long = i % 5 === 0;
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', cx + Math.cos(a) * (long ? 170 : 179));
+    l.setAttribute('y1', cy + Math.sin(a) * (long ? 170 : 179));
+    l.setAttribute('x2', cx + Math.cos(a) * 188);
+    l.setAttribute('y2', cy + Math.sin(a) * 188);
+    l.setAttribute('stroke-width', long ? '1.4' : '.7');
+    ticks.appendChild(l);
+  }
+  ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'].forEach((r, i) => {
+    const a = i / 12 * Math.PI * 2 - Math.PI / 2;
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', cx + Math.cos(a) * 152);
+    t.setAttribute('y', cy + Math.sin(a) * 152 + 4);
+    t.textContent = r;
+    romans.appendChild(t);
+  });
+
+  const hourHand = document.getElementById('hourHand');
+  const minuteHand = document.getElementById('minuteHand');
+  const secondHand = document.getElementById('secondHand');
+  const digital = document.getElementById('digital');
+  const dateLine = document.getElementById('dateLine');
+  const wrap = document.getElementById('clockWrap');
+  const stopBtn = document.getElementById('stop');
+  let stopped = false;
+  let seconds = 0;
+
+  function tick(){
+    const now = new Date();
+    const h = now.getHours() % 12, m = now.getMinutes(), s = now.getSeconds();
+    hourHand.style.transform = 'rotate(' + ((h + m / 60) * 30) + 'deg)';
+    minuteHand.style.transform = 'rotate(' + ((m + s / 60) * 6) + 'deg)';
+    if (!stopped) secondHand.style.transform = 'rotate(' + (s * 6) + 'deg)';
+    digital.textContent = [now.getHours(), now.getMinutes(), now.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
+    dateLine.textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+    document.getElementById('tz').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || 'local';
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  document.getElementById('wind').addEventListener('click', () => {
+    wrap.classList.add('wound');
+    setTimeout(() => wrap.classList.remove('wound'), 2400);
+  });
+  stopBtn.addEventListener('click', () => {
+    stopped = !stopped;
+    wrap.classList.toggle('paused', stopped);
+    stopBtn.setAttribute('aria-pressed', String(stopped));
+    stopBtn.textContent = stopped ? 'Release the escapement' : 'Stop the escapement';
+  });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    stopped = true;
+    wrap.classList.add('paused');
+    stopBtn.setAttribute('aria-pressed', 'true');
+    stopBtn.textContent = 'Release the escapement';
+  }
+</script>
+</body>
+</html>

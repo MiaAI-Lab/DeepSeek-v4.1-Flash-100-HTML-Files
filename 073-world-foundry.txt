@@ -1,0 +1,20 @@
+TITLE
+World Foundry — A Planet in Four Sliders
+
+PROMPT
+Create a planet-generation laboratory called "World Foundry". Deep space black with a soft nebula glow, a large procedurally drawn planet on the right, and a narrow control column on the left. Four sliders control radius, water, cloud cover and temperature; four presets (Ocean, Desert, Ice, Gas) apply curated combinations; "Forge a new world" randomises and generates a new name and seed. The planet is drawn on canvas with bands, continents, cloud swirls, polar caps, a terminator shadow and an atmosphere rim, plus one small moon on an orbit. Readouts show radius, water, cloud, mean temperature, gravity and a generated designation. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Scientific wonder, carefully typeset. The planet should look plausible at a glance — bands, clouds, ice caps, a dark limb — and beautiful at a second glance. The UI is an observatory instrument: thin rules, tiny labels, numeric readouts and one warm accent for the button. The dark room makes the planet the only source of colour.
+
+VISUAL TECHNIQUES
+- Canvas planet with layered gradients, latitude bands, seeded continent and cloud blobs, polar caps and a terminator shadow.
+- Atmospheric rim glow and a faint outer haze drawn with radial gradients.
+- Star field, nebula wash, orbit rings and an animated moon.
+- Sliders with live numeric readouts and preset buttons.
+- Generated planet designations from syllable pools; stable seed while adjusting sliders.
+- Editorial serif title and monospaced scientific metadata.
+- Responsive layout with the planet above the controls on mobile; reduced-motion stops moon and twinkle animation.
+
+INTERACTION MODEL
+Adjusting any slider redraws the planet immediately and updates the corresponding readout and classification. Preset buttons set all four values and redraw. "Forge a new world" picks a new seed, name and values. The moon orbits continuously; clicking the planet creates a small scan pulse. All controls are keyboard accessible; reduced-motion draws a still scene.

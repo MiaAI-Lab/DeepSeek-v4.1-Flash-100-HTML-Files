@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Quantum Waves — a particle in a box, drawn as a living probability cloud.">
+<title>Quantum Waves — A Particle in a Box</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#04070d; --panel:#080e18; --cream:#e8eef4; --dim:rgba(232,238,244,.5); --line:rgba(232,238,244,.14);
+    --cyan:#6fe7ff; --violet:#a78bff;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--void);color:var(--cream);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(800px 600px at 72% 24%,rgba(40,70,120,.35),transparent 62%),radial-gradient(700px 500px at 5% 90%,rgba(70,30,110,.25),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:radial-gradient(rgba(255,255,255,.5) .4px,transparent .6px);background-size:110px 95px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 90%);mask-image:linear-gradient(180deg,#000,transparent 90%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.15;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--cyan);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--cyan);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.48rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase}
+  .brand .wave{width:22px;height:10px;position:relative;flex:none}
+  .brand .wave::before{content:"";position:absolute;left:0;top:4px;width:100%;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);transform:skewY(-14deg)}
+  .brand small{display:block;font-family:var(--mono);font-size:.33rem;letter-spacing:.12em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--cyan);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.74fr 1.26fr;gap:clamp(20px,3.4vw,44px);align-items:center;padding:clamp(16px,3vw,28px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--cyan);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--cyan)}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,4.6vw,4.2rem);line-height:.96;letter-spacing:-.045em;font-weight:400}
+  h1 em{font-style:italic;color:var(--cyan)}
+  .intro > p{margin-top:13px;max-width:34ch;font-size:.7rem;line-height:1.8;color:var(--dim)}
+  .intro > p b{color:var(--cream);font-weight:400}
+  .controls{margin-top:16px;border-top:1px solid var(--line);padding-top:10px}
+  .ctl{margin-bottom:9px}
+  .ctlHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:3px}
+  .ctlHead output{color:var(--cream);font-family:var(--mono);font-size:.42rem}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(232,238,244,.25)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--cyan);margin-top:-5px;box-shadow:0 0 8px rgba(111,231,255,.6)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(232,238,244,.25)}
+  input[type=range]::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--cyan);border:0}
+  .btns{display:flex;gap:5px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);padding:6px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--cream);color:var(--void);border-color:var(--cream)}
+  .btn[aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan);color:var(--void)}
+  .readouts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:10px}
+  .readouts div{background:var(--void);padding:5px 7px}
+  .readouts span{display:block;color:var(--dim);font-family:var(--mono);font-size:.3rem;letter-spacing:.08em;text-transform:uppercase}
+  .readouts b{display:block;font-family:var(--mono);font-weight:400;font-size:.5rem;margin-top:1px;color:var(--cream)}
+
+  .stage{display:flex;flex-direction:column;align-items:center;min-width:0}
+  .canvasBox{position:relative;width:min(100%,640px);aspect-ratio:1.45;border:1px solid var(--line);background:rgba(4,10,18,.6);overflow:hidden}
+  #quantum{display:block;width:100%;height:100%;cursor:crosshair}
+  .canvasFoot{display:flex;justify-content:space-between;width:min(100%,640px);margin-top:7px;color:var(--dim);gap:10px;flex-wrap:wrap}
+  .canvasFoot b{color:var(--cyan);font-weight:400}
+  .formula{position:absolute;left:12px;top:10px;color:rgba(232,238,244,.5);font-family:var(--mono);font-size:.44rem;letter-spacing:.04em;pointer-events:none}
+  .axisLabel{position:absolute;right:12px;bottom:7px;color:rgba(232,238,244,.4);font-family:var(--mono);font-size:.36rem;letter-spacing:.06em;pointer-events:none}
+  .hint{color:var(--dim);font-family:var(--mono);font-size:.36rem;letter-spacing:.06em;text-transform:uppercase;margin-top:6px;text-align:center}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:9px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:960px){
+    .main{grid-template-columns:1fr;gap:16px}
+    .stage{order:1}
+    .intro{order:2}
+    .headMid{display:none}
+    .controls{max-width:520px}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.55rem;letter-spacing:.17em}
+    h1{font-size:10.5vw}
+    .canvasFoot{font-size:.36rem}
+    .hint{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="wave" aria-hidden="true"></span><span>Quantum Waves<small>A particle in a box / demo 01</small></span></a>
+    <div class="headMid mono"><span>State <b id="stateTop">n = 2</b></span><span>Energy <b id="energyTop">4 E₁</b></span><span>Phase <b>live</b></span></div>
+    <div class="headRight mono">Infinite square well<br><b>ψ(0) = ψ(L) = 0</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro" id="stageAnchor">
+      <p class="kicker mono">Reality, before it is asked to decide</p>
+      <h1>A particle<br>is a rumour<br><em>until measured.</em></h1>
+      <p>In a box, energy is quantised and the wavefunction stands in place. The particle is not anywhere in particular — <b>it is a distribution of where it might be.</b></p>
+      <div class="controls">
+        <div class="ctl"><div class="ctlHead mono"><label for="n">Energy level</label><output id="nOut">n = 2</output></div><input id="n" type="range" min="1" max="6" value="2"></div>
+        <div class="btns"><button class="btn" id="super" aria-pressed="false">Superposition</button><button class="btn" id="pause">Pause</button><button class="btn" id="measure">Measure</button><button class="btn" id="reset">Reset</button></div>
+        <div class="readouts">
+          <div><span>Energy</span><b id="energy">4.00 E₁</b></div>
+          <div><span>Nodes</span><b id="nodes">1</b></div>
+          <div><span>Mean position</span><b id="mean">0.500 L</b></div>
+          <div><span>Uncertainty</span><b id="unc">0.181 L</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="canvasBox">
+        <canvas id="quantum" width="720" height="500" aria-label="Wavefunction and probability cloud for a particle in a box. Click to measure."></canvas>
+        <span class="formula">ψₙ(x) = √(2/L) · sin(nπx/L)</span>
+        <span class="axisLabel" id="axisLabel">x / L →</span>
+      </div>
+      <div class="canvasFoot mono"><span>Cyan <b>ψ(x)</b> · violet <b>|ψ|²</b></span><span>Click to measure</span><span id="measureOut">no measurement</span></div>
+      <p class="hint" id="hint">Move across the well to read the position</p>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Quantum Waves / a fictional demonstration</span>
+    <span>Canvas, complex numbers, one box</span>
+    <span>© 2026 · do not observe too closely</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('quantum');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nSlider = document.getElementById('n');
+  let n = 2, superposition = false, paused = false, phase = 0;
+  let particles = [], measured = null, measureT = 0;
+  let hoverX = null;
+  let running = !reduce;
+
+  function psi(x){ return Math.sqrt(2) * Math.sin(n * Math.PI * x); }
+  function psiSuper(x, t){ return (Math.sin(n * Math.PI * x) * Math.cos(t) + Math.sin((n + 2) * Math.PI * x) * Math.sin(t)) / Math.sqrt(2); }
+
+  function resetParticles(){
+    particles = [];
+    for (let i = 0; i < 120; i++) particles.push(newParticle());
+  }
+  function newParticle(){
+    const x = sampleX();
+    return { x: x, y: (Math.random() - .5), vx: (Math.random() - .5) * .0008, vy: (Math.random() - .5) * .004, a: .2 + Math.random() * .6, s: .6 + Math.random() * 1.4 };
+  }
+  function sampleX(){
+    // rejection sampling of |psi|^2
+    for (let k = 0; k < 20; k++){
+      const x = Math.random();
+      const p = Math.pow(Math.sin(n * Math.PI * x), 2);
+      if (Math.random() < p) return x;
+    }
+    return Math.random();
+  }
+
+  function draw(t){
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    const left = 46, right = W - 34, top = 34, bottom = H - 40;
+    const midY = (top + bottom) / 2, amp = (bottom - top) * .38;
+    // grid
+    ctx.strokeStyle = 'rgba(232,238,244,.06)'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 10; i++){
+      const x = left + (right - left) * i / 10;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+    }
+    for (let i = 0; i <= 4; i++){
+      const y = top + (bottom - top) * i / 4;
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+    }
+    // axes
+    ctx.strokeStyle = 'rgba(232,238,244,.3)';
+    ctx.beginPath(); ctx.moveTo(left - 8, midY); ctx.lineTo(right + 8, midY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(left, top - 8); ctx.lineTo(left, bottom + 8); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(right, top - 8); ctx.lineTo(right, bottom + 8); ctx.stroke();
+
+    const N = 300;
+    const tphase = phase;
+    const p = x => superposition ? psiSuper(x, tphase) : psi(x);
+    const vals = [], probs = [];
+    let maxProb = 0;
+    for (let i = 0; i <= N; i++){
+      const x = i / N;
+      const v = p(x);
+      vals.push(v);
+      const pr = v * v;
+      probs.push(pr);
+      if (pr > maxProb) maxProb = pr;
+    }
+    // probability area
+    ctx.beginPath();
+    ctx.moveTo(left, bottom);
+    for (let i = 0; i <= N; i++){
+      const x = left + (right - left) * i / N;
+      const y = bottom - (probs[i] / Math.max(.001, maxProb)) * (bottom - top) * .9;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(right, bottom);
+    ctx.closePath();
+    const pg = ctx.createLinearGradient(0, top, 0, bottom);
+    pg.addColorStop(0, 'rgba(167,139,255,.3)'); pg.addColorStop(1, 'rgba(167,139,255,.02)');
+    ctx.fillStyle = pg; ctx.fill();
+    // psi curve
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++){
+      const x = left + (right - left) * i / N;
+      const y = midY - vals[i] / Math.sqrt(2) * amp;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#6fe7ff'; ctx.lineWidth = 2; ctx.shadowColor = 'rgba(111,231,255,.6)'; ctx.shadowBlur = 10; ctx.stroke(); ctx.shadowBlur = 0;
+    // nodes
+    for (let k = 1; k < (superposition ? n + 2 : n); k++){
+      if (!superposition){
+        const x = left + (right - left) * k / n;
+        ctx.beginPath(); ctx.arc(x, midY, 3, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(232,238,244,.5)'; ctx.stroke();
+      }
+    }
+    // particles
+    particles.forEach(pt => {
+      pt.x += pt.vx; pt.y += pt.vy;
+      if (pt.x < .02 || pt.x > .98) pt.vx *= -1;
+      if (Math.abs(pt.y) > .46) pt.vy *= -1;
+      let local = .5;
+      if (measured !== null) local = measured;
+      else local = pt.x;
+      const envelope = Math.pow(Math.abs(p(local)), 2);
+      const y = midY + pt.y * amp * Math.min(1, .18 + envelope * .5);
+      ctx.fillStyle = 'rgba(167,139,255,' + (pt.a * (0.3 + envelope)) + ')';
+      ctx.beginPath(); ctx.arc(left + (right - left) * pt.x, y, pt.s, 0, Math.PI * 2); ctx.fill();
+    });
+    // measurement
+    if (measured !== null){
+      const x = left + (right - left) * measured;
+      ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(x, midY, 7, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.shadowColor = '#fff'; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(x, midY, 18 + Math.sin(t * .01) * 4, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(111,231,255,.5)'; ctx.stroke();
+    }
+    // hover
+    if (hoverX !== null && measured === null){
+      const x = left + (right - left) * hoverX;
+      ctx.strokeStyle = 'rgba(232,238,244,.18)'; ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      const pr = Math.pow(p(hoverX), 2);
+      ctx.fillStyle = 'rgba(232,238,244,.55)';
+      ctx.font = '10px ui-monospace, monospace';
+      ctx.fillText((hoverX).toFixed(2) + ' L · |ψ|² ' + pr.toFixed(2), Math.min(x + 6, right - 110), top + 12);
+    }
+
+    if (!paused){ phase += .018; }
+    if (!reduce && running) requestAnimationFrame(draw);
+  }
+
+  function updateReadouts(){
+    document.getElementById('nOut').textContent = 'n = ' + n;
+    document.getElementById('energy').textContent = (n * n).toFixed(2) + ' E₁';
+    document.getElementById('energyTop').textContent = (n * n) + ' E₁';
+    document.getElementById('stateTop').textContent = 'n = ' + n;
+    document.getElementById('nodes').textContent = n - 1;
+    document.getElementById('mean').textContent = superposition ? '0.500 L' : '0.500 L';
+    const unc = Math.sqrt(1 / 12 - 1 / (2 * Math.PI * Math.PI * n * n));
+    document.getElementById('unc').textContent = unc.toFixed(3) + ' L';
+    resetParticles();
+    document.getElementById('measureOut').textContent = 'no measurement';
+    measured = null;
+    draw(0);
+  }
+
+  nSlider.addEventListener('input', () => { n = Number(nSlider.value); updateReadouts(); });
+  document.getElementById('super').addEventListener('click', function(){
+    superposition = !superposition;
+    this.setAttribute('aria-pressed', String(superposition));
+    updateReadouts();
+  });
+  document.getElementById('pause').addEventListener('click', function(){
+    paused = !paused;
+    this.textContent = paused ? 'Resume' : 'Pause';
+    this.setAttribute('aria-pressed', String(paused));
+    if (!paused && reduce){ running = true; requestAnimationFrame(draw); }
+  });
+  document.getElementById('reset').addEventListener('click', () => {
+    measured = null; document.getElementById('measureOut').textContent = 'no measurement'; resetParticles();
+  });
+  document.getElementById('measure').addEventListener('click', () => {
+    measured = sampleX();
+    document.getElementById('measureOut').textContent = 'collapsed at ' + measured.toFixed(2) + ' L';
+    particles.forEach(pt => { pt.x = measured + (Math.random() - .5) * .03; });
+  });
+  canvas.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect();
+    hoverX = Math.max(0, Math.min(1, (e.clientX - r.left - 46) / (r.width - 80)));
+  });
+  canvas.addEventListener('pointerleave', () => { hoverX = null; });
+  canvas.addEventListener('click', () => {
+    measured = sampleX();
+    document.getElementById('measureOut').textContent = 'collapsed at ' + measured.toFixed(2) + ' L';
+  });
+  if (!reduce) requestAnimationFrame(draw);
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+TITLE
+Misprint — A Risograph Quarterly
+
+PROMPT
+Design an energetic risograph-printed zine spread called "Misprint", a fictional quarterly about small printing accidents. Palette: warm newsprint cream, fluorescent pink (#ff4f7e), riso blue (#2f6fdb) and black, with visible halftone dots, overprint blend modes, registration marks and slightly rotated layers. The masthead reads "RISOGRAPH QUARTERLY / ISSUE 09". The cover story is titled "Misprint" in enormous condensed type, printed twice in pink and blue with a deliberate offset; a halftone sun/circle sits behind it. Include a live "misregistration" slider that separates the ink layers, a "re-print" button that randomises the offsets, a taped-on sticker, a short editorial column, and a back-page colophon. It should feel handmade and energetic, but designed with real typographic care. Fully responsive, one standalone HTML file, inline CSS/JS only, no external fonts, images or libraries.
+
+DESIGN INTENT
+A joyful print object: slightly crooked, loudly coloured, and confident. The composition uses riso's constraints as features — only two inks, visible dots, imperfect registration — and builds a cover with poster energy. Black carries the reading text; pink and blue are reserved for display type, shapes and marks. Tape, staples and crop marks make the page feel physically assembled rather than rendered.
+
+VISUAL TECHNIQUES
+- Duplicate offset display type using pseudo-elements and CSS custom properties for live misregistration.
+- CSS halftone fields built from radial-gradient dot patterns, layered with mix-blend-mode:multiply.
+- Overprint effects where pink and blue overlap to create a deep violet.
+- Rotated stickers, tape strips and crop/registration marks.
+- Condensed system type at poster scale, paired with small monospaced captions.
+- Zine-style two-column body copy, drop cap and hand-drawn divider rules.
+- Paper grain via an inline SVG turbulence data URI.
+
+INTERACTION MODEL
+The misregistration range moves the pink and blue type layers apart in real time, with a numeric readout. "Re-print" randomises both offsets and rotates the sticker slightly, simulating a fresh pass through the machine. A "swap inks" control flips the two spot colours. Everything is keyboard accessible; reduced-motion removes the settle transitions and keeps the print static.

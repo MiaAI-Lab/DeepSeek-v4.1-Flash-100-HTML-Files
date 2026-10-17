@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Museum of Small Things — eight ordinary objects, drawn in line and carefully labelled.">
+<title>The Museum of Small Things — Cabinet of Curiosities</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --ivory:#f0e9dc; --paper:#f7f2e7; --ink:#25231d; --dim:rgba(37,35,29,.55); --oxblood:#8b3a2e; --brass:#a8894d; --line:rgba(37,35,29,.2);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--ivory);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 20% 0%,#fbf7ee,transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--oxblood);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--oxblood);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding:16px 0 12px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .seal{width:30px;height:30px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-size:.7rem;color:var(--oxblood);flex:none}
+  .brand b{font-family:var(--serif);font-size:1.15rem;font-weight:400;letter-spacing:.02em;display:block}
+  .brand span{display:block;font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMeta{display:flex;gap:26px;color:var(--dim);text-align:right}
+  .headMeta b{color:var(--ink);font-weight:400}
+  .headMeta a{border-bottom:1px solid var(--line)}
+
+  .main{flex:1;display:grid;grid-template-columns:1.04fr .96fr;gap:clamp(24px,4vw,50px);padding:clamp(22px,3.6vw,38px) 0 20px}
+  .stageColumn{display:flex;flex-direction:column}
+  .stageTag{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:8px}
+  .stageTag b{color:var(--oxblood);font-weight:400}
+  .stage{position:relative;flex:1;min-height:clamp(330px,48vh,460px);border:1px solid var(--ink);background:linear-gradient(160deg,#faf5ea,#f0e7d6);
+    display:grid;place-items:center;padding:30px;overflow:hidden;box-shadow:10px 12px 0 rgba(37,35,29,.06)}
+  .stage::before{content:"";position:absolute;inset:20px;border:1px solid rgba(37,35,29,.12);pointer-events:none}
+  .stage::after{content:"";position:absolute;left:0;right:0;top:0;height:44px;background:linear-gradient(180deg,rgba(37,35,29,.05),transparent);pointer-events:none}
+  .bigObject{width:min(72%,300px);height:auto;max-height:320px;color:var(--ink);transition:opacity .28s,transform .35s}
+  .bigObject svg{width:100%;height:auto;display:block}
+  .stage .acc{position:absolute;right:18px;bottom:14px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .stage .pin{position:absolute;left:18px;top:16px;width:9px;height:9px;border-radius:50%;background:var(--oxblood);box-shadow:0 0 0 4px rgba(139,58,46,.12)}
+  .stageFoot{display:flex;justify-content:space-between;gap:12px;margin-top:12px;color:var(--dim);flex-wrap:wrap}
+  .stageFoot b{color:var(--ink);font-weight:400}
+
+  .catalogue{padding-top:4px;display:flex;flex-direction:column}
+  .catalogue .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .catalogue .no{color:var(--oxblood);font-family:var(--mono);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase}
+  .catalogue h1{font-family:var(--serif);font-size:clamp(1.9rem,3.4vw,2.8rem);font-weight:400;letter-spacing:-.03em;margin:14px 0 4px;line-height:1}
+  .catalogue .sub{font-family:var(--serif);font-style:italic;color:var(--dim);font-size:.94rem;margin-bottom:12px}
+  .catalogue p{color:var(--dim);font-size:.76rem;line-height:1.8;max-width:46ch}
+  .catalogue .quote{margin-top:14px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-family:var(--serif);font-style:italic;font-size:.96rem;line-height:1.5;color:var(--ink)}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:14px;border:1px solid var(--line)}
+  .facts div{background:var(--ivory);padding:8px 9px}
+  .facts span{display:block;color:var(--dim);font-family:var(--mono);font-size:.38rem;letter-spacing:.09em;text-transform:uppercase}
+  .facts b{display:block;margin-top:3px;font-family:var(--serif);font-size:.9rem;font-weight:400}
+  .cabinet{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+  .item{position:relative;border:1px solid var(--line);background:rgba(255,255,255,.18);aspect-ratio:1;display:grid;place-items:center;transition:transform .22s,border-color .22s,background .22s;padding:10px}
+  .item:hover{transform:translateY(-3px);border-color:var(--ink);background:rgba(255,255,255,.4)}
+  .item[aria-pressed="true"]{border-color:var(--brass);box-shadow:inset 0 0 0 2px var(--brass)}
+  .item svg{width:68%;height:68%;color:var(--ink);display:block}
+  .item .n{position:absolute;left:5px;top:4px;font-family:var(--mono);font-size:.34rem;letter-spacing:.04em;color:var(--dim)}
+  .item .lbl{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-family:var(--mono);font-size:.3rem;letter-spacing:.03em;text-transform:uppercase;color:var(--dim);opacity:0;transition:opacity .2s}
+  .item:hover .lbl{opacity:1}
+  .closed{position:absolute;inset:0;background:var(--ivory);display:grid;place-items:center;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .cabinetFoot{display:flex;justify-content:space-between;gap:12px;margin-top:10px;color:var(--dim);flex-wrap:wrap}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 22px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:1000px){
+    .main{grid-template-columns:1fr;gap:24px}
+    .stage{min-height:320px}
+    .cabinet{grid-template-columns:repeat(4,1fr)}
+    .catalogue{order:2}
+    .stageColumn{order:1}
+    .headMeta{display:none}
+  }
+  @media(max-width:600px){
+    .wrap{padding:0 14px}
+    .stage{padding:14px;min-height:240px}
+    .catalogue h1{font-size:1.8rem}
+    .cabinet{grid-template-columns:repeat(4,1fr);gap:5px;margin-top:12px}
+    .item{padding:6px}
+    .item .lbl{display:none}
+    .item .n{font-size:.28rem}
+    .stageFoot{font-size:.4rem}
+    .facts{grid-template-columns:1fr 1fr}
+    .brand b{font-size:.95rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="seal" aria-hidden="true">M</span><span><b>The Museum of Small Things</b><span>Cabinet 04 / everyday curiosities</span></span></a>
+    <div class="headMeta mono"><span>Open by appointment<br><b>Tue—Sat · 10—17</b></span><span>Catalogue<br><b>8 objects / room 04</b></span></div>
+  </header>
+
+  <main id="top" class="main">
+    <div class="stageColumn">
+      <div class="stageTag mono"><span>Object <b id="stageAcc">No. 04</b></span><span id="stageCategory">Belongings / small</span></div>
+      <div class="stage">
+        <span class="pin" aria-hidden="true"></span>
+        <div class="bigObject" id="bigObject" aria-live="polite"></div>
+        <span class="acc" id="stageAccBottom">MS.04 — accession 2026.4</span>
+      </div>
+      <div class="stageFoot mono"><span>Object stage — <b>natural light, no flash</b></span><span>Scale <b>1:1</b> · paper <b>ivory</b></span></div>
+    </div>
+
+    <section class="catalogue" aria-label="Object catalogue">
+      <div class="row mono"><span class="no" id="objNo">MS.04 / 08</span><span>Accessioned 17.10.26</span></div>
+      <h1 id="objName">The pebble</h1>
+      <p class="sub" id="objSub">A grey stone, worn by the sea</p>
+      <p id="objDesc">Found at the tide line, small enough to close a hand around. It is not rare, which is exactly why it was kept: proof that ordinary things survive weather too.</p>
+      <div class="quote" id="objQuote">“A stone is a sentence the river has been writing for a thousand years.”</div>
+      <div class="facts">
+        <div><span>Material</span><b id="objMaterial">Basalt, water-worn</b></div>
+        <div><span>Date</span><b id="objDate">c. 2026</b></div>
+        <div><span>Provenance</span><b id="objProv">North Sea, tide line</b></div>
+        <div><span>Dimensions</span><b id="objDims">42 × 31 × 18 mm</b></div>
+      </div>
+      <div class="cabinet" id="cabinet" role="group" aria-label="The cabinet"></div>
+      <div class="cabinetFoot mono"><span>8 objects — one cabinet</span><span>Do not touch · look closely</span></div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>The Museum of Small Things — a fictional collection</span>
+    <span>Line drawings · accession numbers · no photographs</span>
+    <span>© 2026 · ordinary, kept</span>
+  </footer>
+</div>
+
+<script>
+  const objects = [
+    { key:'key', name:'The key', sub:'A brass key without a known door', acc:'No. 01', category:'Belongings / small',
+      desc:'Small, heavy for its size, and engraved with a number that matches nothing in the house. It was kept because a key without a door is still a promise.',
+      quote:'“Every key insists there is a room.”', material:'Brass, patinated', date:'c. 1940', prov:'Car boot, Antwerp', dims:'62 × 22 × 4 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="42" cy="38" r="19"/><circle cx="42" cy="38" r="9"/><path d="M52 52 L96 96 M86 86 L96 76 M76 76 L84 68 M96 96 L104 88"/></svg>' },
+    { key:'feather', name:'The feather', sub:'A gull feather, soft and grey', acc:'No. 02', category:'Naturalia / air',
+      desc:'Found on a rooftop, not near the sea. The barbs still hold together, which is more than most things manage after a long journey.',
+      quote:'“A feather is a proof of departure.”', material:'Keratin, wind-worn', date:'c. 2025', prov:'Rooftop, Lisbon', dims:'186 × 42 × 3 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M74 16 C44 30 30 56 26 92"/><path d="M74 16 C96 36 96 64 82 82 C60 74 44 74 30 88"/><path d="M70 26 L64 36 M78 38 L70 46 M82 54 L74 60 M84 68 L76 72 M64 82 L58 88" stroke-width="1"/></svg>' },
+    { key:'shell', name:'The shell', sub:'A spiral, exact and unremarkable', acc:'No. 03', category:'Naturalia / sea',
+      desc:'The whorls turn anticlockwise in a way that looks inevitable. Put it to the ear and you hear the room, not the sea, which is its own kind of lesson.',
+      quote:'“The spiral is the shortest honest way outward.”', material:'Calcite, shell', date:'c. 2024', prov:'Beach, Galway', dims:'54 × 48 × 32 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M60 18 C88 18 104 42 98 66 C92 92 62 104 40 92 C16 78 18 46 40 38 C58 31 76 42 78 58 C80 72 66 82 55 78 C45 74 45 62 53 58 C60 55 66 60 65 66"/><path d="M60 18 C40 24 26 42 24 66 M98 66 C94 82 84 94 70 100" stroke-width=".8" opacity=".6"/></svg>' },
+    { key:'stone', name:'The pebble', sub:'A grey stone, worn by the sea', acc:'No. 04', category:'Naturalia / mineral',
+      desc:'Found at the tide line, small enough to close a hand around. It is not rare, which is exactly why it was kept: proof that ordinary things survive weather too.',
+      quote:'“A stone is a sentence the river has been writing for a thousand years.”', material:'Basalt, water-worn', date:'c. 2026', prov:'North Sea, tide line', dims:'42 × 31 × 18 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M30 78 C18 60 26 38 46 30 C68 21 92 30 98 48 C104 68 92 88 72 94 C56 99 40 92 30 78Z"/><path d="M38 52 C48 44 62 42 74 48 M34 66 C46 60 60 58 72 62" stroke-width="1" opacity=".5"/></svg>' },
+    { key:'pod', name:'The seed pod', sub:'A poppy head, empty and elegant', acc:'No. 05', category:'Naturalia / garden',
+      desc:'All the seeds have gone. What remains is a small architectural object with a lid, like a room built for a future that has already left.',
+      quote:'“The empty pod is the most generous kind of architecture.”', material:'Dried capsule', date:'c. 2025', prov:'Allotment, Ghent', dims:'38 × 22 × 22 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M60 100 L60 52"/><path d="M42 52 C42 36 50 26 60 22 C70 26 78 36 78 52 C78 64 70 72 60 72 C50 72 42 64 42 52Z"/><path d="M44 42 C52 36 68 36 76 42 M46 54 C54 50 66 50 74 54 M54 26 L54 20 M60 24 L60 16 M66 26 L66 20" stroke-width="1"/></svg>' },
+    { key:'lens', name:'The lens', sub:'A reading lens, slightly scratched', acc:'No. 06', category:'Tools / seeing',
+      desc:'It magnifies everything except the memory of where it came from. Held at the right distance, it makes a page feel like a landscape.',
+      quote:'“To look closely is to change the size of the world.”', material:'Glass, brass rim', date:'c. 1930', prov:'Desk, unknown', dims:'88 × 44 × 8 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="54" cy="50" r="30"/><circle cx="54" cy="50" r="23" stroke-width="1"/><path d="M76 72 L100 96 M96 92 L104 100"/><path d="M40 34 C46 28 56 26 64 30" stroke-width="1" opacity=".6"/></svg>' },
+    { key:'letter', name:'The letter', sub:'A page, folded four times', acc:'No. 07', category:'Paper / words',
+      desc:'Unopened. The creases are still sharp, which means it was carried carefully. We do not know what it says; the museum has decided not to look.',
+      quote:'“Some information is better kept as a shape.”', material:'Paper, iron-gall ink', date:'c. 1958', prov:'A drawer, Bruges', dims:'142 × 96 × 6 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M24 38 L74 28 L94 78 L44 92Z"/><path d="M24 38 L58 66 L94 78 M58 66 L74 28"/><path d="M38 64 L68 58 M44 74 L72 68" stroke-width="1" opacity=".5"/></svg>' },
+    { key:'bell', name:'The small bell', sub:'A bell that no longer rings', acc:'No. 08', category:'Sound / silence',
+      desc:'The clapper is missing. It was kept for its shape, which still suggests a sound, the way a closed door suggests a room.',
+      quote:'“Silence is a bell with its clapper removed.”', material:'Bronze, patinated', date:'c. 1900', prov:'Flea market, Oslo', dims:'64 × 46 × 46 mm',
+      svg:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M60 24 C44 24 38 38 38 54 C38 70 30 80 26 86 L94 86 C90 80 82 70 82 54 C82 38 76 24 60 24Z"/><path d="M52 92 C52 98 68 98 68 92 M60 24 L60 16 M52 16 L68 16"/><path d="M44 56 C44 44 50 34 60 32" stroke-width="1" opacity=".5"/></svg>' }
+  ];
+  const grid = document.getElementById('cabinet');
+  let selected = 3;
+
+  objects.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'item';
+    b.innerHTML = '<span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + o.svg + '<span class="lbl">' + o.name.replace('The ', '') + '</span>';
+    b.setAttribute('aria-label', o.name);
+    b.setAttribute('aria-pressed', String(i === selected));
+    b.addEventListener('click', () => select(i));
+    grid.appendChild(b);
+  });
+
+  function select(i){
+    selected = i;
+    const o = objects[i];
+    document.querySelectorAll('.item').forEach((el, idx) => el.setAttribute('aria-pressed', String(idx === i)));
+    const big = document.getElementById('bigObject');
+    big.style.opacity = '0';
+    big.style.transform = 'translateY(6px)';
+    setTimeout(() => {
+      big.innerHTML = o.svg;
+      big.style.opacity = '1';
+      big.style.transform = 'none';
+    }, 120);
+    document.getElementById('objNo').textContent = o.acc + ' / 08';
+    document.getElementById('objName').textContent = o.name;
+    document.getElementById('objSub').textContent = o.sub;
+    document.getElementById('objDesc').textContent = o.desc;
+    document.getElementById('objQuote').textContent = o.quote;
+    document.getElementById('objMaterial').textContent = o.material;
+    document.getElementById('objDate').textContent = o.date;
+    document.getElementById('objProv').textContent = o.prov;
+    document.getElementById('objDims').textContent = o.dims;
+    document.getElementById('stageAcc').textContent = o.acc;
+    document.getElementById('stageCategory').textContent = o.category;
+    document.getElementById('stageAccBottom').textContent = o.key.toUpperCase() + ' — accession 2026.' + (i + 1);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && document.activeElement && document.activeElement.classList.contains('item')){
+      select((selected + 1) % objects.length);
+      document.querySelectorAll('.item')[(selected) % objects.length].focus();
+    }
+    if (e.key === 'ArrowLeft' && document.activeElement && document.activeElement.classList.contains('item')){
+      select((selected - 1 + objects.length) % objects.length);
+      document.querySelectorAll('.item')[selected].focus();
+    }
+  });
+
+  select(3);
+</script>
+</body>
+</html>

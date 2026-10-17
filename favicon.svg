@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-<rect width="32" height="32" rx="7" fill="#211d17"/>
-<text x="16" y="22" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="14" font-weight="700" fill="#f7f6f2">100</text>
+  <rect width="32" height="32" rx="8" fill="#211d17"/>
+  <text x="16" y="22" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="14" font-weight="700" fill="#f7f6f2">DS</text>
 </svg>

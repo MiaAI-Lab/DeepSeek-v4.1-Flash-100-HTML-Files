@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Maison Sucré — a fictional dessert menu in cream, gold and deep green.">
+<title>Maison Sucré — The Sweet Course</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --green:#0d211a; --green2:#122b22; --cream:#f2e8d3; --cream2:#e8dcc3; --gold:#c9a86a; --dim:rgba(242,232,211,.55); --line:rgba(201,168,106,.3);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--green);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 80% 0%,rgba(60,95,70,.3),transparent 62%),radial-gradient(700px 600px at 0% 100%,rgba(30,60,45,.4),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--gold);color:var(--green)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-size:1.18rem;letter-spacing:.12em;text-transform:uppercase}
+  .brand .seal{width:26px;height:26px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-size:.5rem;color:var(--gold);flex:none;position:relative}
+  .brand .seal::after{content:"";position:absolute;inset:4px;border:1px solid rgba(201,168,106,.4);border-radius:50%}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.16em;color:var(--dim);margin-top:2px}
+  nav{display:flex;gap:24px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--cream)}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--gold);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:1.04fr .96fr;gap:clamp(18px,3vw,34px);align-items:stretch;padding:clamp(18px,3vw,30px) 0}
+  .menuCard{background:linear-gradient(160deg,#f8efdb,#eee2c9);color:#263026;padding:clamp(18px,3vw,30px);position:relative;
+    border:1px solid rgba(201,168,106,.7);box-shadow:16px 18px 0 rgba(0,0,0,.14);display:flex;flex-direction:column}
+  .menuCard::before{content:"";position:absolute;inset:9px;border:1px solid rgba(138,110,66,.3);pointer-events:none}
+  .menuHead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding-bottom:10px;border-bottom:1px solid rgba(38,48,38,.3);position:relative;z-index:2}
+  .menuHead h1{font-family:var(--serif);font-size:clamp(2.1rem,3.6vw,3rem);line-height:.9;letter-spacing:-.04em;font-weight:400}
+  .menuHead h1 em{display:block;font-style:italic;font-size:.42em;letter-spacing:0;color:rgba(38,48,38,.55);margin-top:5px}
+  .menuHead .room{text-align:right;font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(38,48,38,.5);line-height:1.8}
+  .tabs{display:flex;gap:4px;margin:12px 0 4px;position:relative;z-index:2}
+  .tab{border:1px solid rgba(38,48,38,.25);padding:5px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(38,48,38,.55);transition:background .2s,color .2s,border-color .2s}
+  .tab[aria-pressed="true"]{background:#263026;border-color:#263026;color:var(--cream)}
+  .list{margin-top:4px;position:relative;z-index:2}
+  .dish{width:100%;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:baseline;padding:11px 2px;border-bottom:1px solid rgba(38,48,38,.14);text-align:left;transition:background .2s}
+  .dish:hover{background:rgba(201,168,106,.1)}
+  .dish[aria-pressed="true"]{background:rgba(201,168,106,.16)}
+  .dish .nm{font-family:var(--serif);font-size:1.08rem;line-height:1.1;display:flex;align-items:baseline;gap:6px}
+  .dish .nm::after{content:"";flex:1;border-bottom:1px dotted rgba(38,48,38,.35);margin:0 3px;transform:translateY(-3px)}
+  .dish .pr{font-family:var(--mono);font-size:.52rem;letter-spacing:.03em;color:#7a5d2f;white-space:nowrap}
+  .dish .ds{grid-column:1/-1;font-size:.64rem;line-height:1.6;color:rgba(38,48,38,.58);padding-right:20px}
+  .menuFoot{margin-top:auto;padding-top:12px;border-top:1px solid rgba(38,48,38,.3);display:flex;justify-content:space-between;gap:10px;color:rgba(38,48,38,.55);position:relative;z-index:2;flex-wrap:wrap}
+  .menuFoot b{color:#263026;font-weight:400}
+
+  .detail{background:linear-gradient(160deg,#142b22,#0b1d17);border:1px solid var(--line);padding:clamp(16px,2.6vw,26px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+  .detail::before{content:"";position:absolute;right:-25%;top:-20%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,168,106,.12),transparent 65%)}
+  .detailTop{display:flex;justify-content:space-between;color:var(--dim);position:relative;z-index:2}
+  .detailTop b{color:var(--gold);font-weight:400}
+  .art{position:relative;display:grid;place-items:center;min-height:clamp(180px,26vw,240px);margin:6px 0 10px}
+  .art svg{width:min(80%,280px);height:auto;filter:drop-shadow(0 20px 18px rgba(0,0,0,.35));transition:opacity .35s,transform .45s}
+  .art svg.fade{opacity:0;transform:translateY(6px) scale(.97)}
+  .detailBody{position:relative;z-index:2}
+  .detailBody .kicker{color:var(--gold);font-family:var(--mono);font-size:.38rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+  .detailBody h2{font-family:var(--serif);font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:400;line-height:1;letter-spacing:-.03em}
+  .detailBody p{margin-top:8px;color:var(--dim);font-size:.7rem;line-height:1.75;max-width:42ch;min-height:3.6em}
+  .pairingRow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;padding-top:9px;border-top:1px solid var(--line)}
+  .pairingRow .lbl{color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase}
+  .pairingRow b{color:var(--gold);font-family:var(--serif);font-weight:400;font-size:.92rem}
+  .pair{font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:1px}
+  .pair:hover{color:var(--cream);border-color:var(--cream)}
+  .chooseRow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .choose{background:var(--gold);color:var(--green);padding:8px 14px;font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
+  .choose:hover{background:var(--cream)}
+  .confirm{color:var(--gold);font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;min-height:1em}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 18px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .main{grid-template-columns:1fr}
+    .detail{min-height:480px}
+    .headMid,.headMid{display:none}
+    nav{display:none}
+    .art{min-height:200px}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 12px}
+    .menuCard{padding:16px 14px;box-shadow:9px 10px 0 rgba(0,0,0,.14)}
+    .menuHead h1{font-size:2.1rem}
+    .detail{padding:14px;min-height:430px}
+    .headRight{display:none}
+    .brand{font-size:.95rem}
+    .detailBody p{font-size:.64rem}
+    .art{min-height:160px}
+    .art svg{width:min(70%,210px)}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="seal" aria-hidden="true">M</span><span>Maison Sucré<small>Desserts / room 02</small></span></a>
+    <nav aria-label="Primary"><a href="#top">Menu</a><a href="#top">Pairings</a><a href="#top">The room</a></nav>
+    <div class="headRight mono">Sweet service <b>until 23:30</b><br><b>Grasse / since 1987</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <section class="menuCard">
+      <div class="menuHead">
+        <h1>The sweet<br><em>course.</em></h1>
+        <div class="room">Table 12<br>Menu no. 04<br>Service / evening</div>
+      </div>
+      <div class="tabs" role="group" aria-label="Menu section"><button class="tab" data-tab="desserts" aria-pressed="true">Desserts</button><button class="tab" data-tab="petits" aria-pressed="false">Petits Fours</button></div>
+      <div class="list" id="list"></div>
+      <div class="menuFoot mono"><span>Pastry chef <b>Inés Marlowe</b></span><span>Allergies? <b>Ask us</b></span><span>Service included</span></div>
+    </section>
+
+    <aside class="detail">
+      <div class="detailTop mono"><span>Plate <b id="plateNo">01 / 04</b></span><span>The sweet course</span></div>
+      <div class="art" id="art"></div>
+      <div class="detailBody">
+        <div class="kicker mono">A dessert from the room</div>
+        <h2 id="dName">Wild berry tart</h2>
+        <p id="dDesc">A thin almond shell, cold crème pâtissière and whatever the hedgerow gave up this morning. Best eaten with a small spoon and no hurry.</p>
+        <div class="pairingRow"><div><span class="lbl">Pairing</span><br><b id="dPair">Sauternes, 2016</b></div><button class="pair" id="pairBtn">Change pairing ↻</button></div>
+        <div class="chooseRow"><button class="choose" id="choose">Choose this</button><span class="confirm" id="confirm" aria-live="polite"></span><span class="mono" id="dPrice" style="color:var(--gold)">€14</span></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="mono">
+    <span>Maison Sucré — a fictional pastry house</span>
+    <span>Drawn in one file · no sugar was wasted</span>
+    <span>© 2026 · leave room for dessert</span>
+  </footer>
+</div>
+
+<script>
+  const menus = {
+    desserts: [
+      { name:'Wild berry tart', desc:'A thin almond shell, cold crème pâtissière and whatever the hedgerow gave up this morning. Best eaten with a small spoon and no hurry.', price:'€14', pair:'Sauternes, 2016', art:'berry' },
+      { name:'Chocolate sphere', desc:'A dark chocolate dome, salted caramel inside, warm cocoa poured at the table until it collapses. The room goes quiet for a moment.', price:'€16', pair:'Banyuls, 2019', art:'sphere' },
+      { name:'Grand soufflé', desc:'Pear eau-de-vie, a tall rise and the small anxiety of opening the oven door. Served with a cold vanilla cream.', price:'€15', pair:'Espresso, single', art:'souffle' },
+      { name:'Lemon tart', desc:'Thin, sharp and unapologetic. Torched meringue peaks, a little sea salt, and a crust that shatters exactly once.', price:'€13', pair:'Chartreuse, iced', art:'lemon' }
+    ],
+    petits: [
+      { name:'Madeleine', desc:'Still warm, with a shell-like ridge and a crumb that disappears before you have decided to take a second one.', price:'€4', pair:'Verbena tea', art:'madeleine' },
+      { name:'Canelé', desc:'Rum, vanilla and a dark caramelised crust. The pastry chef makes forty; the room usually finds a way to need all of them.', price:'€5', pair:'Espresso, single', art:'canele' },
+      { name:'Mille-feuille', desc:'Three layers of puff, vanilla cream and a very steady hand. It is impolite to share.', price:'€9', pair:'Sauternes, 2016', art:'mille' }
+    ]
+  };
+  const arts = {
+    berry: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="196" rx="112" ry="22" fill="#0a1712" opacity=".55"/><ellipse cx="140" cy="176" rx="94" ry="28" fill="#e8dcc3"/><ellipse cx="140" cy="170" rx="74" ry="22" fill="#cbb98f"/><ellipse cx="140" cy="160" rx="58" ry="34" fill="#e7c48d"/><ellipse cx="140" cy="154" rx="49" ry="26" fill="#f4dca6"/><g fill="#a4233a"><circle cx="116" cy="148" r="10"/><circle cx="138" cy="140" r="11"/><circle cx="160" cy="148" r="9"/><circle cx="128" cy="160" r="8"/><circle cx="154" cy="160" r="7"/><circle cx="140" cy="152" r="6"/></g><g fill="#3c5a3a"><circle cx="142" cy="128" r="7"/><circle cx="130" cy="130" r="5"/><circle cx="154" cy="130" r="5"/></g><ellipse cx="132" cy="140" rx="2" ry="1.6" fill="#fff" opacity=".7"/></svg>',
+    sphere: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="192" rx="105" ry="20" fill="#0a1712" opacity=".5"/><ellipse cx="140" cy="176" rx="88" ry="24" fill="#e8dcc3"/><ellipse cx="140" cy="168" rx="66" ry="18" fill="#c9b78c"/><circle cx="140" cy="138" r="52" fill="#3a2117"/><ellipse cx="126" cy="120" rx="16" ry="8" fill="#fff" opacity=".18" transform="rotate(-25 126 120)"/><path d="M120,92 C132,74 152,72 162,86" stroke="#c9a86a" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="163" cy="88" r="3" fill="#c9a86a"/></svg>',
+    souffle: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="194" rx="98" ry="20" fill="#0a1712" opacity=".5"/><ellipse cx="140" cy="178" rx="90" ry="24" fill="#e8dcc3"/><path d="M92,172 C92,150 100,116 120,92 C130,80 150,80 160,92 C180,116 188,150 188,172 Z" fill="#e9c793"/><ellipse cx="140" cy="172" rx="48" ry="10" fill="#b98a55" opacity=".45"/><ellipse cx="140" cy="90" rx="14" ry="6" fill="#f7e4bd" opacity=".7"/><path d="M120,104 C128,98 136,96 142,98" stroke="#fff" stroke-width="1.4" fill="none" opacity=".5"/></svg>',
+    lemon: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="194" rx="104" ry="20" fill="#0a1712" opacity=".5"/><ellipse cx="140" cy="176" rx="92" ry="26" fill="#e8dcc3"/><ellipse cx="140" cy="168" rx="70" ry="18" fill="#c9b78c"/><path d="M84,168 C84,142 110,128 140,128 C170,128 196,142 196,168 Z" fill="#e6c273"/><path d="M88,164 C92,148 112,138 140,138 C168,138 188,148 192,164" fill="#f0d48f"/><g fill="#f7e6b0"><path d="M104,146 C110,128 122,118 134,112 C128,126 122,140 120,152Z"/><path d="M128,140 C134,120 148,108 162,104 C154,120 146,136 144,150Z"/><path d="M154,144 C162,126 176,116 188,114 C180,130 172,144 170,158Z"/></g><circle cx="174" cy="156" r="4" fill="#b98a2f" opacity=".6"/></svg>',
+    madeleine: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="186" rx="100" ry="20" fill="#0a1712" opacity=".5"/><ellipse cx="140" cy="170" rx="88" ry="24" fill="#e8dcc3"/><ellipse cx="140" cy="162" rx="64" ry="16" fill="#c9b78c"/><path d="M98,160 C92,136 112,114 140,112 C170,110 192,132 184,158 C172,150 156,156 140,154 C124,152 110,150 98,160Z" fill="#d9a85c"/><path d="M106,154 C104,138 120,122 140,120 C162,118 178,134 174,152" fill="none" stroke="#f0cf92" stroke-width="3"/><g fill="#fff" opacity=".18"><circle cx="124" cy="138" r="2"/><circle cx="146" cy="130" r="1.6"/><circle cx="158" cy="144" r="2"/></g></svg>',
+    canele: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="192" rx="98" ry="20" fill="#0a1712" opacity=".5"/><ellipse cx="140" cy="176" rx="88" ry="24" fill="#e8dcc3"/><ellipse cx="140" cy="168" rx="62" ry="16" fill="#c9b78c"/><path d="M108,166 C100,146 104,122 118,108 C132,94 148,94 162,108 C176,122 180,146 172,166 Z" fill="#3c2519"/><path d="M112,160 C108,144 112,126 122,114" stroke="#6c452c" stroke-width="2" fill="none"/><ellipse cx="140" cy="104" rx="24" ry="8" fill="#5a3722"/><ellipse cx="140" cy="102" rx="14" ry="5" fill="#2a1710"/></svg>',
+    mille: '<svg viewBox="0 0 280 240" aria-hidden="true"><ellipse cx="140" cy="190" rx="104" ry="20" fill="#0a1712" opacity=".5"/><ellipse cx="140" cy="174" rx="92" ry="24" fill="#e8dcc3"/><g><rect x="82" y="128" width="116" height="14" fill="#e7cf9d"/><rect x="82" y="142" width="116" height="18" fill="#f7ead0"/><rect x="82" y="160" width="116" height="14" fill="#e7cf9d"/><rect x="82" y="174" width="116" height="18" fill="#f7ead0"/><rect x="82" y="192" width="116" height="12" fill="#e7cf9d"/></g><path d="M82,128 h116" stroke="#c9a86a" stroke-width="2"/><path d="M82,120 C110,112 170,112 198,120" stroke="#fff" stroke-width="2" fill="none" opacity=".3"/><g fill="#8a2f3d"><circle cx="108" cy="120" r="4"/><circle cx="140" cy="118" r="4"/><circle cx="172" cy="120" r="4"/></g></svg>'
+  };
+  const list = document.getElementById('list');
+  const art = document.getElementById('art');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let tab = 'desserts', index = 0, pairIndex = 0;
+  const pairs = ['Sauternes, 2016','Espresso, single','Chartreuse, iced'];
+
+  function renderList(){
+    list.innerHTML = '';
+    menus[tab].forEach((d, i) => {
+      const b = document.createElement('button');
+      b.className = 'dish';
+      b.setAttribute('aria-pressed', String(i === index));
+      b.innerHTML = '<span class="nm">' + d.name + '</span><span class="pr">' + d.price + '</span><span class="ds">' + d.desc.split('.')[0] + '.</span>';
+      b.addEventListener('click', () => { index = i; pairIndex = pairs.indexOf(d.pair); renderList(); renderDetail(); });
+      list.appendChild(b);
+    });
+  }
+
+  function renderDetail(){
+    const d = menus[tab][index];
+    art.innerHTML = arts[d.art];
+    const svg = art.querySelector('svg');
+    if (!reduce){ svg.classList.add('fade'); requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.remove('fade'))); }
+    document.getElementById('dName').textContent = d.name;
+    document.getElementById('dDesc').textContent = d.desc;
+    document.getElementById('dPrice').textContent = d.price;
+    document.getElementById('dPair').textContent = pairs[pairIndex] || d.pair;
+    const globalIndex = tab === 'desserts' ? index + 1 : index + 1;
+    document.getElementById('plateNo').textContent = String(globalIndex).padStart(2,'0') + ' / ' + String(menus[tab].length).padStart(2,'0');
+    document.getElementById('confirm').textContent = '';
+  }
+
+  document.querySelectorAll('.tab').forEach(b => {
+    b.addEventListener('click', () => {
+      tab = b.dataset.tab; index = 0; pairIndex = 0;
+      document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      renderList(); renderDetail();
+    });
+  });
+  document.getElementById('pairBtn').addEventListener('click', () => {
+    pairIndex = (pairIndex + 1) % pairs.length;
+    document.getElementById('dPair').textContent = pairs[pairIndex];
+  });
+  document.getElementById('choose').addEventListener('click', () => {
+    document.getElementById('confirm').textContent = menus[tab][index].name + ' — noted for the kitchen.';
+  });
+
+  renderList();
+  renderDetail();
+</script>
+</body>
+</html>

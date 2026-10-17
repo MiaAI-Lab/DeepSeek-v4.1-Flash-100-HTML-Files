@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BRUT FORMS — a direct enquiry form for people with something to make.">
+<title>BRUT FORMS — Say Something Useful</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#ece9e1; --ink:#131312; --orange:#e8511c; --dim:rgba(19,19,18,.55); --line:rgba(19,19,18,.3);
+    --sans:"Helvetica Neue","Arial Narrow",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:linear-gradient(90deg,rgba(19,19,18,.045) 1px,transparent 1px);background-size:calc(100%/12) 100%}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--orange);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-bottom:3px solid var(--ink)}
+  .brand{font-weight:800;letter-spacing:-.05em;font-size:1.2rem;text-transform:uppercase}
+  .brand span{font-family:var(--mono);font-size:.36rem;letter-spacing:.12em;font-weight:400;margin-left:6px;color:var(--dim)}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--orange);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(20px,4vw,58px);padding:clamp(18px,3.2vw,34px) 0}
+  .left{border-right:1px solid var(--line);padding-right:clamp(18px,3vw,40px);display:flex;flex-direction:column}
+  h1{font-size:clamp(3.2rem,7.6vw,7rem);line-height:.82;letter-spacing:-.075em;font-weight:800;text-transform:uppercase}
+  h1 em{font-style:normal;color:var(--orange)}
+  .lede{margin-top:18px;max-width:34ch;font-size:.8rem;line-height:1.8;color:var(--dim)}
+  .lede b{color:var(--ink);font-weight:500}
+  .manifesto{margin-top:auto;padding-top:16px;border-top:3px solid var(--ink);color:var(--dim);line-height:1.8;max-width:34ch;font-size:.66rem}
+  .manifesto b{display:block;color:var(--ink);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+
+  .formWrap{min-width:0;position:relative}
+  form{display:flex;flex-direction:column;height:100%}
+  .field{padding:10px 0 6px;border-bottom:1px solid var(--ink)}
+  .field.err{border-color:var(--orange)}
+  .fieldHead{display:flex;justify-content:space-between;gap:12px;color:var(--dim);margin-bottom:1px}
+  .fieldHead b{color:var(--orange);font-weight:400}
+  .field label{display:block;font-family:var(--serif);font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.1;margin-bottom:4px}
+  .field input,.field textarea{width:100%;background:transparent;border:0;outline:none;font-family:var(--sans);font-size:clamp(1rem,1.8vw,1.25rem);color:var(--ink);padding:3px 0;resize:none}
+  .field input::placeholder,.field textarea::placeholder{color:rgba(19,19,18,.25)}
+  .field textarea{min-height:52px}
+  .error{color:var(--orange);font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase;min-height:1.2em;margin-top:2px}
+  .budget{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);padding:6px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .chip:hover{color:var(--ink);border-color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:var(--paper)}
+  .submitRow{display:flex;align-items:stretch;gap:10px;margin-top:14px}
+  .submit{flex:1;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;padding:14px;text-align:left;display:flex;justify-content:space-between;align-items:center;box-shadow:7px 7px 0 var(--orange);transition:transform .2s,box-shadow .2s,background .2s}
+  .submit:hover{transform:translate(3px,3px);box-shadow:4px 4px 0 var(--orange);background:#2a2a27}
+  .submit span:last-child{font-size:1rem}
+  .legal{border:1px solid var(--line);padding:10px;font-family:var(--mono);font-size:.32rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);line-height:1.7;max-width:130px}
+  .status{min-height:1.2em;margin-top:8px;color:var(--orange);font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase}
+
+  .success{display:none;border:3px solid var(--ink);padding:clamp(18px,3vw,28px);position:relative;box-shadow:9px 9px 0 var(--orange);background:var(--paper)}
+  .success.on{display:block;animation:stampIn .5s cubic-bezier(.2,.8,.2,1)}
+  @keyframes stampIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .success .stamp{display:inline-block;border:3px solid var(--orange);color:var(--orange);padding:5px 10px;font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-4deg);margin-bottom:14px}
+  .success h2{font-size:clamp(1.8rem,4vw,2.8rem);line-height:.95;letter-spacing:-.05em;text-transform:uppercase}
+  .success h2 em{font-style:normal;color:var(--orange)}
+  .success p{margin-top:10px;color:var(--dim);line-height:1.8;font-size:.72rem;max-width:38ch}
+  .success .ref{margin-top:14px;font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+  .again{margin-top:16px;border:1px solid var(--ink);padding:8px 12px;font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,color .2s}
+  .again:hover{background:var(--ink);color:var(--paper)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:9px 0 15px;border-top:3px solid var(--ink);color:var(--dim)}
+
+  @media(max-width:900px){
+    .main{grid-template-columns:1fr;gap:20px}
+    .left{border-right:0;border-bottom:3px solid var(--ink);padding:0 0 16px}
+    .manifesto{margin-top:14px;max-width:100%}
+    .headMid{display:none}
+    h1{font-size:clamp(3rem,12vw,5rem)}
+    form{height:auto}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 12px}
+    .brand{font-size:1rem}
+    .headRight{display:none}
+    .submitRow{flex-direction:column}
+    .legal{max-width:none}
+    .submit{box-shadow:5px 5px 0 var(--orange)}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">Brut Forms <span>/ say something useful</span></a>
+    <div class="headMid mono"><span>Independent studio</span><span>Replies in 2 days</span><span>No decks required</span></div>
+    <div class="headRight mono">For commissions<br><b>Autumn 2026 / open</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="left">
+      <h1>Say<br>something<br><em>useful.</em></h1>
+      <p class="lede">A short form for a long conversation. Tell us what you are making, what is in the way, and what it should feel like. <b>We read every word.</b></p>
+      <p class="manifesto"><b>How this works</b>Send the form. We reply with two questions and, if it feels right, a time to talk. No pitch decks, no discovery phase, no automated funnel.</p>
+    </div>
+
+    <div class="formWrap">
+      <form id="form" novalidate>
+        <div class="field" id="f-name">
+          <div class="fieldHead mono"><span>01 — Name</span><b>*</b></div>
+          <label for="name">Who is writing?</label>
+          <input id="name" type="text" placeholder="Your name" autocomplete="name">
+          <div class="error" id="e-name"></div>
+        </div>
+        <div class="field" id="f-email">
+          <div class="fieldHead mono"><span>02 — Email</span><b>*</b></div>
+          <label for="email">Where do we reply?</label>
+          <input id="email" type="email" placeholder="you@studio.com" autocomplete="email">
+          <div class="error" id="e-email"></div>
+        </div>
+        <div class="field" id="f-project">
+          <div class="fieldHead mono"><span>03 — Project</span><b>*</b></div>
+          <label for="project">What are you making?</label>
+          <textarea id="project" placeholder="One or two honest sentences." rows="2"></textarea>
+          <div class="error" id="e-project"></div>
+        </div>
+        <div class="field" id="f-budget">
+          <div class="fieldHead mono"><span>04 — Budget</span><b>*</b></div>
+          <label>Roughly what range?</label>
+          <div class="budget" id="budget" role="group" aria-label="Budget range">
+            <button type="button" class="chip" data-b="<10k" aria-pressed="false">under 10k</button>
+            <button type="button" class="chip" data-b="10–25k" aria-pressed="false">10–25k</button>
+            <button type="button" class="chip" data-b="25–50k" aria-pressed="false">25–50k</button>
+            <button type="button" class="chip" data-b="50k+" aria-pressed="false">50k +</button>
+            <button type="button" class="chip" data-b="not sure" aria-pressed="false">not sure yet</button>
+          </div>
+          <div class="error" id="e-budget"></div>
+        </div>
+        <div class="submitRow"><button class="submit" type="submit"><span>Send the form →</span><span aria-hidden="true">↗</span></button><span class="legal">No newsletter. No CRM. Just a person reading.</span></div>
+        <p class="status" id="status" aria-live="polite"></p>
+      </form>
+
+      <div class="success" id="success">
+        <span class="stamp">Received</span>
+        <h2>Thank you, <em id="sName">—</em>.</h2>
+        <p>Your note is in the studio inbox. We will reply within two working days, usually with a question before an answer.</p>
+        <div class="ref">Reference BRF-<span id="ref">0000</span> · <span id="sBudget">—</span></div>
+        <button class="again" id="again">Start again ↻</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>BRUT FORMS / a fictional studio enquiry</span>
+    <span>No tracking · no cookies · no funnels</span>
+    <span>© 2026 · be direct, be kind</span>
+  </footer>
+</div>
+
+<script>
+  let budget = '';
+  const form = document.getElementById('form');
+  const status = document.getElementById('status');
+  const chips = Array.from(document.querySelectorAll('.chip'));
+
+  chips.forEach(c => c.addEventListener('click', () => {
+    budget = c.dataset.b;
+    chips.forEach(x => x.setAttribute('aria-pressed', String(x === c)));
+    document.getElementById('f-budget').classList.remove('err');
+    document.getElementById('e-budget').textContent = '';
+  }));
+
+  function setError(id, msg){
+    document.getElementById('f-' + id).classList.add('err');
+    document.getElementById('e-' + id).textContent = msg;
+  }
+  function clearErrors(){
+    ['name','email','project','budget'].forEach(id => {
+      document.getElementById('f-' + id).classList.remove('err');
+      document.getElementById('e-' + id).textContent = '';
+    });
+    status.textContent = '';
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    clearErrors();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const project = document.getElementById('project').value.trim();
+    let bad = false;
+    if (!name){ setError('name', 'Required — a name, a nickname, a studio.'); bad = true; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setError('email', 'Please enter a valid email address.'); bad = true; }
+    if (project.length < 12){ setError('project', 'Tell us a little more — at least a sentence.'); bad = true; }
+    if (!budget){ setError('budget', 'Choose a range, even if it is “not sure”.'); bad = true; }
+    if (bad){
+      status.textContent = 'Check the marked fields and try again.';
+      const first = document.querySelector('.field.err input, .field.err textarea');
+      if (first) first.focus();
+      return;
+    }
+    document.getElementById('sName').textContent = name;
+    document.getElementById('ref').textContent = String(Math.floor(1000 + Math.random() * 9000));
+    document.getElementById('sBudget').textContent = 'budget ' + budget;
+    form.style.display = 'none';
+    document.getElementById('success').classList.add('on');
+    document.getElementById('again').focus();
+  });
+
+  document.getElementById('again').addEventListener('click', () => {
+    form.reset(); budget = '';
+    chips.forEach(x => x.setAttribute('aria-pressed', 'false'));
+    clearErrors();
+    document.getElementById('success').classList.remove('on');
+    form.style.display = 'flex';
+    document.getElementById('name').focus();
+  });
+</script>
+</body>
+</html>

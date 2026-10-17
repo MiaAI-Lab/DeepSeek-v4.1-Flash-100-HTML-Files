@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ink Calendar — October 2026, drawn in sumi ink and torn slowly.">
+<title>Ink Calendar — October 2026</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --wall:#e6ddca; --paper:#f7f1e3; --paper2:#efe7d4; --ink:#1b1b17; --dim:rgba(27,27,23,.5); --line:rgba(27,27,23,.2); --seal:#b23a2b;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --hand:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--wall);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100svh;
+    background-image:radial-gradient(1000px 700px at 50% 0%,#f4ecdb,transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--seal);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--seal);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid rgba(27,27,23,.25)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.05rem}
+  .brand .inkdot{width:13px;height:13px;border-radius:50% 45% 55% 50%;background:var(--ink);flex:none;box-shadow:2px 2px 0 rgba(178,58,43,.0)}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--seal);font-weight:400}
+
+  .main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:clamp(20px,4vh,40px) 0 12px;position:relative}
+  .stage{position:relative;width:min(100%,900px);padding-top:18px}
+  .nail{position:absolute;left:50%;top:0;transform:translateX(-50%);width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#ddd6c8,#8c8475);box-shadow:0 2px 3px rgba(0,0,0,.3);z-index:5}
+  .nail::after{content:"";position:absolute;left:50%;top:60%;width:2px;height:30vh;max-height:230px;background:repeating-linear-gradient(180deg,#9b8d74 0 6px,#b6a78c 6px 12px);transform:translateX(-50%);z-index:1;opacity:.75}
+  .thread{position:absolute;left:50%;top:6px;width:120px;height:50px;border-top:1px solid rgba(60,50,35,.5);border-radius:50%;transform:translateX(-50%);z-index:0;pointer-events:none}
+
+  .sheet{position:relative;z-index:2;background:linear-gradient(160deg,#fbf6e9,#f3ecda);padding:clamp(14px,2.4vw,26px) clamp(14px,2.6vw,30px) 18px;
+    box-shadow:0 28px 50px rgba(70,55,35,.22),0 2px 0 rgba(255,255,255,.6) inset;transform-origin:top center;
+    background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.15) 0 1px,transparent 1px 4px)}
+  .sheet.tear{animation:tear .75s cubic-bezier(.3,.1,.4,1) forwards}
+  @keyframes tear{0%{transform:rotate(0) translateY(0);opacity:1}25%{transform:rotate(-4deg) translateY(6px)}100%{transform:rotate(9deg) translate(80px,70vh);opacity:0}}
+  .sheet::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:6px;background:linear-gradient(180deg,rgba(70,55,35,.12),transparent)}
+  .topRow{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .monthTitle{font-family:var(--serif);font-size:clamp(2.2rem,4.6vw,3.6rem);line-height:.9;letter-spacing:-.04em;font-weight:400}
+  .monthTitle em{font-style:italic;color:var(--dim);font-size:.42em;letter-spacing:0;display:block;margin-top:5px;font-family:var(--mono);font-style:normal;text-transform:uppercase}
+  .yearMark{font-family:var(--serif);font-size:1.1rem;text-align:right;color:var(--dim);line-height:1.4}
+  .yearMark b{display:block;font-size:1.8rem;color:var(--ink);font-weight:400;letter-spacing:-.03em}
+  .artPanel{position:relative;height:clamp(120px,20vw,190px);margin:8px 0 6px;overflow:hidden;background:linear-gradient(180deg,#f8f2e3,#eee5d1)}
+  .artPanel svg{width:100%;height:100%;display:block}
+  .artPanel .stamp{position:absolute;right:12px;bottom:8px;width:36px;height:36px;border:1.5px solid var(--seal);color:var(--seal);display:grid;place-items:center;
+    font-family:var(--serif);font-size:.7rem;transform:rotate(5deg);background:rgba(247,241,227,.55)}
+  .artPanel .caption{position:absolute;left:12px;bottom:8px;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;text-transform:uppercase}
+
+  .bodyGrid{display:grid;grid-template-columns:1fr 190px;gap:16px;margin-top:6px}
+  .weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--line)}
+  .weekdays span{padding:5px 0;text-align:center;font-family:var(--mono);font-size:.36rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);border-right:1px solid rgba(27,27,23,.08)}
+  .weekdays span:last-child{border-right:0}
+  .days{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid rgba(27,27,23,.08);border-bottom:1px solid rgba(27,27,23,.08)}
+  .day{position:relative;min-height:clamp(40px,5.4vw,62px);padding:5px;border-right:1px solid rgba(27,27,23,.08);border-top:1px solid rgba(27,27,23,.08);
+    text-align:left;transition:background .2s;font-family:var(--serif);font-size:.78rem;color:var(--ink)}
+  .day:hover{background:rgba(255,255,255,.4)}
+  .day.empty{cursor:default;background:rgba(27,27,23,.02)}
+  .day .n{position:relative;z-index:1}
+  .day .dot{position:absolute;right:8px;bottom:8px;width:6px;height:6px;border-radius:50%;background:var(--seal);transform:scale(0);transition:transform .2s}
+  .day.marked .dot{transform:scale(1)}
+  .day.selected{background:rgba(178,58,43,.06);box-shadow:inset 0 0 0 1px var(--seal)}
+  .day.today .n::after{content:"";position:absolute;left:50%;bottom:-4px;width:3px;height:3px;border-radius:50%;background:var(--ink);transform:translateX(-50%)}
+  .day .moonNote{position:absolute;left:5px;bottom:4px;font-family:var(--mono);font-size:.28rem;color:var(--dim);letter-spacing:.03em}
+
+  .margin{border-left:1px solid var(--line);padding-left:14px;display:flex;flex-direction:column}
+  .margin .lbl{color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+  .margin .date{font-family:var(--serif);font-size:1.5rem;line-height:1;letter-spacing:-.02em}
+  .margin .note{font-family:var(--hand);font-size:.8rem;line-height:1.5;color:rgba(27,27,23,.75);margin-top:7px;min-height:4.4em}
+  .margin .weather{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:.34rem;line-height:1.8;text-transform:uppercase}
+  .seal{width:46px;height:46px;background:var(--seal);color:var(--paper);display:grid;place-items:center;font-family:var(--serif);font-size:.9rem;transform:rotate(-6deg);margin-top:10px;align-self:flex-end;opacity:.9}
+  .sheetFoot{display:flex;justify-content:space-between;gap:12px;margin-top:8px;padding-top:7px;border-top:1px solid var(--line);color:var(--dim);flex-wrap:wrap}
+
+  .controls{display:flex;justify-content:center;gap:8px;padding:10px 0 18px;flex-wrap:wrap}
+  .btn{border:1px solid rgba(27,27,23,.35);padding:8px 13px;font-family:var(--mono);font-size:.4rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink);transition:background .2s,color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.tearBtn{background:var(--ink);color:var(--paper)}
+  .btn.tearBtn:hover{background:var(--seal);border-color:var(--seal)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 18px;border-top:1px solid rgba(27,27,23,.2);color:var(--dim)}
+
+  @media(max-width:760px){
+    .bodyGrid{grid-template-columns:1fr}
+    .margin{border-left:0;border-top:1px solid var(--line);padding:10px 0 0;display:grid;grid-template-columns:1fr auto;gap:0 16px;align-items:start}
+    .margin .lbl,.margin .date,.margin .note{grid-column:1}
+    .margin .weather{grid-column:1;margin-top:8px}
+    .seal{grid-column:2;grid-row:1/span 2;margin-top:4px}
+    .headMid{display:none}
+    .artPanel{height:110px}
+    .day{min-height:44px}
+    .day .moonNote{display:none}
+  }
+  @media(max-width:520px){
+    .wrap{padding:0 10px}
+    .sheet{padding:12px 10px 12px}
+    .headRight{display:none}
+    .brand{font-size:.9rem}
+    .yearMark b{font-size:1.3rem}
+    .day{font-size:.7rem;padding:4px}
+    .day .dot{right:5px;bottom:5px}
+    .monthTitle em{font-size:.36em}
+    .sheetFoot span:nth-child(2){display:none}
+    footer span:nth-child(2){display:none}
+    .controls{gap:5px}
+    .btn{font-size:.34rem;padding:7px 9px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">Ink Calendar</h1>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="inkdot" aria-hidden="true"></span><span>Ink Calendar<small>Twelve months / torn slowly</small></span></a>
+    <div class="headMid mono"><span>Paper <b>160 gsm</b></span><span>Ink <b>pine soot</b></span><span>One page at a time</span></div>
+    <div class="headRight mono">Hanging in the studio<br><b>Since 2020</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="stage">
+      <span class="nail" aria-hidden="true"></span><span class="thread" aria-hidden="true"></span>
+      <div class="sheet" id="sheet">
+        <div class="topRow"><div class="monthTitle" id="monthTitle">October<em id="monthSub">MMXXVI / no. 10</em></div><div class="yearMark"><b id="yearNum">2026</b>the tenth month<br>31 days</div></div>
+        <div class="artPanel">
+          <svg viewBox="0 0 900 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="900" height="220" fill="#f8f2e3"/>
+            <circle cx="660" cy="66" r="30" fill="#b23a2b" opacity=".8"/>
+            <path d="M0,200 L110,118 L190,168 L300,70 L390,150 L470,96 L570,176 L660,120 L760,182 L900,130 L900,220 L0,220Z" fill="#3a3a34" opacity=".2"/>
+            <path d="M0,206 L130,146 L230,190 L340,110 L450,184 L560,132 L680,198 L800,154 L900,196 L900,220 L0,220Z" fill="#1b1b17" opacity=".55"/>
+            <path d="M0,214 C100,196 180,204 270,210 C360,216 430,200 540,208 C650,216 750,198 900,208 L900,220 L0,220Z" fill="#1b1b17"/>
+            <g stroke="#1b1b17" stroke-width="1" opacity=".3"><path d="M300,70 L310,60 M660,120 L670,108 M130,146 L140,136"/></g>
+          </svg>
+          <span class="stamp" aria-hidden="true">印</span>
+          <span class="caption" id="artCaption">Plate 10 — the long ridge</span>
+        </div>
+        <div class="bodyGrid">
+          <div>
+            <div class="weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <div class="days" id="days"></div>
+          </div>
+          <aside class="margin">
+            <span class="lbl">Margin note</span>
+            <span class="date" id="selDate">17 October</span>
+            <p class="note" id="selNote">A good day to sharpen a pencil and begin the letter you have been avoiding.</p>
+            <div class="weather"><span id="moonInfo">Waning crescent · 12%</span><br><span id="monthMood">Ink drying slowly</span></div>
+            <span class="seal" aria-hidden="true">暦</span>
+          </aside>
+        </div>
+        <div class="sheetFoot mono"><span>Ink Calendar — MMXXVI</span><span>Printed in one file · hang away from direct sun</span><span id="sheetNo">Sheet 10 / 12</span></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="controls"><button class="btn tearBtn" id="tear">Tear off the month ↓</button><button class="btn" id="back">Return to October</button></div>
+
+  <footer class="mono">
+    <span>Ink Calendar / a fictional object</span>
+    <span>Brush, paper and a small red seal</span>
+    <span>© 2026 · time is a material</span>
+  </footer>
+</div>
+
+<script>
+  const months = [
+    { name:'October', num:'10', days:31, start:3, art:'the long ridge', caption:'Plate 10 — the long ridge', note:'Ink drying slowly', year:2026 },
+    { name:'November', num:'11', days:30, start:6, art:'bare branches', caption:'Plate 11 — bare branches', note:'A quieter kind of weather', year:2026 }
+  ];
+  const notes = [
+    'A good day to sharpen a pencil and begin the letter you have been avoiding.',
+    'The light is doing that thing again. Stop and look for a minute.',
+    'A small errand, a long walk, one good idea on the way home.',
+    'Nothing urgent. Leave the page open on the desk.',
+    'Call someone you have been meaning to call. It will take four minutes.',
+    'The ink is still wet. Wait before you close the book.'
+  ];
+  const daysEl = document.getElementById('days');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let monthIndex = 0;
+  let selected = 17;
+  let marked = {};
+
+  function build(){
+    const m = months[monthIndex];
+    document.getElementById('monthTitle').innerHTML = m.name + '<em>MMXXVI / no. ' + m.num + '</em>';
+    document.getElementById('yearNum').textContent = m.year;
+    document.getElementById('artCaption').textContent = m.caption;
+    document.getElementById('sheetNo').textContent = 'Sheet ' + m.num + ' / 12';
+    document.getElementById('monthMood').textContent = m.note;
+    daysEl.innerHTML = '';
+    for (let i = 0; i < m.start; i++){
+      const e = document.createElement('span');
+      e.className = 'day empty';
+      daysEl.appendChild(e);
+    }
+    for (let d = 1; d <= m.days; d++){
+      const b = document.createElement('button');
+      b.className = 'day';
+      b.setAttribute('aria-label', d + ' ' + m.name);
+      b.innerHTML = '<span class="n">' + String(d).padStart(2,'0') + '</span><span class="dot"></span>';
+      const key = m.num + '-' + d;
+      if (marked[key]) b.classList.add('marked');
+      if (d === selected) b.classList.add('selected');
+      b.addEventListener('click', () => {
+        selected = d;
+        marked[key] = !marked[key];
+        build();
+        updateNote(d);
+      });
+      daysEl.appendChild(b);
+    }
+    updateNote(selected);
+  }
+
+  function updateNote(d){
+    const m = months[monthIndex];
+    document.getElementById('selDate').textContent = String(d).padStart(2,'0') + ' ' + m.name;
+    document.getElementById('selNote').textContent = notes[(d + monthIndex * 3) % notes.length];
+    const moonPct = 12 + ((d * 13) % 78);
+    document.getElementById('moonInfo').textContent = (moonPct > 55 ? 'Waxing gibbous' : 'Waning crescent') + ' · ' + moonPct + '%';
+  }
+
+  document.getElementById('tear').addEventListener('click', () => {
+    const sheet = document.getElementById('sheet');
+    if (reduce){
+      monthIndex = (monthIndex + 1) % months.length;
+      selected = 1;
+      build();
+      return;
+    }
+    sheet.classList.add('tear');
+    setTimeout(() => {
+      monthIndex = (monthIndex + 1) % months.length;
+      selected = 1;
+      sheet.classList.remove('tear');
+      build();
+    }, 760);
+  });
+  document.getElementById('back').addEventListener('click', () => {
+    monthIndex = 0;
+    selected = 17;
+    build();
+  });
+
+  build();
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+TITLE
+Cento — Everything Borrowed
+
+PROMPT
+Create a final editorial page called "Cento". Warm ivory paper, oxblood and antique gold, monumental serif type. A hero reads "Everything borrowed." with a definition of the cento form. Below, a two-column studio: on the left a poem card where chosen lines appear; on the right a 10×10 index of one hundred numbered fragments, each a button. Clicking a number adds its line to the poem; clicking again removes it. Buttons offer "Draw six lines" and "Clear". A counter tracks selected lines, a giant outlined "100" sits behind the hero, and a colophon closes the page. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+The last page of a series should feel like the title page of a collected works: calm, assured, a little ceremonial. The cento is explained honestly — every line is borrowed — and the interaction makes the visitor a co-author. The index of one hundred numbers is both navigation and ornament, a quiet tally of everything that came before.
+
+VISUAL TECHNIQUES
+- Editorial ivory/oxblood/gold palette with paper grain and hairline rules.
+- Monumental serif hero, italic oxblood accent and an outlined 100 watermark.
+- 10×10 numeric index with hover, focus and selected states.
+- Poem card with numbered superscript fragments, remove controls and staggered reveal.
+- Deterministic generator producing a distinct line for each of the 100 numbers.
+- Live count, draw-six and clear actions with aria-live feedback.
+- Responsive stacking, index cells sized for small screens.
+- Reduced-motion removes stagger and smooth scrolling.
+
+INTERACTION MODEL
+Clicking any number in the index toggles its fragment in the poem; up to ten lines are kept, oldest removed first. Clicking a line also removes it. "Draw six lines" replaces the selection with six random fragments; "Clear" empties the poem. The counter and the poem's aria-live region update on every change. All one hundred cells and all controls are keyboard accessible.

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Swarm Type — a word made of thousands of particles, and one input.">
+<title>Swarm Type — A Word Is a Crowd</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#0e100c; --ink:#e6efd6; --dim:rgba(230,239,214,.52); --line:rgba(230,239,214,.16); --blue:#c6ff3f; --red:#ff6a3d;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;height:100svh;-webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.10;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ink);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  #swarm{position:fixed;inset:0;z-index:0;display:block;width:100%;height:100%;cursor:crosshair}
+  .guides{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.4;
+    background-image:linear-gradient(rgba(230,239,214,.06) 1px,transparent 1px);background-size:100% 25%}
+  .ghost{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;
+    font-size:clamp(10rem,30vw,26rem);font-weight:800;letter-spacing:-.07em;color:rgba(230,239,214,.05);line-height:.7;white-space:nowrap}
+  .ui{position:relative;z-index:3;height:100svh;display:flex;flex-direction:column;padding:0 clamp(14px,2.8vw,36px);pointer-events:none}
+  .ui button,.ui input,.ui form{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.04em;font-size:1.05rem}
+  .brand .dots{position:relative;width:18px;height:14px;flex:none}
+  .brand .dots::before,.brand .dots::after{content:"";position:absolute;border-radius:50%;background:var(--ink)}
+  .brand .dots::before{width:7px;height:7px;left:0;top:0;box-shadow:9px 4px 0 var(--blue)}
+  .brand .dots::after{width:4px;height:4px;left:3px;bottom:0;background:var(--red)}
+  .brand .name{font-size:1.05rem;letter-spacing:-.04em}
+  .brand small{font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);font-weight:400;text-transform:uppercase;margin-left:7px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{display:flex;gap:6px;align-items:center}
+  .pal{border:1px solid var(--line);padding:5px 9px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .pal:hover{color:var(--ink);border-color:var(--ink)}
+  .pal[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .mid{flex:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:clamp(16px,4vh,34px);pointer-events:none}
+  .statement{max-width:560px}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--blue);margin-bottom:14px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--blue)}
+  h1{font-family:var(--serif);font-size:clamp(2.5rem,5.2vw,4.6rem);line-height:.94;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--blue)}
+  .statement p{margin-top:12px;max-width:34ch;color:var(--dim);font-size:.7rem;line-height:1.8}
+  .stats{text-align:right;color:var(--dim);line-height:1.9;pointer-events:none}
+  .stats b{color:var(--ink);font-weight:400}
+  .dock{border-top:1px solid var(--line);padding:10px 0 14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;pointer-events:auto}
+  form{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:100px;padding:4px 5px 4px 14px;background:rgba(230,239,214,.06);min-width:min(330px,72vw)}
+  form input{flex:1;min-width:0;background:transparent;border:0;outline:none;font-family:var(--mono);font-size:.56rem;letter-spacing:.04em;color:var(--ink);padding:4px 0}
+  form input::placeholder{color:rgba(230,239,214,.35)}
+  form button{background:var(--ink);color:var(--paper);border-radius:100px;padding:7px 11px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s}
+  form button:hover{background:var(--blue)}
+  .dockBtns{display:flex;gap:6px}
+  .btn{border:1px solid var(--line);padding:7px 10px;font-family:var(--mono);font-size:.38rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .dockRight{color:var(--dim);line-height:1.7;text-align:right}
+  .dockRight b{color:var(--ink);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 0 10px;color:rgba(230,239,214,.38);font-family:var(--mono);font-size:.38rem;letter-spacing:.09em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .mid{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:10px}
+    .stats{text-align:left;display:flex;gap:16px}
+    .statement p{display:none}
+    .ghost{font-size:36vw;top:40%}
+  }
+  @media(max-width:600px){
+    .brand{font-size:.9rem}
+    .brand small{display:none}
+    .headRight{gap:3px}
+    .pal{padding:4px 6px;font-size:.32rem}
+    h1{font-size:10.8vw}
+    .ui{padding:0 12px}
+    .dock{gap:8px;padding-bottom:8px}
+    form{min-width:0;flex:1}
+    .dockBtns{gap:4px}
+    .btn{padding:6px 7px;font-size:.32rem}
+    .dockRight{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<canvas id="swarm" aria-label="Particle typography canvas. Type a word to form it from particles."></canvas>
+<div class="guides" aria-hidden="true"></div>
+<div class="ghost" id="ghost" aria-hidden="true">FLUX</div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="dots" aria-hidden="true"></span><span class="name">Swarm Type <small>/ a word is a crowd</small></span></a>
+    <div class="headMid mono"><span>Particles <b id="headCount">—</b></span><span>Word <b id="headWord">FLUX</b></span><span>State <b id="headState">settling</b></span></div>
+    <div class="headRight"><button class="pal" data-pal="chalk" aria-pressed="true">Chalk</button><button class="pal" data-pal="acid" aria-pressed="false">Acid</button><button class="pal" data-pal="ember" aria-pressed="false">Ember</button></div>
+  </header>
+
+  <div class="mid">
+    <div class="statement" id="top">
+      <p class="eyebrow mono">A type specimen made of small decisions</p>
+      <h1>A word is<br><em>a crowd.</em></h1>
+      <p>Type anything into the field below. Thousands of particles will decide, collectively, to become that word — until you move the cursor and they change their minds.</p>
+    </div>
+    <div class="stats mono"><span>Points <b id="pointCount">—</b></span><br><span>Attraction <b>0.34</b></span><br><span>Misprints <b>1.4%</b></span></div>
+  </div>
+
+  <div class="dock">
+    <form id="form"><input id="wordInput" type="text" maxlength="14" placeholder="type a word…" aria-label="Word to form"><button type="submit">Swarm it →</button></form>
+    <div class="dockBtns"><button class="btn" id="scatter">Scatter</button><button class="btn" id="reform">Reform</button></div>
+    <div class="dockRight mono">Move to disturb<br><b>Click to startle</b></div>
+  </div>
+
+  <footer>
+    <span>Swarm Type / a generative type toy</span>
+    <span>Text sampled, dots persuaded</span>
+    <span>© 2026 · no font required</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('swarm');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+  let particles = [], word = 'FLUX', running = true;
+  let pointer = { x: -9999, y: -9999 };
+  let palette = 'chalk';
+  const palettes = {
+    chalk: ['#e6efd6','#e6efd6','#e6efd6','#c6ff3f','#ff6a3d'],
+    acid: ['#c6ff3f','#d9ff8a','#8fbf1e','#f2ffbe','#ff6a3d'],
+    ember: ['#ff6a3d','#e6efd6','#ffb38a','#c6ff3f','#e6efd6']
+  };
+
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    build();
+  }
+
+  function build(){
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const c = off.getContext('2d');
+    let fontSize = Math.min(W * .34, H * .42);
+    const label = word.toUpperCase();
+    c.fillStyle = '#000';
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = '800 ' + fontSize + 'px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    while (c.measureText(label).width > W * .82 && fontSize > 40){
+      fontSize *= .92;
+      c.font = '800 ' + fontSize + 'px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    }
+    c.fillText(label, W / 2, H * .44);
+    const data = c.getImageData(0, 0, W, H).data;
+    const targets = [];
+    const step = W < 600 ? 4 : 5;
+    for (let y = 0; y < H; y += step){
+      for (let x = 0; x < W; x += step){
+        if (data[(y * W + x) * 4 + 3] > 128 && targets.length < 2600){
+          targets.push([x + (Math.random() - .5) * 2, y + (Math.random() - .5) * 2]);
+        }
+      }
+    }
+    if (!particles.length){
+      particles = targets.map(t => ({
+        x: Math.random() * W, y: Math.random() * H, tx: t[0], ty: t[1], vx: 0, vy: 0,
+        r: .7 + Math.random() * 1.4, red: Math.random() > .986, col: palettes[palette][Math.floor(Math.random() * 5)]
+      }));
+    } else {
+      const old = particles.slice();
+      particles = targets.map((t, i) => {
+        const p = old[i % old.length] || { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+        return { x: p.x, y: p.y, tx: t[0], ty: t[1], vx: p.vx, vy: p.vy, r: .7 + Math.random() * 1.4, red: Math.random() > .986, col: palettes[palette][Math.floor(Math.random() * 5)] };
+      });
+    }
+    document.getElementById('pointCount').textContent = particles.length;
+    document.getElementById('headCount').textContent = String(particles.length).padStart(4, '0');
+    document.getElementById('headWord').textContent = label;
+    document.getElementById('ghost').textContent = label;
+    document.getElementById('headState').textContent = 'settling';
+    if (reduce) drawStatic();
+  }
+
+  function drawStatic(){
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#0e100c'; ctx.fillRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.fillStyle = p.red ? '#ff6a3d' : (p.col || '#e6efd6');
+      ctx.beginPath(); ctx.arc(p.tx, p.ty, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+  }
+
+  function frame(){
+    ctx.fillStyle = 'rgba(14,16,12,.24)';
+    ctx.fillRect(0, 0, W, H);
+    let settled = 0;
+    particles.forEach(p => {
+      const dx = p.tx - p.x, dy = p.ty - p.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 1) settled++;
+      p.vx += dx * .018;
+      p.vy += dy * .018;
+      const mdx = p.x - pointer.x, mdy = p.y - pointer.y;
+      const md = Math.hypot(mdx, mdy);
+      if (md < 110 && md > 0.1){
+        const f = (1 - md / 110) * 2.4;
+        p.vx += mdx / md * f;
+        p.vy += mdy / md * f;
+      }
+      p.vx *= .90; p.vy *= .90;
+      p.x += p.vx; p.y += p.vy;
+      ctx.fillStyle = p.red ? '#ff6a3d' : (p.col || '#e6efd6');
+      ctx.globalAlpha = .75;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    document.getElementById('headState').textContent = settled > particles.length * .8 ? 'settled' : 'in motion';
+    if (running) requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; }, { passive: true });
+  window.addEventListener('pointerleave', () => { pointer.x = -9999; pointer.y = -9999; });
+  window.addEventListener('pointerdown', e => {
+    if (e.target.closest('button, input, form, a')) return;
+    particles.forEach(p => {
+      const dx = p.x - e.clientX, dy = p.y - e.clientY, d = Math.hypot(dx, dy) || 1;
+      if (d < 160){ p.vx += dx / d * 9; p.vy += dy / d * 9; }
+    });
+  });
+
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = document.getElementById('wordInput').value.trim();
+    if (!v) return;
+    word = v;
+    build();
+    document.getElementById('wordInput').blur();
+  });
+  document.getElementById('scatter').addEventListener('click', () => {
+    particles.forEach(p => { p.vx += (Math.random() - .5) * 24; p.vy += (Math.random() - .5) * 24; });
+    document.getElementById('headState').textContent = 'scattered';
+  });
+  document.getElementById('reform').addEventListener('click', () => {
+    particles.forEach(p => { p.vx = 0; p.vy = 0; });
+    document.getElementById('headState').textContent = 'returning';
+  });
+  document.querySelectorAll('.pal').forEach(b => {
+    b.addEventListener('click', () => {
+      palette = b.dataset.pal;
+      particles.forEach(p => { p.col = palettes[palette][Math.floor(Math.random() * 5)]; p.red = Math.random() > .986; });
+      document.querySelectorAll('.pal').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      if (reduce) drawStatic();
+    });
+  });
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 220); });
+  size();
+  if (!reduce) requestAnimationFrame(frame);
+  else drawStatic();
+</script>
+</body>
+</html>

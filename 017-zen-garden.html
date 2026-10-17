@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Karesansui — a raked sand garden you can tend with a cursor.">
+<title>Karesansui — A Garden for One Screen</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --sand:#e8dfca; --sand2:#ded3ba; --ink:#3b3931; --muted:#77715f; --moss:#6d7a55; --stone:#8c8677; --seal:#b23a2b;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--sand);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.32;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--seal);color:var(--sand)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--seal);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.53rem;letter-spacing:.2em;text-transform:uppercase;line-height:1.8}
+  .wrap{max-width:1420px;margin:0 auto;padding:0 clamp(16px,3.4vw,42px)}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0 16px}
+  .brand{display:flex;align-items:baseline;gap:12px;font-family:var(--serif);font-size:1.08rem}
+  .brand b{font-weight:400}
+  .brand span{font-family:var(--mono);font-size:.45rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .headMeta{display:flex;gap:28px;color:var(--muted)}
+  .headMeta b{color:var(--ink);font-weight:400}
+  .seal{width:34px;height:34px;background:var(--seal);color:var(--sand);display:grid;place-items:center;font-family:var(--serif);font-size:.9rem;line-height:1;flex:none}
+
+  .hero{display:grid;grid-template-columns:1fr 3.2fr;gap:clamp(20px,3.4vw,44px);align-items:start;padding:clamp(6px,1.4vw,16px) 0 20px}
+  .intro{padding-top:14px}
+  .kicker{color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .kicker::before{content:"";width:20px;height:1px;background:var(--seal)}
+  h1{font-family:var(--serif);font-size:clamp(2rem,3.6vw,3.3rem);line-height:1.02;letter-spacing:-.04em;font-weight:400}
+  h1 em{display:block;font-style:italic;color:var(--muted)}
+  .intro p{margin-top:20px;max-width:26ch;font-size:.76rem;line-height:1.8;color:var(--muted)}
+  .vertical{writing-mode:vertical-rl;font-family:var(--serif);font-size:1.35rem;letter-spacing:.35em;color:var(--ink);margin-top:36px;opacity:.75}
+  .intro .note{margin-top:28px;padding-top:12px;border-top:1px solid rgba(59,57,49,.25);line-height:1.9;color:var(--muted)}
+  .breath{display:flex;align-items:center;gap:10px;margin-top:18px;color:var(--muted)}
+  .breath .ring{width:26px;height:26px;border-radius:50%;border:1px solid rgba(59,57,49,.35);position:relative}
+  .breath .ring::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--moss);opacity:.55;animation:breathe 5.5s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(.55);opacity:.25}50%{transform:scale(1);opacity:.7}}
+
+  .gardenWrap{position:relative;border:1px solid rgba(59,57,49,.35);background:var(--sand);overflow:hidden;box-shadow:18px 22px 0 rgba(59,57,49,.055)}
+  .gardenTop{position:absolute;left:0;right:0;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 14px;color:var(--muted);pointer-events:none}
+  .gardenTop .live{display:flex;align-items:center;gap:7px}
+  .gardenTop .live i{width:5px;height:5px;border-radius:50%;background:var(--moss)}
+  #garden{display:block;width:100%;height:clamp(430px,64vh,660px);touch-action:none;cursor:crosshair}
+  .gardenFoot{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 14px;
+    border-top:1px solid rgba(59,57,49,.2);background:linear-gradient(180deg,transparent,rgba(232,223,202,.72));pointer-events:none}
+  .gardenFoot .hint{color:var(--muted)}
+  .reset{pointer-events:auto;font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid rgba(59,57,49,.4);padding-bottom:2px;color:var(--ink);transition:color .25s,border-color .25s}
+  .reset:hover{color:var(--seal);border-color:var(--seal)}
+  .gardenTag{position:absolute;right:14px;top:44px;z-index:3;font-family:var(--serif);font-size:1.1rem;color:rgba(59,57,49,.4);writing-mode:vertical-rl;letter-spacing:.25em;pointer-events:none}
+  .stoneTip{position:absolute;z-index:4;pointer-events:none;opacity:0;background:rgba(232,223,202,.92);border:1px solid rgba(59,57,49,.3);padding:5px 8px;
+    font-family:var(--mono);font-size:.45rem;letter-spacing:.08em;color:var(--ink);transition:opacity .25s;white-space:nowrap}
+
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(59,57,49,.28);margin-top:6px}
+  .notes div{padding:16px clamp(12px,2vw,24px);border-right:1px solid rgba(59,57,49,.18);color:var(--muted);line-height:1.8}
+  .notes div:first-child{padding-left:0}
+  .notes div:last-child{border-right:0}
+  .notes b{display:block;font-family:var(--serif);font-weight:400;font-size:.9rem;color:var(--ink);margin-bottom:3px}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:15px 0 26px;color:var(--muted)}
+
+  @media(max-width:980px){
+    .hero{grid-template-columns:1fr}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .kicker,.intro h1{grid-column:1}
+    .intro p{grid-column:1}
+    .vertical{grid-column:2;grid-row:1/span 3;justify-self:end;margin-top:0}
+    .intro .note{grid-column:1;margin-top:18px}
+    .breath{grid-column:1}
+    .gardenTop .live{display:none}
+  }
+  @media(max-width:640px){
+    h1{font-size:9vw}
+    .intro{grid-template-columns:1fr}
+    .vertical{display:none}
+    .notes{grid-template-columns:1fr}
+    .notes div{border-right:0;border-bottom:1px solid rgba(59,57,49,.18);padding-left:0}
+    .notes div:last-child{border-bottom:0}
+    #garden{height:clamp(380px,58vh,500px)}
+    .headMeta span:nth-child(2){display:none}
+    .gardenTag{display:none}
+    .gardenFoot{font-size:.44rem}
+    .seal{width:28px;height:28px;font-size:.75rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><b>Karesansui</b><span>Dry landscape / one screen</span></a>
+    <div class="headMeta mono"><span>Garden 07 — <b>the borrowed view</b></span><span>Raked this morning</span></div>
+    <span class="seal" aria-hidden="true">禅</span>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">A garden for one screen</p>
+        <h1>Leave a mark.<br><em>Then leave it.</em></h1>
+        <p>The sand is not a canvas. It is a record of the hand that passed through it, and the weather that follows.</p>
+        <span class="vertical" aria-hidden="true">枯山水</span>
+        <p class="note mono">Drag to rake<br>Stillness is the point<br>Nothing is saved</p>
+        <div class="breath mono"><span class="ring" aria-hidden="true"></span> Breathe with the garden</div>
+      </div>
+
+      <figure class="gardenWrap" aria-label="Interactive raked sand garden">
+        <div class="gardenTop mono"><span>Kare-san-sui / plot 07</span><span class="live"><i aria-hidden="true"></i> Sand settled</span></div>
+        <canvas id="garden" aria-label="A raked sand garden with three stones. Drag to rake new lines."></canvas>
+        <span class="gardenTag" aria-hidden="true">静けさ</span>
+        <div class="stoneTip" id="stoneTip"></div>
+        <figcaption class="gardenFoot mono">
+          <span class="hint">Drag across the sand to rake · three stones keep their own counsel</span>
+          <button class="reset" id="reset">Rake anew ↻</button>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="notes">
+      <div><b>Kanso</b>Simplicity is not emptiness. It is the removal of everything that does not hold the silence.</div>
+      <div><b>Yohaku</b>The empty space is not a gap. It is the part of the garden that does the looking.</div>
+      <div><b>Shizen</b>Nothing here is perfectly round, and that is why it can be entered.</div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Karesansui — a digital garden, drawn by hand</span>
+    <span>One file · no water required</span>
+    <span>© 2026 · return often</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('garden');
+  const ctx = canvas.getContext('2d');
+  const tip = document.getElementById('stoneTip');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+  let stones = [];
+  let last = null;
+  let dragging = false;
+  let grains = [];
+
+  const stoneDefs = [
+    { x: .26, y: .42, rx: .095, ry: .072, name: 'The listening stone' },
+    { x: .58, y: .63, rx: .13, ry: .085, name: 'The long stone' },
+    { x: .79, y: .31, rx: .07, ry: .055, name: 'The small witness' }
+  ];
+
+  function setup(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    stones = stoneDefs.map(s => ({ ...s, cx: s.x * W, cy: s.y * H, rx: s.rx * W, ry: s.ry * H }));
+    grains = Array.from({ length: 70 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.2, a: Math.random() * .18 }));
+    drawBase();
+    rakePattern();
+  }
+
+  function drawBase(){
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#ede4d1'); g.addColorStop(.5, '#e7dec9'); g.addColorStop(1, '#ddd2b9');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = .5;
+    grains.forEach(p => {
+      ctx.fillStyle = 'rgba(90,80,60,.22)';
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    const v = ctx.createRadialGradient(W * .5, H * .45, H * .2, W * .5, H * .5, W * .75);
+    v.addColorStop(0, 'rgba(255,250,238,.22)'); v.addColorStop(1, 'rgba(80,70,50,.12)');
+    ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+  }
+
+  function ring(cx, cy, radius, stone, alpha){
+    ctx.beginPath();
+    const steps = 140;
+    for (let i = 0; i <= steps; i++){
+      const a = i / steps * Math.PI * 2;
+      const wob = 1 + Math.sin(a * 5 + stone.x * 20) * .012 + Math.sin(a * 11 + stone.y * 12) * .006;
+      const x = cx + Math.cos(a) * radius * wob;
+      const y = cy + Math.sin(a) * radius * wob;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(70,60,42,' + alpha + ')';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function rakePattern(){
+    stones.forEach((s, si) => {
+      const maxR = Math.max(W, H) * .72;
+      for (let r = Math.max(s.rx, s.ry) * 1.18 + 6; r < maxR; r += 11){
+        let blocked = false;
+        stones.forEach((o, oi) => {
+          if (oi === si) return;
+          const d = Math.hypot(s.cx - o.cx, s.cy - o.cy);
+          if (d < r + Math.max(o.rx, o.ry) && d > Math.abs(r - Math.max(o.rx, o.ry)) * .7) blocked = true;
+        });
+        if (blocked) continue;
+        ring(s.cx, s.cy, r, s, .15);
+        ring(s.cx, s.cy, r + 2, s, .05);
+      }
+    });
+    drawMoss();
+    stones.forEach(drawStone);
+  }
+
+  function drawStone(s){
+    ctx.save();
+    ctx.translate(s.cx, s.cy);
+    ctx.rotate(Math.sin(s.x * 10) * .18);
+    ctx.beginPath();
+    const steps = 44;
+    for (let i = 0; i <= steps; i++){
+      const a = i / steps * Math.PI * 2;
+      const wob = 1 + Math.sin(a * 3 + s.x * 8) * .12 + Math.sin(a * 7 + s.y * 6) * .06;
+      const x = Math.cos(a) * s.rx * wob;
+      const y = Math.sin(a) * s.ry * wob * .62;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    const shade = ctx.createLinearGradient(-s.rx * .5, -s.ry * .6, s.rx * .6, s.ry * .7);
+    shade.addColorStop(0, '#9d9788'); shade.addColorStop(.55, '#7c7667'); shade.addColorStop(1, '#5f5a4d');
+    ctx.fillStyle = shade; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,252,240,.25)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.ellipse(-s.rx * .2, -s.ry * .3, s.rx * .45, s.ry * .22, -.4, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawMoss(){
+    const m = { x: .44 * W, y: .78 * H };
+    for (let i = 0; i < 26; i++){
+      const a = Math.random() * Math.PI * 2, d = Math.random() * 26;
+      ctx.fillStyle = 'rgba(109,122,85,' + (.12 + Math.random() * .22) + ')';
+      ctx.beginPath(); ctx.arc(m.x + Math.cos(a) * d * 1.4, m.y + Math.sin(a) * d * .55, 3 + Math.random() * 6, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function rakeBrush(from, to){
+    const dx = to.x - from.x, dy = to.y - from.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    for (let tine = -4; tine <= 4; tine++){
+      const off = tine * 5;
+      ctx.beginPath();
+      ctx.moveTo(from.x + nx * off, from.y + ny * off);
+      ctx.lineTo(to.x + nx * off, to.y + ny * off);
+      ctx.strokeStyle = tine % 2 === 0 ? 'rgba(80,68,46,.2)' : 'rgba(255,252,240,.38)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+
+  canvas.addEventListener('pointerdown', e => {
+    dragging = true;
+    last = { x: e.offsetX, y: e.offsetY };
+    if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    const x = e.offsetX, y = e.offsetY;
+    let overStone = null;
+    stones.forEach(s => {
+      const dx = (x - s.cx) / s.rx, dy = (y - s.cy) / (s.ry * .62);
+      if (dx * dx + dy * dy < 1.1) overStone = s;
+    });
+    if (overStone && !dragging){
+      tip.textContent = overStone.name;
+      tip.style.left = Math.min(W - 160, x + 12) + 'px';
+      tip.style.top = (y - 26) + 'px';
+      tip.style.opacity = '1';
+    } else {
+      tip.style.opacity = '0';
+    }
+    if (dragging && last){
+      rakeBrush(last, { x, y });
+      last = { x, y };
+    }
+  });
+  canvas.addEventListener('pointerup', () => { dragging = false; last = null; });
+  canvas.addEventListener('pointerleave', () => { dragging = false; last = null; tip.style.opacity = '0'; });
+
+  document.getElementById('reset').addEventListener('click', () => {
+    drawBase();
+    rakePattern();
+  });
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(setup, 180); });
+
+  function drift(){
+    if (!reduce){
+      ctx.fillStyle = 'rgba(232,223,202,.22)';
+      for (let i = 0; i < 24; i++){
+        const p = grains[i];
+        p.x += .08 + p.r * .05;
+        if (p.x > W) p.x = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+      requestAnimationFrame(drift);
+    }
+  }
+
+  setup();
+</script>
+</body>
+</html>

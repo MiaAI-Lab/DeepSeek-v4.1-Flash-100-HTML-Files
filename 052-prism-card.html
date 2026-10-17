@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="PRISM — a holographic collectible card with chrome art, foil and a matte back.">
+<title>PRISM — The Card That Shouldn't Exist</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#070b14; --panel:#0d1322; --ink:#e9edf7; --dim:rgba(233,237,247,.5); --line:rgba(233,237,247,.16);
+    --holo1:#9fe8ff; --holo2:#c7a6ff; --holo3:#ff9ed2; --holo4:#b6ffcf; --glow:#9fe8ff;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.gold{--holo1:#ffe6a6;--holo2:#e6b96a;--holo3:#fff3cd;--holo4:#c9963e;--glow:#ffd98a}
+  body.ice{--holo1:#c9f2ff;--holo2:#8fc9e8;--holo3:#eefbff;--holo4:#a7d7ef;--glow:#c9f2ff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--void);color:var(--ink);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(800px 600px at 50% 30%,rgba(80,100,180,.22),transparent 60%),radial-gradient(900px 700px at 15% 100%,rgba(60,30,90,.25),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;
+    background-image:radial-gradient(rgba(255,255,255,.55) .5px,transparent .7px),radial-gradient(rgba(160,210,255,.4) .4px,transparent .6px);
+    background-size:139px 121px,197px 173px;background-position:30px 40px,90px 80px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);mask-image:linear-gradient(180deg,#000,transparent 85%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--holo2);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--holo1);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.72rem}
+  .brand i{width:10px;height:10px;background:linear-gradient(135deg,var(--holo1),var(--holo2),var(--holo3));border-radius:2px;transform:rotate(45deg);display:block;box-shadow:0 0 12px var(--glow)}
+  .headMid{display:flex;gap:22px;color:var(--dim)}
+  .headRight{display:flex;align-items:center;gap:12px;color:var(--dim)}
+  .rarity{border:1px solid var(--line);padding:5px 9px;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .rarity:hover{color:var(--ink);border-color:var(--ink)}
+  .rarity[aria-pressed="true"]{background:var(--holo1);border-color:var(--holo1);color:var(--void)}
+
+  .stage{flex:1;display:grid;grid-template-columns:.82fr 1.18fr;gap:18px;align-items:center;padding:clamp(14px,3vh,30px) 0;position:relative}
+  .left{max-width:360px}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--glow);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--glow)}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,4.6vw,4rem);line-height:.95;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--holo2)}
+  .left p{margin-top:14px;font-size:.72rem;line-height:1.8;color:var(--dim)}
+  .controls{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);padding:8px 12px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--ink);color:var(--void);border-color:var(--ink)}
+  .specs{margin-top:20px;border-top:1px solid var(--line);padding-top:10px;color:var(--dim);line-height:1.9}
+  .specs b{color:var(--ink);font-weight:400}
+  .cardStage{position:relative;height:min(68vh,520px);display:grid;place-items:center;perspective:1200px;touch-action:none}
+  .cardStage::before{content:"";position:absolute;width:56%;height:22%;bottom:4%;border-radius:50%;background:radial-gradient(ellipse,rgba(159,232,255,.25),transparent 70%);filter:blur(14px)}
+  .cardInner{position:relative;width:clamp(210px,27vw,300px);aspect-ratio:.7;transform-style:preserve-3d;transition:transform .12s ease-out;cursor:pointer}
+  .cardFace{position:absolute;inset:0;border-radius:14px;overflow:hidden;backface-visibility:hidden;border:1px solid rgba(255,255,255,.45);
+    box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.6)}
+  .front{background:linear-gradient(145deg,#141b2e,#0b101d);padding:9px;display:flex;flex-direction:column;gap:7px}
+  .foil{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.55;mix-blend-mode:color-dodge;
+    background:conic-gradient(from 210deg at var(--mx,50%) var(--my,40%),var(--holo1),var(--holo2),var(--holo3),var(--holo4),var(--holo1));filter:blur(10px)}
+  .glare{position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:radial-gradient(circle 160px at var(--mx,50%) var(--my,35%),rgba(255,255,255,.55),rgba(255,255,255,.08) 38%,transparent 65%);mix-blend-mode:screen}
+  .front::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:14px;
+    background:repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 1px,transparent 1px 4px)}
+  .cardTop{display:flex;justify-content:space-between;align-items:center;color:rgba(233,237,247,.7);z-index:2;position:relative;padding:1px 2px}
+  .cardTop b{font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;font-weight:400;text-transform:uppercase}
+  .cardTop span{font-family:var(--mono);font-size:.32rem;letter-spacing:.1em}
+  .art{position:relative;flex:1;border-radius:7px;background:radial-gradient(circle at 50% 45%,#141d33,#060a13 75%);overflow:hidden;z-index:2;border:1px solid rgba(255,255,255,.1)}
+  .art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.45) .4px,transparent .6px);background-size:34px 29px;opacity:.5}
+  .orb{position:absolute;left:50%;top:49%;width:42%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+    background:radial-gradient(circle at 36% 30%,#ffffff 0%,#dce6ff 12%,#8ea3d6 34%,#3a4a78 58%,#10182b 78%);
+    box-shadow:inset -10px -12px 24px rgba(0,0,0,.55),0 0 34px rgba(159,232,255,.35)}
+  .ring{position:absolute;left:50%;top:49%;width:76%;height:24%;border:1px solid rgba(199,166,255,.75);border-radius:50%;transform:translate(-50%,-50%) rotate(-18deg);box-shadow:0 0 12px rgba(199,166,255,.35)}
+  .ring.r2{width:88%;height:32%;transform:translate(-50%,-50%) rotate(14deg);border-color:rgba(159,232,255,.35)}
+  .art .spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}
+  .art .spark.s1{left:22%;top:24%}.art .spark.s2{right:22%;top:32%}.art .spark.s3{left:30%;bottom:22%}.art .spark.s4{right:28%;bottom:28%}
+  .nameRow{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;z-index:2;position:relative}
+  .nameRow h2{font-family:var(--serif);font-size:1.35rem;font-weight:400;letter-spacing:-.01em;line-height:1}
+  .nameRow .type{font-family:var(--mono);font-size:.32rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+  .nameRow .no{font-family:var(--serif);font-size:1rem;color:var(--holo1);font-style:italic}
+  .stats{display:flex;gap:5px;z-index:2;position:relative}
+  .stat{flex:1;border-top:1px solid rgba(255,255,255,.2);padding-top:4px}
+  .stat span{display:block;font-family:var(--mono);font-size:.28rem;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .stat b{display:block;font-family:var(--serif);font-size:.7rem;font-weight:400;margin-top:1px}
+  .serial{display:flex;justify-content:space-between;z-index:2;position:relative;font-family:var(--mono);font-size:.28rem;letter-spacing:.08em;color:var(--dim)}
+  .back{background:linear-gradient(160deg,#101728,#080c16);transform:rotateY(180deg);padding:14px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.2)}
+  .back .bt{font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .back .manifesto{font-family:var(--serif);font-style:italic;font-size:.95rem;line-height:1.4;color:var(--ink);margin:auto 0}
+  .back .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:var(--mono);font-size:.3rem;letter-spacing:.06em;color:var(--dim);text-transform:uppercase;line-height:1.8}
+  .back .meta b{color:var(--ink);font-weight:400;display:block;margin-top:2px}
+  .barcode{margin-top:10px;height:30px;background:repeating-linear-gradient(90deg,#e9edf7 0 2px,transparent 2px 4px,#e9edf7 4px 5px,transparent 5px 8px,#e9edf7 8px 11px,transparent 11px 13px);opacity:.75}
+  .flipped .cardInner{transform:rotateY(180deg)!important}
+  .caption{position:absolute;right:2%;bottom:2%;color:var(--dim);text-align:right;line-height:1.8}
+  .caption b{color:var(--ink);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:920px){
+    .stage{grid-template-columns:1fr;padding-top:12px}
+    .left{max-width:100%;order:1}
+    .cardStage{order:2;height:410px}
+    .caption{display:none}
+    h1{font-size:clamp(2rem,6vw,3rem)}
+    .left p{max-width:52ch}
+    .headMid{display:none}
+  }
+  @media(max-width:560px){
+    .cardStage{height:360px}
+    .cardInner{width:220px}
+    .headRight .mono{display:none}
+    h1{font-size:9vw}
+    .brand{font-size:.58rem;letter-spacing:.14em}
+    .specs{display:none}
+    footer span:nth-child(2){display:none}
+    .controls{gap:5px}
+    .btn{padding:7px 9px;font-size:.38rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><i aria-hidden="true"></i>Prism Deck</a>
+    <div class="headMid mono"><span>Series 01 — Orbital</span><span>Foil <b style="color:var(--holo1)">holo</b></span><span>1 / 250</span></div>
+    <div class="headRight"><button class="rarity" data-r="holo" aria-pressed="true">Holo</button><button class="rarity" data-r="gold" aria-pressed="false">Gold</button><button class="rarity" data-r="ice" aria-pressed="false">Ice</button></div>
+  </header>
+
+  <main class="stage" id="top">
+    <div class="left">
+      <p class="kicker mono">Card 001 / an object of uncertain origin</p>
+      <h1>PRISM<br><em>the card that<br>shouldn't exist.</em></h1>
+      <p>Recovered from a printer's proof sheet with no client, no set and no copyright line. The foil shifts when you move it. The chrome orb appears to have its own light source.</p>
+      <div class="controls"><button class="btn" id="flip">Flip card</button><button class="btn" id="reset">Reset tilt</button></div>
+      <p class="specs mono">Edition <b>1 / 250</b><br>Finish <b id="finish">Prismatic holo</b><br>Stock <b>420 gsm</b></p>
+    </div>
+
+    <div class="cardStage" id="cardStage">
+      <div class="cardInner" id="cardInner" tabindex="0" role="button" aria-label="PRISM holographic card. Activate to flip.">
+        <div class="cardFace front">
+          <div class="foil" aria-hidden="true"></div>
+          <div class="glare" aria-hidden="true"></div>
+          <div class="cardTop"><b>Prism / Orbital 01</b><span>001 / 250</span></div>
+          <div class="art">
+            <span class="ring" aria-hidden="true"></span><span class="ring r2" aria-hidden="true"></span>
+            <span class="orb" aria-hidden="true"></span>
+            <span class="spark s1" aria-hidden="true"></span><span class="spark s2" aria-hidden="true"></span><span class="spark s3" aria-hidden="true"></span><span class="spark s4" aria-hidden="true"></span>
+          </div>
+          <div class="nameRow"><div><h2>ORB-01</h2><div class="type">Signal type / chrome</div></div><span class="no">№01</span></div>
+          <div class="stats">
+            <div class="stat"><span>Signal</span><b>0.94</b></div>
+            <div class="stat"><span>Drift</span><b>+12°</b></div>
+            <div class="stat"><span>Rarity</span><b>Holo</b></div>
+          </div>
+          <div class="serial"><span>PRISM-DECK-001</span><span>2026</span></div>
+        </div>
+        <div class="cardFace back">
+          <div class="bt">Prism deck — field notes</div>
+          <div class="manifesto">“The card was not designed. It was found.”</div>
+          <div>
+            <div class="meta"><div>Set<b>Orbital / 01</b></div><div>Print<b>Foil, 1 of 250</b></div><div>Origin<b>Unknown</b></div><div>Light<b>Self-contained</b></div></div>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+      <div class="caption mono">Tilt <b>with the light</b><br>Foil <b id="capFinish">holo</b></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>PRISM / a fictional collectible</span>
+    <span>Chrome, foil and one suspicious card</span>
+    <span>© 2026 · handle with clean hands</span>
+  </footer>
+</div>
+
+<script>
+  const cardInner = document.getElementById('cardInner');
+  const stage = document.getElementById('cardStage');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let flipped = false;
+  let rx = 0, ry = 0, tx = 0, ty = 0;
+  let running = false;
+
+  function render(){
+    rx += (tx - rx) * .12;
+    ry += (ty - ry) * .12;
+    cardInner.style.transform = 'rotateX(' + (-rx) + 'deg) rotateY(' + ry + 'deg)';
+    if (Math.abs(tx - rx) > .05 || Math.abs(ty - ry) > .05){
+      requestAnimationFrame(render);
+    } else {
+      running = false;
+    }
+  }
+  function requestRender(){
+    if (!running){ running = true; requestAnimationFrame(render); }
+  }
+
+  if (!reduce){
+    stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      ty = x * 18;
+      tx = y * 14;
+      cardInner.style.setProperty('--mx', ((x + .5) * 100).toFixed(1) + '%');
+      cardInner.style.setProperty('--my', ((y + .5) * 100).toFixed(1) + '%');
+      requestRender();
+    });
+    stage.addEventListener('pointerleave', () => {
+      tx = 0; ty = 0;
+      cardInner.style.setProperty('--mx', '50%');
+      cardInner.style.setProperty('--my', '35%');
+      requestRender();
+    });
+  }
+
+  function flip(){
+    flipped = !flipped;
+    document.body.classList.toggle('flipped', flipped);
+    cardInner.setAttribute('aria-label', flipped ? 'PRISM card back. Activate to flip.' : 'PRISM holographic card. Activate to flip.');
+  }
+  cardInner.addEventListener('click', flip);
+  cardInner.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ flip(); e.preventDefault(); } });
+  document.getElementById('flip').addEventListener('click', flip);
+  document.getElementById('reset').addEventListener('click', () => {
+    tx = 0; ty = 0; requestRender();
+  });
+
+  document.querySelectorAll('.rarity').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.body.classList.remove('gold', 'ice');
+      if (btn.dataset.r !== 'holo') document.body.classList.add(btn.dataset.r);
+      document.querySelectorAll('.rarity').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      const names = { holo: 'Prismatic holo', gold: 'Antique gold', ice: 'Glacier ice' };
+      document.getElementById('finish').textContent = names[btn.dataset.r];
+      document.getElementById('capFinish').textContent = btn.dataset.r;
+    });
+  });
+</script>
+</body>
+</html>

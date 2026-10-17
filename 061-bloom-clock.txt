@@ -1,0 +1,20 @@
+TITLE
+Floral Time — The Hour, in Bloom
+
+PROMPT
+Create a botanical clock called "Floral Time". A warm paper background, sage green, terracotta, gold and rose; the aesthetic of an antique herbarium crossed with a modern wall clock. A large circular dial contains twelve flowers, one for each hour, arranged around a ring of stems and leaves. The current hour's flower is fully open; the others remain closed buds. A slender second hand shaped like a leaf sweeps the dial, and the hour and minute hands are drawn as stems. The left column carries the title "The hour, in bloom.", a short note, a selected-flower card with name and meaning, and two buttons: "Advance an hour" and "Return to now". Hovering or clicking a flower previews it. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+Time as a garden rather than a grid. The dial should feel engraved and hand-coloured: fine rings, small botanical labels, twelve distinct silhouettes. The open flower becomes a quiet event each hour, and the interface surrounding it stays calm and editorial. The palette is drawn from pressed flowers and old paper.
+
+VISUAL TECHNIQUES
+- SVG dial with twelve procedurally placed flower groups, stems, leaves and petals.
+- Open/closed petal states driven by a class, animated with transform scale and stagger.
+- Leaf-shaped second hand, stem-like minute and hour hands, tick ring and Roman-ish hour markers.
+- Flower-specific palettes and silhouettes; hover preview and selected states.
+- Botanical card typography, serif italics and monospaced data.
+- Live clock updated every second; flower changes at the top of the hour.
+- Reduced-motion removes petal animation and the sweeping second hand while keeping time correct.
+
+INTERACTION MODEL
+Hovering a flower previews its name and meaning in the card; clicking pins the preview until reset. "Advance an hour" previews the next hour's bloom. "Return to now" restores the live clock. The second hand sweeps continuously, the minute and hour hands track real local time, and the open flower changes automatically on the hour. All flowers are keyboard focusable.

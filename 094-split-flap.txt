@@ -1,0 +1,20 @@
+TITLE
+Split-Flap — A Station Clock
+
+PROMPT
+Create a live split-flap station clock. A dark board with six cream flip cards shows hours, minutes and seconds in a monospaced face, separated by blinking colons, with a destination plate above reading the selected city. A control bar offers four cities (Local, Helsinki, Tokyo, New York), a 12/24-hour toggle, a "Flip all" test button and the full date. Every second the relevant cards flip with a mechanical rotation; changing city flips the whole board. Include station-hall ambience, departure-board typography and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+The pleasure of an airport board in a quiet station: cream cards, dark gaps, the little mechanical clack implied by motion. This is a clock you can watch, not a dashboard. The board is the hero, centred and large, with the controls treated as a station timetable strip underneath.
+
+VISUAL TECHNIQUES
+- Six split-flap cards with a printed hinge line, subtle side screws and warm cream stock.
+- 3D rotateX flip animation on digit change, with the value swapped mid-turn.
+- Live time in four time zones using Intl.DateTimeFormat; 12/24-hour support.
+- Blinking colon separators and a city/destination plate.
+- Charcoal station background with panel lines and a warm overhead glow.
+- Responsive card sizing that keeps all six digits on one row.
+- Reduced-motion swaps digits without the flip.
+
+INTERACTION MODEL
+The clock runs automatically. City buttons retune all six digits to Local, Helsinki, Tokyo or New York and update the plate and UTC offset. The 12/24 toggle reformats hours and shows or hides the AM/PM badge. "Flip all" plays the flip animation across the board. Buttons expose pressed states, and the full date is always visible.

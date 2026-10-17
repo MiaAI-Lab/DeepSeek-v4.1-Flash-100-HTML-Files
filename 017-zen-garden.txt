@@ -1,0 +1,20 @@
+TITLE
+Karesansui — A Garden for One Screen
+
+PROMPT
+Create a meditative interactive zen garden called "Karesansui". The page is almost entirely a raked sand canvas: warm sand (#e8dfca), fine grooves in shadow and light, three irregular stones, a patch of moss, and a single vermilion seal for contrast. The interface is minimal — a small masthead, a vertical Japanese title, a quiet instruction, and one reset control. Dragging across the sand should carve new rake lines that follow the pointer with several parallel tines, while the initial composition shows concentric rings around each stone, interrupted naturally. Include a slow breathing indicator, a short note on karesansui, and a footer. Typography: restrained serif and wide-tracked monospace; no bright interface colours. Fully responsive, one standalone HTML file with inline CSS/JS, no external assets.
+
+DESIGN INTENT
+Stillness as an interface. The garden is drawn, not decorated: every line is a rake mark, every shadow belongs to a stone. The page should slow the visitor down — no buttons competing for attention, no gradients that shout. Vermilion appears exactly once, like a hanko stamp on a scroll. The interaction is therapeutic rather than productive.
+
+VISUAL TECHNIQUES
+- Canvas garden with layered sand gradients, per-pixel grain and hand-drawn stone silhouettes.
+- Concentric rake rings around stones with sinusoidal distortion and natural interruptions.
+- Multi-tine rake brush following pointer movement, with light and dark groove offsets.
+- Moss rendered as clustered translucent circles; stones with soft ambient shadows and highlights.
+- Subtle animation of drifting sand grains and a breathing ring indicator.
+- Japanese vertical typography paired with a serif statement and monospaced marginalia.
+- Retina-aware canvas; reset redraws the original composition with a gentle fade.
+
+INTERACTION MODEL
+Dragging anywhere on the sand rakes new lines; the brush leaves several parallel grooves and follows the hand naturally. "Rake anew" redraws the original garden. Hovering stones shows a small label with their names. A breathing ring expands and contracts at a slow, four-second rhythm. Reduced-motion stops the breathing animation and the drifting grains while keeping the rake interaction intact.

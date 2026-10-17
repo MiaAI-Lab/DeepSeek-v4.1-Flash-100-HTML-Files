@@ -1,0 +1,20 @@
+TITLE
+Celestial Chart — The Sky You Were Born Under
+
+PROMPT
+Create an elegant natal-chart page called "Celestial Chart". Warm laid paper, oxblood and brass engraved lines, with a large circular astrology wheel on the left: zodiac band with glyphs, twelve house cusps, ten planets placed at their degrees, and coloured aspect lines across the centre. The right column holds the title "The sky you were born under.", the birth data, a list of planets with glyphs and degrees, and a toggle for aspect lines. Hovering or selecting a planet highlights it and updates a short interpretation card; the chart is fixed to 17 October 2026, 14:20, Helsinki. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+An heirloom chart rather than a horoscope app. The wheel should look engraved: hairline brass rules, small glyphs, careful degree marks. Typography is a high-contrast serif with tracked small caps and tiny mono data. The interface is quiet and lets the visitor read the chart like a map.
+
+VISUAL TECHNIQUES
+- SVG natal wheel with zodiac sectors, glyph ring, degree ticks, twelve house lines and planetary markers.
+- Aspect lines in three colours for trine, square and opposition, optional toggle.
+- Planet list with glyphs, signs and degrees; hover/selection synchronised with the chart.
+- Interpretation card that updates with a short, non-predictive sentence.
+- Cream paper background, brass hairlines, oxblood serif type, faint foxed specks instead of a star field.
+- Responsive chart scaling and stacked layout.
+- Reduced-motion removes hover scaling and fades only.
+
+INTERACTION MODEL
+Hovering a planet in the wheel or list highlights it and shows its sign, degree, house and a short reading. Clicking pins the selection until another planet is chosen. The aspects toggle shows or hides the coloured lines. Everything is keyboard accessible through the planet list; reduced-motion only removes transitions.

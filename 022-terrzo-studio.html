@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="TERRZO® — an independent studio making bright brands, digital toys and editorial mischief.">
+<title>TERRZO® — A Studio Made of Little Pieces</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --cream:#fbf3e4; --ink:#1d1a16; --coral:#ff7a68; --mint:#a7e8c9; --cobalt:#4353ff; --butter:#ffd166; --lilac:#cdb4f6;
+    --dim:rgba(29,26,22,.58); --line:rgba(29,26,22,.18);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--cobalt);color:var(--cream)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--cobalt);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.52rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(15px,3vw,38px)}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:2px solid var(--ink)}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.05em;font-size:1.18rem}
+  .brand sup{font-size:.42em;font-weight:500;letter-spacing:0;transform:translateY(-4px)}
+  .brand .dot{width:9px;height:9px;background:var(--coral);border-radius:50%;display:block}
+  nav{display:flex;gap:24px;align-items:center}
+  nav a{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;position:relative;padding-bottom:2px}
+  nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--coral);transition:width .25s}
+  nav a:hover::after{width:100%}
+  .open{display:flex;align-items:center;gap:7px;border:1.5px solid var(--ink);border-radius:100px;padding:7px 12px;font-family:var(--mono);font-size:.44rem;letter-spacing:.08em;text-transform:uppercase;background:var(--butter);transform:rotate(-2deg)}
+  .open i{width:5px;height:5px;border-radius:50%;background:var(--ink);animation:blink 2s infinite}
+  @keyframes blink{50%{opacity:.25}}
+
+  .hero{position:relative;display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(24px,4.4vw,54px);align-items:center;padding:clamp(28px,5vw,54px) 0 clamp(26px,4vw,44px)}
+  .kicker{display:inline-flex;align-items:center;gap:8px;background:var(--mint);border:1.5px solid var(--ink);border-radius:100px;padding:6px 11px;margin-bottom:22px;transform:rotate(-1.5deg)}
+  .kicker b{font-weight:600}
+  h1{font-size:clamp(3.1rem,7.4vw,6.4rem);line-height:.92;letter-spacing:-.065em;font-weight:800}
+  h1 .hl{position:relative;display:inline-block;padding:0 .08em;z-index:1}
+  h1 .hl::before{content:"";position:absolute;inset:8% -.02em 6%;z-index:-1;transform:rotate(-1.2deg);border-radius:4px}
+  h1 .hl.c::before{background:var(--coral)}
+  h1 .hl.m::before{background:var(--mint)}
+  h1 .hl.b::before{background:var(--butter)}
+  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.03em}
+  .under{position:relative;display:inline-block}
+  .under svg{position:absolute;left:0;right:0;bottom:-.13em;width:100%;height:.16em;overflow:visible}
+  .heroCopy p{margin-top:20px;max-width:36ch;font-size:.82rem;line-height:1.8;color:var(--dim)}
+  .heroCopy p b{color:var(--ink);font-weight:500}
+  .ctaRow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--ink);border-radius:100px;padding:11px 17px;font-family:var(--mono);font-size:.48rem;letter-spacing:.09em;text-transform:uppercase;transition:transform .2s,background .2s,color .2s;background:var(--cream)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.solid{background:var(--ink);color:var(--cream)}
+  .btn.solid:hover{background:var(--cobalt);border-color:var(--cobalt)}
+  .btn.spin{background:var(--butter);transform:rotate(1.5deg)}
+  .btn.spin:hover{transform:rotate(-1deg) translateY(-2px)}
+
+  .tileWrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:380px}
+  .tile{position:relative;width:min(100%,430px);aspect-ratio:1;border:2px solid var(--ink);border-radius:34px;overflow:hidden;background:#f7efe0;
+    box-shadow:14px 14px 0 var(--ink);transform:rotate(2.4deg)}
+  .chip{position:absolute;display:block;border-radius:var(--br,40%) 60% 45% 55%;background:var(--c);transform:rotate(var(--r,0deg))}
+  .tile .tag{position:absolute;left:16px;bottom:14px;z-index:3;background:var(--cream);border:1.5px solid var(--ink);border-radius:100px;padding:6px 10px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+  .badge{position:absolute;right:-8px;top:-14px;width:104px;height:104px;z-index:4;animation:spin 20s linear infinite}
+  .badge:hover{animation-play-state:paused}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .badge text{font-family:var(--mono);font-size:6.3px;letter-spacing:1.4px;fill:var(--ink);text-transform:uppercase}
+  .badge .star{fill:var(--coral)}
+  .spark{position:absolute;pointer-events:none;font-size:1.4rem;color:var(--cobalt);z-index:2}
+
+  .strip{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);background:var(--lilac);overflow:hidden;padding:11px 0;transform:rotate(-.7deg);margin:0 -10px}
+  .track{display:flex;width:max-content;animation:run 28s linear infinite}
+  .track span{display:flex;align-items:center;gap:22px;padding-right:22px;white-space:nowrap;font-family:var(--mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase}
+  .track i{font-style:normal;font-size:.75em}
+  @keyframes run{to{transform:translateX(-50%)}}
+
+  .work{padding:clamp(36px,6vw,64px) 0 24px}
+  .workHead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:20px}
+  .workHead h2{font-size:clamp(1.7rem,3.2vw,2.6rem);letter-spacing:-.055em;line-height:.95;font-weight:800}
+  .workHead h2 em{font-family:var(--serif);font-weight:400}
+  .workHead p{max-width:26ch;color:var(--dim);text-align:right}
+  .projects{display:grid;grid-template-columns:1.1fr .9fr 1fr;gap:14px;align-items:start}
+  .card{position:relative;border:2px solid var(--ink);border-radius:22px;padding:18px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;background:var(--bg);isolation:isolate}
+  .card:nth-child(1){--bg:var(--coral);min-height:320px}
+  .card:nth-child(2){--bg:var(--mint);margin-top:38px}
+  .card:nth-child(3){--bg:var(--butter);margin-top:-8px}
+  .card:hover{transform:translateY(-6px) rotate(-.6deg);box-shadow:8px 8px 0 var(--ink)}
+  .card::before{content:"";position:absolute;width:120px;height:120px;border:2px solid rgba(29,26,22,.35);border-radius:50%;right:-34px;top:-34px;z-index:-1}
+  .card .no{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase}
+  .card h3{font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:.98;letter-spacing:-.04em;margin-top:auto;max-width:10ch}
+  .card .kind{margin-top:8px;font-family:var(--mono);font-size:.44rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(29,26,22,.65)}
+  .card .arrow{position:absolute;right:16px;bottom:16px;width:34px;height:34px;border:1.5px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:.85rem;transition:transform .3s,background .3s}
+  .card:hover .arrow{transform:rotate(45deg);background:var(--cream)}
+  .workFoot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:20px;padding-top:12px;border-top:1px solid var(--line)}
+  .workFoot a{border-bottom:1.5px solid var(--ink);padding-bottom:2px;font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;text-transform:uppercase}
+  .workFoot a:hover{color:var(--cobalt);border-color:var(--cobalt)}
+
+  .playBand{margin-top:32px;border:2px solid var(--ink);border-radius:24px;background:var(--ink);color:var(--cream);display:flex;justify-content:space-between;align-items:center;gap:22px;padding:22px;flex-wrap:wrap}
+  .playBand h2{font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.05em;line-height:1;font-weight:800}
+  .playBand h2 em{font-family:var(--serif);font-weight:400;color:var(--mint)}
+  .playBand p{color:rgba(251,243,228,.6);font-size:.7rem;max-width:28ch;line-height:1.7;margin-top:6px}
+  .playBand .btn{background:var(--coral);border-color:var(--coral);color:var(--ink);font-size:.52rem;padding:12px 18px}
+  .playBand .btn:hover{background:var(--cream);border-color:var(--cream)}
+
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:22px 0 28px;color:var(--dim)}
+  footer b{color:var(--ink);font-weight:500}
+
+  .confettiLayer{position:fixed;inset:0;pointer-events:none;z-index:70;overflow:hidden}
+  .confetti{position:absolute;top:-30px;width:12px;height:9px;opacity:0;animation:fall var(--dur,3s) cubic-bezier(.2,.6,.4,1) forwards;animation-delay:var(--delay,0s)}
+  @keyframes fall{0%{opacity:1;transform:translate3d(0,0,0) rotate(0)}100%{opacity:0;transform:translate3d(var(--x,0px),110vh,0) rotate(var(--rot,540deg))}}
+
+  @media(max-width:980px){
+    .hero{grid-template-columns:1fr;gap:26px}
+    .tileWrap{order:2;min-height:300px}
+    .tile{width:min(100%,360px);border-radius:26px;box-shadow:9px 9px 0 var(--ink)}
+    .heroCopy p{max-width:48ch}
+    .projects{grid-template-columns:1fr 1fr}
+    .card:nth-child(3){grid-column:1/-1;margin-top:0;min-height:200px}
+    .workHead{flex-direction:column;align-items:flex-start;gap:8px}
+    .workHead p{text-align:left}
+  }
+  @media(max-width:620px){
+    .brand{font-size:1rem}
+    nav{gap:14px}
+    nav a:nth-child(2){display:none}
+    .open{display:none}
+    h1{font-size:13vw}
+    .projects{grid-template-columns:1fr}
+    .card,.card:nth-child(1){min-height:230px;margin-top:0}
+    .card:nth-child(3){min-height:230px}
+    .playBand{padding:16px;border-radius:18px}
+    .tileWrap{min-height:260px}
+    .badge{width:82px;height:82px;right:0;top:-6px}
+    .strip{margin:0 -6px}
+    footer{flex-direction:column;gap:8px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>TERRZO<sup>®</sup></a>
+    <nav aria-label="Primary"><a href="#work">Work</a><a href="#work">Studio</a><a href="#play">Play</a><a href="#footer">Contact</a></nav>
+    <span class="open"><i aria-hidden="true"></i>Open for commissions</span>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="heroCopy">
+        <span class="kicker mono"><b>Independent studio</b> / Antwerp + everywhere</span>
+        <h1>We make<br><span class="hl c">joyful</span><br><span class="under">things.<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C38 1, 78 13, 112 6 S174 2, 197 8" fill="none" stroke="#4353ff" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
+        <p>Brands with a pulse, digital toys with a point of view, and editorial mischief for people who take <b>delight seriously.</b></p>
+        <div class="ctaRow">
+          <a class="btn solid" href="#work">See the work <span aria-hidden="true">↗</span></a>
+          <button class="btn spin" id="confettiBtn">Throw confetti ✳</button>
+        </div>
+      </div>
+
+      <div class="tileWrap">
+        <div class="tile" id="tile" aria-label="A terrazzo tile made of coloured chips">
+          <div id="chips"></div>
+          <span class="tag">Aggregate no. 06 / 2026</span>
+        </div>
+        <svg class="badge" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><path id="circ" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
+          <text><textPath href="#circ">made of little pieces · made of little pieces · </textPath></text>
+          <path class="star" d="M50 38l3.5 8.5L62 50l-8.5 3.5L50 62l-3.5-8.5L38 50l8.5-3.5Z"/>
+        </svg>
+      </div>
+    </section>
+
+    <div class="strip" aria-hidden="true">
+      <div class="track">
+        <span>Brand worlds <i>✳</i> Digital toys <i>✳</i> Editorial mischief <i>✳</i> Small pieces, one loud surface <i>✳</i> Antwerp / 51.2° N <i>✳</i></span>
+        <span>Brand worlds <i>✳</i> Digital toys <i>✳</i> Editorial mischief <i>✳</i> Small pieces, one loud surface <i>✳</i> Antwerp / 51.2° N <i>✳</i></span>
+      </div>
+    </div>
+
+    <section class="work" id="work">
+      <div class="workHead">
+        <h2>Recent <em>mischief</em></h2>
+        <p class="mono">A small, deliberately odd selection. More available over a coffee.</p>
+      </div>
+      <div class="projects">
+        <a class="card" href="#play">
+          <span class="no"><span>Case 01</span><span>2026</span></span>
+          <h3>Fruit<br>Machines</h3>
+          <span class="kind">Brand world · motion · packaging</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="card" href="#play">
+          <span class="no"><span>Case 02</span><span>2025</span></span>
+          <h3>Soft<br>Arcade</h3>
+          <span class="kind">Digital toy · identity · sound</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="card" href="#play">
+          <span class="no"><span>Case 03</span><span>2025</span></span>
+          <h3>The Loud<br>Quiet Club</h3>
+          <span class="kind">Editorial · art direction</span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <div class="workFoot mono"><span>Three of nine projects / archive on request</span><a href="#play">Say hello ↗</a></div>
+    </section>
+
+    <section class="playBand" id="play">
+      <div>
+        <h2>Got a strange <em>idea?</em></h2>
+        <p>We are unusually good at making strange ideas feel inevitable. Bring us the first sketch.</p>
+      </div>
+      <a class="btn" href="#footer">hello@terrzo.studio <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer id="footer" class="mono">
+    <span><b>TERRZO®</b> — a fictional studio made of little pieces</span>
+    <span>Antwerp, 51.2194° N · working everywhere</span>
+    <span>© 2026 · More colour than strictly necessary</span>
+  </footer>
+</div>
+<div class="confettiLayer" id="confettiLayer" aria-hidden="true"></div>
+
+<script>
+  const chipsEl = document.getElementById('chips');
+  const colors = ['#ff7a68','#a7e8c9','#4353ff','#ffd166','#cdb4f6','#1d1a16','#f0a6c8'];
+  function scatterChips(n, area){
+    for (let i = 0; i < n; i++){
+      const c = document.createElement('span');
+      c.className = 'chip';
+      const s = 10 + Math.random() * 34;
+      c.style.width = s + 'px';
+      c.style.height = (s * (.55 + Math.random() * .8)) + 'px';
+      c.style.left = (Math.random() * 92) + '%';
+      c.style.top = (Math.random() * 90) + '%';
+      c.style.setProperty('--c', colors[Math.floor(Math.random() * colors.length)]);
+      c.style.setProperty('--r', (Math.random() * 180 - 90) + 'deg');
+      c.style.setProperty('--br', (20 + Math.random() * 60) + '%');
+      area.appendChild(c);
+    }
+  }
+  scatterChips(46, chipsEl);
+
+  const layer = document.getElementById('confettiLayer');
+  function throwConfetti(amount, x, y){
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (let i = 0; i < amount; i++){
+      const c = document.createElement('span');
+      c.className = 'confetti';
+      c.style.left = (x !== undefined ? x : Math.random() * innerWidth) + 'px';
+      c.style.top = (y !== undefined ? y : -20) + 'px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.width = (6 + Math.random() * 10) + 'px';
+      c.style.height = (5 + Math.random() * 9) + 'px';
+      c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+      c.style.setProperty('--x', (Math.random() * 220 - 110) + 'px');
+      c.style.setProperty('--rot', (Math.random() * 900 - 200) + 'deg');
+      c.style.setProperty('--dur', (2 + Math.random() * 2.2) + 's');
+      c.style.setProperty('--delay', (Math.random() * .5) + 's');
+      layer.appendChild(c);
+      setTimeout(() => c.remove(), 5200);
+    }
+  }
+  document.getElementById('confettiBtn').addEventListener('click', e => {
+    throwConfetti(44);
+  });
+  document.querySelector('h1').addEventListener('click', e => {
+    throwConfetti(20, e.clientX, e.clientY);
+  });
+</script>
+</body>
+</html>

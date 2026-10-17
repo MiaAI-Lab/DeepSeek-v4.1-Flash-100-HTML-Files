@@ -1,0 +1,20 @@
+TITLE
+PRISM — The Card That Shouldn't Exist
+
+PROMPT
+Create a holographic trading-card showcase called "PRISM". Deep blue-black room, faint grid and stars, one 300×430 collectible card floating at the centre with a rainbow foil surface, chrome orb artwork, tiny serial typography, stat bars and a holographic glare that follows the pointer. The card tilts in 3D as the cursor moves and flips to a matte back with specs, a barcode and a manifesto line. Around it, editorial fragments: "PRISM / the card that shouldn't exist", a rarity selector (Holo / Gold / Ice) that changes the foil palette, a Flip button, and small technical captions. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Collectible culture treated as an art object. The card is the hero and must look expensive: foil that shifts, clean printing, a chrome planet rendered in gradients, immaculate microtype. The room around it is dark and instrumental, making the card feel lit from within. Rarity changes are subtle and material, not confetti.
+
+VISUAL TECHNIQUES
+- CSS 3D tilt with pointer-driven rotateX/rotateY and a moving radial glare layer.
+- Multi-stop holographic gradients with blend modes for rainbow foil; rarity variants swap the gradient palette.
+- Chrome orb artwork built from radial gradients, ring ellipses and specular highlights.
+- Front/back card faces with backface-visibility and a flip state.
+- Microtype, stat bars, serial numbers, foil-stamped icon and a barcode made of repeating linear gradients.
+- Faint star field, drafting grid, card shadow and ambient floor glow.
+- Responsive scaling of the card and reflow of captions around it.
+
+INTERACTION MODEL
+Move the pointer to tilt the card and move its glare. "Flip card" turns it to the matte back and back again. Holo / Gold / Ice buttons change the foil palette and the colour of the ambient glow. The card can be focused and flipped with Enter. Reduced-motion replaces tilt with a static, perfectly lit card while keeping all states.

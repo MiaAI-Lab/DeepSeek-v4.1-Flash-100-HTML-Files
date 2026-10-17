@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mandelbrot Field — a deep, clickable fractal explorer with four palettes.">
+<title>Mandelbrot Field — The Edge of Everything</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#050608; --panel:#0b0e12; --cream:#eae6dc; --dim:rgba(234,230,220,.5); --line:rgba(234,230,220,.14);
+    --accent:#ff8a5c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--void);color:var(--cream);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 70% 20%,rgba(70,40,30,.22),transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase}
+  .brand .glyph{width:16px;height:16px;border:1px solid var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);flex:none}
+  .brand small{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.12em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--accent);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.7fr 1.3fr;gap:clamp(18px,3.2vw,40px);align-items:center;padding:clamp(16px,3vw,28px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--accent);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--accent)}
+  h1{font-family:var(--serif);font-size:clamp(2.5rem,4.6vw,4.3rem);line-height:.95;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--accent)}
+  .intro > p{margin-top:13px;max-width:34ch;font-size:.7rem;line-height:1.8;color:var(--dim)}
+  .controls{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
+  .ctl{margin-bottom:10px}
+  .ctlHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:4px}
+  .ctlHead output{color:var(--cream);font-family:var(--mono);font-size:.42rem}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(234,230,220,.25)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:-5px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(234,230,220,.25)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:var(--accent);border:0}
+  .palettes{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+  .pal{border:1px solid var(--line);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .pal:hover{color:var(--cream);border-color:var(--cream)}
+  .pal[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--void)}
+  .btns{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);padding:6px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--cream);color:var(--void);border-color:var(--cream)}
+  .readout{margin-top:12px;color:var(--dim);line-height:1.9;font-family:var(--mono);font-size:.4rem;letter-spacing:.03em}
+  .readout b{color:var(--cream);font-weight:400}
+
+  .stage{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0}
+  .canvasFrame{position:relative;width:min(100%,600px);aspect-ratio:1;border:1px solid var(--line);background:#000;overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.03)}
+  #fractal{display:block;width:100%;height:100%;cursor:crosshair;touch-action:none}
+  .loading{position:absolute;inset:0;z-index:3;display:grid;place-items:center;background:rgba(5,6,8,.6);opacity:0;pointer-events:none;transition:opacity .2s}
+  .loading.on{opacity:1}
+  .loading span{font-family:var(--mono);font-size:.44rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .scaleMark{position:absolute;left:10px;bottom:8px;z-index:2;color:rgba(234,230,220,.7);font-family:var(--mono);font-size:.36rem;letter-spacing:.06em;text-transform:uppercase;pointer-events:none;text-shadow:0 1px 4px #000}
+  .coordMark{position:absolute;right:10px;bottom:8px;z-index:2;color:rgba(234,230,220,.55);font-family:var(--mono);font-size:.3rem;letter-spacing:.03em;pointer-events:none;text-shadow:0 1px 4px #000;text-align:right;line-height:1.5}
+  .stageFoot{display:flex;justify-content:space-between;width:min(100%,600px);margin-top:8px;color:var(--dim);gap:12px;flex-wrap:wrap}
+  .stageFoot b{color:var(--cream);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:960px){
+    .main{grid-template-columns:1fr;gap:18px}
+    .stage{order:1}
+    .intro{order:2}
+    .headMid{display:none}
+    .controls{max-width:520px}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.56rem;letter-spacing:.18em}
+    h1{font-size:10.8vw}
+    .canvasFrame{aspect-ratio:1}
+    .stageFoot{font-size:.36rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="glyph" aria-hidden="true"></span><span>Mandelbrot Field<small>Set z → z² + c / a study</small></span></a>
+    <div class="headMid mono"><span>Depth <b id="iterTop">160</b></span><span>Scale <b id="scaleTop">1.4</b></span><span>Palette <b id="palTop">Ember</b></span></div>
+    <div class="headRight mono">Interactive plate<br><b>Click to zoom</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">An infinite edge, rendered</p>
+      <h1>The edge of<br><em>everything.</em></h1>
+      <p>The boundary of the Mandelbrot set is infinitely detailed and has no length. Every click takes you closer to a coast that never quite resolves.</p>
+      <div class="controls">
+        <div class="ctl"><div class="ctlHead mono"><label for="iter">Iterations</label><output id="iterOut">160</output></div><input id="iter" type="range" min="40" max="500" value="160" step="10"></div>
+        <div class="palettes" role="group" aria-label="Palette"><button class="pal" data-p="ember" aria-pressed="true">Ember</button><button class="pal" data-p="deep" aria-pressed="false">Deep</button><button class="pal" data-p="mono" aria-pressed="false">Mono</button><button class="pal" data-p="rose" aria-pressed="false">Rose</button></div>
+        <div class="btns"><button class="btn" id="out">Zoom out −</button><button class="btn" id="reset">Reset view</button></div>
+        <p class="readout">Centre <b id="cx">−0.74364388</b><br>Imaginary <b id="cy">0.13182590</b><br>Magnification <b id="zoom">1.0×</b></p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="canvasFrame">
+        <canvas id="fractal" width="560" height="560" aria-label="Mandelbrot set. Click to zoom in, shift-click to zoom out."></canvas>
+        <div class="loading on" id="loading"><span>Calculating the coast…</span></div>
+        <span class="scaleMark" id="scaleMark">1.4 units wide</span>
+        <span class="coordMark" id="coordMark">x −0.74364388<br>y 0.13182590</span>
+      </div>
+      <div class="stageFoot mono"><span>Click <b>zoom in</b> · Shift-click <b>zoom out</b></span><span>Max iter <b id="stageIter">160</b></span><span>Escape radius <b>2.0</b></span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Mandelbrot Field / a fictional plate</span>
+    <span>Computed live in one file · no images</span>
+    <span>© 2026 · the coast is infinite</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('fractal');
+  const ctx = canvas.getContext('2d');
+  const loading = document.getElementById('loading');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const W = 560, H = 560;
+  let centerX = -0.743643887037151, centerY = 0.13182590420533;
+  let scale = 1.4, maxIter = 160, palette = 'ember';
+  let iterData = null;
+  let renderTimer = null;
+
+  const palettes = {
+    ember: [[5,6,8],[40,16,24],[150,50,30],[255,138,92],[255,226,180]],
+    deep: [[3,6,10],[6,20,36],[20,70,100],[90,200,220],[220,250,255]],
+    mono: [[6,6,6],[40,40,40],[110,110,110],[200,200,200],[255,255,255]],
+    rose: [[10,4,8],[50,12,30],[140,30,80],[240,100,140],[255,220,230]]
+  };
+
+  function lerp(a, b, t){ return Math.round(a + (b - a) * t); }
+
+  function colorFor(iter, max){
+    if (iter >= max) return [0,0,0];
+    const pal = palettes[palette];
+    const t = Math.pow(iter / max, .45);
+    const n = pal.length - 1;
+    const idx = Math.min(n - 1, Math.floor(t * n));
+    const f = t * n - idx;
+    return [lerp(pal[idx][0], pal[idx+1][0], f), lerp(pal[idx][1], pal[idx+1][1], f), lerp(pal[idx][2], pal[idx+1][2], f)];
+  }
+
+  function render(){
+    loading.classList.add('on');
+    setTimeout(() => {
+      const data = new Uint16Array(W * H);
+      const aspect = W / H;
+      const xMin = centerX - scale * aspect / 2, xMax = centerX + scale * aspect / 2;
+      const yMin = centerY - scale / 2, yMax = centerY + scale / 2;
+      const img = ctx.createImageData(W, H);
+      for (let py = 0; py < H; py++){
+        const ci = yMin + (py / H) * (yMax - yMin);
+        for (let px = 0; px < W; px++){
+          const cr = xMin + (px / W) * (xMax - xMin);
+          let zr = 0, zi = 0, k = 0;
+          while (k < maxIter && zr * zr + zi * zi <= 4){
+            const t = zr * zr - zi * zi + cr;
+            zi = 2 * zr * zi + ci;
+            zr = t;
+            k++;
+          }
+          data[py * W + px] = k;
+          const c = colorFor(k, maxIter);
+          const i = (py * W + px) * 4;
+          img.data[i] = c[0]; img.data[i+1] = c[1]; img.data[i+2] = c[2]; img.data[i+3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      iterData = data;
+      loading.classList.remove('on');
+      document.getElementById('scaleMark').textContent = scale.toFixed(scale < .01 ? 6 : 3) + ' units wide';
+      document.getElementById('coordMark').innerHTML = 'x ' + centerX.toFixed(8) + '<br>y ' + centerY.toFixed(8);
+      document.getElementById('cx').textContent = centerX.toFixed(8);
+      document.getElementById('cy').textContent = centerY.toFixed(8);
+      document.getElementById('zoom').textContent = (1.4 / scale).toFixed(scale < 1 ? 1 : 2) + '×';
+      document.getElementById('scaleTop').textContent = scale < .01 ? scale.toExponential(1) : scale.toFixed(3);
+      document.getElementById('iterTop').textContent = maxIter;
+      document.getElementById('stageIter').textContent = maxIter;
+      document.getElementById('palTop').textContent = palette.charAt(0).toUpperCase() + palette.slice(1);
+    }, 30);
+  }
+
+  function recolor(){
+    if (!iterData) { render(); return; }
+    const img = ctx.createImageData(W, H);
+    for (let i = 0; i < iterData.length; i++){
+      const c = colorFor(iterData[i], maxIter);
+      const j = i * 4;
+      img.data[j] = c[0]; img.data[j+1] = c[1]; img.data[j+2] = c[2]; img.data[j+3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    document.getElementById('palTop').textContent = palette.charAt(0).toUpperCase() + palette.slice(1);
+  }
+
+  canvas.addEventListener('click', e => {
+    const r = canvas.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    const aspect = W / H;
+    const xMin = centerX - scale * aspect / 2, yMin = centerY - scale / 2;
+    if (e.shiftKey){
+      scale *= 2.4;
+    } else {
+      centerX = xMin + x * scale * aspect;
+      centerY = yMin + y * scale;
+      scale *= .38;
+    }
+    render();
+  });
+  canvas.addEventListener('keydown', e => {
+    if (e.key === '+' || e.key === '='){ scale *= .5; render(); e.preventDefault(); }
+    if (e.key === '-' || e.key === '_'){ scale *= 2; render(); e.preventDefault(); }
+  });
+  canvas.setAttribute('tabindex', '0');
+
+  document.getElementById('iter').addEventListener('input', function(){
+    document.getElementById('iterOut').textContent = this.value;
+    maxIter = Number(this.value);
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(render, 300);
+  });
+  document.querySelectorAll('.pal').forEach(b => {
+    b.addEventListener('click', () => {
+      palette = b.dataset.p;
+      document.querySelectorAll('.pal').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      recolor();
+    });
+  });
+  document.getElementById('out').addEventListener('click', () => { scale *= 2.2; render(); });
+  document.getElementById('reset').addEventListener('click', () => {
+    centerX = -0.743643887037151; centerY = 0.13182590420533; scale = 1.4;
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

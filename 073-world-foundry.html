@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="World Foundry — build a small planet with four sliders and a little patience.">
+<title>World Foundry — A Planet in Four Sliders</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --space:#04060d; --panel:#080d18; --cream:#eef1f6; --dim:rgba(238,241,246,.5); --line:rgba(238,241,246,.14);
+    --warm:#ffb36b; --cool:#8fd8ff;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--space);color:var(--cream);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 72% 28%,rgba(36,56,96,.5),transparent 62%),radial-gradient(700px 600px at 8% 90%,rgba(70,38,72,.35),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6;
+    background-image:radial-gradient(rgba(255,255,255,.55) .5px,transparent .7px),radial-gradient(rgba(143,216,255,.4) .4px,transparent .6px);
+    background-size:131px 119px,193px 167px;background-position:20px 30px,80px 90px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 90%);mask-image:linear-gradient(180deg,#000,transparent 90%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--warm);color:var(--space)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--warm);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.48rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.66rem;letter-spacing:.25em;text-transform:uppercase}
+  .brand .orb{width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3d8,var(--warm) 45%,#a24e2c 75%);box-shadow:0 0 14px rgba(255,179,107,.55);flex:none}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.12em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--warm);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(20px,3.4vw,44px);align-items:center;padding:clamp(16px,3vw,28px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--cool);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--cool)}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,4.6vw,4.2rem);line-height:.96;letter-spacing:-.045em;font-weight:400}
+  h1 em{font-style:italic;color:var(--warm)}
+  .intro > p{margin-top:13px;max-width:34ch;font-size:.7rem;line-height:1.8;color:var(--dim)}
+  .controls{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
+  .ctl{margin-bottom:9px}
+  .ctlHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:3px}
+  .ctlHead output{color:var(--cream);font-family:var(--mono);font-size:.42rem;letter-spacing:.03em}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(238,241,246,.25)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--warm);margin-top:-5px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(238,241,246,.25)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:var(--warm);border:0}
+  .presets{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+  .preset{border:1px solid var(--line);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .preset:hover{color:var(--cream);border-color:var(--cream)}
+  .preset[aria-pressed="true"]{background:var(--warm);border-color:var(--warm);color:var(--space)}
+  .forge{display:flex;align-items:center;gap:8px;margin-top:12px;background:var(--warm);color:var(--space);padding:9px 13px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
+  .forge:hover{background:var(--cream)}
+  .forge i{width:5px;height:5px;border-radius:50%;background:var(--space);display:block}
+
+  .stage{position:relative;display:grid;place-items:center;min-height:clamp(380px,64vh,640px);touch-action:manipulation}
+  .stage::before{content:"";position:absolute;width:80%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(238,241,246,.08);transform:rotate(-18deg) scaleY(.38)}
+  #planet{width:min(100%,600px);height:auto;display:block;overflow:visible;cursor:crosshair}
+  .moonOrbit{position:absolute;width:86%;aspect-ratio:1;border-radius:50%;border:1px dashed rgba(238,241,246,.12);animation:orbit 28s linear infinite;pointer-events:none}
+  .moon{position:absolute;left:50%;top:-4px;width:9px;height:9px;border-radius:50%;background:#c8ccd6;box-shadow:0 0 8px rgba(200,204,214,.5);transform:translateX(-50%);margin-left:-30%}
+  @keyframes orbit{to{transform:rotate(360deg)}}
+  .stageTag{position:absolute;left:0;top:4%;color:var(--dim);line-height:1.8}
+  .stageTag b{color:var(--cream);font-weight:400}
+  .stageRight{position:absolute;right:0;bottom:4%;text-align:right;color:var(--dim);line-height:1.8}
+  .stageRight b{color:var(--warm);font-weight:400}
+  .readout{position:absolute;right:0;top:4%;text-align:right;color:var(--dim);line-height:1.8}
+  .readout .name{font-family:var(--serif);font-style:italic;font-size:1.1rem;color:var(--cream)}
+  .readout b{color:var(--cool);font-weight:400}
+  .designation{display:flex;gap:16px;margin-top:12px;color:var(--dim);flex-wrap:wrap}
+  .designation span b{color:var(--cream);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:960px){
+    .main{grid-template-columns:1fr;gap:16px}
+    .stage{order:1;min-height:340px}
+    .intro{order:2}
+    .headMid{display:none}
+    .controls{max-width:520px}
+    .readout{top:0}
+    .stageTag,.stageRight{display:none}
+    #planet{width:min(92%,520px)}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.56rem;letter-spacing:.18em}
+    h1{font-size:10.8vw}
+    .stage{min-height:300px}
+    .moonOrbit{width:96%}
+    .intro > p{font-size:.64rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="orb" aria-hidden="true"></span><span>World Foundry<small>Planetary lab / bay 09</small></span></a>
+    <div class="headMid mono"><span>Habitable zone <b>yes</b></span><span>Seed <b id="seedTop">4821</b></span><span>Forge status <b>warm</b></span></div>
+    <div class="headRight mono">Designation <b id="designationTop">KE-4b</b><br>Survey <b>provisional</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">A world in four sliders</p>
+      <h1>Forge a<br><em>small planet.</em></h1>
+      <p>Choose its size, how much water it keeps, how shy its clouds are, and how warm the star is. The rest — continents, weather, the moon — is a rumour the canvas decides.</p>
+      <div class="controls">
+        <div class="ctl"><div class="ctlHead mono"><label for="size">Radius</label><output id="sizeOut">1.00 R⊕</output></div><input id="size" type="range" min="60" max="130" value="100"></div>
+        <div class="ctl"><div class="ctlHead mono"><label for="water">Water</label><output id="waterOut">62%</output></div><input id="water" type="range" min="0" max="100" value="62"></div>
+        <div class="ctl"><div class="ctlHead mono"><label for="clouds">Clouds</label><output id="cloudsOut">44%</output></div><input id="clouds" type="range" min="0" max="100" value="44"></div>
+        <div class="ctl"><div class="ctlHead mono"><label for="temp">Temperature</label><output id="tempOut">14°C</output></div><input id="temp" type="range" min="-60" max="80" value="14"></div>
+        <div class="presets" role="group" aria-label="Presets"><button class="preset" data-p="ocean" aria-pressed="false">Ocean</button><button class="preset" data-p="desert" aria-pressed="false">Desert</button><button class="preset" data-p="ice" aria-pressed="false">Ice</button><button class="preset" data-p="gas" aria-pressed="false">Gas</button></div>
+        <button class="forge" id="forge"><i aria-hidden="true"></i>Forge a new world</button>
+        <div class="designation mono"><span>Gravity <b id="gravity">1.00 g</b></span><span>Class <b id="classVal">Terran</b></span><span>Moons <b>01</b></span></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="readout mono"><span class="name" id="worldName">Kel-4b</span><br>Radius <b id="radiusOut">6,371 km</b><br>Atmosphere <b>breathable</b><br>Survey <b id="survey">04 / 09</b></div>
+      <div class="moonOrbit" aria-hidden="true"><span class="moon"></span></div>
+      <canvas id="planet" width="640" height="640" aria-label="A procedurally generated planet. Click to scan."></canvas>
+      <span class="stageTag mono"><b>Fig. 01</b><br>generated world / seed <span id="seedBottom">4821</span></span>
+      <span class="stageRight mono">Atmosphere <b id="atmo">N₂ / O₂</b><br>Orbit <b>stable</b></span>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>World Foundry / a fictional planetary lab</span>
+    <span>Canvas, four sliders, one small moon</span>
+    <span>© 2026 · no worlds were harmed</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('planet');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const size = document.getElementById('size'), water = document.getElementById('water'), clouds = document.getElementById('clouds'), temp = document.getElementById('temp');
+  let seed = 4821;
+  let name = 'Kel-4b';
+
+  function rng(s){ let x = s; return function(){ x = (x * 16807) % 2147483647; return (x - 1) / 2147483646; }; }
+
+  function planetColors(t){
+    if (t < -20) return { base:'#c9dbe6', land:'#eef6fa', sea:'#7faec4', cloud:'#ffffff', rim:'#c9eaff' };
+    if (t < 10) return { base:'#5f8f86', land:'#8fa86e', sea:'#4d7f96', cloud:'#e9f2f2', rim:'#bfe8e2' };
+    if (t < 35) return { base:'#4f7f63', land:'#937f52', sea:'#3f728c', cloud:'#f3f5ee', rim:'#b6e0d1' };
+    return { base:'#a9663e', land:'#c58a5a', sea:'#6f8f9a', cloud:'#f2dfc4', rim:'#ffcda4' };
+  }
+
+  function draw(){
+    const W = 640, H = 640, cx = 320, cy = 320;
+    const R = 118 + Number(size.value) * .72;
+    const cols = planetColors(Number(temp.value));
+    ctx.clearRect(0, 0, W, H);
+    // glow
+    const glow = ctx.createRadialGradient(cx, cy, R * .8, cx, cy, R * 1.45);
+    glow.addColorStop(0, cols.rim + '40'); glow.addColorStop(.5, cols.rim + '12'); glow.addColorStop(1, cols.rim + '00');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.clip();
+    // base sphere
+    const base = ctx.createRadialGradient(cx - R * .35, cy - R * .38, R * .1, cx, cy, R * 1.1);
+    base.addColorStop(0, '#f4fbff'); base.addColorStop(.12, cols.base); base.addColorStop(.78, cols.sea); base.addColorStop(1, '#04131c');
+    ctx.fillStyle = base; ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+    const rand = rng(seed);
+    // bands
+    for (let i = 0; i < 14; i++){
+      const y = cy - R + (i / 14) * R * 2;
+      ctx.fillStyle = i % 2 ? 'rgba(255,255,255,.045)' : 'rgba(0,20,30,.06)';
+      ctx.fillRect(cx - R, y, R * 2, R * 2 / 14);
+    }
+    // water continents
+    const waterAmt = Number(water.value) / 100;
+    const cloudAmt = Number(clouds.value) / 100;
+    for (let i = 0; i < 24; i++){
+      const a = rand() * Math.PI * 2, d = Math.sqrt(rand()) * R * .82;
+      const x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d;
+      const rr = R * (.09 + rand() * .2) * (.5 + waterAmt);
+      ctx.beginPath(); ctx.ellipse(x, y, rr, rr * (.4 + rand() * .5), rand() * 3, 0, Math.PI * 2);
+      ctx.fillStyle = rand() > .55 ? cols.land : cols.sea;
+      ctx.globalAlpha = .42 + rand() * .28;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    // clouds
+    for (let i = 0; i < 18 + cloudAmt * 30; i++){
+      const a = rand() * Math.PI * 2, d = Math.sqrt(rand()) * R * .95;
+      const x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d;
+      const rr = R * (.05 + rand() * .18);
+      ctx.beginPath(); ctx.ellipse(x, y, rr * 1.6, rr * .35, rand() * 3, 0, Math.PI * 2);
+      ctx.fillStyle = cols.cloud;
+      ctx.globalAlpha = .10 + rand() * .25 * cloudAmt;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    // ice caps
+    if (Number(temp.value) < 20){
+      ctx.fillStyle = 'rgba(240,250,255,' + (0.5 - Number(temp.value) / 80) + ')';
+      ctx.beginPath(); ctx.ellipse(cx, cy - R * .92, R * .55, R * .22, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx, cy + R * .92, R * .5, R * .2, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    // terminator
+    const term = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
+    term.addColorStop(0, 'rgba(0,0,0,0)'); term.addColorStop(.55, 'rgba(0,0,0,.05)'); term.addColorStop(1, 'rgba(0,0,0,.55)');
+    ctx.fillStyle = term; ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+    ctx.restore();
+
+    // rim
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.strokeStyle = cols.rim; ctx.globalAlpha = .5; ctx.lineWidth = 1.6; ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, R + 2.5, 0, Math.PI * 2);
+    ctx.strokeStyle = cols.rim + '22'; ctx.lineWidth = 4; ctx.stroke();
+  }
+
+  function readouts(){
+    const t = Number(temp.value);
+    document.getElementById('sizeOut').textContent = (Number(size.value) / 100).toFixed(2) + ' R⊕';
+    document.getElementById('waterOut').textContent = water.value + '%';
+    document.getElementById('cloudsOut').textContent = clouds.value + '%';
+    document.getElementById('tempOut').textContent = (t > 0 ? '+' : '') + t + '°C';
+    document.getElementById('radiusOut').textContent = Math.round(6371 * Number(size.value) / 100).toLocaleString('en-US') + ' km';
+    document.getElementById('gravity').textContent = (Number(size.value) / 100).toFixed(2) + ' g';
+    document.getElementById('classVal').textContent = t < -20 ? 'Glacial' : t < 35 ? 'Terran' : 'Arid';
+    document.getElementById('atmo').textContent = t < -20 ? 'thin / N₂' : t < 35 ? 'N₂ / O₂' : 'CO₂ / dust';
+    draw();
+  }
+  [size, water, clouds, temp].forEach(el => el.addEventListener('input', readouts));
+
+  const presets = {
+    ocean: { size:104, water:92, clouds:58, temp:18 },
+    desert: { size:92, water:12, clouds:8, temp:48 },
+    ice: { size:108, water:74, clouds:34, temp:-38 },
+    gas: { size:126, water:66, clouds:82, temp:22 }
+  };
+  document.querySelectorAll('.preset').forEach(b => {
+    b.addEventListener('click', () => {
+      const p = presets[b.dataset.p];
+      size.value = p.size; water.value = p.water; clouds.value = p.clouds; temp.value = p.temp;
+      document.querySelectorAll('.preset').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      seed = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('seedTop').textContent = seed;
+      document.getElementById('seedBottom').textContent = seed;
+      readouts();
+    });
+  });
+
+  const syllables = ['Kel','Vir','Ara','Nox','Sol','Tyr','Lum','Eos','Mar','Oph','Zen','Cir'];
+  const suffixes = ['-4b','-7c','-2a','-9d','-3e','-6b'];
+  document.getElementById('forge').addEventListener('click', () => {
+    seed = Math.floor(1000 + Math.random() * 9000);
+    name = syllables[Math.floor(Math.random() * syllables.length)] + suffixes[Math.floor(Math.random() * suffixes.length)];
+    document.getElementById('worldName').textContent = name;
+    document.getElementById('designationTop').textContent = name.toUpperCase();
+    document.getElementById('seedTop').textContent = seed;
+    document.getElementById('seedBottom').textContent = seed;
+    document.getElementById('survey').textContent = String(Math.floor(1 + Math.random() * 9)).padStart(2,'0') + ' / 09';
+    document.body.animate ? document.body.animate([{ opacity:.6 }, { opacity:1 }], { duration: 400 }) : null;
+    readouts();
+  });
+
+  canvas.addEventListener('click', () => {
+    const c = document.createElement('span');
+    readouts();
+    document.getElementById('atmo').textContent = 'scanning…';
+    setTimeout(() => { document.getElementById('atmo').textContent = Number(temp.value) < 35 ? 'N₂ / O₂' : 'CO₂ / dust'; }, 900);
+  });
+
+  if (reduce) document.querySelector('.moonOrbit').style.animation = 'none';
+  readouts();
+</script>
+</body>
+</html>

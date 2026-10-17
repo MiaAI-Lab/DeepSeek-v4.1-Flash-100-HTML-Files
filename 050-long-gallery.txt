@@ -1,0 +1,20 @@
+TITLE
+The Long Gallery — Six Rooms, One Corridor
+
+PROMPT
+Create a horizontal-scrolling gallery called "The Long Gallery", composed of six full-height art panels arranged along one long corridor. Each panel is a distinct abstract artwork made only from CSS: Dust (warm beige, a blurred sun, floating translucent planes), Tide (deep blue layered wave lines), Fold (off-white paper polygons with hard shadows), Signal (black with vertical neon bars), Bloom (crimson and pink radial petals) and Return (cream with a glowing arched doorway). Every panel carries a number, title, year and a short curator's note. A slim header shows the gallery name and current room count; arrow buttons and dots navigate; the page scrolls horizontally with snap, or via buttons and keyboard arrows. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+An exhibition experienced as a walk. Each room is a different visual temperature, and the transition between them is part of the composition. The interface stays at the edges like gallery wayfinding: thin rules, small numbered labels, a progress line. The panels should feel like large prints, not slides.
+
+VISUAL TECHNIQUES
+- Native horizontal scrolling with scroll-snap and hidden scrollbars; panels sized in viewport units.
+- Six distinct CSS artworks: gradient orbs, repeating wave lines, clip-path folded planes, neon bars, conic petals, glowing arch.
+- Curatorial labels with numbered catalogue entries and year.
+- Navigation arrows, dot index and a progress line that tracks the active room.
+- Gallery-wall background with a subtle floor line and ambient shadows.
+- Scroll-triggered active state via IntersectionObserver.
+- Responsive: panels grow to 88vw, header compresses, notes shorten.
+
+INTERACTION MODEL
+Scroll horizontally, swipe, use the arrow buttons or press left/right arrow keys to move between rooms. Dots jump directly to a room. The active room updates the counter, dots and progress line. Hovering a panel lifts its label slightly. Reduced-motion switches scrolling to instant while keeping all navigation.

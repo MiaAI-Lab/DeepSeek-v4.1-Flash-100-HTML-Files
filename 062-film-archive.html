@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cinémathèque 07 — six imaginary films, one warm reel of light.">
+<title>Cinémathèque 07 — A Reel of Imaginary Films</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --black:#0a0908; --room:#15110d; --amber:#e5b06a; --cream:#f0e7d6; --red:#8c2f2a; --dim:rgba(240,231,214,.5); --line:rgba(229,176,106,.25);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--black);color:var(--cream);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 50% 0%,rgba(150,100,50,.22),transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.25;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--amber);color:var(--black)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--amber);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.48rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid rgba(229,176,106,.18)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.02rem;letter-spacing:.06em}
+  .brand .reel{width:18px;height:18px;border:1px solid var(--amber);border-radius:50%;position:relative;flex:none}
+  .brand .reel::before,.brand .reel::after{content:"";position:absolute;width:3px;height:3px;border-radius:50%;background:var(--amber);left:50%;top:50%;transform:translate(-50%,-50%)}
+  .brand .reel::before{box-shadow:-5px 0 0 var(--amber),5px 0 0 var(--amber),0 -5px 0 var(--amber),0 5px 0 var(--amber)}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--amber);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--cream);font-weight:400}
+
+  .main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:clamp(16px,2.6vw,28px) 0 14px;min-height:0}
+  .screenRow{display:grid;grid-template-columns:1.5fr .5fr;gap:clamp(18px,3vw,34px);align-items:end}
+  .screen{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden;border:1px solid rgba(229,176,106,.25);
+    box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 60px rgba(229,176,106,.06)}
+  .still{position:absolute;inset:0;transition:opacity .5s ease,transform .8s cubic-bezier(.2,.8,.2,1);opacity:0;transform:scale(1.04)}
+  .still.on{opacity:1;transform:scale(1)}
+  .still::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(0,0,0,.45) 100%);pointer-events:none}
+  .art-red{background:radial-gradient(circle at 62% 46%,#ba4a3d,#7d211e 55%,#3a0f10)}
+  .art-red::before{content:"";position:absolute;left:24%;bottom:0;width:26%;height:52%;background:linear-gradient(180deg,#2a0c0c,#130606);clip-path:polygon(20% 0,80% 0,100% 100%,0 100%)}
+  .art-red::after{content:"";position:absolute;right:14%;top:16%;width:18%;aspect-ratio:1;border:1px solid rgba(255,220,180,.25);transform:rotate(12deg)}
+  .art-blue{background:linear-gradient(180deg,#0b1c33,#163b58 55%,#245a6e)}
+  .art-blue::before{content:"";position:absolute;left:16%;top:16%;width:22%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 34%,#eef7f3,#a9cfd8 50%,rgba(169,207,216,.1));filter:blur(1px)}
+  .art-blue::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22%;background:linear-gradient(180deg,transparent,rgba(4,20,30,.8))}
+  .art-green{background:linear-gradient(160deg,#2c4a2a,#6d8a3b 58%,#c2b05e)}
+  .art-green::before{content:"";position:absolute;left:10%;right:10%;bottom:16%;height:34%;background:radial-gradient(ellipse at 35% 50%,#1d2f1c 0 18%,transparent 19%),radial-gradient(ellipse at 60% 60%,#1d2f1c 0 14%,transparent 15%),radial-gradient(ellipse at 80% 45%,#1d2f1c 0 20%,transparent 21%)}
+  .art-green::after{content:"";position:absolute;left:30%;top:22%;width:18%;height:36%;background:rgba(255,238,190,.35);filter:blur(8px)}
+  .art-static{background:repeating-linear-gradient(0deg,#1b1b1b 0 2px,#0a0a0a 2px 4px)}
+  .art-static::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 1px,transparent 1px 4px);opacity:.45}
+  .art-static::after{content:"";position:absolute;left:0;right:0;top:58%;height:1px;background:rgba(255,255,255,.5);box-shadow:0 0 12px rgba(255,255,255,.6);animation:tracking 4s linear infinite}
+  @keyframes tracking{from{top:10%}to{top:90%}}
+  .art-long{background:linear-gradient(90deg,#d0b58a 0 20%,#8b6a49 20% 32%,#d0b58a 32% 70%,#5e4a35 70% 76%,#e6d3ae 76% 100%)}
+  .art-long::before{content:"";position:absolute;left:0;right:0;top:42%;height:12%;background:rgba(30,25,20,.16)}
+  .art-long::after{content:"";position:absolute;left:46%;top:30%;width:8%;height:26%;background:rgba(30,25,20,.55);clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .art-end{background:#070707}
+  .art-end::before{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;border-radius:50%;background:#f0e7d6;transform:translate(-50%,-50%);box-shadow:0 0 26px 6px rgba(240,231,214,.3)}
+  .art-end::after{content:"";position:absolute;left:20%;right:20%;bottom:22%;height:1px;background:rgba(240,231,214,.25)}
+  .screenOverlay{position:absolute;left:18px;bottom:14px;right:18px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;pointer-events:none;mix-blend-mode:difference}
+  .screenOverlay h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.3rem,2.8vw,2.3rem);letter-spacing:-.02em;line-height:1}
+  .screenOverlay .idx{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;color:rgba(255,255,255,.7);text-align:right}
+  .screenDim{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(110deg,rgba(255,243,210,.06),transparent 36%);mix-blend-mode:screen}
+  .grain{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.25;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+
+  .details{padding:2px 0 8px}
+  .details .kick{color:var(--amber);font-family:var(--mono);font-size:.4rem;letter-spacing:.13em;text-transform:uppercase;margin-bottom:7px}
+  .details h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.35rem,2.4vw,1.9rem);line-height:1.05;letter-spacing:-.02em}
+  .details .meta{display:flex;gap:14px;margin-top:8px;padding-top:7px;border-top:1px solid var(--line);color:var(--dim);flex-wrap:wrap}
+  .details .meta span b{color:var(--cream);font-weight:400}
+  .details .note{margin-top:9px;color:var(--dim);font-size:.68rem;line-height:1.7}
+  .details .count{margin-top:12px;color:var(--dim);display:flex;justify-content:space-between;gap:8px;padding-top:7px;border-top:1px solid var(--line)}
+
+  .filmstrip{margin-top:16px;position:relative;border-top:1px solid rgba(229,176,106,.25);border-bottom:1px solid rgba(229,176,106,.25);background:#151210;padding:7px 10px}
+  .perf{height:9px;display:flex;justify-content:space-between;gap:5px;overflow:hidden}
+  .perf i{flex:1;height:7px;border-radius:2px;background:#0a0908;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);min-width:8px}
+  .strip{display:flex;gap:7px;padding:6px 0;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory}
+  .strip::-webkit-scrollbar{display:none}
+  .frame{flex:0 0 clamp(100px,12vw,150px);aspect-ratio:4/2.6;position:relative;overflow:hidden;border:1px solid rgba(229,176,106,.2);cursor:pointer;scroll-snap-align:start;transition:border-color .25s,transform .25s}
+  .frame:hover{transform:translateY(-2px);border-color:rgba(229,176,106,.55)}
+  .frame[aria-pressed="true"]{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
+  .frame .mini{position:absolute;inset:0;background-size:cover;filter:saturate(.85) brightness(.8)}
+  .frame .n{position:absolute;left:4px;bottom:3px;z-index:2;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;color:#fff;text-shadow:0 1px 3px #000}
+  .frame .selMark{position:absolute;right:4px;top:3px;z-index:2;width:6px;height:6px;border-radius:50%;background:var(--amber);opacity:0;box-shadow:0 0 8px var(--amber)}
+  .frame[aria-pressed="true"] .selMark{opacity:1}
+  .stripFoot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding-top:7px;border-top:1px solid rgba(229,176,106,.14);color:var(--dim);flex-wrap:wrap}
+  .controls{display:flex;align-items:center;gap:7px}
+  .ctrl{border:1px solid rgba(229,176,106,.3);padding:6px 9px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .ctrl:hover{color:var(--black);background:var(--amber);border-color:var(--amber)}
+  .ctrl.play{color:var(--amber);border-color:var(--amber)}
+  .ctrl.play:hover{color:var(--black)}
+  .progress{flex:1;height:1px;background:rgba(240,231,214,.14);max-width:200px;position:relative;overflow:hidden}
+  .progress i{position:absolute;inset:0;background:var(--amber);transform:scaleX(0);transform-origin:left}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 16px;color:rgba(240,231,214,.35)}
+
+  @media(max-width:900px){
+    .screenRow{grid-template-columns:1fr;gap:14px}
+    .details{padding:0}
+    .headMid{display:none}
+    .screen{aspect-ratio:16/9}
+    .main{padding-top:12px}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.86rem}
+    .screenOverlay h1{font-size:1.15rem}
+    .screenOverlay .idx{display:none}
+    .details h2{font-size:1.3rem}
+    .details .note{display:none}
+    .frame{flex-basis:33vw}
+    .stripFoot .progress{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="reel" aria-hidden="true"></span><span>Cinémathèque 07<small>Reel of imaginary films / 35 mm</small></span></a>
+    <div class="headMid mono"><span>Six shorts</span><span>Total <b>41 min</b></span><span>Room <b>2</b></span></div>
+    <div class="headRight mono">Programme 07 — <b>one night only</b><br>Projection <b>35 mm / colour</b></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <div class="main">
+      <div class="screenRow">
+        <div class="screen" id="screen">
+          <div class="still art-red on" data-i="0"></div>
+          <div class="still art-blue" data-i="1"></div>
+          <div class="still art-green" data-i="2"></div>
+          <div class="still art-static" data-i="3"></div>
+          <div class="still art-long" data-i="4"></div>
+          <div class="still art-end" data-i="5"></div>
+          <div class="screenDim" aria-hidden="true"></div>
+          <div class="grain" aria-hidden="true"></div>
+          <div class="screenOverlay"><h1 id="screenTitle">The Red Room</h1><span class="idx mono" id="screenIdx">01 / 06</span></div>
+        </div>
+        <div class="details">
+          <div class="kick mono" id="dKick">Short 01 — drama</div>
+          <h2 id="dTitle">The Red Room</h2>
+          <div class="meta mono"><span>Year <b id="dYear">2024</b></span><span>Duration <b id="dDur">12 min</b></span><span>Dir. <b id="dDir">Elin Voss</b></span></div>
+          <p class="note" id="dNote">A woman waits in a room that is red for reasons the film never explains. The camera does not blink.</p>
+          <div class="count mono"><span>Reel <b id="dReel">01 / 06</b></span><span>Language <b>none</b></span></div>
+        </div>
+      </div>
+
+      <div class="filmstrip" aria-label="Filmstrip">
+        <div class="perf" aria-hidden="true"></div>
+        <div class="strip" id="strip" tabindex="0" role="group" aria-label="Select a film"></div>
+        <div class="perf" aria-hidden="true"></div>
+        <div class="stripFoot mono">
+          <div class="controls"><button class="ctrl" id="prev" aria-label="Previous film">←</button><button class="ctrl" id="next" aria-label="Next film">→</button><button class="ctrl play" id="play">Play the reel ▶</button></div>
+          <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+          <span id="frameCount">01 / 06 — 35 mm</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Cinémathèque 07 — a fictional archive</span>
+    <span>Six films that do not exist, projected beautifully</span>
+    <span>© 2026 · please silence your phone</span>
+  </footer>
+</div>
+
+<script>
+  const films = [
+    { title:'The Red Room', kick:'Short 01 — drama', art:'art-red', year:'2024', dur:'12 min', dir:'Elin Voss', note:'A woman waits in a room that is red for reasons the film never explains. The camera does not blink.' },
+    { title:'Nocturne', kick:'Short 02 — nocturne', art:'art-blue', year:'2023', dur:'08 min', dir:'Tomas Reeve', note:'A night swimmer, a moon, and a conversation held entirely under water. Subtitles are unnecessary.' },
+    { title:'The Orchard', kick:'Short 03 — pastoral', art:'art-green', year:'2025', dur:'09 min', dir:'Mira Sol', note:'Three generations pick the same trees in three different weathers. Nothing is said about inheritance.' },
+    { title:'Static', kick:'Short 04 — experimental', art:'art-static', year:'2022', dur:'04 min', dir:'Unknown', note:'A found VHS tape containing eleven seconds of a family dinner, repeated for four minutes.' },
+    { title:'The Long Take', kick:'Short 05 — landscape', art:'art-long', year:'2026', dur:'06 min', dir:'Ada Lune', note:'One continuous pan across an empty room. Somewhere in the middle, the light changes.' },
+    { title:'End Credits', kick:'Short 06 — coda', art:'art-end', year:'2021', dur:'02 min', dir:'Anonymous', note:'Two minutes of black leader, followed by a single dot. The projectionist insists it is the ending.' }
+  ];
+  const strip = document.getElementById('strip');
+  const stills = Array.from(document.querySelectorAll('.still'));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0, playing = false, timer = null, progTimer = null;
+
+  films.forEach((f, i) => {
+    const b = document.createElement('button');
+    b.className = 'frame';
+    b.setAttribute('aria-pressed', String(i === 0));
+    b.setAttribute('aria-label', f.title);
+    b.innerHTML = '<span class="mini ' + f.art + '" aria-hidden="true"></span><span class="n">' + String(i + 1).padStart(2,'0') + '</span><span class="selMark" aria-hidden="true"></span>';
+    b.addEventListener('click', () => select(i));
+    strip.appendChild(b);
+  });
+  const frames = Array.from(document.querySelectorAll('.frame'));
+
+  function select(i){
+    current = (i + films.length) % films.length;
+    const f = films[current];
+    stills.forEach((s, j) => s.classList.toggle('on', j === current));
+    frames.forEach((b, j) => b.setAttribute('aria-pressed', String(j === current)));
+    document.getElementById('screenTitle').textContent = f.title;
+    document.getElementById('screenIdx').textContent = String(current + 1).padStart(2,'0') + ' / 06';
+    document.getElementById('dKick').textContent = f.kick;
+    document.getElementById('dTitle').textContent = f.title;
+    document.getElementById('dYear').textContent = f.year;
+    document.getElementById('dDur').textContent = f.dur;
+    document.getElementById('dDir').textContent = f.dir;
+    document.getElementById('dNote').textContent = f.note;
+    document.getElementById('dReel').textContent = String(current + 1).padStart(2,'0') + ' / 06';
+    document.getElementById('frameCount').textContent = String(current + 1).padStart(2,'0') + ' / 06 — 35 mm';
+    document.getElementById('bar').style.transform = 'scaleX(' + ((current + 1) / films.length) + ')';
+    frames[current].scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    resetProgress();
+    if (playing) restartTimer();
+  }
+
+  function resetProgress(){
+    const bar = document.getElementById('bar');
+    bar.style.transition = 'none';
+    bar.style.transform = 'scaleX(0)';
+    requestAnimationFrame(() => {
+      bar.style.transition = 'transform 3.5s linear';
+      bar.style.transform = 'scaleX(1)';
+    });
+  }
+  function restartTimer(){
+    clearInterval(timer);
+    timer = setInterval(() => select(current + 1), 3500);
+  }
+
+  document.getElementById('next').addEventListener('click', () => select(current + 1));
+  document.getElementById('prev').addEventListener('click', () => select(current - 1));
+  document.getElementById('play').addEventListener('click', function(){
+    playing = !playing;
+    this.textContent = playing ? 'Pause the reel ❚❚' : 'Play the reel ▶';
+    if (playing){ restartTimer(); resetProgress(); }
+    else { clearInterval(timer); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') select(current + 1);
+    if (e.key === 'ArrowLeft') select(current - 1);
+  });
+
+  select(0);
+</script>
+</body>
+</html>

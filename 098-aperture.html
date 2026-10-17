@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Aperture — an exposure laboratory with a seven-blade iris.">
+<title>Aperture — Let the Light In</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --body:#0b0b0c; --metal:#191a1c; --chrome:#c9c3b6; --chrome2:#8d887d; --ink:#ebe5d8; --dim:rgba(235,229,216,.45); --line:rgba(235,229,216,.14);
+    --red:#e0442e; --warm:#f4b56a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--body);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 50% 0%,#1b1c1e,transparent 60%),linear-gradient(180deg,#0e0f10,#080809)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:#fff}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--red);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.04rem;letter-spacing:.08em}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 8px rgba(224,68,46,.7);flex:none}
+  .brand span{display:block;font-family:var(--mono);font-size:.33rem;letter-spacing:.12em;color:var(--dim);margin-top:1px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--warm);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:230px minmax(0,1fr) 270px;gap:clamp(16px,2.6vw,30px);align-items:center;padding:clamp(14px,2.4vw,26px) 0}
+  .intro h1{font-family:var(--serif);font-size:clamp(2rem,3.4vw,3.3rem);line-height:.92;letter-spacing:-.05em;font-weight:400}
+  .intro h1 em{font-style:italic;color:var(--warm)}
+  .intro .eyebrow{display:flex;align-items:center;gap:8px;color:var(--dim);margin-bottom:10px}
+  .intro .eyebrow::before{content:"";width:18px;height:1px;background:var(--red)}
+  .intro p{margin-top:11px;color:var(--dim);font-size:.63rem;line-height:1.8;max-width:30ch}
+  .triangle{margin-top:14px;border-top:1px solid var(--line)}
+  .triRow{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid rgba(235,229,216,.07);color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.04em;text-transform:uppercase}
+  .triRow b{color:var(--ink);font-weight:400}
+
+  .viewfinderWrap{position:relative;width:100%;max-width:740px;margin:0 auto}
+  .bezel{position:relative;padding:clamp(7px,1vw,11px);border-radius:13px;background:linear-gradient(150deg,#3a3b3e,#161719 35%,#0c0d0e 60%,#2c2d30);
+    box-shadow:0 30px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.16),inset 0 -2px 4px rgba(0,0,0,.7)}
+  .viewfinder{position:relative;aspect-ratio:3/2;overflow:hidden;background:#221812;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.8)}
+  .scene{position:absolute;inset:-4%;transition:filter .25s ease,transform .6s ease;filter:brightness(var(--bright,1)) contrast(1.03) saturate(.95);background:
+    radial-gradient(circle at 68% 38%,#ffe6b0 0 4.5%,rgba(255,218,152,.55) 5%,rgba(255,180,110,0) 16%),
+    linear-gradient(180deg,#3f3448 0%,#7c4a5d 28%,#d47c60 52%,#f0a96b 64%,#8a5b44 66%,#3a2a24 82%,#191311 100%)}
+  .sun{position:absolute;left:64%;top:34%;width:7%;aspect-ratio:1;border-radius:50%;background:#fff1c7;box-shadow:0 0 34px 16px rgba(255,217,150,.55);transform:translate(-50%,-50%)}
+  .hill{position:absolute;left:-10%;right:-10%;bottom:18%;height:30%;background:linear-gradient(180deg,#5b4540,#2d211f);clip-path:polygon(0 78%,10% 55%,22% 66%,35% 38%,48% 55%,60% 44%,72% 60%,84% 40%,100% 58%,100% 100%,0 100%)}
+  .hill2{position:absolute;left:-10%;right:-10%;bottom:0;height:28%;background:linear-gradient(180deg,#231a17,#0e0a08);clip-path:polygon(0 55%,15% 38%,30% 50%,47% 28%,64% 48%,80% 32%,100% 50%,100% 100%,0 100%)}
+  .field{position:absolute;left:0;right:0;bottom:0;height:22%;background:repeating-linear-gradient(92deg,rgba(0,0,0,.2) 0 1px,transparent 1px 4px),linear-gradient(180deg,#1d1512,#0b0806)}
+  .gridLines{position:absolute;inset:0;pointer-events:none;background:
+    linear-gradient(90deg,transparent 33.2%,rgba(255,255,255,.16) 33.2% 33.45%,transparent 33.45% 66.4%,rgba(255,255,255,.16) 66.4% 66.65%,transparent 66.65%),
+    linear-gradient(180deg,transparent 33.2%,rgba(255,255,255,.16) 33.2% 33.45%,transparent 33.45% 66.4%,rgba(255,255,255,.16) 66.4% 66.65%,transparent 66.65%)}
+  .focus{position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);pointer-events:none}
+  .focus::before,.focus::after{content:"";position:absolute;width:11px;height:11px;border:1.5px solid rgba(255,255,255,.7)}
+  .focus::before{left:0;top:0;border-right:0;border-bottom:0}.focus::after{right:0;bottom:0;border-left:0;border-top:0}
+  .apertureSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .vfHud{position:absolute;left:8px;bottom:6px;right:8px;display:flex;justify-content:space-between;color:rgba(255,255,255,.7);text-shadow:0 1px 2px rgba(0,0,0,.8);pointer-events:none}
+  .vfHud b{color:#fff;font-weight:400}
+  .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+  .flash.on{animation:flash .45s ease-out}
+  @keyframes flash{0%{opacity:.95}100%{opacity:0}}
+  .bezelFoot{display:flex;justify-content:space-between;align-items:center;padding:7px 3px 0;color:rgba(235,229,216,.35)}
+  .screw{width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8d887d,#2a2b2e);box-shadow:inset 0 0 0 1px rgba(0,0,0,.5)}
+  .dots{display:flex;gap:3px}
+  .dots i{width:3px;height:3px;border-radius:50%;background:rgba(235,229,216,.25);display:block}
+
+  .exposure{border:1px solid var(--line);background:linear-gradient(160deg,rgba(26,27,29,.85),rgba(14,15,16,.9));padding:clamp(10px,1.5vw,14px)}
+  .exposure h2{font-family:var(--serif);font-size:1.05rem;font-weight:400;margin-bottom:2px}
+  .exposure .sub{color:var(--dim);margin-bottom:8px}
+  .exRow{margin-bottom:6px}
+  .exRow .row{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:1px}
+  .exRow .row b{color:var(--ink);font-weight:400;font-family:var(--mono);font-size:.46rem}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(235,229,216,.24)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--chrome);margin-top:-4.5px;border:1px solid #0b0b0c}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(235,229,216,.24)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border:1px solid #0b0b0c;border-radius:50%;background:var(--chrome)}
+  .meter{margin-top:7px}
+  .meter .scale{position:relative;height:16px;border:1px solid rgba(235,229,216,.2);display:flex;align-items:center}
+  .meter .scale::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(235,229,216,.3)}
+  .meter .needle{position:absolute;top:-3px;bottom:-3px;width:1.5px;background:var(--red);left:50%;transition:left .2s}
+  .meter .scale span{position:absolute;font-family:var(--mono);font-size:.28rem;color:var(--dim);top:17px}
+  .meter .scale span:first-child{left:2px}.meter .scale span:last-child{right:2px}
+  .verdict{display:flex;justify-content:space-between;margin-top:18px;padding-top:4px;border-top:1px solid var(--line);color:var(--dim)}
+  .verdict b{color:var(--warm);font-weight:400}
+  .actions{display:flex;gap:5px;margin-top:8px}
+  .actions button{flex:1;border:1px solid rgba(235,229,216,.22);padding:6px 7px;font-family:var(--mono);font-size:.34rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .actions button:hover{color:var(--ink);border-color:rgba(235,229,216,.45)}
+  .release{margin-top:7px;width:100%;background:var(--red);color:#fff;padding:8px;border-radius:2px;font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;text-transform:uppercase;display:flex;justify-content:center;align-items:center;gap:7px;transition:filter .2s}
+  .release:hover{filter:brightness(1.1)}
+  .release .shutterDot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.7);display:inline-block}
+
+  .film{margin-top:clamp(10px,1.6vw,16px);border-top:1px solid var(--line);padding-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .film .label{color:var(--dim);min-width:90px}
+  .frames{display:flex;gap:5px;flex:1;min-height:44px;flex-wrap:wrap}
+  .frame{width:64px;height:44px;position:relative;border:1px solid rgba(235,229,216,.2);overflow:hidden;background:linear-gradient(180deg,#3f3448,#d47c60 55%,#1d1512)}
+  .frame i{position:absolute;left:58%;top:30%;width:8px;height:8px;border-radius:50%;background:#fff1c7;box-shadow:0 0 8px 3px rgba(255,217,150,.5)}
+  .frame span{position:absolute;left:2px;bottom:1px;right:2px;font-family:var(--mono);font-size:.24rem;color:#fff;text-shadow:0 1px 1px #000;letter-spacing:.02em}
+  .frame .num{position:absolute;right:2px;top:1px;font-family:var(--mono);font-size:.24rem;color:#fff;opacity:.8}
+  .film .clear{color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid transparent}
+  .film .clear:hover{color:var(--ink);border-color:var(--ink)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:8px 0 14px;border-top:1px solid var(--line);color:rgba(235,229,216,.28)}
+
+  @media(max-width:1000px){
+    .main{grid-template-columns:1fr 1fr;gap:14px}
+    .intro{grid-column:1/-1;display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+    .intro p{max-width:44ch;display:none}
+    .triangle{display:none}
+    .viewfinderWrap{order:1}
+    .exposure{order:2}
+    .headMid{display:none}
+  }
+  @media(max-width:760px){
+    .main{grid-template-columns:1fr}
+    .intro{display:block}
+    .intro p{display:block;max-width:100%}
+    .viewfinderWrap{order:0}
+    .exposure{order:1}
+    .headRight{display:none}
+    .frames{flex-wrap:nowrap;overflow-x:auto;padding-bottom:3px}
+  }
+  @media(max-width:520px){
+    .wrap{padding:0 10px}
+    h1{font-size:2.1rem}
+    .bezel{padding:6px;border-radius:9px}
+    .film .label{min-width:100%}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span><span>Aperture<small>Exposure laboratory / 35 mm</small></span></a>
+    <div class="headMid mono"><span>Film <b>400 ISO</b></span><span>Format <b>3 : 2</b></span><span>Frames <b id="headFrames">00</b></span></div>
+    <div class="headRight mono">Dusk study<br><b>17 Oct 2026 · 18:42</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="eyebrow mono">The exposure triangle</p>
+      <h1>Let the<br>light <em>in.</em></h1>
+      <p>Three controls, one decision. Open the iris and the dusk arrives faster; close it and the evening slows down. Everything else is patience.</p>
+      <div class="triangle">
+        <div class="triRow"><span>Aperture</span><b>depth</b></div>
+        <div class="triRow"><span>Shutter</span><b>time</b></div>
+        <div class="triRow"><span>ISO</span><b>sensitivity</b></div>
+      </div>
+    </div>
+
+    <div class="viewfinderWrap">
+      <div class="bezel">
+        <div class="viewfinder">
+          <div class="scene" id="scene"><div class="sun"></div><div class="hill"></div><div class="hill2"></div><div class="field"></div></div>
+          <div class="gridLines" aria-hidden="true"></div>
+          <div class="focus" aria-hidden="true"></div>
+          <svg class="apertureSvg" id="iris" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true">
+            <defs><mask id="irisMask"><rect width="600" height="400" fill="#fff"/><polygon id="hole" points="" fill="#000"/></mask></defs>
+            <rect width="600" height="400" fill="rgba(6,6,7,.94)" mask="url(#irisMask)"/>
+            <g id="blades"></g>
+            <polygon id="holeEdge" points="" fill="none" stroke="rgba(220,215,200,.4)" stroke-width="1.2"/>
+          </svg>
+          <div class="vfHud mono"><span>f/<b id="hudF">5.6</b> · <b id="hudS">1/250</b> · ISO <b id="hudI">400</b></span><span id="hudEv">EV 10.9</span></div>
+          <div class="flash" id="flash"></div>
+        </div>
+        <div class="bezelFoot mono"><div class="dots"><i></i><i></i><i></i></div><span>aperture / 7 blades</span><div class="screw"></div></div>
+      </div>
+    </div>
+
+    <aside class="exposure">
+      <h2>Exposure</h2>
+      <div class="sub mono">read the light</div>
+      <div class="exRow"><div class="row mono"><span>Aperture</span><b id="fOut">f/5.6</b></div><input id="fstop" type="range" min="0" max="8" value="4" step="1" aria-label="Aperture"></div>
+      <div class="exRow"><div class="row mono"><span>Shutter</span><b id="sOut">1/250</b></div><input id="shutter" type="range" min="0" max="9" value="2" step="1" aria-label="Shutter speed"></div>
+      <div class="exRow"><div class="row mono"><span>ISO</span><b id="iOut">400</b></div><input id="iso" type="range" min="0" max="6" value="2" step="1" aria-label="ISO"></div>
+      <div class="meter"><div class="scale"><span>−3</span><span>+3</span><div class="needle" id="needle"></div></div></div>
+      <div class="verdict mono"><span id="verdict">slightly under</span><b id="evOut">EV 10.9</b></div>
+      <div class="actions"><button id="auto">Auto exposure</button></div>
+      <button class="release" id="release"><span class="shutterDot" aria-hidden="true"></span>Release shutter</button>
+    </aside>
+  </main>
+
+  <div class="film">
+    <div class="label mono">Filmstrip <b id="frameCount">00</b> / 06</div>
+    <div class="frames" id="frames"></div>
+    <button class="clear" id="clear">Clear strip</button>
+  </div>
+
+  <footer class="mono">
+    <span>Aperture / a fictional camera</span>
+    <span>No photons were permanently altered</span>
+    <span>© 2026 · expose for the dusk</span>
+  </footer>
+</div>
+
+<script>
+  const fstops = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
+  const shutters = [
+    { t: 1/1000, label: '1/1000' }, { t: 1/500, label: '1/500' }, { t: 1/250, label: '1/250' },
+    { t: 1/125, label: '1/125' }, { t: 1/60, label: '1/60' }, { t: 1/30, label: '1/30' },
+    { t: 1/15, label: '1/15' }, { t: 1/8, label: '1/8' }, { t: 1/4, label: '1/4' }, { t: 1/2, label: '1/2' }
+  ];
+  const isos = [100, 200, 400, 800, 1600, 3200, 6400];
+  const Ns = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let fIdx = 4, sIdx = 2, iIdx = 2, frames = 0;
+  const NS = 'http://www.w3.org/2000/svg';
+  const targetEV = 11;
+
+  function ev(){
+    const N = fstops[fIdx], t = shutters[sIdx].t, iso = isos[iIdx];
+    return Math.log2((N * N) / t) - Math.log2(iso / 100);
+  }
+  function update(){
+    const e = ev(), off = e - targetEV;
+    const f = fstops[fIdx], n = fstops[fIdx];
+    const r = Math.max(28, 175 - fIdx * 17.2); // opening radius in 600x400 space
+    const cx = 300, cy = 200, sides = 7;
+    const hole = [];
+    for (let i = 0; i < sides; i++){
+      const a = -Math.PI / 2 + i * Math.PI * 2 / sides;
+      hole.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]);
+    }
+    const holePts = hole.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    document.getElementById('hole').setAttribute('points', holePts);
+    document.getElementById('holeEdge').setAttribute('points', holePts);
+    // blades
+    const blades = document.getElementById('blades');
+    blades.innerHTML = '';
+    for (let i = 0; i < sides; i++){
+      const a0 = -Math.PI / 2 + i * Math.PI * 2 / sides;
+      const a1 = a0 + Math.PI * 2 / sides;
+      const p0 = [cx + Math.cos(a0) * 380, cy + Math.sin(a0) * 380];
+      const p1 = [cx + Math.cos(a1) * 380, cy + Math.sin(a1) * 380];
+      const h0 = [cx + Math.cos(a0 - .18) * r, cy + Math.sin(a0 - .18) * r];
+      const h1 = [cx + Math.cos(a1 - .18) * r, cy + Math.sin(a1 - .18) * r];
+      const poly = document.createElementNS(NS, 'polygon');
+      poly.setAttribute('points', [p0, p1, h1, h0].map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '));
+      poly.setAttribute('fill', 'rgba(22,23,25,.96)');
+      poly.setAttribute('stroke', 'rgba(200,195,182,.12)');
+      poly.setAttribute('stroke-width', '.8');
+      blades.appendChild(poly);
+    }
+    const bright = Math.max(.3, Math.min(1.9, Math.pow(2, off * .3)));
+    document.getElementById('scene').style.setProperty('--bright', bright.toFixed(2));
+    document.getElementById('fOut').textContent = 'f/' + f;
+    document.getElementById('sOut').textContent = shutters[sIdx].label;
+    document.getElementById('iOut').textContent = isos[iIdx];
+    document.getElementById('hudF').textContent = f;
+    document.getElementById('hudS').textContent = shutters[sIdx].label;
+    document.getElementById('hudI').textContent = isos[iIdx];
+    document.getElementById('evOut').textContent = 'EV ' + e.toFixed(1);
+    document.getElementById('hudEv').textContent = 'EV ' + e.toFixed(1);
+    const verdict = Math.abs(off) < .4 ? 'balanced' : off < 0 ? (off < -1.2 ? 'under-exposed' : 'slightly under') : (off > 1.2 ? 'over-exposed' : 'slightly over');
+    document.getElementById('verdict').textContent = verdict;
+    const pct = Math.max(2, Math.min(98, 50 + off / 3 * 46));
+    document.getElementById('needle').style.left = pct + '%';
+  }
+  document.getElementById('fstop').addEventListener('input', function(){ fIdx = Number(this.value); update(); });
+  document.getElementById('shutter').addEventListener('input', function(){ sIdx = Number(this.value); update(); });
+  document.getElementById('iso').addEventListener('input', function(){ iIdx = Number(this.value); update(); });
+  document.getElementById('auto').addEventListener('click', () => {
+    // choose f/8, ISO 400, solve for shutter nearest target
+    fIdx = 5; iIdx = 2;
+    let best = 0, bestDiff = 99;
+    shutters.forEach((s, i) => {
+      const e = Math.log2((fstops[fIdx] ** 2) / s.t) - Math.log2(isos[iIdx] / 100);
+      const d = Math.abs(e - targetEV);
+      if (d < bestDiff){ bestDiff = d; best = i; }
+    });
+    sIdx = best;
+    document.getElementById('fstop').value = String(fIdx);
+    document.getElementById('iso').value = String(iIdx);
+    document.getElementById('shutter').value = String(sIdx);
+    update();
+  });
+
+  document.getElementById('release').addEventListener('click', () => {
+    const flash = document.getElementById('flash');
+    flash.classList.remove('on'); void flash.offsetWidth; flash.classList.add('on');
+    frames++;
+    const frame = document.createElement('div');
+    frame.className = 'frame';
+    frame.style.filter = 'brightness(' + Math.max(.35, Math.min(1.7, Math.pow(2, (ev() - targetEV) * .3))).toFixed(2) + ')';
+    frame.innerHTML = '<i></i><span class="num">' + String(frames).padStart(2,'0') + '</span><span>f/' + fstops[fIdx] + ' · ' + shutters[sIdx].label + '</span>';
+    const strip = document.getElementById('frames');
+    strip.appendChild(frame);
+    if (strip.children.length > 6) strip.removeChild(strip.firstChild);
+    document.getElementById('frameCount').textContent = String(Math.min(frames, 99)).padStart(2,'0');
+    document.getElementById('headFrames').textContent = String(Math.min(frames, 99)).padStart(2,'0');
+  });
+  document.getElementById('clear').addEventListener('click', () => {
+    document.getElementById('frames').innerHTML = '';
+    frames = 0;
+    document.getElementById('frameCount').textContent = '00';
+    document.getElementById('headFrames').textContent = '00';
+  });
+
+  update();
+</script>
+</body>
+</html>

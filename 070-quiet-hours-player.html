@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Quiet Hours — a silent listening room with a waveform, four tracks and warm light.">
+<title>The Quiet Hours — A Silent Listening Room</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --room:#141110; --panel:#1b1716; --card:#221c1a; --cream:#f0e8da; --dim:rgba(240,232,218,.5); --line:rgba(240,232,218,.14);
+    --coral:#ff7a59; --lav:#bda9ff; --a1:#c96f4e; --a2:#5b3a5e; --a3:#e2a26e;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--room);color:var(--cream);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 72% 10%,rgba(255,122,89,.12),transparent 62%),radial-gradient(700px 600px at 5% 90%,rgba(93,58,94,.2),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--coral);color:var(--room)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--coral);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.48rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.02rem;letter-spacing:.03em}
+  .brand .disc{width:19px;height:19px;border-radius:50%;border:1px solid var(--cream);position:relative;flex:none}
+  .brand .disc::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--coral)}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--coral);font-weight:400}
+
+  .main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:clamp(16px,3vh,30px) 0 14px}
+  .player{display:grid;grid-template-columns:330px 1fr;gap:clamp(18px,3vw,36px);align-items:center}
+  .coverWrap{position:relative}
+  .cover{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:linear-gradient(150deg,var(--a1),var(--a2) 58%,#1a1214);box-shadow:24px 28px 50px rgba(0,0,0,.5);
+    transition:background 1s}
+  .cover::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 34% 24%,rgba(255,240,220,.34),transparent 52%)}
+  .cover::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px);mix-blend-mode:overlay}
+  .cover .initial{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);font-family:var(--serif);font-size:clamp(8rem,24vw,12rem);line-height:.7;color:rgba(240,232,218,.9);text-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .cover .stamp{position:absolute;left:14px;bottom:12px;color:rgba(240,232,218,.75);line-height:1.7}
+  .cover .stamp b{color:var(--cream);font-weight:400}
+  .cover .discSmall{position:absolute;right:14px;bottom:12px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(240,232,218,.5);display:grid;place-items:center;color:rgba(240,232,218,.6);font-size:.4rem}
+  .coverWrap .spine{position:absolute;left:-8px;top:4%;bottom:4%;width:8px;background:rgba(240,232,218,.15);border-radius:2px;box-shadow:0 0 12px rgba(0,0,0,.3)}
+  .coverFoot{display:flex;justify-content:space-between;width:100%;margin-top:10px;color:var(--dim)}
+
+  .details{min-width:0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--coral);margin-bottom:11px}
+  .kicker::before{content:"";width:20px;height:1px;background:var(--coral)}
+  .details h1{font-family:var(--serif);font-size:clamp(2rem,4.3vw,3.5rem);line-height:.92;letter-spacing:-.04em;font-weight:400}
+  .details .artist{font-family:var(--serif);font-style:italic;color:var(--dim);font-size:1rem;margin-top:4px}
+  .details .album{color:var(--dim);margin-top:2px}
+  .waveBox{margin-top:18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0 6px}
+  canvas#wave{display:block;width:100%;height:78px;cursor:pointer}
+  .times{display:flex;justify-content:space-between;color:var(--dim);margin-top:2px}
+  .times b{color:var(--cream);font-weight:400}
+  .transport{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+  .ctrl{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:.6rem;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .ctrl:hover{color:var(--cream);border-color:var(--cream)}
+  .ctrl[aria-pressed="true"]{color:var(--coral);border-color:var(--coral)}
+  .play{width:48px;height:48px;border-radius:50%;background:var(--coral);color:var(--room);display:grid;place-items:center;font-size:.9rem;flex:none;box-shadow:0 0 26px rgba(255,122,89,.3);transition:transform .2s,background .2s}
+  .play:hover{transform:scale(1.05)}
+  .eq{display:flex;align-items:flex-end;gap:2px;height:18px;margin-left:2px}
+  .eq i{width:2px;height:20%;background:var(--coral);opacity:.7;border-radius:1px}
+  .playing .eq i{animation:eq 1s ease-in-out infinite alternate}
+  .eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}.eq i:nth-child(4){animation-delay:.1s}.eq i:nth-child(5){animation-delay:.25s}
+  @keyframes eq{from{height:15%}to{height:100%}}
+  .vol{display:flex;align-items:center;gap:6px;color:var(--dim);margin-left:auto}
+  input[type=range]{width:74px;-webkit-appearance:none;appearance:none;height:14px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(240,232,218,.3)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:9px;height:9px;border-radius:50%;background:var(--cream);margin-top:-4px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(240,232,218,.3)}
+  input[type=range]::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:var(--cream)}
+  .lyric{margin-top:12px;color:var(--dim);font-family:var(--serif);font-style:italic;font-size:.92rem;line-height:1.5;max-width:44ch;min-height:2.8em}
+  .lyric b{color:var(--cream);font-weight:400}
+
+  .playlist{margin-top:18px;border-top:1px solid var(--line)}
+  .plHead{display:flex;justify-content:space-between;color:var(--dim);padding:7px 0;border-bottom:1px solid var(--line)}
+  .track{display:grid;grid-template-columns:28px 1fr auto auto;gap:12px;align-items:center;padding:9px 4px;border-bottom:1px solid rgba(240,232,218,.07);width:100%;text-align:left;transition:background .2s,padding-left .2s;color:var(--dim)}
+  .track:hover{padding-left:8px;color:var(--cream)}
+  .track[aria-pressed="true"]{color:var(--cream);background:rgba(255,122,89,.05)}
+  .track .no{font-family:var(--mono);font-size:.4rem;letter-spacing:.08em}
+  .track[aria-pressed="true"] .no{color:var(--coral)}
+  .track .tt{font-family:var(--serif);font-size:.9rem}
+  .track .tt small{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+  .track .mood{font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);padding:2px 5px;white-space:nowrap}
+  .track .dur{font-family:var(--mono);font-size:.4rem;letter-spacing:.04em}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:860px){
+    .player{grid-template-columns:1fr;gap:18px}
+    .coverWrap{max-width:320px;width:100%;margin:0 auto}
+    .headMid{display:none}
+    .details{text-align:left}
+    .playlist{margin-top:14px}
+    .cover .initial{font-size:9rem}
+  }
+  @media(max-width:560px){
+    .headRight{display:none}
+    .brand{font-size:.9rem}
+    .player{gap:14px}
+    .coverWrap{max-width:250px}
+    .cover .initial{font-size:7rem}
+    .details h1{font-size:2rem}
+    .transport{gap:9px}
+    .vol{margin-left:0;width:100%}
+    input[type=range]{flex:1;width:auto}
+    .lyric{font-size:.82rem}
+    .track{grid-template-columns:20px 1fr auto;gap:8px;padding:8px 2px}
+    .track .mood{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="disc" aria-hidden="true"></span><span>The Quiet Hours<small>A silent listening room / side a</small></span></a>
+    <div class="headMid mono"><span>Album <b>QH-01</b></span><span>Tracks <b>04</b></span><span>Runtime <b>18:42</b></span></div>
+    <div class="headRight mono">17 October 2026<br><b>Volume: soft</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <section class="player" aria-label="Music player">
+      <div class="coverWrap">
+        <div class="spine" aria-hidden="true"></div>
+        <div class="cover" id="cover">
+          <span class="initial" id="coverInitial">Q</span>
+          <span class="stamp mono"><b>The Quiet Hours</b><br>Side A / 33 rpm</span>
+          <span class="discSmall" aria-hidden="true">◍</span>
+        </div>
+        <div class="coverFoot mono"><span>QH—01</span><span>Pressed in small numbers</span></div>
+      </div>
+
+      <div class="details">
+        <p class="kicker mono">Now playing / side A</p>
+        <h1 id="trackTitle">Slow Weather</h1>
+        <div class="artist" id="trackArtist">The Quiet Hours</div>
+        <div class="album mono" id="trackAlbum">A silent listening room — 2026</div>
+
+        <div class="waveBox">
+          <canvas id="wave" aria-label="Waveform. Click to seek."></canvas>
+          <div class="times mono"><span id="elapsed">00:00</span><span id="duration">04:32</span></div>
+        </div>
+
+        <div class="transport">
+          <button class="ctrl" id="shuffle" aria-pressed="false" aria-label="Shuffle">⤨</button>
+          <button class="ctrl" id="prev" aria-label="Previous track">←</button>
+          <button class="play" id="play" aria-label="Play">▶</button>
+          <button class="ctrl" id="next" aria-label="Next track">→</button>
+          <button class="ctrl" id="repeat" aria-pressed="false" aria-label="Repeat">↻</button>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="vol mono"><span aria-hidden="true">VOL</span><input id="vol" type="range" min="0" max="100" value="58" aria-label="Volume"></span>
+        </div>
+        <p class="lyric" id="lyric">“The weather came indoors and stayed for tea. <b>We did not ask it to leave.</b>”</p>
+      </div>
+    </section>
+
+    <section class="playlist" aria-label="Playlist">
+      <div class="plHead mono"><span>Side A — four quiet pieces</span><span>Duration</span></div>
+      <div id="tracks"></div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>The Quiet Hours / a fictional album</span>
+    <span>Simulated silent playback · no audio files</span>
+    <span>© 2026 · listen with the lights low</span>
+  </footer>
+</div>
+
+<script>
+  const tracks = [
+    { title:'Slow Weather', artist:'The Quiet Hours', dur:272, a1:'#c96f4e', a2:'#5b3a5e', initial:'Q', lyric:'“The weather came indoors and stayed for tea. <b>We did not ask it to leave.</b>”', mood:'dusk' },
+    { title:'A Room, Remembered', artist:'The Quiet Hours', dur:238, a1:'#8a7bb8', a2:'#2f3d5e', initial:'R', lyric:'“A room is mostly the light that used to be in it.”', mood:'hush' },
+    { title:'Late Letters', artist:'The Quiet Hours', dur:301, a1:'#d8a45e', a2:'#5e3a2f', initial:'L', lyric:'“I wrote it twice. The second one was the letter; <b>the first was the weather.</b>”', mood:'warm' },
+    { title:'Before the Lights', artist:'The Quiet Hours', dur:211, a1:'#5f8f8a', a2:'#1b2a38', initial:'B', lyric:'“Everything is a little further away than it looks at night.”', mood:'blue' }
+  ];
+  const wave = document.getElementById('wave');
+  const ctx = wave.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0, playing = false, elapsed = 0, timer = null;
+  let bars = generateBars(96);
+  let vol = .58;
+
+  function generateBars(n){
+    let arr = [], v = .5;
+    for (let i = 0; i < n; i++){
+      v += (Math.random() - .5) * .18;
+      v = Math.max(.12, Math.min(1, v));
+      arr.push(v);
+    }
+    return arr;
+  }
+
+  function fmt(s){
+    s = Math.floor(s);
+    return String(Math.floor(s / 60)).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0');
+  }
+
+  function draw(){
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const r = wave.getBoundingClientRect();
+    wave.width = Math.round(r.width * dpr); wave.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const W = r.width, H = r.height;
+    ctx.clearRect(0, 0, W, H);
+    const n = bars.length;
+    const bw = W / n;
+    const progress = tracks[current].dur ? Math.min(1, elapsed / tracks[current].dur) : 0;
+    for (let i = 0; i < n; i++){
+      const h = Math.max(2, bars[i] * (H - 8));
+      const x = i * bw;
+      ctx.fillStyle = i / n <= progress ? '#ff7a59' : 'rgba(240,232,218,.18)';
+      ctx.beginPath();
+      ctx.roundRect(x + 1, (H - h) / 2, Math.max(1, bw - 2), h, 2);
+      ctx.fill();
+    }
+  }
+
+  function setTrack(i){
+    current = (i + tracks.length) % tracks.length;
+    const t = tracks[current];
+    document.getElementById('trackTitle').textContent = t.title;
+    document.getElementById('trackArtist').textContent = t.artist;
+    document.getElementById('coverInitial').textContent = t.initial;
+    document.getElementById('cover').style.setProperty('--a1', t.a1);
+    document.getElementById('cover').style.setProperty('--a2', t.a2);
+    document.querySelector('.cover').style.background = 'linear-gradient(150deg,' + t.a1 + ',' + t.a2 + ' 58%, #1a1214)';
+    document.getElementById('lyric').innerHTML = t.lyric;
+    document.getElementById('duration').textContent = fmt(t.dur);
+    elapsed = 0;
+    document.getElementById('elapsed').textContent = '00:00';
+    document.querySelectorAll('.track').forEach((row, j) => row.setAttribute('aria-pressed', String(j === current)));
+    bars = generateBars(96);
+    draw();
+  }
+
+  function tick(){
+    const t = tracks[current];
+    elapsed += 1;
+    if (elapsed >= t.dur){
+      if (document.getElementById('repeat').getAttribute('aria-pressed') === 'true') elapsed = 0;
+      else setTrack(current + 1);
+      if (!playing) return;
+    }
+    document.getElementById('elapsed').textContent = fmt(elapsed);
+    draw();
+  }
+
+  function play(){
+    playing = true;
+    document.getElementById('play').textContent = '❚❚';
+    document.getElementById('play').setAttribute('aria-label', 'Pause');
+    document.querySelector('.player').classList.add('playing');
+    clearInterval(timer);
+    timer = setInterval(tick, 1000);
+  }
+  function pause(){
+    playing = false;
+    document.getElementById('play').textContent = '▶';
+    document.getElementById('play').setAttribute('aria-label', 'Play');
+    document.querySelector('.player').classList.remove('playing');
+    clearInterval(timer);
+  }
+
+  const list = document.getElementById('tracks');
+  tracks.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.className = 'track';
+    b.setAttribute('aria-pressed', String(i === 0));
+    b.innerHTML = '<span class="no">' + String(i + 1).padStart(2,'0') + '</span><span class="tt">' + t.title + '<small>' + t.artist + '</small></span><span class="mood">' + t.mood + '</span><span class="dur">' + fmt(t.dur) + '</span>';
+    b.addEventListener('click', () => { setTrack(i); if (!playing) play(); });
+    list.appendChild(b);
+  });
+  const rows = Array.from(document.querySelectorAll('.track'));
+
+  document.getElementById('play').addEventListener('click', () => { playing ? pause() : play(); });
+  document.getElementById('next').addEventListener('click', () => { setTrack(current + 1); if (playing) draw(); });
+  document.getElementById('prev').addEventListener('click', () => { setTrack(current - 1); if (playing) draw(); });
+  document.getElementById('shuffle').addEventListener('click', function(){
+    const on = this.getAttribute('aria-pressed') !== 'true';
+    this.setAttribute('aria-pressed', String(on));
+    if (on) setTrack(Math.floor(Math.random() * tracks.length));
+  });
+  document.getElementById('repeat').addEventListener('click', function(){
+    this.setAttribute('aria-pressed', String(this.getAttribute('aria-pressed') !== 'true'));
+  });
+  document.getElementById('vol').addEventListener('input', function(){ vol = this.value / 100; });
+  wave.addEventListener('click', e => {
+    const r = wave.getBoundingClientRect();
+    elapsed = Math.floor((e.clientX - r.left) / r.width * tracks[current].dur);
+    document.getElementById('elapsed').textContent = fmt(elapsed);
+    draw();
+  });
+
+  window.addEventListener('resize', draw);
+  setTrack(0);
+  draw();
+  if (!reduce) setInterval(draw, 600);
+</script>
+</body>
+</html>

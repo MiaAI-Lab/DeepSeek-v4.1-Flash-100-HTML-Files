@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ECHO-7 — a deep space relay terminal. Type a command and listen to the dark.">
+<title>ECHO-7 — Deep Space Relay</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#020604; --room:#04100a; --crt:#04150b; --green:#86ffa8; --dim:#4a8b60; --amber:#ffc46b; --line:rgba(134,255,168,.18);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--void);color:var(--green);font-family:var(--mono);min-height:100svh;overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 78% 8%,rgba(20,60,40,.35),transparent 60%),
+    radial-gradient(700px 500px at 10% 90%,rgba(30,50,30,.25),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(rgba(200,255,220,.5) .5px,transparent .6px),radial-gradient(rgba(120,220,170,.3) .4px,transparent .5px);
+    background-size:137px 113px,191px 167px;background-position:20px 30px,70px 90px;opacity:.35}
+  body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--green);color:#031009}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--green);outline-offset:3px}
+  .mono{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .shell{position:relative;z-index:2;max-width:1380px;margin:0 auto;padding:0 clamp(12px,2.6vw,32px) 20px;min-height:100svh;display:flex;flex-direction:column}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#c9ffd9}
+  .brand .orb{width:22px;height:22px;border-radius:50%;border:1px solid var(--green);position:relative;box-shadow:0 0 14px rgba(134,255,168,.25)}
+  .brand .orb::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+  .brand small{display:block;font-size:.4rem;letter-spacing:.16em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;align-items:center;gap:10px;color:var(--dim)}
+  .sigBars{display:flex;align-items:flex-end;gap:2px;height:12px}
+  .sigBars i{width:3px;background:var(--green);opacity:.8;animation:sig 2.4s infinite}
+  .sigBars i:nth-child(1){height:3px}.sigBars i:nth-child(2){height:6px;animation-delay:.2s}.sigBars i:nth-child(3){height:8px;animation-delay:.4s}.sigBars i:nth-child(4){height:11px;animation-delay:.6s}
+  @keyframes sig{50%{opacity:.25}}
+  .headRight{display:flex;gap:22px;color:var(--dim);text-align:right;align-items:center}
+  .headRight b{color:var(--green);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:1fr 286px;gap:18px;padding:18px 0;min-height:0}
+  .consoleWrap{min-width:0;display:flex;flex-direction:column}
+  .bezel{position:relative;flex:1;border:1px solid rgba(134,255,168,.3);border-radius:14px;padding:10px;background:linear-gradient(160deg,#0a1d12,#030b06);
+    box-shadow:0 0 0 1px rgba(0,0,0,.6),0 24px 70px rgba(0,0,0,.6),inset 0 1px 0 rgba(200,255,220,.08)}
+  .bezel::before{content:"";position:absolute;inset:5px;border-radius:10px;border:1px solid rgba(134,255,168,.1);pointer-events:none;z-index:5}
+  .crt{position:relative;height:100%;min-height:clamp(380px,56vh,560px);border-radius:7px;background:
+    radial-gradient(ellipse at 50% 45%,#0a2414,#031008 70%);overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.8),inset 0 0 18px rgba(50,180,100,.08)}
+  .crt::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.26) 0 1px,transparent 1px 3px);opacity:.55}
+  .crt::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+    background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(0,0,0,.55) 100%)}
+  .glare{position:absolute;left:-10%;top:-40%;width:70%;height:80%;transform:rotate(20deg);background:linear-gradient(180deg,rgba(200,255,220,.06),transparent 60%);pointer-events:none;z-index:4}
+  .crtBar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid rgba(134,255,168,.14);color:var(--dim);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;position:relative;z-index:7}
+  .crtBar .lights{display:flex;gap:5px}
+  .crtBar .lights i{width:6px;height:6px;border-radius:50%;background:var(--dim);opacity:.5}
+  .crtBar .lights i:first-child{background:var(--amber);opacity:.9}
+  .crtBar .path{color:rgba(134,255,168,.6)}
+  .crtBar .link{color:var(--green)}
+
+  .screen{flex:1;min-height:0;overflow-y:auto;padding:14px 16px 4px;scrollbar-width:thin;scrollbar-color:rgba(134,255,168,.3) transparent;position:relative;z-index:7;
+    font-size:clamp(.62rem,1.06vw,.76rem);line-height:1.65;text-shadow:0 0 8px rgba(134,255,168,.35)}
+  .screen::-webkit-scrollbar{width:5px}
+  .screen::-webkit-scrollbar-thumb{background:rgba(134,255,168,.25)}
+  .logLine{white-space:pre-wrap;word-break:break-word;margin-bottom:2px}
+  .logLine .t{color:var(--dim);font-size:.84em}
+  .logLine.dim{color:var(--dim)}
+  .logLine.amber{color:var(--amber);text-shadow:0 0 8px rgba(255,196,107,.3)}
+  .logLine.bright{color:#d6ffe1}
+  .logLine a{color:var(--green);border-bottom:1px dotted rgba(134,255,168,.4)}
+  .promptLine{display:flex;align-items:center;gap:7px;padding:10px 16px 14px;position:relative;z-index:7;border-top:1px solid rgba(134,255,168,.12)}
+  .promptLine span{color:var(--green);font-size:.7rem;white-space:nowrap}
+  .promptLine input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:#d6ffe1;font:inherit;font-size:clamp(.66rem,1.1vw,.8rem);
+    caret-color:var(--green);letter-spacing:.02em}
+  .promptLine input::placeholder{color:rgba(74,139,96,.7)}
+  .caret{width:7px;height:14px;background:var(--green);animation:blink 1.1s steps(1) infinite;flex:none}
+  @keyframes blink{50%{opacity:0}}
+  .crt.flicker{animation:flick .3s steps(2) 1}
+  @keyframes flick{0%,100%{opacity:1;transform:none}33%{opacity:.82;transform:translateX(1px)}66%{opacity:.94;transform:translateX(-1px)}}
+  .crt.glitch .screen{clip-path:inset(12% 0 34% 0);transform:translateX(3px)}
+  .crt.glitch .crtBar{opacity:.5}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0 0;position:relative;z-index:8}
+  .chip{border:1px solid rgba(134,255,168,.22);padding:5px 8px;font-size:.48rem;letter-spacing:.08em;color:var(--dim);text-transform:lowercase;transition:color .2s,border-color .2s,background .2s}
+  .chip:hover{color:var(--green);border-color:var(--green);background:rgba(134,255,168,.06)}
+  .bezelFoot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 4px 0;color:var(--dim);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase}
+  .bezelFoot b{color:var(--green);font-weight:400}
+
+  .instruments{display:flex;flex-direction:column;gap:12px;min-height:0}
+  .panel{border:1px solid var(--line);background:rgba(4,20,11,.55);padding:12px;position:relative}
+  .panel::before{content:"";position:absolute;left:0;top:0;width:16px;height:1px;background:var(--green);opacity:.5}
+  .panel h2{font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:9px;display:flex;justify-content:space-between;gap:10px}
+  .panel h2 b{color:var(--green);font-weight:400}
+  .gauge{display:flex;align-items:flex-end;gap:3px;height:52px;margin:2px 0 8px;border-bottom:1px solid rgba(134,255,168,.15);padding-bottom:3px}
+  .gauge i{flex:1;background:linear-gradient(180deg,var(--green),rgba(74,139,96,.25));opacity:.65;animation:wave 2.4s ease-in-out infinite alternate}
+  @keyframes wave{from{height:18%}to{height:var(--h,80%)}}
+  .readRow{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid rgba(134,255,168,.08);color:var(--dim);font-size:.52rem;letter-spacing:.04em}
+  .readRow:last-child{border-bottom:0}
+  .readRow b{color:var(--green);font-weight:400}
+  .readRow .amber{color:var(--amber)}
+  .meter{height:3px;background:rgba(134,255,168,.12);margin-top:8px;overflow:hidden}
+  .meter i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--dim),var(--green));box-shadow:0 0 8px rgba(134,255,168,.4)}
+  .ascii{white-space:pre;font-size:.52rem;line-height:1.25;color:var(--dim);margin-top:2px}
+  .ascii b{color:var(--green);font-weight:400}
+  .lastLine{color:var(--dim);font-size:.48rem;line-height:1.7;margin-top:auto;padding-top:6px}
+  .lastLine b{color:var(--amber);font-weight:400}
+
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:8px 0 4px;border-top:1px solid rgba(134,255,168,.1);color:rgba(74,139,96,.8);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase}
+
+  @media(max-width:1000px){
+    .main{grid-template-columns:1fr}
+    .instruments{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .instruments .panel:last-child{display:none}
+    .crt{min-height:clamp(360px,54vh,500px)}
+  }
+  @media(max-width:680px){
+    .headMid{display:none}
+    .headRight .hide{display:none}
+    .bezel{padding:7px;border-radius:10px}
+    .screen{padding:11px 11px 2px;font-size:.62rem}
+    .promptLine{padding:8px 11px 11px}
+    .crtBar{font-size:.42rem;padding:7px 9px}
+    .instruments{grid-template-columns:1fr}
+    .instruments .panel:last-child{display:block}
+    .chips{padding-top:8px}
+    .chip{font-size:.44rem;padding:4px 6px}
+    .crt{min-height:400px}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">ECHO-7</h1>
+<div class="shell">
+  <header>
+    <a class="brand" href="#top"><span class="orb" aria-hidden="true"></span><span>ECHO-7<small>Deep space relay / node 09</small></span></a>
+    <div class="headMid mono"><span class="sigBars" aria-hidden="true"><i></i><i></i><i></i><i></i></span> Uplink stable · 1.42 AU</div>
+    <div class="headRight mono"><span class="hide">Operator<br><b>you</b></span><span>UTC<br><b id="clock">--:--:--</b></span></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="consoleWrap">
+      <div class="bezel">
+        <div class="crt" id="crt">
+          <div class="glare" aria-hidden="true"></div>
+          <div class="crtBar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="path">/dev/echo7/telemetry</span><span class="link">● linked</span></div>
+          <div class="screen" id="screen" role="log" aria-live="polite" aria-label="Terminal output"></div>
+          <div class="promptLine">
+            <span>echo@probe:~$</span>
+            <input id="cmd" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command" placeholder="type help and press enter">
+            <i class="caret" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div class="chips" aria-label="Suggested commands">
+        <button class="chip" data-cmd="help">help</button>
+        <button class="chip" data-cmd="status">status</button>
+        <button class="chip" data-cmd="scan">scan</button>
+        <button class="chip" data-cmd="signal">signal</button>
+        <button class="chip" data-cmd="log">log</button>
+        <button class="chip" data-cmd="whoami">whoami</button>
+        <button class="chip" data-cmd="artifact">artifact</button>
+        <button class="chip" data-cmd="clear">clear</button>
+      </div>
+      <div class="bezelFoot"><span>Session <b>private</b> · no transmission leaves this room</span><span>Type <b>help</b> for commands</span></div>
+    </div>
+
+    <aside class="instruments" aria-label="Probe instruments">
+      <section class="panel">
+        <h2>Signal <b>−128 dBm</b></h2>
+        <div class="gauge" aria-hidden="true">
+          <i style="--h:36%"></i><i style="--h:62%"></i><i style="--h:44%"></i><i style="--h:80%"></i><i style="--h:52%"></i><i style="--h:70%"></i><i style="--h:30%"></i><i style="--h:56%"></i><i style="--h:88%"></i><i style="--h:42%"></i><i style="--h:64%"></i><i style="--h:34%"></i>
+        </div>
+        <div class="readRow"><span>Delay</span><b>11m 48s</b></div>
+        <div class="readRow"><span>Band</span><b>X / 8.4 GHz</b></div>
+        <div class="readRow"><span>Lock</span><b class="amber">DEGRADED</b></div>
+        <div class="meter" aria-hidden="true"><i></i></div>
+      </section>
+      <section class="panel">
+        <h2>Probe <b>ECHO-7</b></h2>
+        <div class="readRow"><span>Distance</span><b>1.42 AU</b></div>
+        <div class="readRow"><span>Power</span><b>18.6 W</b></div>
+        <div class="readRow"><span>Hull</span><b>−184°C</b></div>
+        <div class="readRow"><span>Uptime</span><b>9y 41d</b></div>
+        <div class="ascii" aria-hidden="true">   <b>·</b>        <b>+---+</b>
+      ·     <b>|▓▓▓|</b>  ECHO-7
+   <b>·</b>    <b>+---+</b>
+     <b>·</b></div>
+      </section>
+      <section class="panel">
+        <h2>Last received <b>0427d</b></h2>
+        <p class="lastLine">“<b>The dark is not empty.</b> It is only very quiet. Tell them I am still listening.”</p>
+        <div class="readRow" style="margin-top:10px"><span>Packet</span><b>#88a-124</b></div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="mono">
+    <span>ECHO-7 / a fictional deep space relay</span>
+    <span>No signal leaves this page</span>
+    <span>© 2026 · still listening</span>
+  </footer>
+</div>
+
+<script>
+  const screen = document.getElementById('screen');
+  const crt = document.getElementById('crt');
+  const input = document.getElementById('cmd');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let history = [];
+  let historyIndex = 0;
+  let typing = false;
+  let queue = Promise.resolve();
+
+  function stamp(){
+    const d = new Date();
+    return [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map(n => String(n).padStart(2, '0')).join(':');
+  }
+
+  function scrollDown(){ screen.scrollTop = screen.scrollHeight; }
+
+  function line(text, cls){
+    const div = document.createElement('div');
+    div.className = 'logLine ' + (cls || '');
+    div.innerHTML = '<span class="t">' + stamp() + '</span>  ' + text;
+    screen.appendChild(div);
+    scrollDown();
+    return div;
+  }
+
+  function typeLine(text, cls){
+    queue = queue.then(() => new Promise(resolve => {
+      const div = document.createElement('div');
+      div.className = 'logLine ' + (cls || '');
+      screen.appendChild(div);
+      const t = document.createElement('span');
+      t.className = 't'; t.textContent = stamp() + '  ';
+      div.appendChild(t);
+      let i = 0;
+      if (reduce){ div.innerHTML += text; scrollDown(); resolve(); return; }
+      const caret = document.createElement('span');
+      caret.style.cssText = 'display:inline-block;width:6px;height:10px;background:#86ffa8;vertical-align:-1px;margin-left:2px';
+      div.appendChild(caret);
+      function step(){
+        if (i < text.length){
+          caret.insertAdjacentText('beforebegin', text.charAt(i));
+          i++;
+          scrollDown();
+          setTimeout(step, text.charAt(i - 1) === '\n' ? 60 : 7);
+        } else {
+          caret.remove();
+          scrollDown();
+          resolve();
+        }
+      }
+      step();
+    }));
+    return queue;
+  }
+
+  function clearScreen(){ screen.innerHTML = ''; }
+
+  function respond(raw){
+    const cmd = raw.trim().toLowerCase();
+    if (!cmd) return;
+    line('<span class="bright">echo@probe:~$</span> ' + raw.replace(/</g, '&lt;'), 'dim');
+    if (cmd === 'clear'){ setTimeout(clearScreen, 120); return; }
+    if (cmd === 'help'){
+      typeLine('available commands:\n  status     probe condition and power\n  scan       sweep the local volume\n  signal     uplink diagnostics\n  log        last received transmission\n  whoami     identify the operator\n  artifact   list recovered object\n  clear      clear this screen\n\nSome things are not in the manual.', 'dim');
+    } else if (cmd === 'status'){
+      typeLine('ECHO-7 — 9 years, 41 days since launch.\nPower 18.6 W (RTG, nominal)\nHull −184 °C · no impact events\nAttitude: slowly turning toward home.\nAll systems patient.', 'bright');
+    } else if (cmd === 'scan'){
+      typeLine('sweeping local volume ...\n\n   .        *        .\n        +-------------+\n   *    |  no return  |    .\n        +-------------+\n   .        *        .\n\nOne contact, 0.003 AU off-axis.\nIt is either ice, or it is listening.', 'dim');
+    } else if (cmd === 'signal'){
+      typeLine('uplink: degraded but holding.\nround-trip delay 23m 36s\nyou are hearing me 11 minutes after I spoke.\nplease do not hang up.', 'dim');
+    } else if (cmd === 'log'){
+      typeLine('last packet received 0427 days ago:\n\n“The dark is not empty. It is only very quiet.\nTell them I am still listening.”\n\n— ECHO-7, transmission 88a-124', 'bright');
+    } else if (cmd === 'whoami'){
+      typeLine('operator: you\nlocation: a small room, late\nclearance: enough to be here\nconnection: one browser tab', 'dim');
+    } else if (cmd === 'artifact'){
+      typeLine('recovered object #04:\n  a photograph of a window, overexposed.\n  a list of names, one crossed out.\n  a sound file, 4.2 seconds of rain.\n\nprovenance: unknown.\nsent by: unknown.\nkept because: someone should.', 'dim');
+    } else if (cmd === 'echo'){
+      typeLine('ECHO. ECHO. echo.', 'dim');
+    } else if (cmd === 'jump' || cmd === 'warp'){
+      typeLine('insufficient fuel. sufficient longing.', 'amber');
+    } else if (cmd === 'hello' || cmd === 'hi'){
+      typeLine('hello, operator. it has been a while.', 'bright');
+    } else {
+      typeLine('command not recognised: ' + raw.replace(/</g, '&lt;') + '\ntype “help” to see what I can still do.', 'dim');
+    }
+  }
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter'){
+      const value = input.value;
+      if (!value.trim()) return;
+      history.push(value);
+      historyIndex = history.length;
+      input.value = '';
+      respond(value);
+    } else if (e.key === 'ArrowUp'){
+      if (history.length){ historyIndex = Math.max(0, historyIndex - 1); input.value = history[historyIndex]; e.preventDefault(); }
+    } else if (e.key === 'ArrowDown'){
+      if (history.length){ historyIndex = Math.min(history.length, historyIndex + 1); input.value = history[historyIndex] || ''; e.preventDefault(); }
+    }
+  });
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      input.value = chip.dataset.cmd;
+      input.focus();
+      if (chip.dataset.cmd === 'clear'){
+        history.push('clear'); respond('clear'); input.value = '';
+      }
+    });
+  });
+
+  screen.addEventListener('click', () => input.focus());
+  crt.addEventListener('click', e => { if (e.target === crt) input.focus(); });
+
+  function clock(){
+    const d = new Date();
+    document.getElementById('clock').textContent = [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map(n => String(n).padStart(2, '0')).join(':');
+  }
+  clock(); setInterval(clock, 1000);
+
+  function glitch(){
+    if (reduce) return;
+    crt.classList.add('glitch');
+    setTimeout(() => crt.classList.remove('glitch'), 90);
+    setTimeout(() => {
+      crt.classList.add('flicker');
+      setTimeout(() => crt.classList.remove('flicker'), 320);
+    }, 420);
+  }
+  setTimeout(glitch, 6000);
+  setInterval(glitch, 13000);
+
+  async function boot(){
+    line('ECHO-7 DEEP SPACE RELAY — HANDshake v2.6', 'dim');
+    await typeLine('establishing carrier ................ OK', 'dim');
+    await typeLine('signal lock ...................... DEGRADED', 'amber');
+    await typeLine('decrypting stored telemetry ....... OK', 'dim');
+    await typeLine('one operator detected. hello, you.', 'bright');
+    await typeLine('last received transmission: 0427 days ago.\nlast sent transmission: now.\n\ntype “help” to begin. take your time.', 'dim');
+    if (window.matchMedia('(pointer: fine)').matches) input.focus();
+  }
+  boot();
+</script>
+</body>
+</html>

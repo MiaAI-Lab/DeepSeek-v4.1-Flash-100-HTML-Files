@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Silverball — a small neon pinball machine you can actually play.">
+<title>Silverball — Neon Pinball Table 03</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --room:#07060d; --cab:#161022; --pink:#ff3d9a; --cyan:#4fe8ff; --amber:#ffd166; --cream:#f4edf7; --dim:rgba(244,237,247,.5);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--room);color:var(--cream);font-family:var(--sans);display:grid;place-items:center;padding:18px 10px;overflow-x:hidden;
+    background-image:radial-gradient(800px 600px at 50% 0%,rgba(70,30,100,.4),transparent 62%),radial-gradient(600px 500px at 10% 100%,rgba(20,80,100,.2),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:30;opacity:.16;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--pink);color:var(--room)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .machine{width:min(430px,100%);position:relative;z-index:2}
+  .marquee{border:1px solid rgba(255,61,154,.45);border-bottom:0;border-radius:14px 14px 0 0;background:linear-gradient(180deg,#241333,#130a1d);padding:9px 14px 8px;text-align:center;
+    box-shadow:0 0 26px rgba(255,61,154,.15),inset 0 1px 0 rgba(255,255,255,.1)}
+  .marquee h1{font-family:var(--mono);font-size:1.15rem;letter-spacing:.2em;text-transform:uppercase;color:#fff;text-shadow:0 0 6px var(--pink),0 0 20px rgba(255,61,154,.6)}
+  .marquee h1 span{color:var(--cyan);text-shadow:0 0 6px var(--cyan),0 0 20px rgba(79,232,255,.5)}
+  .marquee p{color:var(--dim);font-family:var(--mono);font-size:.3rem;letter-spacing:.2em;text-transform:uppercase;margin-top:2px}
+  .cabinet{background:linear-gradient(180deg,#1a1226,#0c0813);border:1px solid rgba(255,61,154,.25);border-top:0;border-radius:0 0 14px 14px;padding:9px;box-shadow:0 30px 60px rgba(0,0,0,.7)}
+  .hud{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:0 2px 7px;font-family:var(--mono);text-transform:uppercase}
+  .hud div{display:flex;flex-direction:column;gap:1px}
+  .hud span{font-size:.28rem;letter-spacing:.12em;color:var(--dim)}
+  .hud b{font-size:.62rem;font-weight:500;letter-spacing:.04em;color:var(--cream)}
+  .hud .score b{color:var(--cyan)}.hud .balls b{color:var(--pink)}.hud .high b{color:var(--amber)}
+  .screen{position:relative;border:1px solid rgba(255,255,255,.14);border-radius:6px;overflow:hidden;background:#0a0710;box-shadow:inset 0 0 30px rgba(0,0,0,.8)}
+  .screen::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(130deg,rgba(255,255,255,.09),transparent 30%);border-radius:6px}
+  canvas{display:block;width:100%;height:auto;aspect-ratio:420/640;background:#08050e;touch-action:none}
+  .overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;padding:20px;
+    background:radial-gradient(circle at 50% 45%,rgba(255,61,154,.16),rgba(7,5,13,.93) 70%);transition:opacity .3s}
+  .overlay.hidden{opacity:0;pointer-events:none}
+  .overlay h2{font-family:var(--mono);font-size:.9rem;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 10px rgba(255,61,154,.7)}
+  .overlay p{color:var(--dim);font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;line-height:1.8;text-transform:uppercase;max-width:28ch}
+  .overlay .bigScore{font-family:var(--mono);font-size:1.6rem;color:var(--amber);text-shadow:0 0 12px rgba(255,209,102,.5)}
+  .start{border:1px solid var(--cyan);color:var(--cyan);padding:7px 14px;font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;box-shadow:0 0 16px rgba(79,232,255,.2),inset 0 0 12px rgba(79,232,255,.08)}
+  .start:hover{background:var(--cyan);color:#07060d}
+  .panel{display:flex;justify-content:space-between;gap:10px;padding:7px 2px 1px;color:var(--dim);align-items:center;flex-wrap:wrap}
+  .panel .keys{font-family:var(--mono);font-size:.32rem;letter-spacing:.05em;text-transform:uppercase;line-height:1.7}
+  .panel .keys b{color:var(--cream);font-weight:400}
+  .paddleBtn{display:flex;gap:4px}
+  .paddleBtn button{border:1px solid rgba(244,237,247,.2);padding:4px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .paddleBtn button:active{background:var(--pink);color:var(--room)}
+  .cabFoot{text-align:center;color:rgba(244,237,247,.25);font-family:var(--mono);font-size:.28rem;letter-spacing:.12em;text-transform:uppercase;padding:5px 0 0}
+  footer{margin-top:10px;text-align:center;color:rgba(244,237,247,.3);font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;text-transform:uppercase}
+  @media(max-width:520px){ .marquee h1{font-size:.9rem} .machine{width:100%} body{padding:10px 6px} .hud b{font-size:.55rem} }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="machine">
+  <div class="marquee"><h1>Silver <span>Ball</span></h1><p>Neon pinball · table 03 · 3 balls</p></div>
+  <div class="cabinet">
+    <div class="hud">
+      <div class="score"><span>Score</span><b id="score">00000</b></div>
+      <div class="high"><span>High</span><b id="high">01200</b></div>
+      <div class="balls"><span>Balls</span><b id="balls">●●●</b></div>
+    </div>
+    <div class="screen">
+      <canvas id="table" width="420" height="640" aria-label="Pinball table. Use arrow keys or tap the left and right sides to flip."></canvas>
+      <div class="overlay" id="overlay">
+        <h2 id="ovTitle">Silver Ball</h2>
+        <p id="ovText">Arrow keys flip · tap left/right · Space launches. Keep the ball above the drain.</p>
+        <div class="bigScore" id="ovScore" style="display:none">0</div>
+        <button class="start" id="start">Press start</button>
+      </div>
+    </div>
+    <div class="panel"><span class="keys mono"><b>←</b> left paddle · <b>→</b> right paddle · <b>space</b> launch</span><span class="paddleBtn"><button id="lBtn">L</button><button id="rBtn">R</button></span></div>
+    <div class="cabFoot">Table 03 · neonworks · no tilt</div>
+  </div>
+  <footer>Silverball — a fictional machine · one file</footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('table');
+  const ctx = canvas.getContext('2d');
+  const W = 420, H = 640;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const overlay = document.getElementById('overlay');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovText = document.getElementById('ovText');
+  const ovScore = document.getElementById('ovScore');
+  const startBtn = document.getElementById('start');
+  let score = 0, high = 1200, balls = 3;
+  let running = false, paused = false, launched = false;
+  let ball = { x: 385, y: 590, vx: 0, vy: 0, r: 7, trail: [] };
+  let leftOn = false, rightOn = false;
+  let particles = [];
+  let bumpers = [ { x: 210, y: 210, r: 26, flash: 0 }, { x: 120, y: 300, r: 22, flash: 0 }, { x: 300, y: 300, r: 22, flash: 0 } ];
+  let pegs = [];
+  for (let row = 0; row < 5; row++){
+    for (let col = 0; col < 5 - row; col++){
+      pegs.push({ x: 210 + (col - (4 - row) / 2) * 48, y: 110 + row * 44, r: 6, flash: 0 });
+    }
+  }
+  const flippers = {
+    left: { x: 118, y: 558, len: 70, rest: .48, active: -.28, angle: .48, side: -1 },
+    right: { x: 302, y: 558, len: 70, rest: Math.PI - .48, active: Math.PI + .28, angle: Math.PI - .48, side: 1 }
+  };
+
+  function resetBall(){
+    ball.x = 385; ball.y = 586; ball.vx = (Math.random() - .5) * .6; ball.vy = -8.6; ball.trail = [];
+    launched = false;
+    setTimeout(() => { launched = true; }, 400);
+  }
+  function newGame(){
+    score = 0; balls = 3; particles = []; running = true; paused = false;
+    bumpers.forEach(b => b.flash = 0); pegs.forEach(p => p.flash = 0);
+    resetBall(); overlay.classList.add('hidden'); updateHud();
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(loop);
+  }
+  function updateHud(){
+    document.getElementById('score').textContent = String(score).padStart(5,'0');
+    document.getElementById('high').textContent = String(Math.max(high, score)).padStart(5,'0');
+    document.getElementById('balls').textContent = '●'.repeat(balls) + '○'.repeat(Math.max(0, 3 - balls));
+  }
+  function endGame(){
+    running = false;
+    overlay.classList.remove('hidden');
+    ovTitle.textContent = 'Game over';
+    ovText.textContent = 'The table wins this one. Try again?';
+    ovScore.style.display = 'block';
+    ovScore.textContent = String(score).padStart(5,'0');
+    startBtn.textContent = 'Play again';
+  }
+
+  function collideCircle(px, py, pr, boost, points){
+    const dx = ball.x - px, dy = ball.y - py;
+    const d = Math.hypot(dx, dy), min = ball.r + pr;
+    if (d < min && d > 0.01){
+      const nx = dx / d, ny = dy / d;
+      ball.x = px + nx * min; ball.y = py + ny * min;
+      const dot = ball.vx * nx + ball.vy * ny;
+      ball.vx -= 2 * dot * nx; ball.vy -= 2 * dot * ny;
+      ball.vx *= boost || 1; ball.vy *= boost || 1;
+      score += points || 0;
+      if (!reduce){
+        for (let i = 0; i < 8; i++) particles.push({ x: ball.x, y: ball.y, vx: (Math.random() - .5) * 5, vy: (Math.random() - .5) * 5, life: 1 });
+      }
+      updateHud();
+    }
+  }
+  function collideFlipper(f){
+    const x2 = f.x + Math.cos(f.angle) * f.len * f.side, y2 = f.y + Math.sin(f.angle) * f.len;
+    const x1 = f.x, y1 = f.y;
+    const dx = x2 - x1, dy = y2 - y1;
+    const t = Math.max(0, Math.min(1, ((ball.x - x1) * dx + (ball.y - y1) * dy) / (dx * dx + dy * dy)));
+    const cx = x1 + dx * t, cy = y1 + dy * t;
+    const d = Math.hypot(ball.x - cx, ball.y - cy);
+    if (d < ball.r + 6){
+      const nx = (ball.x - cx) / (d || 1), ny = (ball.y - cy) / (d || 1);
+      ball.x = cx + nx * (ball.r + 6); ball.y = cy + ny * (ball.r + 6);
+      ball.vx = nx * 6.4 + (f === flippers.left ? 2.2 : -2.2);
+      ball.vy = -Math.abs(ny * 8) - 3.2;
+      score += 5;
+      updateHud();
+    }
+  }
+
+  let rafId = null;
+  function step(){
+    if (!running || paused) return;
+    if (!launched){
+      ball.x = 385; ball.y = 586;
+      return;
+    }
+    ball.vy += .22; ball.vx *= .999; ball.vy *= .999;
+    ball.x += ball.vx; ball.y += ball.vy;
+    // walls
+    if (ball.x - ball.r < 18){ ball.x = 18 + ball.r; ball.vx = Math.abs(ball.vx) * .86; }
+    if (ball.x + ball.r > 402){ ball.x = 402 - ball.r; ball.vx = -Math.abs(ball.vx) * .86; }
+    if (ball.y - ball.r < 18){ ball.y = 18 + ball.r; ball.vy = Math.abs(ball.vy) * .86; }
+    // lane divider
+    if (ball.x > 360 && ball.y > 450){
+      if (ball.x - ball.r < 362 && ball.y > 470){ ball.x = 362 + ball.r; ball.vx = Math.abs(ball.vx); }
+    }
+    pegs.forEach(p => { collideCircle(p.x, p.y, p.r, 1.02, 10); p.flash *= .92; });
+    bumpers.forEach(b => { collideCircle(b.x, b.y, b.r, 1.12, 50); b.flash = 1; });
+    collideFlipper(flippers.left);
+    collideFlipper(flippers.right);
+    if (ball.y - ball.r > H){
+      balls--; updateHud();
+      if (balls <= 0){ endGame(); return; }
+      resetBall();
+    }
+    ball.trail.push({ x: ball.x, y: ball.y });
+    if (ball.trail.length > 14) ball.trail.shift();
+    particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .1; p.life -= .025; });
+    particles = particles.filter(p => p.life > 0);
+    // flippers ease
+    const lTarget = leftOn ? flippers.left.active : flippers.left.rest;
+    const rTarget = rightOn ? flippers.right.active : flippers.right.rest;
+    flippers.left.angle += (lTarget - flippers.left.angle) * .35;
+    flippers.right.angle += (rTarget - flippers.right.angle) * .35;
+    draw();
+  }
+  function loop(){
+    step();
+    if (running && !paused) rafId = requestAnimationFrame(loop);
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0d0817'); bg.addColorStop(1, '#08050e');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    // lanes and rails
+    ctx.strokeStyle = 'rgba(255,61,154,.35)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(18, 20); ctx.lineTo(18, H - 20); ctx.moveTo(402, 20); ctx.lineTo(402, H - 20); ctx.stroke();
+    ctx.strokeStyle = 'rgba(79,232,255,.2)'; ctx.setLineDash([3, 6]);
+    ctx.beginPath(); ctx.moveTo(362, 450); ctx.lineTo(362, H - 20); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(255,61,154,.05)';
+    ctx.beginPath(); ctx.arc(210, 210, 70, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(79,232,255,.05)';
+    ctx.beginPath(); ctx.arc(210, 100, 80, 0, Math.PI * 2); ctx.fill();
+    // pegs
+    pegs.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(79,232,255,.7)'; ctx.shadowColor = '#4fe8ff'; ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
+    });
+    // bumpers
+    bumpers.forEach(b => {
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r + b.flash * 6, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,61,154,' + (0.5 + b.flash * .5) + ')'; ctx.lineWidth = 2; ctx.shadowColor = '#ff3d9a'; ctx.shadowBlur = 14; ctx.stroke(); ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,61,154,.16)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,209,102,.8)'; ctx.fill();
+    });
+    // flippers
+    [flippers.left, flippers.right].forEach(f => {
+      const x2 = f.x + Math.cos(f.angle) * f.len * f.side, y2 = f.y + Math.sin(f.angle) * f.len;
+      ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(x2, y2);
+      ctx.strokeStyle = '#f4edf7'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.shadowColor = '#4fe8ff'; ctx.shadowBlur = 10; ctx.stroke(); ctx.shadowBlur = 0;
+    });
+    // ball trail
+    if (!reduce) ball.trail.forEach((t, i) => {
+      ctx.beginPath(); ctx.arc(t.x, t.y, ball.r * (i / ball.trail.length) * .8, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,' + (i / ball.trail.length * .12) + ')'; ctx.fill();
+    });
+    // ball
+    ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+    const bg2 = ctx.createRadialGradient(ball.x - 2, ball.y - 2, 1, ball.x, ball.y, ball.r);
+    bg2.addColorStop(0, '#fff'); bg2.addColorStop(1, '#a9b4c6');
+    ctx.fillStyle = bg2; ctx.shadowColor = '#fff'; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+    // particles
+    particles.forEach(p => {
+      ctx.globalAlpha = p.life; ctx.fillStyle = '#ffd166';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 2 * p.life, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    // labels
+    ctx.fillStyle = 'rgba(244,237,247,.25)'; ctx.font = '9px ui-monospace, monospace'; ctx.textAlign = 'center';
+    ctx.fillText('NEONWORKS / 03', 210, 620);
+    if (!launched && running){ ctx.fillStyle = 'rgba(244,237,247,.5)'; ctx.fillText('PRESS SPACE TO LAUNCH', 210, 560); }
+  }
+
+  function launch(){
+    if (!running){ newGame(); return; }
+    if (!launched){
+      ball.vx = (Math.random() - .5) * .8; ball.vy = -9.4; launched = true;
+    }
+  }
+  startBtn.addEventListener('click', () => { newGame(); });
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft'){ leftOn = true; e.preventDefault(); }
+    if (e.key === 'ArrowRight'){ rightOn = true; e.preventDefault(); }
+    if (e.key === ' '){ launch(); e.preventDefault(); }
+    if (e.key.toLowerCase() === 'p' && running){ paused = !paused; if (!paused) requestAnimationFrame(loop); }
+  });
+  window.addEventListener('keyup', e => {
+    if (e.key === 'ArrowLeft') leftOn = false;
+    if (e.key === 'ArrowRight') rightOn = false;
+  });
+  canvas.addEventListener('pointerdown', e => {
+    const r = canvas.getBoundingClientRect();
+    if (e.clientX - r.left < r.width / 2) leftOn = true; else rightOn = true;
+    if (!running) newGame();
+  });
+  window.addEventListener('pointerup', () => { leftOn = false; rightOn = false; });
+  document.getElementById('lBtn').addEventListener('pointerdown', () => { leftOn = true; });
+  document.getElementById('rBtn').addEventListener('pointerdown', () => { rightOn = true; });
+  window.addEventListener('pointerup', () => { leftOn = false; rightOn = false; });
+  updateHud(); draw();
+  draw();
+</script>
+</body>
+</html>

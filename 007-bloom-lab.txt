@@ -1,0 +1,19 @@
+TITLE
+Bloom Lab — Generative Botany, Experiment 07
+
+PROMPT
+Create "Bloom Lab", a refined generative-botany experiment presented as a premium editorial playground. Warm paper background (#f6f1e7) with graph-paper grid, deep botanical green ink (#1d3a2f), coral (#d96a4a) and soft meadow colours. Split layout: on the left, a laboratory title "Grow something improbable." in a large serif with an italic coral accent, a short artist's note, specimen count, and elegant controls — petal-count slider, three palette swatches (Meadow, Ember, Dusk), a wind toggle and a "Plant a specimen" button. On the right, a tall canvas field with hand-drawn stems, leaves and multi-petal flowers that grow on click and sway gently in the wind. Add a pressed-flower caption card and a "field notes" footer. It must feel like a design museum's interactive exhibit, not a toy. Fully responsive, one standalone HTML file with inline CSS and JS, no external assets.
+
+DESIGN INTENT
+A quiet scientific instrument for making flowers. The page borrows the visual language of a botanical field notebook — graph paper, small caps labels, a serif display face, ruled tables — and lets a living canvas be the only organic, imperfect thing on the page. Each flower is drawn from a seeded palette and petal count, so the field feels authored, never random noise. Coral is used as the single warm interruption.
+
+VISUAL TECHNIQUES
+- Canvas-rendered flowers with curved stems, paired leaves, layered elliptical petals, radial centres and per-flower sway phase.
+- Graph-paper grid and hairline rules behind and around the canvas.
+- Serif display typography with an italic coral accent, paired with tracked monospace metadata.
+- Range slider, palette swatch buttons and toggle styled as lab hardware with clear pressed states.
+- Normalized flower coordinates so the field reflows on resize without losing the composition.
+- Retina-aware canvas sizing and a reduced-motion still frame.
+
+INTERACTION MODEL
+Clicking anywhere in the field plants a new flower at that point, respecting the current petal count and palette; a specimen counter and "last planted" readout update. The petal slider changes the shape of the next flower. Palette buttons recolour the whole field. Wind can be paused and resumed. "Plant a specimen" places one in a curated spot. All controls work from the keyboard and have visible focus rings.

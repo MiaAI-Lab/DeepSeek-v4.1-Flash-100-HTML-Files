@@ -1,0 +1,21 @@
+TITLE
+Wave Lab — Two Waves Make a Third
+
+PROMPT
+Create an interactive ripple-tank page called "Wave Lab". A plum-and-ember full-screen canvas renders a live two-source interference field, computed per pixel: concentric rings from two draggable source markers add and cancel into bright crests and dark troughs. Overlay a serif caption block in the lower left ("Two waves make a third."), a left instrument rail holding the Frequency, Phase and Separation sliders plus Pause and Recenter, and a vertical gauge on the right for frequency, wavelength, separation, phase and node count. Dragging either source moves it and reshapes the whole field. Fully responsive, one standalone HTML file with inline CSS/JS/canvas, no external images or fonts.
+
+DESIGN INTENT
+A science exhibit after hours: one tank of dark water, two points of disturbance, and a pattern that seems more intelligent than its rules. The palette should stay narrow — plum, ember, a little cream — so the interference itself supplies the drama. Controls look like bench instruments with engraved labels, stacked in a vertical rail rather than a bar.
+
+VISUAL TECHNIQUES
+- Per-pixel interference field on a low-resolution offscreen canvas, scaled up with smoothing.
+- Signed sum of two sine waves with phase offset; five-stop palette mapping trough to crest.
+- Draggable source markers with labels, rings and crosshair registration.
+- Live readouts for frequency, wavelength, separation and phase.
+- Animated field at a capped frame rate with pause.
+- Water-like vignette, faint grid overlay and film grain.
+- Responsive canvas with device-pixel-ratio handling.
+- Reduced-motion lowers the animation rate and removes marker pulsing.
+
+INTERACTION MODEL
+Drag source A or B anywhere in the tank. Frequency changes ring spacing, Phase shifts one source against the other, and Separation moves the sources symmetrically. Recenter restores the initial arrangement; Pause freezes the field. Sliders and buttons are keyboard accessible, and all readouts update live.

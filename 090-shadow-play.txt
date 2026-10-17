@@ -1,0 +1,20 @@
+TITLE
+Shadow Play — After the Lamp
+
+PROMPT
+Create a warm shadow-theatre page called "Shadow Play". An ochre plaster wall fills the scene, lit by a single hanging lamp whose position can be moved with a slider. Four paper-cut silhouettes — a bird, a rabbit, a hand and a tree — rest on the wall with soft cast shadows; visitors drag them anywhere. A cream control shelf at the bottom holds the title "Shadow / play", a short instruction, the lamp slider and tray buttons that add another bird, rabbit, hand or tree. Shadows shift direction and softness as the lamp moves. Include a small inventory count. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+The page should feel like a hot wall at the end of an afternoon: ochre plaster, one warm bulb, dark paper shapes. Shadows are the whole point, so they must respond visibly to the lamp rather than being a static drop shadow. The interface is a shelf of cut paper, not a toolbar.
+
+VISUAL TECHNIQUES
+- Ochre wall with layered radial gradients, grain and a soft vignette.
+- Hanging lamp with cord, bulb glow and movable position.
+- Inline SVG silhouettes of bird, rabbit, hand and tree with paper-cut edges.
+- Dynamic drop shadows computed from the lamp and puppet positions: direction, offset and blur.
+- Drag and drop with pointer capture; click tray to add silhouettes.
+- Cream control shelf with large title, slider and cut-paper buttons.
+- Reduced-motion removes lamp easing and shadow transitions.
+
+INTERACTION MODEL
+Drag any silhouette to move it. Move the lamp slider to shift the light: shadows swing away from the lamp and soften with distance. Tray buttons add new silhouettes at a free spot. The inventory count updates. All tray buttons and the slider are keyboard accessible; instructions are visible at all times.

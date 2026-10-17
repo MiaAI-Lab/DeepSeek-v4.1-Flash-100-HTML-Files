@@ -1,0 +1,20 @@
+TITLE
+Optical Study 08 — Motion Is a Decision
+
+PROMPT
+Create a bold op-art interactive poster called "Optical Study 08". A white field of concentric black rings sits under a second layer of fine black stripes set at an angle with difference blending, producing moiré interference. A huge black-and-white typographic block in the lower left reads "MOTION IS A DECISION." in tight grotesque capitals, with a single red index label. Moving the pointer warps and rotates the pattern; a frequency slider changes the ring spacing, an invert button flips the field, and a freeze button stops the slow rotation. The composition should feel like a 1960s kinetic poster redesigned for a screen. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Optical, not decorative. The page is an experiment in interference: two simple patterns become complex only through their relationship. Typography is treated as another hard-edged shape, pinned to the lower left with no softness. Red is used exactly once, as a printer's mark would be.
+
+VISUAL TECHNIQUES
+- Two full-viewport pattern layers: repeating-radial-gradient rings and an angled repeating-linear-gradient of stripes.
+- mix-blend-mode:difference for true moiré interference and edge shimmer.
+- Pointer-driven translation and rotation of both layers, eased with requestAnimationFrame.
+- Frequency slider controlling background-size; invert filter; freeze toggle for rotation.
+- Huge tight grotesque display type with a black plate and a small red index.
+- Grid marks, coordinates and monospaced captions at the edges.
+- Reduced-motion disables the slow rotation and pointer warp, leaving a still optical field.
+
+INTERACTION MODEL
+Moving the pointer shifts and rotates the two pattern layers against each other, creating live moiré. The frequency slider changes ring density and stripe scale. "Invert" flips the entire field; "Freeze" pauses the ambient rotation. A click anywhere adds a brief extra rotation jolt. All controls are real buttons and a range input with visible focus; reduced-motion starts frozen.

@@ -1,0 +1,20 @@
+TITLE
+Aura — Trace the Air
+
+PROMPT
+Create a full-screen interactive light painting called "Aura". A near-black space holds soft additive plumes of colour that bloom from the cursor as it moves, drifting and fading like smoke seen through a lens. Three palettes — Aurora (teal, violet, rose), Ember (amber, coral, red) and Tidal (blue, aqua, white) — can be switched live. The interface is minimal and editorial: a small masthead, one oversized serif statement "trace the air." in the lower left, a palette switch and clear control in the lower right, and faint field notes at the edges. On load a gentle pre-drawn plume should make the screen feel inhabited. Add a subtle grain and vignette so the colour feels photographic. Fully responsive, one standalone HTML file with inline CSS/JS, no external assets.
+
+DESIGN INTENT
+An experience rather than a page: the cursor is a brush, the screen is dark air, and colour behaves like light rather than paint. Everything around the canvas is deliberately quiet so the moving image carries the emotion. The typography is large, thin and confident, placed only at the edges, never competing with the plume.
+
+VISUAL TECHNIQUES
+- Canvas particle plumes with radial gradients, additive blending and velocity inherited from pointer movement.
+- Feedback trails by painting a low-alpha dark veil each frame instead of clearing.
+- Three curated palettes with several hue stops and size/opacity variance.
+- Ambient drifting motes so the field stays alive when idle.
+- Film grain, vignette and a faint chromatic edge glow.
+- Full-viewport canvas with devicePixelRatio scaling; pointer capture across the window; touch support.
+- Reduced-motion renders a static pre-composed plume with no trailing animation.
+
+INTERACTION MODEL
+Move the pointer to paint; faster movement creates longer, brighter plumes. Click for a radial burst of particles. Palette buttons change the colour set instantly; "Clear the air" fades the field back to black. A live readout names the current palette. All controls are real buttons with visible focus and pressed states.

@@ -1,0 +1,21 @@
+TITLE
+Quantum Waves — A Particle in a Box
+
+PROMPT
+Create a scientific-visual page called "Quantum Waves" showing a particle in a one-dimensional box. Deep near-black space, pale cyan and violet data, cream typography. The left column holds the statement "A particle is a rumour until measured.", a short explanation, an energy-level slider (1–6), a superposition toggle, a Measure button and live readouts (energy, nodes, uncertainty). The right side shows a large canvas: the wavefunction as a glowing curve, the probability density as a soft filled area, faint axes, nodal marks and a cloud of drifting sample particles. Hovering shows position; clicking Measure collapses the cloud to a single bright point with a vertical line. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Quantum mechanics as an instrument panel. The canvas is the experiment and should look precise: thin axes, glowing probability, a measured point that feels like an event. The interface is quiet and technical, with one serif statement providing the emotional register. Colour encodes energy levels, from calm cyan to hot violet.
+
+VISUAL TECHNIQUES
+- Canvas rendering of ψ(x) and |ψ(x)|² for a particle in an infinite square well.
+- Superposition of two energy eigenstates with time-dependent beating.
+- Particle cloud sampled from the probability density with drift and fade.
+- Measurement collapse animation: a chosen position, a bright vertical line and a burst of dots.
+- Energy slider changing the quantum number, node count and colour palette.
+- Axis ticks, nodal markers, formula labels and monospaced readouts.
+- Dark lab styling with grain and a faint grid; responsive square-ish canvas.
+- Reduced-motion freezes the phase while keeping measurement functional.
+
+INTERACTION MODEL
+The energy slider changes n and redraws the wavefunction, probability cloud and readouts. Superposition blends n and n+2, producing a breathing interference pattern. Measure chooses a position from the probability distribution, flashes a vertical line and collapses the cloud to a point; "Reset" restores the cloud. Pause freezes the phase. All controls are keyboard accessible; reduced-motion starts paused.

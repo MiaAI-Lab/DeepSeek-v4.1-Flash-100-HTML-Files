@@ -1,0 +1,20 @@
+TITLE
+Soie — Softness, in Motion
+
+PROMPT
+Create a luxurious fabric-study page called "Soie" for a fictional silk atelier. Warm ivory background, rose, champagne, sage and muted aubergine; a full-screen SVG composition of flowing silk ribbons with soft gradients, fine highlight lines and depth blur. The overlay is minimal: a masthead "SOIE / maison de tissus", an editorial title "Softness, in motion." with an italic accent, a short note, a tension slider at the bottom and three palette buttons (Ivory, Rose, Sage). Moving the pointer pulls the ribbons; "Let it fall" releases them with a decay; the tension slider changes the number and amplitude of the folds. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+The page is a material, not a layout. Silk should feel continuous and heavy, with highlights that travel along the folds. Typography is small and precise so the fabric remains the hero, and the one line of display type is placed like a label pinned to the cloth. The palette is quiet, expensive and warm.
+
+VISUAL TECHNIQUES
+- Layered SVG bezier ribbons with multi-stop gradients and soft blur for depth.
+- Per-frame control-point animation: slow ambient motion plus pointer attraction with easing.
+- Tension control changing wave frequency and fold amplitude.
+- Three fabric palettes applied to gradient stops and background wash.
+- Specular highlight ribbons and a fine grain overlay.
+- Editorial type with a serif title, italic accent and monospaced technical labels.
+- Responsive scaling; reduced-motion renders a still composition of folds.
+
+INTERACTION MODEL
+Moving the pointer pulls the nearest folds toward it and brightens the highlights. The tension slider changes the ripples in real time. Palette buttons recolour the fabric and the background warmth. "Let it fall" removes pointer influence and lets the cloth settle with a slow decay. All controls are keyboard accessible; reduced-motion shows a static drape.

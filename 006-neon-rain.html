@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Neon Rain — a night market at the end of the grid. Sector 09.">
+<title>Neon Rain — Sector 09 Night Market</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#07050e; --deep:#0d0818; --pink:#ff2e88; --cyan:#00f0ff; --acid:#f4ff5c; --mist:#d9d2ee;
+    --dim:rgba(217,210,238,.52); --line:rgba(0,240,255,.22);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--void);color:var(--mist);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;min-height:100vh}
+  ::selection{background:var(--pink);color:#08050f}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--cyan);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.6}
+
+  .scene{position:relative;min-height:100svh;overflow:hidden;isolation:isolate;cursor:crosshair}
+  #rain{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+  .sky{position:absolute;inset:0;z-index:0;background:
+    radial-gradient(900px 520px at 68% 18%,rgba(255,46,136,.20),transparent 62%),
+    radial-gradient(700px 500px at 22% 32%,rgba(0,240,255,.14),transparent 66%),
+    radial-gradient(500px 300px at 52% 92%,rgba(255,46,136,.18),transparent 70%),
+    linear-gradient(180deg,#05030b 0%,#0a0616 48%,#120a22 78%,#06040c 100%)}
+  .stars{position:absolute;inset:0 0 34% 0;z-index:0;opacity:.6;
+    background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .6px),radial-gradient(rgba(0,240,255,.5) .5px,transparent .5px);
+    background-size:97px 83px,151px 131px;background-position:20px 30px,70px 90px;
+    -webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+  .moon{position:absolute;z-index:0;right:18%;top:12%;width:130px;height:130px;border-radius:50%;
+    background:radial-gradient(circle at 36% 34%,rgba(255,255,255,.9),rgba(255,190,225,.35) 35%,rgba(255,46,136,.08) 62%,transparent 70%);
+    filter:blur(1px);opacity:.55}
+
+  .skyline{position:absolute;left:0;right:0;bottom:0;height:52%;z-index:0;pointer-events:none}
+  .buildings{position:absolute;left:-4%;right:-4%;bottom:12%;height:74%;display:flex;align-items:flex-end;gap:1.2%;
+    filter:drop-shadow(0 0 24px rgba(255,46,136,.08))}
+  .bldg{position:relative;flex:1;background:linear-gradient(180deg,#0c0718,#05030a);border-top:1px solid rgba(255,46,136,.25);min-width:0}
+  .bldg::before{content:"";position:absolute;inset:8% 12% 0;opacity:.55;
+    background-image:radial-gradient(rgba(0,240,255,.85) 1px,transparent 1.4px),radial-gradient(rgba(255,190,90,.8) 1px,transparent 1.4px);
+    background-size:18px 24px,31px 37px;background-position:0 0,9px 13px;
+    -webkit-mask-image:linear-gradient(180deg,#000 20%,rgba(0,0,0,.2) 90%);mask-image:linear-gradient(180deg,#000 20%,rgba(0,0,0,.2) 90%)}
+  .bldg::after{content:"";position:absolute;top:9%;left:10%;right:10%;height:2px;background:var(--pink);opacity:.45;
+    box-shadow:0 0 10px var(--pink)}
+  .b1{height:64%}.b2{height:82%}.b3{height:48%}.b4{height:71%}.b5{height:93%}.b6{height:56%}.b7{height:76%}.b8{height:44%}.b9{height:88%}.b10{height:61%}
+  .street{position:absolute;left:0;right:0;bottom:0;height:22%;
+    background:linear-gradient(180deg,#0a0614,#05030a 42%,#030208);
+    box-shadow:inset 0 1px 0 rgba(0,240,255,.12)}
+  .street::before{content:"";position:absolute;inset:0;opacity:.8;
+    background:radial-gradient(100px 12px at 22% 0,rgba(0,240,255,.38),transparent 70%),
+    radial-gradient(130px 16px at 72% 2%,rgba(255,46,136,.4),transparent 72%),
+    radial-gradient(70px 9px at 44% 0,rgba(244,255,92,.25),transparent 70%);
+    filter:blur(7px)}
+  .street::after{content:"";position:absolute;left:0;right:0;top:22%;height:1px;background:rgba(217,210,238,.12)}
+
+  .vignette{position:absolute;inset:0;z-index:6;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 42%,transparent 26%,rgba(4,2,9,.55) 78%,rgba(4,2,9,.9) 100%)}
+  .scan{position:absolute;inset:0;z-index:7;pointer-events:none;opacity:.22;
+    background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(0,0,0,.5) 2px 4px)}
+  .scan::after{content:"";position:absolute;left:0;right:0;height:22%;top:-22%;
+    background:linear-gradient(180deg,transparent,rgba(0,240,255,.06),transparent);animation:sweep 7s linear infinite}
+  @keyframes sweep{to{top:120%}}
+  .flash{position:absolute;inset:0;z-index:8;pointer-events:none;background:#eafcff;opacity:0;transition:opacity .5s ease}
+  .flash.on{opacity:.34;transition:opacity .06s}
+
+  .ui{position:relative;z-index:4;display:flex;flex-direction:column;min-height:100svh;padding:0 clamp(16px,3.4vw,44px)}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 0;border-bottom:1px solid rgba(217,210,238,.13)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
+  .brand .sig{width:8px;height:8px;background:var(--pink);box-shadow:0 0 12px var(--pink);transform:rotate(45deg)}
+  .brand small{font-family:var(--mono);font-weight:400;font-size:.46rem;color:var(--dim);letter-spacing:.12em}
+  .top nav{display:flex;gap:24px;align-items:center}
+  .top nav a{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);transition:color .25s,text-shadow .25s}
+  .top nav a:hover{color:var(--cyan);text-shadow:0 0 12px rgba(0,240,255,.7)}
+  .top .zone{color:var(--acid);font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;white-space:nowrap}
+  .top .zone b{font-weight:400;color:var(--dim)}
+
+  .hero{flex:1;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;padding:28px 0 40px;position:relative}
+  .heroMain{max-width:720px}
+  .kicker{display:flex;align-items:center;gap:10px;color:var(--cyan);margin-bottom:20px}
+  .kicker::before{content:"";width:24px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  h1{position:relative;font-size:clamp(3.6rem,9.6vw,8.8rem);line-height:.85;letter-spacing:-.06em;font-weight:700;color:#fff;
+    text-transform:uppercase;text-shadow:0 0 24px rgba(255,46,136,.35)}
+  h1 .row2{display:block;color:transparent;-webkit-text-stroke:1.5px var(--pink);text-shadow:0 0 26px rgba(255,46,136,.55)}
+  h1.glitch::before,h1.glitch::after{content:attr(data-text);position:absolute;inset:0;pointer-events:none;opacity:.75;clip-path:inset(0 0 55% 0)}
+  h1.glitch::before{color:var(--cyan);transform:translate(-2px,-1px);animation:glitchA 3.6s infinite steps(2,end)}
+  h1.glitch::after{color:var(--pink);transform:translate(2px,1px);clip-path:inset(52% 0 0 0);animation:glitchB 4.2s infinite steps(2,end)}
+  @keyframes glitchA{0%,92%,100%{transform:translate(0,0);opacity:0}93%{transform:translate(-4px,1px);opacity:.6}96%{transform:translate(3px,-1px);opacity:.35}}
+  @keyframes glitchB{0%,88%,100%{transform:translate(0,0);opacity:0}90%{transform:translate(5px,-1px);opacity:.5}94%{transform:translate(-3px,2px);opacity:.3}}
+  .sub{margin-top:24px;max-width:46ch;font-size:.88rem;line-height:1.8;color:var(--dim);font-weight:300}
+  .sub b{color:var(--mist);font-weight:400}
+  .actions{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:32px}
+  .enter{display:inline-flex;align-items:center;gap:12px;padding:15px 24px;border:1px solid var(--pink);color:#fff;
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;position:relative;overflow:hidden;
+    background:rgba(255,46,136,.08);box-shadow:0 0 24px rgba(255,46,136,.18),inset 0 0 22px rgba(255,46,136,.1);
+    transition:background .3s,box-shadow .3s,color .3s}
+  .enter span{position:relative;z-index:2}
+  .enter::before{content:"";position:absolute;inset:0;background:var(--pink);transform:translateX(-101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .enter:hover::before{transform:translateX(0)}
+  .enter:hover{color:#0a0612;box-shadow:0 0 38px rgba(255,46,136,.55)}
+  .ghostLink{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid rgba(217,210,238,.2);padding-bottom:3px;transition:color .25s,border-color .25s}
+  .ghostLink:hover{color:var(--cyan);border-color:var(--cyan)}
+
+  .sign{justify-self:end;align-self:center;writing-mode:vertical-rl;text-orientation:mixed;display:flex;align-items:center;gap:18px;
+    padding:22px 12px;border:1px solid rgba(255,46,136,.4);box-shadow:0 0 30px rgba(255,46,136,.18),inset 0 0 26px rgba(255,46,136,.08);
+    background:rgba(11,5,21,.35);backdrop-filter:blur(2px);text-transform:uppercase;position:relative}
+  .sign .jp{font-size:1.5rem;letter-spacing:.24em;color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 22px rgba(0,240,255,.6);line-height:1.2;font-weight:300}
+  .sign .lat{font-family:var(--mono);font-size:.56rem;letter-spacing:.32em;color:var(--pink);text-shadow:0 0 9px var(--pink)}
+  .sign::after{content:"";position:absolute;inset:-1px;border:1px solid rgba(0,240,255,.13);pointer-events:none}
+  .flicker{animation:flick 6s infinite}
+  @keyframes flick{0%,96%,100%{opacity:1}96.5%{opacity:.4}97%{opacity:1}97.5%{opacity:.55}}
+
+  .bottom{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:14px 0 20px;border-top:1px solid rgba(217,210,238,.13)}
+  .transmission{max-width:52ch;color:var(--dim);min-height:2.6em}
+  .transmission b{color:var(--acid);font-weight:400}
+  .stats{display:flex;gap:26px;color:var(--dim);white-space:nowrap}
+  .stats b{display:block;color:var(--mist);font-weight:400;margin-top:4px;font-family:var(--mono);font-size:.6rem;letter-spacing:.05em}
+  .hint{display:flex;align-items:center;gap:8px;color:rgba(217,210,238,.32);white-space:nowrap}
+  .hint i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:blink 2.4s infinite}
+  @keyframes blink{50%{opacity:.2}}
+
+  .marquee{position:relative;z-index:4;border-top:1px solid rgba(255,46,136,.22);border-bottom:1px solid rgba(255,46,136,.22);
+    background:rgba(8,3,15,.7);overflow:hidden;padding:10px 0}
+  .mtrack{display:flex;width:max-content;animation:mrun 34s linear infinite}
+  .mtrack span{display:flex;align-items:center;gap:26px;padding-right:26px;white-space:nowrap;font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .mtrack i{color:var(--pink);font-style:normal}
+  @keyframes mrun{to{transform:translateX(-50%)}}
+
+  .directory{position:relative;z-index:3;max-width:1180px;margin:0 auto;padding:clamp(48px,8vw,90px) clamp(16px,3.4vw,40px)}
+  .dirHead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:16px;border-bottom:1px solid rgba(217,210,238,.14)}
+  .dirHead h2{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:400;letter-spacing:-.03em;text-transform:uppercase}
+  .dirHead h2 em{font-family:"Iowan Old Style",Georgia,serif;color:var(--pink);text-shadow:0 0 18px rgba(255,46,136,.45)}
+  .dirHead p{color:var(--dim);max-width:28ch;text-align:right}
+  .stalls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  .stall{position:relative;border:1px solid rgba(217,210,238,.16);padding:22px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,rgba(18,10,34,.85),rgba(7,4,14,.9));overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .3s}
+  .stall::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c,var(--pink)),transparent);opacity:.8}
+  .stall:hover{border-color:var(--c,var(--pink));box-shadow:0 0 30px rgba(255,46,136,.14);transform:translateY(-4px)}
+  .stall:nth-child(2){--c:var(--cyan)}
+  .stall:nth-child(3){--c:var(--acid)}
+  .stall .n{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;color:var(--c,var(--pink));text-transform:uppercase}
+  .stall h3{margin-top:10px;font-size:1.2rem;font-weight:400;letter-spacing:-.01em}
+  .stall p{margin-top:8px;font-size:.72rem;line-height:1.7;color:var(--dim)}
+  .stall .foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:12px;border-top:1px solid rgba(217,210,238,.1);font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+  .stall .foot b{color:var(--mist);font-weight:400}
+  .stall .glyph{position:absolute;right:12px;top:14px;font-size:2.6rem;line-height:1;color:var(--c,var(--pink));opacity:.12}
+  footer{position:relative;z-index:3;max-width:1180px;margin:0 auto;padding:18px clamp(16px,3.4vw,40px) 30px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;border-top:1px solid rgba(217,210,238,.12);color:rgba(217,210,238,.35)}
+
+  @media(max-width:900px){
+    .sign{display:none}
+    .hero{grid-template-columns:1fr}
+    .stalls{grid-template-columns:1fr}
+    .bottom{flex-wrap:wrap}
+    .stats{order:3;width:100%;justify-content:space-between;gap:10px}
+  }
+  @media(max-width:620px){
+    .top nav{display:none}
+    .hero{padding:22px 0 30px}
+    .sub{font-size:.82rem}
+    .actions{gap:16px}
+    .dirHead{flex-direction:column;align-items:flex-start}
+    .dirHead p{text-align:left}
+    .bottom .hint{display:none}
+    .transmission{font-size:.52rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="sky" aria-hidden="true"></div>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="moon" aria-hidden="true"></div>
+  <div class="skyline" aria-hidden="true">
+    <div class="buildings">
+      <div class="bldg b1"></div><div class="bldg b2"></div><div class="bldg b3"></div><div class="bldg b4"></div><div class="bldg b5"></div>
+      <div class="bldg b6"></div><div class="bldg b7"></div><div class="bldg b8"></div><div class="bldg b9"></div><div class="bldg b10"></div>
+    </div>
+    <div class="street"></div>
+  </div>
+  <canvas id="rain"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+  <div class="flash" id="flash" aria-hidden="true"></div>
+
+  <div class="ui">
+    <header class="top">
+      <a class="brand" href="#top"><span class="sig" aria-hidden="true"></span>Neon Rain <small>/ Sector 09</small></a>
+      <nav aria-label="Primary"><a href="#stalls">Market</a><a href="#stalls">Archive</a><a href="#stalls">Signal</a></nav>
+      <span class="zone mono"><b>Grid status</b> · open until 06:00</span>
+    </header>
+
+    <main class="hero" id="top">
+      <div class="heroMain">
+        <p class="kicker mono">A night market at the end of the grid</p>
+        <h1 class="glitch" data-text="NEON">Neon<span class="row2">Rain</span></h1>
+        <p class="sub">Sector 09 keeps its lights on for people who are not finished yet. <b>Three stalls, one alley, no closing bell.</b> The rain is part of the architecture.</p>
+        <div class="actions">
+          <a class="enter" href="#stalls"><span>Enter the market <span aria-hidden="true">↗</span></span></a>
+          <span class="ghostLink">Click the scene for lightning</span>
+        </div>
+      </div>
+      <div class="sign" aria-hidden="true">
+        <span class="jp flicker">夜市</span>
+        <span class="lat">Open 24h</span>
+        <span class="jp flicker" style="color:var(--pink);text-shadow:0 0 9px var(--pink)">九区</span>
+      </div>
+    </main>
+
+    <div class="bottom">
+      <p class="transmission mono" id="transmission">Transmission 04 — “The noodles are better when it rains. We have no explanation.” <b>— Stall 02</b></p>
+      <div class="stats">
+        <div><span class="mono">Local</span><b id="clock">02:14:09</b></div>
+        <div><span class="mono">Rainfall</span><b>18 mm / h</b></div>
+        <div><span class="mono">Signal</span><b>−42 dBm</b></div>
+      </div>
+      <span class="hint mono"><i aria-hidden="true"></i> Simulated atmosphere</span>
+    </div>
+  </div>
+</div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mtrack">
+    <span>Open all night <i>◆</i> Stall 01 — synthetic flowers <i>◆</i> Stall 02 — broth &amp; static <i>◆</i> Stall 03 — repaired memories <i>◆</i> No refunds after the rain <i>◆</i></span>
+    <span>Open all night <i>◆</i> Stall 01 — synthetic flowers <i>◆</i> Stall 02 — broth &amp; static <i>◆</i> Stall 03 — repaired memories <i>◆</i> No refunds after the rain <i>◆</i></span>
+  </div>
+</div>
+
+<main class="directory" id="stalls">
+  <div class="dirHead">
+    <h2>Tonight's <em>stalls</em></h2>
+    <p class="mono">Follow the wet footprints. The alley does the rest.</p>
+  </div>
+  <div class="stalls">
+    <article class="stall">
+      <span class="glyph" aria-hidden="true">✿</span>
+      <div><div class="n">Stall 01 — 9F</div><h3>Synthetic flowers</h3><p>Petals grown from salvaged screen light. They bloom only when someone stands close enough to mean it.</p></div>
+      <div class="foot"><span>Open <b>all night</b></span><span>Ask for Mei</span></div>
+    </article>
+    <article class="stall">
+      <span class="glyph" aria-hidden="true">☰</span>
+      <div><div class="n">Stall 02 — 4B</div><h3>Broth &amp; static</h3><p>Twelve-hour stock, one shortwave radio, no menus. The cook decides; the rain provides the soundtrack.</p></div>
+      <div class="foot"><span>Bowl <b>¥900</b></span><span>Seats 6</span></div>
+    </article>
+    <article class="stall">
+      <span class="glyph" aria-hidden="true">◈</span>
+      <div><div class="n">Stall 03 — 2A</div><h3>Repaired memories</h3><p>We fix the small ones: a street name, a song's opening chord, the shape of someone's handwriting on a receipt.</p></div>
+      <div class="foot"><span>Wait <b>3 days</b></span><span>Cash only</span></div>
+    </article>
+  </div>
+</main>
+
+<footer class="mono">
+  <span>Neon Rain / Sector 09 · a fictional night market</span>
+  <span>Built with one file · no grid access required</span>
+</footer>
+
+<script>
+  const scene = document.getElementById('scene');
+  const canvas = document.getElementById('rain');
+  const ctx = canvas.getContext('2d');
+  const flash = document.getElementById('flash');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w = 0, h = 0, drops = [], dpr = 1, flashTimer = null;
+
+  function size(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = scene.clientWidth; h = scene.clientHeight;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round(Math.min(240, Math.max(90, w * h / 9000)));
+    drops = Array.from({ length: count }, makeDrop);
+  }
+  function makeDrop(){
+    const depth = Math.random();
+    return {
+      x: Math.random() * w,
+      y: Math.random() * h,
+      len: 8 + depth * 26,
+      speed: .7 + depth * 2.6,
+      drift: .16 + depth * .34,
+      alpha: .12 + depth * .5,
+      hue: Math.random() > .8 ? '255,46,136' : '160,235,255'
+    };
+  }
+  function draw(){
+    ctx.clearRect(0, 0, w, h);
+    for (let d of drops){
+      ctx.strokeStyle = 'rgba(' + d.hue + ',' + d.alpha + ')';
+      ctx.lineWidth = d.hue === '255,46,136' ? 1.1 : .8;
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - d.drift * 3, d.y + d.len);
+      ctx.stroke();
+      d.y += d.speed * 7;
+      d.x -= d.drift;
+      if (d.y > h + 40 || d.x < -20){
+        d.y = -30 - Math.random() * 80;
+        d.x = Math.random() * (w + 60);
+      }
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  }
+
+  size();
+  draw();
+
+  let resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(size, 120);
+  });
+
+  const transmissions = [
+    'Transmission 04 — “The noodles are better when it rains. We have no explanation.” <b>— Stall 02</b>',
+    'Transmission 11 — “If you can hear the sign buzzing, you are close enough.” <b>— The alley</b>',
+    'Transmission 19 — “We do not sell umbrellas. We sell the decision to stay.” <b>— Stall 01</b>',
+    'Transmission 27 — “Everything repaired here was loved first. Bring the pieces.” <b>— Stall 03</b>'
+  ];
+  let tIndex = 0;
+  const transmission = document.getElementById('transmission');
+
+  scene.addEventListener('click', function(e){
+    if (e.target.closest('a, button')) return;
+    flash.classList.add('on');
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function(){ flash.classList.remove('on'); }, 90);
+    for (let d of drops){ d.y -= 26 + Math.random() * 40; }
+    tIndex = (tIndex + 1) % transmissions.length;
+    transmission.innerHTML = transmissions[tIndex];
+  });
+
+  scene.addEventListener('pointermove', function(e){
+    if (reduce) return;
+    const r = scene.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    const buildings = document.querySelector('.buildings');
+    const sign = document.querySelector('.sign');
+    buildings.style.transform = 'translate3d(' + (x * -18) + 'px,' + (y * -6) + 'px,0)';
+    if (sign) sign.style.transform = 'translate3d(' + (x * 10) + 'px,' + (y * 8) + 'px,0)';
+  });
+
+  function clock(){
+    const d = new Date();
+    document.getElementById('clock').textContent = [d.getHours(), d.getMinutes(), d.getSeconds()]
+      .map(n => String(n).padStart(2, '0')).join(':');
+  }
+  clock();
+  setInterval(clock, 1000);
+</script>
+</body>
+</html>

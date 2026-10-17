@@ -1,0 +1,20 @@
+TITLE
+Chroma Field — An Interactive Colour Study
+
+PROMPT
+Create a Swiss-modern interactive colour study called "Chroma Field". The page is a controlled composition: a narrow left control column and a large 8 × 6 field of flat colour tiles separated by hairline gaps, with oversized typography overlapping the grid in difference blend mode. Palette sets are sophisticated rather than primary — Terrain (forest, sage, sand, rust, bone), Salt (chalk, pale blue, slate, ink), Ember (oxblood, clay, apricot, smoke) and Nocturne (indigo, violet, moss, cream). Visitors choose a palette, click or drag across tiles to paint them, hover to read the hex and coordinates, and "shuffle the field" to generate a new harmonious block composition. Include a live selected-colour readout, a field count, and a short note about Josef Albers-style colour relationships. Fully responsive, one standalone HTML file with inline CSS/JS, no external assets.
+
+DESIGN INTENT
+A colour workshop disguised as a poster. The grid is the artwork and the interface is deliberately quiet: tiny labels, one strong type gesture, and no rounded cards or shadows. Colour does all the emotional work while a strict underlying grid keeps the composition calm. The overlap of the word FIELD in difference blend makes the visitor's own colour choices alter the typography.
+
+VISUAL TECHNIQUES
+- CSS grid of 48 flat tiles with hairline gaps and generous negative space.
+- Curated colour palettes stored as tokens; whole-field recolouring by index mapping.
+- Difference-blend oversized type overlapping the grid, so it inverts against each tile.
+- Hover coordinate/hex readout with a large colour chip.
+- Staggered scale-in animation when the field is shuffled.
+- Swiss typographic grid, hairline rules, monospaced metadata and tight grotesque headings.
+- Responsive reflow: controls become a compact horizontal tray, grid stays square-ish.
+
+INTERACTION MODEL
+Select a pigment from the active palette, then click or drag across the field to paint tiles. Hovering a tile updates the readout with its coordinates and hex value. Switching palettes remaps the existing composition to the new colours. "Shuffle field" builds a new composition via a neighbour-aware random walk and animates the tiles in. Every tile is a keyboard-focusable button; Enter or Space paints it. Reduced-motion removes the stagger.

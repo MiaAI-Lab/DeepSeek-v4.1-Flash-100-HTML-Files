@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Field Notes — a sketchbook spread with wireframes, doodles and draggable sticky notes.">
+<title>Field Notes — A Sketchbook</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f6efdd; --paper2:#efe6d2; --ink:#2f4d7a; --red:#b8402f; --graphite:#5b564d; --dim:rgba(47,77,122,.55); --line:rgba(47,77,122,.25); --yellow:#f2d35f;
+    --hand:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#dcd2be;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100svh;
+    background-image:radial-gradient(1000px 700px at 30% 0%,#e9dfcb,transparent 60%),radial-gradient(800px 600px at 90% 100%,#d3c8b2,transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--yellow);color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px dashed var(--red);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1340px;margin:0 auto;padding:18px clamp(14px,2.8vw,34px) 24px;min-height:100svh;display:flex;flex-direction:column}
+
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding:6px 0 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .pencil{width:34px;height:7px;background:linear-gradient(90deg,#e5b45c 0 72%,#d9a45a 72% 86%,#3a332a 86% 100%);transform:rotate(-18deg);position:relative;flex:none}
+  .brand .pencil::after{content:"";position:absolute;right:-6px;top:1px;border-left:6px solid #d9cfb9;border-top:2.5px solid transparent;border-bottom:2.5px solid transparent}
+  .brand b{font-family:var(--hand);font-size:1.28rem;font-weight:400}
+  .brand span{display:block;font-family:var(--mono);font-size:.4rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+  .headRight{display:flex;align-items:center;gap:16px;color:var(--dim);flex-wrap:wrap}
+  .headRight b{color:var(--ink);font-weight:400}
+
+  .book{flex:1;position:relative;display:grid;grid-template-columns:286px 1fr;margin-top:14px;background:var(--paper);
+    box-shadow:0 24px 60px rgba(60,45,25,.22),0 2px 0 rgba(255,255,255,.5) inset;min-height:0}
+  .book::before{content:"";position:absolute;left:286px;top:0;bottom:0;width:16px;transform:translateX(-50%);z-index:4;pointer-events:none;
+    background:linear-gradient(90deg,rgba(60,45,25,.16),rgba(60,45,25,.02) 42%,rgba(60,45,25,.14));}
+  .book::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(47,77,122,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(47,77,122,.06) 1px,transparent 1px);background-size:22px 22px}
+
+  .inside{position:relative;z-index:2;padding:24px 20px 20px 30px;border-right:1px solid rgba(60,45,25,.09);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .spiral{position:absolute;left:10px;top:26px;bottom:26px;width:14px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;z-index:5}
+  .spiral i{width:12px;height:5px;border:1.5px solid #8d8472;border-radius:50%;background:#e6dcc7;box-shadow:0 1px 0 #fff inset}
+  .pageNo{font-family:var(--hand);font-size:.82rem;color:var(--dim)}
+  .tabs{display:flex;flex-direction:column;gap:0;margin:18px 0;border-top:1px dashed var(--line)}
+  .tab{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px dashed var(--line);text-align:left;
+    font-family:var(--hand);font-size:1.06rem;color:var(--dim);transition:color .2s,padding-left .2s}
+  .tab:hover{color:var(--ink)}
+  .tab[aria-pressed="true"]{color:var(--ink);padding-left:8px}
+  .tab[aria-pressed="true"]::after{content:"← here";font-family:var(--mono);font-size:.38rem;letter-spacing:.05em;color:var(--red);text-transform:uppercase}
+  .tab span{font-family:var(--mono);font-size:.4rem;letter-spacing:.05em;color:var(--dim)}
+  .pens{display:flex;align-items:center;gap:8px;margin-top:4px}
+  .pen{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(58,49,37,.25);position:relative;transition:transform .2s}
+  .pen:hover{transform:translateY(-2px)}
+  .pen[aria-pressed="true"]::after{content:"";position:absolute;inset:-5px;border:1px dashed var(--red);border-radius:50%}
+  .pen.blue{background:#2f4d7a}.pen.red{background:#b8402f}.pen.graphite{background:#5b564d}
+  .notePad{position:relative;height:110px;margin:18px 0}
+  .sticky{position:absolute;width:104px;min-height:94px;padding:10px 9px;font-family:var(--hand);font-size:.72rem;line-height:1.35;color:#4a3b22;
+    box-shadow:2px 3px 6px rgba(60,45,25,.18);cursor:grab;touch-action:none;user-select:none;z-index:2}
+  .sticky:active{cursor:grabbing;box-shadow:3px 5px 12px rgba(60,45,25,.25)}
+  .sticky.yellow{background:#f5dd7c;transform:rotate(-3deg);left:0;top:4px}
+  .sticky.pink{background:#f0c3bb;transform:rotate(2.5deg);left:112px;top:0}
+  .sticky.mint{background:#cfe0c3;transform:rotate(-1deg);left:56px;top:58px}
+  .sticky small{display:block;margin-top:4px;font-family:var(--mono);font-size:.36rem;letter-spacing:.06em;text-transform:uppercase;opacity:.6}
+  .turn{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px solid var(--ink);padding:9px 11px;border-radius:14px 6px 12px 8px;
+    font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,color .2s;background:rgba(255,255,255,.2)}
+  .turn:hover{background:var(--ink);color:var(--paper)}
+  .insideFoot{margin-top:14px;color:var(--dim);line-height:1.8;font-family:var(--mono);font-size:.4rem;letter-spacing:.04em;text-transform:uppercase}
+
+  .page{position:relative;z-index:2;padding:clamp(18px,3vw,34px) clamp(16px,3.4vw,44px);display:flex;flex-direction:column;overflow:hidden}
+  .pageHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:10px;color:var(--dim)}
+  .pageHead .title{font-family:var(--hand);font-size:clamp(1.5rem,2.6vw,2rem);color:var(--ink);line-height:1}
+  .pageHead .meta{text-align:right;line-height:1.8}
+  .sheet{display:none;flex:1;position:relative;transition:opacity .25s,transform .25s}
+  .sheet.active{display:block;animation:turnIn .4s ease}
+  @keyframes turnIn{from{opacity:0;transform:translateX(22px) rotate(.4deg)}to{opacity:1;transform:none}}
+  .noAnim .sheet.active{animation:none}
+
+  .sk{border:1.6px solid var(--ink);border-radius:12px 5px 14px 6px;position:relative;background:rgba(255,255,255,.12)}
+  .sk.thin{border-width:1.2px}
+  .xbox{position:absolute;inset:0;overflow:hidden;border-radius:10px}
+  .xbox::before,.xbox::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:1.4px;background:var(--line)}
+  .xbox::before{transform:rotate(28deg) scaleY(1.25)}.xbox::after{transform:rotate(-28deg) scaleY(1.25)}
+  .label{font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);position:absolute}
+  .hand{font-family:var(--hand)}
+  .highlight{position:relative;display:inline-block;z-index:1}
+  .highlight::before{content:"";position:absolute;left:-3%;right:-2%;bottom:2px;height:38%;background:var(--yellow);z-index:-1;transform:rotate(-1deg);opacity:.8}
+
+  .homeGrid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;height:100%}
+  .heroSk{min-height:220px;display:flex;flex-direction:column;justify-content:space-between;padding:14px;transform:rotate(-.5deg)}
+  .heroSk .topSketch{height:55%;position:relative}
+  .scribble{font-family:var(--hand);font-size:clamp(1.6rem,3.6vw,2.7rem);line-height:.95;color:var(--ink);margin-top:12px}
+  .scribble span{display:block;color:var(--red)}
+  .homeRight{display:flex;flex-direction:column;gap:12px}
+  .boxSk{flex:1;position:relative;min-height:80px;padding:8px}
+  .boxSk .xbox{position:absolute;inset:6px;border:1px dashed var(--line);border-radius:6px}
+  .thumbRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+  .thumb{height:52px;position:relative}
+  .arrow{position:absolute;z-index:3;pointer-events:none}
+  .arrow path{stroke:var(--red);stroke-width:1.4;fill:none;stroke-linecap:round}
+  .arrow text{font-family:var(--hand);font-size:11px;fill:var(--red)}
+
+  .studioGrid{display:grid;grid-template-columns:.62fr 1.38fr;gap:18px;height:100%}
+  .portrait{min-height:210px;position:relative;display:grid;place-items:center;padding:10px}
+  .portrait svg{width:82%;height:auto}
+  .teamGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .teamCard{border:1.3px dashed var(--line);border-radius:8px 4px 10px 5px;padding:9px;min-height:78px;position:relative}
+  .teamCard .face{width:28px;height:28px;border:1.2px solid var(--ink);border-radius:50%;position:relative;margin-bottom:6px}
+  .teamCard .face::before,.teamCard .face::after{content:"";position:absolute;top:10px;width:2px;height:2px;border-radius:50%;background:var(--ink)}
+  .teamCard .face::before{left:7px}.teamCard .face::after{right:7px}
+  .teamCard .line{height:1px;background:var(--line);margin-top:4px}
+  .teamCard .line.short{width:60%}
+  .studioNotes{font-family:var(--hand);font-size:.78rem;color:var(--dim);line-height:1.5;margin-top:12px;max-width:44ch}
+
+  .contactGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;height:100%;align-content:start}
+  .envelope{min-height:200px;position:relative;display:grid;place-items:center;padding:10px;transform:rotate(.7deg)}
+  .envelope svg{width:80%;height:auto}
+  .formSk{display:flex;flex-direction:column;gap:12px;padding:6px 0}
+  .field{border-bottom:1.5px solid var(--ink);padding:8px 2px 5px;font-family:var(--hand);font-size:.82rem;color:var(--dim)}
+  .field b{font-weight:400;color:var(--ink)}
+  .send{align-self:flex-start;margin-top:6px;border:1.5px solid var(--ink);padding:7px 18px;border-radius:20px 8px 18px 9px;font-family:var(--hand);font-size:.86rem;background:rgba(255,255,255,.25);transition:background .2s,color .2s}
+  .send:hover{background:var(--ink);color:var(--paper)}
+  .contactNote{font-family:var(--hand);font-size:.78rem;color:var(--dim);margin-top:12px;max-width:36ch;line-height:1.5}
+  .pageFoot{display:flex;justify-content:space-between;gap:14px;border-top:1px dashed var(--line);margin-top:12px;padding-top:7px;color:var(--dim);flex-wrap:wrap}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 4px 0;color:rgba(47,77,122,.5)}
+
+  @media(max-width:900px){
+    .book{grid-template-columns:1fr}
+    .book::before{display:none}
+    .inside{border-right:0;border-bottom:1px solid rgba(60,45,25,.15);padding:18px 18px 14px 30px}
+    .inside .tabs{flex-direction:row;gap:4px;border-top:0;margin:10px 0}
+    .tab{flex:1;border:1px solid transparent;border-bottom:1px dashed var(--line);padding:7px 4px}
+    .tab[aria-pressed="true"]{padding-left:4px}
+    .tab[aria-pressed="true"]::after{display:none}
+    .notePad{height:96px;margin:10px 0}
+    .sticky{width:92px;min-height:82px;font-size:.66rem}
+    .sticky.pink{left:100px}.sticky.mint{left:48px;top:50px}
+    .insideFoot{display:none}
+    .homeGrid,.studioGrid,.contactGrid{grid-template-columns:1fr;gap:12px}
+    .heroSk{min-height:190px}
+    .portrait{min-height:150px}
+    .thumbRow{display:none}
+    .page{overflow:visible}
+  }
+  @media(max-width:600px){
+    .wrap{padding:10px 10px 18px}
+    .headRight span:first-child{display:none}
+    .brand b{font-size:1.05rem}
+    .book{margin-top:10px}
+    .pageHead{flex-direction:column;gap:4px}
+    .pageHead .meta{text-align:left}
+    .scribble{font-size:1.7rem}
+    .sticky.pink{left:auto;right:0;top:0}.sticky.mint{left:auto;right:58px;top:46px}
+    .notePad{height:84px}
+    .contactGrid{gap:10px}
+    .envelope{min-height:140px}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">Field Notes</h1>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="pencil" aria-hidden="true"></span><span><b>Field Notes</b><span>Sketchbook vol. 6 / working pages</span></span></a>
+    <div class="headRight mono"><span>17.10.26 — studio copy</span><span>Page <b id="pageCount">01</b> / 03</span><span>Ink <b id="inkName">blue</b></span></div>
+  </header>
+
+  <main class="book" id="top">
+    <aside class="inside">
+      <div class="spiral" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div>
+        <p class="pageNo">inside cover — working file</p>
+        <div class="tabs" role="tablist" aria-label="Sketchbook pages">
+          <button class="tab" data-sheet="home" aria-pressed="true">Home <span>01</span></button>
+          <button class="tab" data-sheet="studio" aria-pressed="false">Studio <span>02</span></button>
+          <button class="tab" data-sheet="contact" aria-pressed="false">Contact <span>03</span></button>
+        </div>
+        <p class="mono" style="color:var(--dim);margin-bottom:5px">Pen</p>
+        <div class="pens" role="group" aria-label="Pen colour">
+          <button class="pen blue" data-ink="#2f4d7a" data-name="blue" aria-pressed="true" aria-label="Blue pen"></button>
+          <button class="pen red" data-ink="#b8402f" data-name="red" aria-pressed="false" aria-label="Red pencil"></button>
+          <button class="pen graphite" data-ink="#5b564d" data-name="graphite" aria-pressed="false" aria-label="Graphite pencil"></button>
+        </div>
+        <div class="notePad" id="notePad" aria-label="Draggable sticky notes">
+          <div class="sticky yellow" tabindex="0">Ask about<br>the new grid<small>— Ada</small></div>
+          <div class="sticky pink" tabindex="0">Logo feels<br>too round?<small>try again</small></div>
+          <div class="sticky mint" tabindex="0">Call the<br>printer<small>before 4</small></div>
+        </div>
+        <button class="turn" id="turn">Turn the page <span aria-hidden="true">→</span></button>
+      </div>
+      <p class="insideFoot">Everything here is provisional.<br>Use a pencil. Argue kindly.</p>
+    </aside>
+
+    <section class="page">
+      <div class="pageHead">
+        <div class="title" id="sheetTitle">Home — first pass</div>
+        <div class="meta mono">Client: studio itself<br>Format: 1440 / 3 sections</div>
+      </div>
+
+      <div class="sheet active" id="sheet-home" role="tabpanel" aria-label="Home wireframe">
+        <div class="homeGrid">
+          <div class="sk heroSk">
+            <div class="topSketch"><div class="xbox"></div><span class="label" style="left:8px;top:6px">hero — image / type</span></div>
+            <div><div class="scribble">Make<br><span class="highlight">good things.</span></div><span class="label" style="position:static;display:block;margin-top:8px">headline, maybe 84/80</span></div>
+          </div>
+          <div class="homeRight">
+            <div class="sk boxSk"><div class="xbox"></div><span class="label" style="left:10px;bottom:8px">nav / pill</span></div>
+            <div class="sk boxSk"><div class="xbox"></div><span class="label" style="left:10px;bottom:8px">intro copy →</span></div>
+            <div class="boxSk" style="border:0;padding:0"><div class="thumbRow"><div class="sk thumb"></div><div class="sk thumb"></div><div class="sk thumb"></div></div></div>
+          </div>
+        </div>
+        <svg class="arrow" style="right:6%;top:12%;width:120px;height:70px" viewBox="0 0 120 70" aria-hidden="true"><path d="M8,54 C38,56 62,20 96,14"/><path d="M86,8 L98,14 L88,22"/><text x="20" y="46">more air here</text></svg>
+        <div class="pageFoot mono"><span>Sketch 01 — home</span><span>Pencil on paper, then one HTML file</span></div>
+      </div>
+
+      <div class="sheet" id="sheet-studio" role="tabpanel" aria-label="Studio wireframe">
+        <div class="studioGrid">
+          <div class="sk portrait">
+            <svg viewBox="0 0 160 180" aria-hidden="true">
+              <path d="M80,16 C110,16 128,40 128,70 C128,96 112,116 96,124 L96,148 C96,158 66,158 66,148 L66,122 C46,112 34,94 34,70 C34,38 52,16 80,16Z" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+              <path d="M56,66 C60,60 66,60 70,66 M92,66 C96,60 102,60 106,66" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M72,88 C78,94 84,94 90,88" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M52,42 C64,28 98,24 112,44" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <text x="118" y="34" font-family="Segoe Print, cursive" font-size="10" fill="var(--red)">hello!</text>
+            </svg>
+            <span class="label" style="left:10px;bottom:8px">portrait / 4:5</span>
+          </div>
+          <div>
+            <div class="teamGrid">
+              <div class="teamCard"><div class="face"></div><div class="line"></div><div class="line short"></div><span class="label" style="position:static;display:block;margin-top:6px">Ada — CD</span></div>
+              <div class="teamCard"><div class="face"></div><div class="line"></div><div class="line short"></div><span class="label" style="position:static;display:block;margin-top:6px">Mika — motion</span></div>
+              <div class="teamCard"><div class="face"></div><div class="line"></div><div class="line short"></div><span class="label" style="position:static;display:block;margin-top:6px">Jo — dev</span></div>
+              <div class="teamCard"><div class="face"></div><div class="line"></div><div class="line short"></div><span class="label" style="position:static;display:block;margin-top:6px">Sol — words</span></div>
+            </div>
+            <p class="studioNotes">Not a grid of identical faces — four people, four ways of leaning. Leave the fourth card empty for scale.</p>
+          </div>
+        </div>
+        <svg class="arrow" style="left:34%;top:8%;width:120px;height:60px" viewBox="0 0 120 60" aria-hidden="true"><path d="M8,12 C42,4 62,32 102,40"/><path d="M92,32 L104,41 L90,46"/><text x="26" y="24" font-family="Segoe Print, cursive" font-size="10" fill="var(--red)">keep this loose</text></svg>
+        <div class="pageFoot mono"><span>Sketch 02 — studio</span><span>Team page, one column on mobile</span></div>
+      </div>
+
+      <div class="sheet" id="sheet-contact" role="tabpanel" aria-label="Contact wireframe">
+        <div class="contactGrid">
+          <div class="sk envelope">
+            <svg viewBox="0 0 220 150" aria-hidden="true">
+              <rect x="18" y="28" width="184" height="104" rx="3" fill="none" stroke="var(--ink)" stroke-width="1.6"/>
+              <path d="M18,28 L110,92 L202,28" fill="none" stroke="var(--ink)" stroke-width="1.4"/>
+              <path d="M18,132 L82,80 M202,132 L138,80" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="4 3"/>
+              <circle cx="110" cy="76" r="15" fill="var(--red)" opacity=".12"/>
+              <text x="98" y="80" font-family="Segoe Print, cursive" font-size="11" fill="var(--red)">say hi</text>
+            </svg>
+            <span class="label" style="left:10px;bottom:8px">envelope / illustration</span>
+          </div>
+          <div class="formSk">
+            <div class="field"><b>your name</b> —————</div>
+            <div class="field"><b>email</b> ———————</div>
+            <div class="field" style="min-height:52px"><b>what are we making?</b><br>—————————————</div>
+            <button class="send">send it ↗</button>
+            <p class="contactNote">The form is fictional. The reply would be real, if this were a real studio.</p>
+          </div>
+        </div>
+        <svg class="arrow" style="right:8%;bottom:16%;width:100px;height:60px" viewBox="0 0 100 60" aria-hidden="true"><path d="M8,10 C36,6 60,26 84,44"/><path d="M74,34 L88,46 L70,50"/><text x="10" y="42" font-family="Segoe Print, cursive" font-size="10" fill="var(--red)">one field less</text></svg>
+        <div class="pageFoot mono"><span>Sketch 03 — contact</span><span>Keep it short, keep it human</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Field Notes / a fictional sketchbook</span>
+    <span>Paper, ink, one honest wireframe</span>
+    <span>© 2026 · draw first, build later</span>
+  </footer>
+</div>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const sheets = Array.from(document.querySelectorAll('.sheet'));
+  const pageCount = document.getElementById('pageCount');
+  const sheetTitle = document.getElementById('sheetTitle');
+  const names = { home: ['Home — first pass', '01'], studio: ['Studio — team edit', '02'], contact: ['Contact — short version', '03'] };
+  let current = 'home';
+
+  function show(key){
+    current = key;
+    sheets.forEach(s => s.classList.toggle('active', s.id === 'sheet-' + key));
+    tabs.forEach(t => t.setAttribute('aria-pressed', String(t.dataset.sheet === key)));
+    pageCount.textContent = names[key][1];
+    sheetTitle.textContent = names[key][0];
+  }
+  tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.sheet)));
+  document.getElementById('turn').addEventListener('click', () => {
+    const order = ['home', 'studio', 'contact'];
+    show(order[(order.indexOf(current) + 1) % order.length]);
+  });
+
+  document.querySelectorAll('.pen').forEach(pen => {
+    pen.addEventListener('click', () => {
+      document.documentElement.style.setProperty('--ink', pen.dataset.ink);
+      document.getElementById('inkName').textContent = pen.dataset.name;
+      document.querySelectorAll('.pen').forEach(p => p.setAttribute('aria-pressed', String(p === pen)));
+    });
+  });
+
+  // draggable sticky notes
+  const pad = document.getElementById('notePad');
+  let drag = null;
+  document.querySelectorAll('.sticky').forEach(note => {
+    note.addEventListener('pointerdown', e => {
+      const r = note.getBoundingClientRect();
+      drag = { el: note, dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height };
+      note.style.left = (r.left - pad.getBoundingClientRect().left) + 'px';
+      note.style.top = (r.top - pad.getBoundingClientRect().top) + 'px';
+      note.style.right = 'auto';
+      note.setPointerCapture(e.pointerId);
+      note.style.zIndex = 10;
+      e.preventDefault();
+    });
+  });
+  window.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const pr = pad.getBoundingClientRect();
+    let x = e.clientX - pr.left - drag.dx;
+    let y = e.clientY - pr.top - drag.dy;
+    x = Math.max(-10, Math.min(pr.width - drag.w + 10, x));
+    y = Math.max(-10, Math.min(pr.height - drag.h + 10, y));
+    drag.el.style.left = x + 'px';
+    drag.el.style.top = y + 'px';
+  });
+  window.addEventListener('pointerup', () => {
+    if (drag){ drag.el.style.zIndex = ''; drag = null; }
+  });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelector('.book').classList.add('noAnim');
+</script>
+</body>
+</html>

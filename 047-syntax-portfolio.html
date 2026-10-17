@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Syntax — a developer portfolio that reads like an editor and compiles to a conversation.">
+<title>Syntax — A Portfolio That Compiles</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --bg:#0b0d13; --editor:#10131b; --side:#0c0f16; --raised:#161a24; --text:#d6d9e3; --dim:#6d7486; --line:#20242f;
+    --violet:#c9a2ff; --green:#9fe5b0; --amber:#ffca85; --coral:#ff8a75; --blue:#8fc7ff;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 600px at 70% 0%,rgba(90,70,140,.3),transparent 60%),radial-gradient(700px 500px at 10% 100%,rgba(30,70,80,.25),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:rgba(201,162,255,.3);color:#fff}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--coral);outline-offset:2px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.08em;line-height:1.7}
+  .page{height:100svh;display:flex;align-items:center;justify-content:center;padding:clamp(10px,2.6vh,26px) clamp(10px,2.6vw,30px)}
+  .window{width:min(1240px,100%);height:100%;max-height:860px;display:flex;flex-direction:column;background:var(--editor);border:1px solid #262b38;border-radius:10px;overflow:hidden;
+    box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03),0 0 80px rgba(120,90,200,.08)}
+  .chrome{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0d1017;border-bottom:1px solid var(--line);flex:none}
+  .lights{display:flex;gap:6px}
+  .lights i{width:10px;height:10px;border-radius:50%;display:block}
+  .lights i:nth-child(1){background:#ff6159}.lights i:nth-child(2){background:#ffbd2e}.lights i:nth-child(3){background:#28c941}
+  .chrome .title{flex:1;text-align:center;color:var(--dim);font-family:var(--mono);font-size:.5rem;letter-spacing:.05em}
+  .chrome .right{color:var(--dim);font-family:var(--mono);font-size:.44rem;letter-spacing:.08em}
+  .body{flex:1;display:grid;grid-template-columns:196px 1fr;min-height:0}
+  .side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .sideHead{display:flex;justify-content:space-between;align-items:center;padding:9px 11px 5px;color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+  .tree{padding:2px 0;flex:1;overflow:auto}
+  .tree .folder{display:flex;align-items:center;gap:6px;padding:5px 11px;color:var(--dim);font-family:var(--mono);font-size:.46rem;letter-spacing:.03em}
+  .tree .file{display:flex;align-items:center;gap:7px;width:100%;text-align:left;padding:5px 11px 5px 24px;color:#9aa1b2;font-family:var(--mono);font-size:.46rem;letter-spacing:.02em;border-left:2px solid transparent}
+  .tree .file:hover{background:rgba(255,255,255,.04);color:var(--text)}
+  .tree .file.active{background:rgba(201,162,255,.08);border-left-color:var(--violet);color:var(--text)}
+  .tree .file .ft{font-size:.7em;color:var(--violet);width:10px;text-align:center}
+  .tree .file.json .ft{color:var(--amber)}.tree .file.md .ft{color:var(--blue)}.tree .file.tsx .ft{color:var(--green)}
+  .sideFoot{padding:8px 11px;border-top:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:.4rem;line-height:1.8}
+  .sideFoot b{color:var(--green);font-weight:400}
+
+  .editorArea{display:flex;flex-direction:column;min-width:0;min-height:0}
+  .tabs{display:flex;background:#0c0f16;border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+  .tab{display:flex;align-items:center;gap:7px;padding:8px 13px;border-right:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:.47rem;letter-spacing:.02em;white-space:nowrap;position:relative;border-top:1px solid transparent}
+  .tab:hover{color:var(--text)}
+  .tab.active{background:var(--editor);color:var(--text);border-top-color:var(--violet)}
+  .tab .ft{font-size:.8em;color:var(--violet)}
+  .tab.json .ft{color:var(--amber)}.tab.md .ft{color:var(--blue)}.tab.tsx .ft{color:var(--green)}
+  .tab .x{color:var(--dim);font-size:.7rem;margin-left:4px}
+  .codeWrap{flex:1;display:flex;min-height:0;position:relative;overflow:auto}
+  .gutter{padding:12px 10px 12px 14px;text-align:right;color:#3b4254;font-family:var(--mono);font-size:.56rem;line-height:1.85;user-select:none;flex:none;border-right:1px solid rgba(255,255,255,.04)}
+  .code{flex:1;padding:12px 18px;font-family:var(--mono);font-size:.58rem;line-height:1.85;white-space:pre;overflow:auto;color:#c6cad6;min-width:0}
+  .code .kw{color:var(--violet)}.code .str{color:var(--green)}.code .num{color:var(--amber)}.code .com{color:#525a6c;font-style:italic}
+  .code .fn{color:var(--blue)}.code .type{color:#ffd39e}.code .pun{color:#8a92a6}.code .prop{color:#e2b7ff}
+  .caret{display:inline-block;width:6px;height:12px;background:var(--coral);vertical-align:-1px;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .minimap{width:44px;flex:none;margin:8px;background:linear-gradient(180deg,rgba(201,162,255,.16),rgba(159,229,176,.1),rgba(255,202,133,.12));opacity:.45;border-left:1px solid rgba(255,255,255,.04);display:none}
+  .terminal{height:150px;flex:none;border-top:1px solid var(--line);background:#0a0d13;display:flex;flex-direction:column}
+  .termHead{display:flex;justify-content:space-between;align-items:center;padding:5px 11px;color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.04);flex:none}
+  .termHead .acts{display:flex;gap:6px}
+  .termHead button{color:var(--dim);border:1px solid var(--line);padding:3px 7px;font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase;transition:color .2s,border-color .2s}
+  .termHead button:hover{color:var(--text);border-color:var(--dim)}
+  .termHead button.run{color:var(--green);border-color:rgba(159,229,176,.35)}
+  .termHead button.run:hover{background:rgba(159,229,176,.1)}
+  .termBody{flex:1;overflow:auto;padding:7px 12px;font-family:var(--mono);font-size:.52rem;line-height:1.7;color:#9aa1b2}
+  .termBody div{white-space:pre-wrap}
+  .termBody .p{color:var(--green)}.termBody .c{color:var(--text)}.termBody .a{color:var(--amber)}.termBody .v{color:var(--violet)}
+  .status{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:4px 12px;background:#0d1017;border-top:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.05em;flex:none;flex-wrap:wrap}
+  .status .l,.status .r{display:flex;gap:14px;align-items:center}
+  .status b{color:var(--violet);font-weight:400}
+  .status .live{color:var(--green)}
+
+  @media(min-width:1100px){.minimap{display:block}}
+  @media(max-width:820px){
+    .body{grid-template-columns:1fr}
+    .side{display:none}
+    .terminal{height:120px}
+    .chrome .right{display:none}
+    .code{font-size:.54rem;padding:10px 12px}
+    .gutter{font-size:.5rem;padding:10px 8px}
+    .minimap{display:none}
+  }
+  @media(max-width:520px){
+    .page{padding:0}
+    .window{border-radius:0;border:0;max-height:none}
+    .tab{padding:7px 9px;font-size:.42rem}
+    .status .r span:nth-child(2){display:none}
+    .terminal{height:104px}
+    .termBody{font-size:.46rem}
+    .code{font-size:.5rem}
+    .gutter{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">Syntax</h1>
+<div class="page">
+  <div class="window">
+    <div class="chrome"><span class="lights"><i></i><i></i><i></i></span><span class="title">ada.dev — syntax / portfolio</span><span class="right">⌘K · workspace</span></div>
+    <div class="body">
+      <aside class="side">
+        <div class="sideHead"><span>Explorer</span><span>⌄</span></div>
+        <div class="tree">
+          <div class="folder">▾ ada-portfolio</div>
+          <button class="file active" data-file="about"><span class="ft">◇</span>about.ts</button>
+          <button class="file tsx" data-file="projects"><span class="ft">◇</span>projects.tsx</button>
+          <button class="file json" data-file="contact"><span class="ft">◇</span>contact.json</button>
+          <button class="file md" data-file="readme"><span class="ft">◇</span>readme.md</button>
+          <div class="folder" style="margin-top:6px">▸ node_modules</div>
+          <div class="folder">▸ .config</div>
+        </div>
+        <div class="sideFoot">Git <b>main</b> · clean<br>Prettier on save</div>
+      </aside>
+
+      <div class="editorArea">
+        <div class="tabs" id="tabs" role="tablist">
+          <button class="tab active" data-file="about" role="tab" aria-selected="true"><span class="ft">◇</span>about.ts<span class="x">×</span></button>
+          <button class="tab tsx" data-file="projects" role="tab" aria-selected="false"><span class="ft">◇</span>projects.tsx<span class="x">×</span></button>
+          <button class="tab json" data-file="contact" role="tab" aria-selected="false"><span class="ft">◇</span>contact.json<span class="x">×</span></button>
+          <button class="tab md" data-file="readme" role="tab" aria-selected="false"><span class="ft">◇</span>readme.md<span class="x">×</span></button>
+        </div>
+        <div class="codeWrap">
+          <div class="gutter" id="gutter"></div>
+          <pre class="code" id="code" aria-live="polite"></pre>
+          <div class="minimap" aria-hidden="true"></div>
+        </div>
+        <div class="terminal">
+          <div class="termHead"><span>Terminal — ada@studio</span><div class="acts"><button id="clearTerm">Clear</button><button class="run" id="run">▶ Run</button></div></div>
+          <div class="termBody" id="term"></div>
+        </div>
+        <div class="status"><div class="l"><span>⌥ main*</span><span>TypeScript</span><span class="live">● live</span></div><div class="r"><span>Ln <b id="ln">1</b>, Col 1</span><span>UTF-8</span><span id="clock">--:--</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const files = {
+    about: {
+      lang:'ts',
+      code:[
+        ['com', '// ada — creative developer, systems thinker, quiet optimist'],
+        ['', ''],
+        ['kw', 'const '], ['prop', 'ada'], ['pun', ' = {'],
+        ['', ''],
+        ['prop', '  role'], ['pun', ': '], ['str', "'creative developer'"], ['pun', ','],
+        ['prop', '  based'], ['pun', ': '], ['str', "'Antwerp, BE'"], ['pun', ','],
+        ['prop', '  focus'], ['pun', ': ['], ['str', "'interfaces'"], ['pun', ', '], ['str', "'generative art'"], ['pun', ', '], ['str', "'slow web'"], ['pun', '],'],
+        ['prop', '  available'], ['pun', ': '], ['kw', 'true'], ['pun', ','],
+        ['prop', '  philosophy'], ['pun', ': '], ['str', "'make it feel inevitable'"],
+        ['pun', '};'],
+        ['', ''],
+        ['com', '// I build small, careful things that behave well under pressure.'],
+        ['kw', 'export function '], ['fn', 'workWith'], ['pun', '('], ['prop', 'people'], ['pun', ': '], ['type', 'Team'], ['pun', ') {'],
+        ['kw', '  return '], ['prop', 'people'], ['pun', '.map('], ['fn', 'listener'], ['pun', ' => '], ['fn', 'listen'], ['pun', '('], ['prop', 'listener'], ['pun', '));'],
+        ['pun', '}'],
+        ['', ''],
+        ['com', '// Scroll down? There is no scroll. Everything is here.'],
+        ['kw', 'export default '], ['prop', 'ada'], ['pun', ';']
+      ]
+    },
+    projects: {
+      lang:'tsx',
+      code:[
+        ['com', '// selected work — 2023 / 2026'],
+        ['kw', 'const '], ['prop', 'projects'], ['pun', ' = ['],
+        ['pun', '  { '], ['prop', 'name'], ['pun', ': '], ['str', "'Tidal 07'"], ['pun', ', '], ['prop', 'type'], ['pun', ': '], ['str', "'data instrument'"], ['pun', ', '], ['prop', 'year'], ['pun', ': '], ['num', '2026'], ['pun', ' },'],
+        ['pun', '  { '], ['prop', 'name'], ['pun', ': '], ['str', "'Monolith'"], ['pun', ', '], ['prop', 'type'], ['pun', ': '], ['str', "'type specimen'"], ['pun', ', '], ['prop', 'year'], ['pun', ': '], ['num', '2026'], ['pun', ' },'],
+        ['pun', '  { '], ['prop', 'name'], ['pun', ': '], ['str', "'Haptic'"], ['pun', ', '], ['prop', 'type'], ['pun', ': '], ['str', "'product interface'"], ['pun', ', '], ['prop', 'year'], ['pun', ': '], ['num', '2025'], ['pun', ' },'],
+        ['pun', '  { '], ['prop', 'name'], ['pun', ': '], ['str', "'Nocturne'"], ['pun', ', '], ['prop', 'type'], ['pun', ': '], ['str', "'generative sky'"], ['pun', ', '], ['prop', 'year'], ['pun', ': '], ['num', '2025'], ['pun', ' },'],
+        ['pun', '];'],
+        ['', ''],
+        ['kw', 'export function '], ['fn', 'Projects'], ['pun', '() {'],
+        ['kw', '  return '], ['pun', '('],
+        ['pun', '    <'], ['type', 'section'], ['prop', ' className'], ['pun', '='], ['str', '"grid"'], ['pun', '>'],
+        ['pun', '      {'], ['prop', 'projects'], ['pun', '.map(p => ('],
+        ['pun', '        <'], ['type', 'Card'], ['pun', ' '], ['prop', 'key'], ['pun', '={'], ['prop', 'p.name'], ['pun', '} '], ['prop', 'data'], ['pun', '={'], ['prop', 'p'], ['pun', '} />'],
+        ['pun', '      ))}'],
+        ['pun', '    </'], ['type', 'section'], ['pun', '>'],
+        ['pun', '  );'],
+        ['pun', '}'],
+        ['', ''],
+        ['com', '// Every project begins as a question, not a moodboard.']
+      ]
+    },
+    contact: {
+      lang:'json',
+      code:[
+        ['pun', '{'],
+        ['prop', '  "name"'], ['pun', ': '], ['str', '"Ada Vermeer"'], ['pun', ','],
+        ['prop', '  "studio"'], ['pun', ': '], ['str', '"Vermeer & Co."'], ['pun', ','],
+        ['prop', '  "email"'], ['pun', ': '], ['str', '"hello@ada.studio"'], ['pun', ','],
+        ['prop', '  "location"'], ['pun', ': '], ['str', '"Antwerp / 51.2194° N"'], ['pun', ','],
+        ['prop', '  "available"'], ['pun', ': '], ['kw', 'true'], ['pun', ','],
+        ['prop', '  "responseTime"'], ['pun', ': '], ['str', '"within two days"'], ['pun', ','],
+        ['prop', '  "interests"'], ['pun', ': ['], ['str', '"type"'], ['pun', ', '], ['str', '"tides"'], ['pun', ', '], ['str', '"small systems"'], ['pun', '],'],
+        ['prop', '  "currently"'], ['pun', ': '], ['str', '"learning to keep a garden"'],
+        ['pun', '}'],
+        ['', ''],
+        ['com', '// The best briefs begin with a sentence, not a deck.']
+      ]
+    },
+    readme: {
+      lang:'md',
+      code:[
+        ['com', '# Ada Vermeer — creative developer'],
+        ['', ''],
+        ['kw', '> '], ['str', 'Interfaces with a pulse. Systems with a point of view.'],
+        ['', ''],
+        ['com', '## Currently'],
+        ['kw', '- '], ['str', 'Building a slow, offline weather station for a museum.'],
+        ['kw', '- '], ['str', 'Teaching a small workshop on generative type.'],
+        ['kw', '- '], ['str', 'Learning to let the work breathe.'],
+        ['', ''],
+        ['com', '## Approach'],
+        ['', ''],
+        ['str', 'I work close to the material — the browser, the paper, the room —'],
+        ['str', 'and try to make things that feel inevitable rather than decorated.'],
+        ['', ''],
+        ['com', '## Contact'],
+        ['str', 'Open a file. Run the code. Say hello.'],
+        ['', ''],
+        ['com', '<!-- built in one file, no external dependencies -->']
+      ]
+    }
+  };
+
+  const codeEl = document.getElementById('code');
+  const gutter = document.getElementById('gutter');
+  const term = document.getElementById('term');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 'about';
+
+  function render(file, animate){
+    const data = files[file];
+    const lines = data.code;
+    codeEl.innerHTML = '';
+    gutter.innerHTML = '';
+    let lineNo = 1;
+    let currentLine = document.createElement('span');
+    codeEl.appendChild(currentLine);
+    lines.forEach((tokens, idx) => {
+      if (idx > 0){
+        currentLine.appendChild(document.createTextNode('\n'));
+        lineNo++;
+        currentLine = document.createElement('span');
+        codeEl.appendChild(currentLine);
+        const g = document.createElement('div');
+        g.textContent = lineNo;
+        gutter.appendChild(g);
+      } else {
+        const g = document.createElement('div'); g.textContent = '1'; gutter.appendChild(g);
+      }
+      tokens.forEach(([cls, text]) => {
+        if (!text) return;
+        if (text === '\n'){ currentLine.appendChild(document.createTextNode('\n')); return; }
+        if (cls) {
+          const span = document.createElement('span');
+          span.className = cls;
+          span.textContent = text;
+          currentLine.appendChild(span);
+        } else {
+          currentLine.appendChild(document.createTextNode(text));
+        }
+      });
+      if (idx === lines.length - 1){
+        const caret = document.createElement('span');
+        caret.className = 'caret';
+        currentLine.appendChild(caret);
+      }
+    });
+    document.getElementById('ln').textContent = lineNo;
+    current = file;
+    document.querySelectorAll('.tab').forEach(t => {
+      const on = t.dataset.file === file;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', String(on));
+    });
+    document.querySelectorAll('.tree .file').forEach(f => f.classList.toggle('active', f.dataset.file === file));
+  }
+
+  const allTabs = Array.from(document.querySelectorAll('[data-file]'));
+  allTabs.forEach(tab => {
+    tab.addEventListener('click', () => render(tab.dataset.file));
+  });
+
+  function termLine(cls, txt){
+    const d = document.createElement('div');
+    if (cls) d.className = cls;
+    d.textContent = txt;
+    term.appendChild(d);
+    term.scrollTop = term.scrollHeight;
+  }
+  function bootTerm(){
+    term.innerHTML = '';
+    termLine('p', 'ada@studio:~/portfolio$ ');
+    termLine('c', 'ready — 4 files, 0 warnings, 1 human');
+  }
+  bootTerm();
+
+  document.getElementById('run').addEventListener('click', () => {
+    termLine('p', 'ada@studio:~/portfolio$ npm run build');
+    setTimeout(() => termLine('c', '✓ compiled successfully in 0.42s'), 220);
+    setTimeout(() => termLine('v', '  about.ts      — a person, briefly'), 420);
+    setTimeout(() => termLine('v', '  projects.tsx  — four careful things'), 560);
+    setTimeout(() => termLine('a', '  contact.json  — an open door'), 700);
+    setTimeout(() => termLine('p', 'ada@studio:~/portfolio$ '), 880);
+  });
+  document.getElementById('clearTerm').addEventListener('click', bootTerm);
+
+  function clock(){
+    const d = new Date();
+    document.getElementById('clock').textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
+  }
+  clock(); setInterval(clock, 1000);
+  render('about', false);
+</script>
+</body>
+</html>

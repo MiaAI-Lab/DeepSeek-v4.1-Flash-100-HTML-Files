@@ -1,0 +1,20 @@
+TITLE
+Axis — A Variable Type Playground
+
+PROMPT
+Create "AXIS", a variable-type playground with the energy of a type foundry lab. Near-black background, warm cream type and a single hot-red accent, with fine grid lines and monospaced instrumentation. The hero is an enormous word — "MORPH" — whose weight, width, letter-spacing, slant and optical size can be changed live with five hardware-style sliders. A control rail on the left includes the sliders, numeric readouts, four preset buttons (Poster, Whisper, Machine, Bloom) and a randomise button. The bottom strip contains a scrollable alphabet and a small essay about variable type. All type transformations must be real CSS (font-weight, scaleX, letter-spacing, skew, font-size), and the stage should show crop marks and baseline guides like a proofing table. Fully responsive, one standalone HTML file with inline CSS/JS, no external fonts or assets.
+
+DESIGN INTENT
+A working proofing table rather than a marketing page. The word is the object under inspection; the controls are instruments; the grid and crop marks make the page feel like a print workshop after hours. The black stage makes every adjustment dramatic. Red is used for measurements and active controls, never for decoration.
+
+VISUAL TECHNIQUES
+- Live CSS transforms on a single oversized word: weight, horizontal scale, tracking, skew and size.
+- Control rail with custom range sliders, tabular readouts and preset buttons with pressed states.
+- Proofing stage with crop marks, baseline and vertical grid guides, measurement ticks and a scale annotation.
+- Monospaced metadata, rotating specimen notes and an A–Z strip at the bottom.
+- Randomise function that chooses tasteful combinations rather than chaos.
+- Responsive layout where the rail becomes a compact two-column control tray above the stage.
+- Reduced-motion removes transitions while keeping every axis available.
+
+INTERACTION MODEL
+Move any slider to change the specimen instantly; the numeric readout updates and the stage recomputes its width. Preset buttons apply named combinations with a short transition. "Randomise within reason" picks new values from curated ranges. Clicking a letter in the alphabet strip sets the stage to that single character; clicking the word returns it to MORPH. Everything is keyboard accessible, and sliders work with arrow keys.

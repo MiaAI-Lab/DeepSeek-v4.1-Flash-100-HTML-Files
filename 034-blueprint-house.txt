@@ -1,0 +1,20 @@
+TITLE
+House No. 7 — A Blueprint You Can Walk Through
+
+PROMPT
+Create an architectural blueprint page for a fictional modernist house, "House No. 7". Deep blueprint blue paper, pale cyan-white linework, a faint drafting grid, dimension lines with arrowheads, door swings, furniture outlines, a north arrow and a proper title block. The grounded floor plan is the hero, drawn as one clean inline SVG, with four rooms overlaid as interactive hotspots. A slim right-hand specification panel shows the selected room's name, area, ceiling height and a short note, plus a legend for walls, glazing and joinery. A "Show annotations" toggle hides and reveals dimensions, room labels and furniture notes. Include an editorial masthead with project number, scale and revision date. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+A drawing, not an illustration of a drawing. Every line has a drafting purpose: wall poché, dimension chains, swing arcs, section markers, hatch. The blueprint blue is deep enough to feel like a cyanotype; white lines glow faintly; a single warm ochre marks the selected room. The interface behaves like a drawing set cover sheet — quiet, technical, exact.
+
+VISUAL TECHNIQUES
+- Inline SVG floor plan with double-line walls, poché fill, door swing arcs and window breaks.
+- Furniture and fittings drawn as thin technical outlines; stairs with numbered treads.
+- Dimension chains with tick marks and extension lines; room area labels.
+- Interactive transparent room overlays with hover fills and an ochre selected state.
+- Drafting grid background, sheet border, crop marks and a structured title block.
+- Annotation toggle that fades labels, dimensions and furniture notes.
+- Monospaced specification panel with a legend and revision stamps.
+
+INTERACTION MODEL
+Hovering a room tints it and shows a preview label; clicking selects it, highlighting the room in ochre and updating the side panel with its name, area, ceiling height and a sentence about its light. "Show annotations" toggles dimensions, room labels and furniture notes across the whole drawing. The selected room can be changed with keyboard focus and Enter. Reduced-motion removes fades but keeps every state visible.

@@ -1,0 +1,20 @@
+TITLE
+Costa Lenta — Take the Long Afternoon
+
+PROMPT
+Create a sun-bleached travel-studio landing page called "Costa Lenta", a fictional slow-travel atelier on the Mediterranean. Warm paper cream, olive green, terracotta, sea blue and ink. The hero pairs an oversized serif headline "Take the long afternoon." with a stack of three illustrated postcards: whitewashed houses above a blue bay, a table of lemons and olives, and a quiet swimming cove. Clicking a postcard brings it to the front, updates the destination caption and shifts the page's accent colour. Include a small itinerary strip with three stops, handwritten annotations, a postage stamp, and a footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+Slow travel as an editorial object. The page should feel like a postcard found in a book: warm, sun-faded, lightly worn, handwritten. The illustrations are flat and graphic — white walls, one blue sea, a single sun — rather than photographic. Typography is a generous serif with small monospaced travel data and just enough handwriting to feel personal.
+
+VISUAL TECHNIQUES
+- Three layered CSS/SVG postcards with paper edges, shadows, rotation and a hover lift.
+- Illustrated scenes made of simple SVG shapes: houses, arches, sea, sun, lemons, cove.
+- Destination switching updates the headline caption, accent colour and postcard order.
+- Stamp, postmark rings, dashed route lines and handwritten annotations.
+- Warm paper grain, torn/deckled edge suggestion and soft natural shadows.
+- Serif display type with italic accents and tracked mono captions.
+- Responsive stack with postcards below the copy and a scrollable itinerary on mobile.
+
+INTERACTION MODEL
+Clicking a postcard selects that destination: it comes to the front, the caption and accent colour change, and the small "now showing" label updates. Hovering lifts a card slightly. The itinerary links highlight their matching stop. All cards are keyboard-focusable buttons; reduced-motion removes the lift and rotation transitions while keeping selection.

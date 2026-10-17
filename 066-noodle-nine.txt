@@ -1,0 +1,21 @@
+TITLE
+NOODLE//9 — Slurp After Midnight
+
+PROMPT
+Create a neon late-night ramen shop page called "NOODLE//9". Near-black room with hot pink, cyan and warm egg-yolk neon; a vertical flickering sign, a large illustrated bowl of ramen with steam and chopsticks, and a compact menu with four items and prices. The left column carries an oversized outlined headline "Slurp after midnight.", a short late-night note, spice-level buttons and an "Add to order" action with a ticket counter. The bowl reacts to the spice level by shifting broth colour and steam intensity; hovering a menu item highlights it and shows its ingredients. Include a "OPEN 24H" neon badge, a wet-floor reflection, scanlines and a small footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A hole-in-the-wall ramen bar at 1am, lit by its own signage. The composition is dense but legible: neon vertical sign, one beautiful bowl, a menu you can read at a glance. The palette is deliberately limited to black, pink, cyan and egg yellow, with warmth coming from the broth illustration.
+
+VISUAL TECHNIQUES
+- Inline SVG bowl with gradient broth, noodle strokes, egg, chashu, scallions and chopsticks.
+- Steam ribbons animated with CSS blur and drift; intensity controlled by spice level.
+- Neon typography with layered text-shadows and an outlined display headline.
+- Vertical neon sign with flicker animation; OPEN 24H badge.
+- Menu rows with ingredient reveal on hover/focus and hot-pink prices.
+- Wet-floor reflection, scanlines, vignette and grain.
+- Spice level as three buttons changing broth colour and steam via CSS variables.
+- Responsive stack with the bowl above the menu and a compact sign.
+
+INTERACTION MODEL
+Spice buttons change broth colour and steam intensity instantly. Hovering or focusing a menu item shows its ingredients; clicking selects it. "Add to order" increments the ticket counter, prints the selected bowl and briefly changes the button label. All controls are buttons with pressed states, and reduced-motion stops flicker and steam animation while keeping the visual states.

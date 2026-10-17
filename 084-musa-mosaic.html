@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MUSA — a mosaic atelier with six stones, a medallion and a panel you can paint.">
+<title>MUSA — A Mosaic Atelier</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --wall:#e8dfcd; --paper:#f1e9d8; --ink:#2a251d; --dim:rgba(42,37,29,.52); --line:rgba(42,37,29,.2);
+    --gold:#b18a48; --grout:#cdbfa5;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--wall);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1100px 700px at 75% 0%,#f7f1e4,transparent 60%),radial-gradient(700px 600px at 0% 100%,#d9cdb8,transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--gold);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--gold);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.08rem;letter-spacing:.12em;text-transform:uppercase}
+  .brand .tile{width:14px;height:14px;background:var(--gold);transform:rotate(3deg);flex:none;box-shadow:2px 2px 0 rgba(42,37,29,.18)}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--gold);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:225px 1fr;gap:clamp(18px,3vw,38px);align-items:center;padding:clamp(16px,3vw,30px) 0}
+  .rail{border-top:1px solid var(--ink);padding-top:10px}
+  .rail h1{font-family:var(--serif);font-size:1.5rem;font-weight:400;line-height:1.02;letter-spacing:-.03em;margin-bottom:4px}
+  .rail h1 em{font-style:italic;color:var(--gold)}
+  .rail > p{color:var(--dim);font-size:.62rem;line-height:1.7;margin-bottom:12px}
+  .group{margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .group .lbl{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:6px}
+  .swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+  .swatch{aspect-ratio:1;position:relative;transition:transform .2s;border:1px solid rgba(0,0,0,.18);background:var(--s);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .swatch:hover{transform:translateY(-2px)}
+  .swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink),inset 0 1px 0 rgba(255,255,255,.25)}
+  .tools{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .tool{border:1px solid var(--line);padding:6px 7px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-align:left;transition:background .2s,color .2s,border-color .2s}
+  .tool:hover{color:var(--ink);border-color:var(--ink)}
+  .tool[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .count{color:var(--dim);line-height:1.8}
+  .count b{color:var(--ink);font-weight:400;font-family:var(--serif);font-size:1.2rem;display:block}
+
+  .panelWrap{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0}
+  .frame{position:relative;width:min(100%,820px);padding:clamp(8px,1.4vw,14px);background:linear-gradient(150deg,#c9a765,#8f6d34 30%,#e0c58a 55%,#9c793d 80%,#c9a765);
+    box-shadow:0 24px 45px rgba(70,50,25,.28),inset 0 1px 0 rgba(255,250,230,.5)}
+  .frame::before{content:"";position:absolute;inset:clamp(3px,.7vw,6px);border:1px solid rgba(42,37,29,.55);pointer-events:none}
+  .mosaic{position:relative;display:grid;grid-template-columns:repeat(24,1fr);background:var(--grout);padding:3px;gap:1px;aspect-ratio:24/16;user-select:none;touch-action:none;cursor:crosshair}
+  .tile{background:var(--grout);position:relative;transition:background .12s;min-width:0;min-height:0}
+  .tile.on{box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(0,0,0,.12)}
+  .plaque{margin-top:12px;display:flex;align-items:center;gap:10px;color:var(--dim);flex-wrap:wrap;justify-content:center}
+  .plaque .mouth{width:5px;height:5px;border-radius:50%;background:#8b6c37;box-shadow:0 0 0 1px rgba(42,37,29,.2)}
+  .plaque b{color:var(--ink);font-weight:400;font-family:var(--serif);font-style:italic}
+  .cornerMark{position:absolute;width:7px;height:7px;background:#8b6c37;border-radius:50%;opacity:.8}
+  .cm1{left:4px;top:4px}.cm2{right:4px;top:4px}.cm3{left:4px;bottom:4px}.cm4{right:4px;bottom:4px}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:9px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .main{grid-template-columns:1fr}
+    .rail{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;align-items:start}
+    .rail h1,.rail > p{grid-column:1/-1}
+    .group{margin-bottom:8px}
+    .count{grid-column:1/-1}
+    .panelWrap{order:2}
+    .rail{order:1}
+    .headMid{display:none}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 10px}
+    .brand{font-size:.9rem}
+    .rail{grid-template-columns:1fr}
+    .group{margin-bottom:7px}
+    .rail h1{font-size:1.3rem}
+    .swatches{gap:4px}
+    .tools{grid-template-columns:1fr 1fr}
+    .frame{padding:7px}
+    .mosaic{aspect-ratio:24/17}
+    .headRight{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="tile" aria-hidden="true"></span><span>Musa<small>Mosaic atelier / opus 04</small></span></a>
+    <div class="headMid mono"><span>Stones <b>06</b></span><span>Tesserae <b id="headCount">384</b></span><span>Grout <b>limestone</b></span></div>
+    <div class="headRight mono">After Ravenna<br><b>Opus 04 / 2026</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <aside class="rail">
+      <h1>A small<br><em>Ravenna.</em></h1>
+      <p>Set each stone by hand, or ask the atelier for a medallion. There is no undo; mosaics are patient.</p>
+      <div class="group">
+        <div class="lbl mono"><span>Stone</span><span id="stoneName">Terracotta</span></div>
+        <div class="swatches" role="group" aria-label="Stone colour">
+          <button class="swatch" data-c="#b45a3e" data-n="Terracotta" style="--s:#b45a3e" aria-pressed="true" aria-label="Terracotta"></button>
+          <button class="swatch" data-c="#d3a14a" data-n="Ochre" style="--s:#d3a14a" aria-pressed="false" aria-label="Ochre"></button>
+          <button class="swatch" data-c="#3e7b89" data-n="Sea" style="--s:#3e7b89" aria-pressed="false" aria-label="Sea"></button>
+          <button class="swatch" data-c="#e7dcc3" data-n="Ivory" style="--s:#e7dcc3" aria-pressed="false" aria-label="Ivory"></button>
+          <button class="swatch" data-c="#2c2923" data-n="Basalt" style="--s:#2c2923" aria-pressed="false" aria-label="Basalt"></button>
+          <button class="swatch" data-c="#7a8455" data-n="Olive" style="--s:#7a8455" aria-pressed="false" aria-label="Olive"></button>
+        </div>
+      </div>
+      <div class="group">
+        <div class="lbl mono"><span>Atelier</span><span>patterns</span></div>
+        <div class="tools" role="group" aria-label="Patterns">
+          <button class="tool" data-p="medallion" aria-pressed="true">Medallion</button>
+          <button class="tool" data-p="wave" aria-pressed="false">Wave</button>
+          <button class="tool" data-p="scatter" aria-pressed="false">Scatter</button>
+          <button class="tool" id="clear">Clear grout</button>
+        </div>
+      </div>
+      <div class="count mono">Tiles set<b id="count">000</b>Opus 04 — after Ravenna</div>
+    </aside>
+
+    <div class="panelWrap">
+      <div class="frame">
+        <span class="cornerMark cm1" aria-hidden="true"></span><span class="cornerMark cm2" aria-hidden="true"></span><span class="cornerMark cm3" aria-hidden="true"></span><span class="cornerMark cm4" aria-hidden="true"></span>
+        <div class="mosaic" id="mosaic" role="grid" aria-label="Mosaic panel, 24 by 16 tiles"></div>
+      </div>
+      <div class="plaque mono"><span class="mouth" aria-hidden="true"></span><b>Opus 04 — a medallion for a small room</b><span class="mouth" aria-hidden="true"></span><span>Tesserae <b id="plaqueCount">000</b></span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>MUSA / a fictional mosaic atelier</span>
+    <span>Six stones · one grout · no photograph</span>
+    <span>© 2026 · set one tile at a time</span>
+  </footer>
+</div>
+
+<script>
+  const COLS = 24, ROWS = 16;
+  const mosaic = document.getElementById('mosaic');
+  const palette = ['#b45a3e','#d3a14a','#3e7b89','#e7dcc3','#2c2923','#7a8455'];
+  let stone = '#b45a3e';
+  let painting = false;
+  let tiles = [];
+
+  for (let i = 0; i < COLS * ROWS; i++){
+    const d = document.createElement('div');
+    d.className = 'tile';
+    d.dataset.i = i;
+    mosaic.appendChild(d);
+    tiles.push(d);
+  }
+  mosaic.style.gridTemplateColumns = 'repeat(' + COLS + ',1fr)';
+
+  function paint(el, color){
+    el.style.background = color;
+    el.classList.add('on');
+    el.dataset.c = color;
+    updateCount();
+  }
+  function updateCount(){
+    const n = tiles.filter(t => t.classList.contains('on')).length;
+    document.getElementById('count').textContent = String(n).padStart(3,'0');
+    document.getElementById('plaqueCount').textContent = String(n).padStart(3,'0');
+  }
+  function clear(){
+    tiles.forEach(t => { t.style.background = ''; t.classList.remove('on'); delete t.dataset.c; });
+    updateCount();
+  }
+  function shade(color, pct){
+    const n = parseInt(color.slice(1), 16);
+    const r = Math.min(255, (n >> 16) + pct), g = Math.min(255, ((n >> 8) & 255) + pct), b = Math.min(255, (n & 255) + pct);
+    return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+  }
+  function medallion(){
+    const cx = (COLS - 1) / 2, cy = (ROWS - 1) / 2;
+    tiles.forEach((t, i) => {
+      const x = i % COLS, y = Math.floor(i / COLS);
+      const dx = x - cx, dy = y - cy;
+      const r = Math.sqrt(dx * dx + dy * dy * 1.4);
+      const a = Math.atan2(dy, dx);
+      const ring = Math.floor(r);
+      let ci = ring % 2 === 0 ? 0 : 3;
+      if (ring % 4 === 2) ci = 1;
+      if (ring > 6 && ring % 3 === 0) ci = 2;
+      if (r < 1.8) ci = 1;
+      if (Math.abs(Math.sin(a * 6)) > .92 && ring > 2) ci = 4;
+      if (ring > 8 && ring % 5 === 0) ci = 5;
+      const c = palette[(ci + (Math.abs(Math.round(a * 3)) % 2)) % palette.length];
+      paint(t, shade(c, Math.round(Math.sin(a * 4) * 8)));
+    });
+  }
+  function wave(){
+    tiles.forEach((t, i) => {
+      const x = i % COLS, y = Math.floor(i / COLS);
+      const v = Math.sin(x * .55 + y * .25) + Math.cos(y * .8 - x * .1);
+      const c = palette[(Math.round(v * 2) + 6) % palette.length];
+      paint(t, shade(c, Math.round(Math.sin(x * y) * 6)));
+    });
+  }
+  function scatter(){
+    tiles.forEach(t => {
+      if (Math.random() > .45){
+        const c = palette[Math.floor(Math.random() * palette.length)];
+        paint(t, shade(c, Math.round((Math.random() - .5) * 20)));
+      } else { t.style.background = ''; t.classList.remove('on'); }
+    });
+    updateCount();
+  }
+
+  document.querySelectorAll('.swatch').forEach(b => {
+    b.addEventListener('click', () => {
+      stone = b.dataset.c;
+      document.getElementById('stoneName').textContent = b.dataset.n;
+      document.querySelectorAll('.swatch').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  document.querySelectorAll('[data-p]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('[data-p]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      if (b.dataset.p === 'medallion') medallion();
+      if (b.dataset.p === 'wave') wave();
+      if (b.dataset.p === 'scatter') scatter();
+    });
+  });
+  document.getElementById('clear').addEventListener('click', clear);
+
+  mosaic.addEventListener('pointerdown', e => {
+    painting = true;
+    if (mosaic.setPointerCapture) mosaic.setPointerCapture(e.pointerId);
+    const t = document.elementFromPoint(e.clientX, e.clientY);
+    if (t && t.classList.contains('tile')) paint(t, shade(stone, Math.round((Math.random() - .5) * 10)));
+    e.preventDefault();
+  });
+  mosaic.addEventListener('pointermove', e => {
+    if (!painting) return;
+    const t = document.elementFromPoint(e.clientX, e.clientY);
+    if (t && t.classList.contains('tile')) paint(t, shade(stone, Math.round((Math.random() - .5) * 10)));
+  });
+  window.addEventListener('pointerup', () => { painting = false; });
+
+  medallion();
+  updateCount();
+</script>
+</body>
+</html>

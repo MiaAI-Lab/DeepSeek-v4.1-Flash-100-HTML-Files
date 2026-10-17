@@ -1,0 +1,20 @@
+TITLE
+BLOOM™ — Chrome Botanicals
+
+PROMPT
+Create a Y2K-inspired product page for a fictional chrome flower called BLOOM™. Soft lilac studio background, a large iridescent gradient orb, faint grid lines, and an eight-petal chrome flower sculpture at the centre. Petals are CSS shapes with polished metallic gradients, a dark edge and a specular highlight; the flower rotates slowly and tilts with the pointer. A huge chrome wordmark "BLOOM" sits behind/above it, with bubble-like supporting text, tiny Y2K interface labels and generous white space. Include a petal-count slider, a spin toggle and an "Unfurl" button that briefly opens the flower and releases sparkles, plus a price and a small collection note. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Optimistic futurism, not irony. The early-2000s references are refined: chrome, lilac, bubble type, tiny technical labels, a flower that looks machined and impossible. The page is bright and airy, with the flower as a single precious object on a clean plinth rather than a busy collage.
+
+VISUAL TECHNIQUES
+- CSS petals with layered metallic gradients, inner highlights and drop shadows; positioned with individual rotations.
+- Chrome typography using background-clip:text with a high-contrast silver gradient and fine outline.
+- Slow continuous rotation with pause state; pointer-driven 3D tilt of the whole sculpture.
+- Sparkle particles generated on unfurl and cleaned up automatically.
+- Petal-count slider controlling which petals are visible, with an animated layout.
+- Soft lilac studio gradient, large blurred orb, hairline grid and tiny monospaced labels.
+- Reduced-motion stops rotation and sparkles while keeping controls functional.
+
+INTERACTION MODEL
+Move the pointer to tilt the flower. The spin toggle pauses or resumes rotation. The petal slider reduces the bloom from eight petals to five, hiding petals in reverse order. "Unfurl" adds a short scale animation and releases a burst of chrome sparkles. The price button adds the object to a fictional bag and updates its label. All controls are keyboard accessible and have pressed states.

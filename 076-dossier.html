@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Case File 07-19 — a fictional dossier with redactions, stamps and a manila folder.">
+<title>Case File 07-19 — Bureau of Unresolved Affairs</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --desk:#241b14; --manila:#d9c8a3; --manila2:#cbb78e; --paper:#f1e8d2; --ink:#2a241b; --red:#a8342a; --stamp:rgba(168,52,42,.75); --dim:rgba(42,36,27,.55); --line:rgba(42,36,27,.25);
+    --type:"Courier New",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--desk);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:24px 12px;
+    background-image:repeating-linear-gradient(92deg,rgba(0,0,0,.12) 0 2px,transparent 2px 9px),radial-gradient(900px 600px at 50% 0%,#3a2b20,#1b130e 75%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  .mono{font-family:var(--type);font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;line-height:1.7}
+  .wrap{width:min(1080px,100%);position:relative;z-index:2;perspective:1200px}
+  .folder{position:relative;background:linear-gradient(160deg,#e2d2ae,#c9b389);border-radius:3px 12px 4px 4px;padding:16px 16px 18px;
+    box-shadow:0 40px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.35);transform:rotate(-.5deg)}
+  .folder::before{content:"";position:absolute;left:22px;top:-22px;width:180px;height:24px;background:linear-gradient(180deg,#e2d2ae,#cbb389);border-radius:8px 8px 0 0}
+  .folder::after{content:"";position:absolute;right:26px;top:14px;width:42px;height:42px;border:1px solid rgba(42,36,27,.4);border-radius:50%;
+    box-shadow:inset 0 0 0 5px rgba(42,36,27,.08);opacity:.6}
+  .string{position:absolute;right:36px;top:28px;width:22px;height:22px;border-radius:50%;border:1px solid rgba(42,36,27,.5)}
+  .string::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:44px;background:rgba(60,48,32,.6);transform:rotate(18deg);transform-origin:top}
+  .paper{position:relative;background:linear-gradient(160deg,#f6eedb,#eee3cb);padding:clamp(16px,3vw,34px);box-shadow:0 3px 12px rgba(60,45,25,.25),inset 0 0 0 1px rgba(42,36,27,.08)}
+  .paper::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(42,36,27,.04),transparent 8%,transparent 92%,rgba(42,36,27,.04))}
+  .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:10px;border-bottom:2px solid var(--ink);position:relative}
+  .bureau{font-family:var(--type);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.8}
+  .bureau b{display:block;font-size:.82rem;letter-spacing:.08em}
+  .caseNo{text-align:right;font-family:var(--type);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;line-height:1.8}
+  .caseNo b{font-size:1rem;color:var(--red)}
+  .stampTop{position:absolute;right:0;top:58px;border:2px solid var(--stamp);color:var(--stamp);padding:4px 8px;font-family:var(--type);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;transform:rotate(-6deg);font-weight:700}
+  .conf{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-family:var(--type);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);flex-wrap:wrap}
+  .conf b{color:var(--red);font-weight:700}
+  .body{display:grid;grid-template-columns:230px 1fr;gap:clamp(16px,3vw,30px);padding-top:14px}
+  .photoWrap{position:relative}
+  .photo{position:relative;width:100%;aspect-ratio:.82;background:linear-gradient(160deg,#cdc7b4,#a8a18e);overflow:hidden;border:1px solid rgba(42,36,27,.35);
+    box-shadow:4px 5px 0 rgba(60,45,25,.12)}
+  .photo::before{content:"";position:absolute;left:50%;top:16%;width:39%;aspect-ratio:.82;border-radius:50% 50% 45% 45%;background:linear-gradient(160deg,#6f6a5c,#39372f);transform:translateX(-50%)}
+  .photo::after{content:"";position:absolute;left:16%;right:16%;bottom:-10%;height:58%;border-radius:50% 50% 0 0;background:linear-gradient(160deg,#5f5b50,#2a2823)}
+  .photo .eyes{position:absolute;left:34%;right:34%;top:31%;height:8px;background:var(--ink);z-index:3;transform:rotate(-1deg)}
+  .photo .grain{position:absolute;inset:0;opacity:.45;mix-blend-mode:multiply;background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  .photoTag{position:absolute;left:8px;bottom:7px;z-index:3;background:rgba(241,232,210,.85);padding:2px 5px;font-family:var(--type);font-size:.42rem;letter-spacing:.08em}
+  .clip{position:absolute;left:10px;top:-16px;width:16px;height:42px;border:2px solid #8d8677;border-radius:8px;transform:rotate(8deg);z-index:4}
+  .clip::after{content:"";position:absolute;inset:4px 4px 10px;border:1px solid #8d8677;border-radius:6px}
+  .meta{margin-top:10px;border-top:1px solid var(--line);padding-top:6px;font-family:var(--type);font-size:.48rem;line-height:1.9;letter-spacing:.04em;color:var(--dim);text-transform:uppercase}
+  .meta b{color:var(--ink);font-weight:400}
+  .right{min-width:0}
+  .tabs{display:flex;gap:4px;margin-bottom:10px;border-bottom:1px solid var(--line)}
+  .tab{padding:5px 9px;font-family:var(--type);font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border:1px solid transparent;border-bottom:0;margin-bottom:-1px}
+  .tab[aria-pressed="true"]{color:var(--ink);border-color:var(--line);background:rgba(255,255,255,.3);font-weight:700}
+  .section{display:none;animation:fade .3s ease}
+  .section.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1}}
+  .section h2{font-family:var(--serif);font-size:1.25rem;font-weight:400;margin-bottom:6px;letter-spacing:-.01em}
+  .section p{font-family:var(--type);font-size:.62rem;line-height:1.85;color:rgba(42,36,27,.8);margin-bottom:8px}
+  .section .lead{font-size:.68rem}
+  .redact{display:inline;background:var(--ink);color:transparent;padding:0 2px;border-radius:1px;cursor:pointer;transition:background .25s,color .25s;user-select:none}
+  .redact:hover{background:#4a4234}
+  .redact.open{background:rgba(168,52,42,.12);color:var(--ink);border-bottom:1px dotted var(--red);padding:0 1px}
+  .section ul{list-style:none;margin-top:4px}
+  .section li{font-family:var(--type);font-size:.58rem;line-height:1.9;border-bottom:1px dotted var(--line);padding:4px 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .section li b{font-weight:400;color:var(--red)}
+  .foot{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-top:16px;padding-top:10px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .sign{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:rgba(42,36,27,.8);transform:rotate(-2deg)}
+  .sign small{display:block;font-family:var(--type);font-size:.42rem;letter-spacing:.1em;font-style:normal;color:var(--dim);margin-top:2px;transform:rotate(2deg)}
+  .actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .btn{border:1px solid rgba(42,36,27,.35);padding:6px 9px;font-family:var(--type);font-size:.44rem;letter-spacing:.07em;text-transform:uppercase;transition:background .2s,color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .remaining{font-family:var(--type);font-size:.42rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .proof{position:absolute;left:46%;bottom:16%;width:170px;height:170px;border:6px solid var(--stamp);border-radius:50%;color:var(--stamp);display:grid;place-items:center;
+    font-family:var(--type);font-size:1.15rem;letter-spacing:.14em;Font-weight:700;text-transform:uppercase;transform:rotate(-12deg) scale(.84);opacity:0;pointer-events:none;transition:opacity .4s,transform .5s;z-index:5}
+  .proof.on{opacity:.85;transform:rotate(-12deg) scale(1)}
+  .coffee{position:absolute;right:6%;bottom:5%;width:86px;height:86px;border-radius:50%;border:7px solid rgba(112,70,36,.16);transform:rotate(8deg);pointer-events:none}
+  .coffee::after{content:"";position:absolute;inset:8px;border-radius:50%;border:2px solid rgba(112,70,36,.1)}
+  footer{margin-top:8px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:6px 2px;color:rgba(241,232,210,.45);font-family:var(--type);font-size:.44rem;letter-spacing:.07em;text-transform:uppercase}
+
+  @media(max-width:780px){
+    .body{grid-template-columns:1fr;gap:14px}
+    .photoWrap{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:start}
+    .meta{margin-top:0;border-top:0;padding-top:0}
+    .stampTop{position:static;display:inline-block;margin-top:6px}
+    .proof{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg) scale(.7)}
+    .proof.on{transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+    body{padding:16px 10px}
+  }
+  @media(max-width:520px){
+    .paper{padding:12px 10px}
+    .top{flex-direction:column;gap:4px}
+    .caseNo{text-align:left}
+    .tabs{gap:2px;flex-wrap:wrap}
+    .tab{font-size:.42rem;padding:4px 6px}
+    .photoWrap{grid-template-columns:1fr}
+    .photo{max-width:170px}
+    .section h2{font-size:1.1rem}
+    .section p{font-size:.58rem}
+    .proof{width:135px;height:135px;font-size:.9rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">Case File 07-19</h1>
+<div class="wrap">
+  <div class="folder">
+    <span class="string" aria-hidden="true"></span>
+    <div class="paper">
+      <div class="top">
+        <div class="bureau"><b>Bureau of Unresolved Affairs</b>Department of small certainties<br>File room 4 — shelf 07</div>
+        <div class="caseNo">Case no.<br><b>07-19</b><br>Copy 02 / 03</div>
+        <span class="stampTop">Eyes only</span>
+      </div>
+      <div class="conf"><span>Classification: <b>Restricted</b></span><span>Status: <b>Open</b></span><span>Filed: 17.10.2026</span><span>Handler: E. Voss</span></div>
+
+      <div class="body">
+        <div class="photoWrap">
+          <div class="photo">
+            <span class="clip" aria-hidden="true"></span>
+            <span class="eyes" aria-hidden="true"></span>
+            <span class="grain" aria-hidden="true"></span>
+            <span class="photoTag">SUBJECT 7 / PLATE 2</span>
+          </div>
+          <div class="meta">Name <b>— withheld —</b><br>Born <b>1938, Antwerp</b><br>Known aliases <b>the cartographer</b><br>Last seen <b>a room with no windows</b><br>Risk <b>low / persistent</b></div>
+        </div>
+
+        <div class="right">
+          <div class="tabs" role="tablist">
+            <button class="tab" data-s="subject" aria-pressed="true">Subject</button>
+            <button class="tab" data-s="timeline" aria-pressed="false">Timeline</button>
+            <button class="tab" data-s="assets" aria-pressed="false">Assets</button>
+          </div>
+
+          <div class="section on" id="s-subject">
+            <h2>Summary of interest</h2>
+            <p class="lead">The subject was first observed <span class="redact" tabindex="0" role="button">in the municipal archive, moving without a lamp</span> and has since been linked to a series of <span class="redact" tabindex="0" role="button">disappearances that were never reported</span>.</p>
+            <p>Witness statements describe a person who <span class="redact" tabindex="0" role="button">always knows the time without looking</span> and who leaves rooms slightly quieter than they found them. No photographs of the face exist. The above plate was <span class="redact" tabindex="0" role="button">reconstructed from a reflection in a spoon</span>.</p>
+            <p>Current assessment: <span class="redact" tabindex="0" role="button">not dangerous, but difficult to file</span>. Recommend continued observation from a comfortable distance.</p>
+          </div>
+
+          <div class="section" id="s-timeline">
+            <h2>Timeline of small events</h2>
+            <ul>
+              <li><span>14.03.1961 — first archive entry found <span class="redact" tabindex="0" role="button">with the ink still wet</span></span><b>verified</b></li>
+              <li><span>02.11.1974 — seen crossing the <span class="redact" tabindex="0" role="button">bridge that was demolished in 1962</span></span><b>unverified</b></li>
+              <li><span>19.08.1999 — leaves a note at the bureau; note reads <span class="redact" tabindex="0" role="button">“stop looking, I am already here”</span></span><b>filed</b></li>
+              <li><span>17.10.2026 — current file opened after <span class="redact" tabindex="0" role="button">a door appeared in the archive wall</span></span><b>open</b></li>
+            </ul>
+            <p style="margin-top:8px">All dates have been cross-checked. <span class="redact" tabindex="0" role="button">Two of them did not exist until this file was read.</span></p>
+          </div>
+
+          <div class="section" id="s-assets">
+            <h2>Recovered assets</h2>
+            <ul>
+              <li><span>One brass key, no door. <span class="redact" tabindex="0" role="button">Engraved with the case number.</span></span><b>item 01</b></li>
+              <li><span>One photograph of a window, overexposed. <span class="redact" tabindex="0" role="button">The window is in this building.</span></span><b>item 02</b></li>
+              <li><span>One letter, unopened. <span class="redact" tabindex="0" role="button">Addressed to the reader of this file.</span></span><b>item 03</b></li>
+              <li><span>One map of a city that <span class="redact" tabindex="0" role="button">has not been built yet</span>.</span><b>item 04</b></li>
+            </ul>
+            <p style="margin-top:8px">Handling: gloves. Storage: a drawer that is <span class="redact" tabindex="0" role="button">always slightly open</span>.</p>
+          </div>
+
+          <div class="foot">
+            <div class="sign">E. Voss<small>Handler / Bureau 04</small></div>
+            <div class="actions"><span class="remaining" id="remaining">07 redactions remain</span><button class="btn" id="all">Declassify all</button><button class="btn" id="reopen">Reopen</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="proof" id="proof" aria-hidden="true">Declassified</div>
+      <span class="coffee" aria-hidden="true"></span>
+    </div>
+    <footer>
+      <span>Case 07-19 — Bureau of Unresolved Affairs</span>
+      <span>Fictional file · handle with clean hands</span>
+      <span>Copy 02 — do not duplicate</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+  const redacts = Array.from(document.querySelectorAll('.redact'));
+  const remaining = document.getElementById('remaining');
+  const proof = document.getElementById('proof');
+  const total = redacts.length;
+
+  function update(){
+    const left = redacts.filter(r => !r.classList.contains('open')).length;
+    remaining.textContent = String(left).padStart(2, '0') + ' redaction' + (left === 1 ? '' : 's') + ' remain';
+    proof.classList.toggle('on', left === 0);
+  }
+  redacts.forEach(r => {
+    r.setAttribute('aria-label', 'Redacted text. Activate to reveal.');
+    r.addEventListener('click', () => { r.classList.add('open'); update(); });
+    r.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ r.classList.add('open'); update(); e.preventDefault(); } });
+  });
+  document.getElementById('all').addEventListener('click', () => {
+    redacts.forEach(r => r.classList.add('open'));
+    update();
+  });
+  document.getElementById('reopen').addEventListener('click', () => {
+    redacts.forEach(r => r.classList.remove('open'));
+    update();
+  });
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-pressed', String(x === t)));
+      document.querySelectorAll('.section').forEach(s => s.classList.toggle('on', s.id === 's-' + t.dataset.s));
+    });
+  });
+  update();
+</script>
+</body>
+</html>

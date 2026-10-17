@@ -1,0 +1,20 @@
+TITLE
+Calibre 07 — A Machine for Noticing
+
+PROMPT
+Create an elegant horology study called "Calibre 07". Deep forest-green background, warm brass and ivory, a faint workshop spotlight and a large mechanical clock assembly built entirely in SVG: three interlocking brass gears with visible teeth, a chapter ring with sixty hand-drawn ticks, Roman-hour markers, and hour, minute and second hands showing the real local time. The left column holds the title "A machine for noticing.", a short essay on mechanical time, and small readouts for amplitude, beat and power reserve. Two controls — "Wind" and "Stop the escapement" — let the visitor speed up the gear train or pause it. Include a serial number, a poinçon mark and a quiet footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+An instrument portrait. The clock is treated like a museum object photographed on green velvet: warm metal against darkness, precise engraving, no decorative noise. The interface disappears into the object. Type is small and exact, except for the editorial statement, which is set in a high-contrast serif and allowed to breathe.
+
+VISUAL TECHNIQUES
+- Generated SVG gear paths with correct tooth geometry, layered centre rings and screw details.
+- Independent CSS rotation speeds per gear, with a paused state and an accelerated "wound" state.
+- Real-time clock hands driven by JavaScript, with a smooth sweeping second hand.
+- Sixty generated minute ticks and Roman numerals on a chapter ring.
+- Brass gradients, inner shadows and a soft radial workshop light.
+- Engraved serial numbers, poinçon and tiny monospaced annotations.
+- Responsive layout that stacks the clock above the copy on narrow screens.
+
+INTERACTION MODEL
+"Wind" temporarily accelerates all gears and advances the power-reserve bar, then settles. "Stop the escapement" freezes the gear train and second hand while the digital readout continues to show the actual local time. Arrow-key users can operate both controls, and reduced-motion starts with the escapement stopped and no continuous rotation.

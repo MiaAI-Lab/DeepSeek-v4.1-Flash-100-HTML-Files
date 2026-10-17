@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Maison Orré — Ambre Noir No. 07. Bergamot, iris, amber; composed in Grasse.">
+<title>Maison Orré — Ambre Noir No. 07</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --wine:#1c0e0d; --wine2:#281311; --gold:#c9a265; --ivory:#f1e8d7; --dim:rgba(241,232,215,.52); --line:rgba(201,162,101,.24);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--wine);color:var(--ivory);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 74% 20%,rgba(201,162,101,.14),transparent 62%),radial-gradient(700px 500px at 10% 95%,rgba(88,36,29,.45),transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.24;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--gold);color:var(--wine)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;line-height:1.8}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.1rem;letter-spacing:.12em;text-transform:uppercase}
+  .brand .mark{width:18px;height:18px;border:1px solid var(--gold);border-radius:50%;position:relative;flex:none}
+  .brand .mark::after{content:"";position:absolute;inset:4px;border:1px solid var(--gold);border-radius:50%;opacity:.6}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.18em;color:var(--dim);margin-top:2px}
+  nav{display:flex;gap:26px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;transition:color .25s}
+  nav a:hover{color:var(--ivory)}
+  .headRight{color:var(--dim);display:flex;align-items:center;gap:14px}
+  .headRight b{color:var(--gold);font-weight:400}
+
+  .hero{flex:1;display:grid;grid-template-columns:1.03fr .97fr;gap:clamp(20px,4vw,54px);align-items:center;padding:clamp(26px,4.4vw,48px) 0}
+  .kicker{display:flex;align-items:center;gap:10px;color:var(--gold);margin-bottom:20px}
+  .kicker::before{content:"";width:24px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-size:clamp(3rem,6.6vw,6rem);line-height:.95;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--gold)}
+  .notesLine{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;color:var(--dim);font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase}
+  .notesLine i{width:3px;height:3px;border-radius:50%;background:var(--gold);opacity:.7;font-style:normal}
+  .intro p{margin-top:22px;max-width:38ch;font-size:.8rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ivory);font-weight:400}
+  .buyRow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:26px}
+  .buy{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--gold);padding:11px 17px;color:var(--gold);font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;transition:background .3s,color .3s}
+  .buy:hover{background:var(--gold);color:var(--wine)}
+  .price{font-family:var(--serif);font-size:1.1rem;color:var(--ivory)}
+  .price small{display:block;font-family:var(--mono);font-size:.38rem;letter-spacing:.1em;color:var(--dim);margin-top:3px;text-transform:uppercase}
+  .capBtn{border-bottom:1px solid rgba(241,232,215,.3);padding:2px 0;color:var(--dim);font-family:var(--mono);font-size:.43rem;letter-spacing:.1em;text-transform:uppercase;transition:color .2s,border-color .2s}
+  .capBtn:hover{color:var(--ivory);border-color:var(--gold)}
+  .confirm{min-height:1.1em;margin-top:12px;color:var(--gold);font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+
+  .bottleStage{position:relative;display:grid;place-items:center;min-height:clamp(380px,60vh,580px);perspective:1000px}
+  .glow{position:absolute;width:72%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,162,101,.22),rgba(201,162,101,.04) 48%,transparent 70%);filter:blur(14px)}
+  .dust{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .dust i{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(241,232,215,.5);animation:float 9s ease-in-out infinite;opacity:.35}
+  .dust i:nth-child(2){left:22%;top:30%;animation-delay:-2s}.dust i:nth-child(3){left:70%;top:24%;animation-delay:-4s;width:3px;height:3px}
+  .dust i:nth-child(4){left:78%;top:62%;animation-delay:-1s}.dust i:nth-child(5){left:30%;top:70%;animation-delay:-6s}
+  @keyframes float{50%{transform:translateY(-18px);opacity:.7}}
+  .bottleBtn{position:relative;z-index:2;display:block;padding:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .bottle{position:relative;width:clamp(160px,20vw,210px);height:clamp(250px,32vw,330px);border-radius:10px 10px 14px 14px;
+    background:linear-gradient(100deg,rgba(255,255,255,.13),rgba(255,255,255,.02) 18%,rgba(255,255,255,.06) 45%,rgba(0,0,0,.22) 78%,rgba(255,255,255,.1));
+    border:1px solid rgba(241,232,215,.3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 30px 60px rgba(0,0,0,.5);
+    backdrop-filter:blur(1px);transition:transform .4s}
+  .bottle::before{content:"";position:absolute;left:8%;top:6%;bottom:8%;width:9%;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.02));border-radius:20px;filter:blur(1px)}
+  .bottle::after{content:"";position:absolute;right:8%;top:10%;bottom:14%;width:2px;background:linear-gradient(180deg,rgba(255,255,255,.25),transparent);opacity:.6}
+  .liquid{position:absolute;left:6px;right:6px;bottom:6px;height:68%;border-radius:4px 4px 10px 10px;
+    background:linear-gradient(180deg,rgba(196,116,50,.72),rgba(120,51,30,.9) 60%,rgba(70,24,20,.95));
+    box-shadow:inset 0 8px 20px rgba(255,190,120,.2),inset 0 -12px 26px rgba(30,8,8,.5);overflow:hidden}
+  .liquid::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:rgba(255,210,150,.5)}
+  .liquid::after{content:"";position:absolute;left:14%;top:0;bottom:0;width:10%;background:linear-gradient(180deg,rgba(255,220,170,.22),transparent);filter:blur(1px)}
+  .label{position:absolute;left:16%;right:16%;top:31%;background:linear-gradient(160deg,#f2e9d8,#ded2bd);color:#3a2419;padding:12px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.35);border:1px solid rgba(90,60,35,.25)}
+  .label .house{font-family:var(--serif);font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid rgba(58,36,25,.35);padding-bottom:5px}
+  .label .num{font-family:var(--serif);font-size:1.5rem;letter-spacing:-.02em;line-height:1;margin:6px 0 2px}
+  .label .name{font-family:var(--mono);font-size:.32rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(58,36,25,.7)}
+  .label .size{font-family:var(--mono);font-size:.28rem;letter-spacing:.1em;margin-top:5px;color:rgba(58,36,25,.55)}
+  .cap{position:absolute;left:18%;right:18%;top:-11%;height:15%;background:linear-gradient(100deg,#8d6c37,#e1c482 22%,#9b7a42 45%,#f0d799 62%,#7c5d2e 100%);
+    border-radius:3px 3px 2px 2px;box-shadow:0 4px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .5s cubic-bezier(.2,.8,.2,1);z-index:3}
+  .cap::before{content:"";position:absolute;left:8%;right:8%;top:26%;height:1px;background:rgba(60,40,15,.45);box-shadow:0 4px 0 rgba(60,40,15,.35),0 8px 0 rgba(60,40,15,.3)}
+  .cap::after{content:"";position:absolute;left:18%;right:18%;top:0;height:2px;background:rgba(255,245,220,.5);border-radius:2px}
+  .bottle.open .cap{transform:translateY(-26px) rotate(-2deg)}
+  .atomiser{position:absolute;left:38%;right:38%;top:-3%;height:6%;background:#1a1512;border-radius:2px;z-index:2;box-shadow:inset 0 1px 2px #000;opacity:0;transition:opacity .3s}
+  .bottle.open .atomiser{opacity:1}
+  .reflection{position:absolute;bottom:-9%;left:14%;right:14%;height:16px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,162,101,.28),transparent 70%);filter:blur(6px)}
+
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;gap:0}
+  .noteCol{padding:0 clamp(14px,2.6vw,28px);border-right:1px solid var(--line);transition:background .25s}
+  .noteCol:first-child{padding-left:0}
+  .noteCol:last-child{border-right:0;padding-right:0}
+  .noteCol:hover{background:rgba(201,162,101,.04)}
+  .noteCol span{display:block;color:var(--gold);font-family:var(--mono);font-size:.4rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .noteCol h2{font-family:var(--serif);font-weight:400;font-size:1.2rem;margin-bottom:5px}
+  .noteCol p{color:var(--dim);font-size:.7rem;line-height:1.75}
+  .noteCol .ing{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+  .noteCol .ing i{font-style:normal;font-family:var(--mono);font-size:.38rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);padding:3px 5px;color:var(--dim)}
+  .perfumer{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:18px 0 24px;flex-wrap:wrap}
+  .perfumer p{font-family:var(--serif);font-style:italic;font-size:clamp(.95rem,1.6vw,1.15rem);color:var(--dim);max-width:54ch;line-height:1.5}
+  .perfumer p b{color:var(--ivory);font-weight:400}
+  .seal{width:56px;height:56px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-family:var(--serif);font-size:.62rem;text-align:center;line-height:1.2;transform:rotate(-7deg);flex:none}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:15px 0 22px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;gap:24px}
+    .bottleStage{order:2;min-height:400px}
+    .intro{order:1}
+    .bottle{width:170px;height:270px}
+    .notes{grid-template-columns:1fr}
+    .noteCol{border-right:0;border-bottom:1px solid var(--line);padding:12px 0}
+    .noteCol:last-child{border-bottom:0}
+    nav{display:none}
+  }
+  @media(max-width:600px){
+    h1{font-size:13vw}
+    .brand{font-size:.9rem;letter-spacing:.06em}
+    .headRight{margin-left:auto}
+    .headRight .mono{display:none}
+    .buyRow{gap:12px}
+    .price{font-size:.95rem}
+    .bottleStage{min-height:350px}
+    .perfumer{gap:14px}
+    .seal{width:46px;height:46px;font-size:.52rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span><span>Maison Orré<small>Parfums · Grasse</small></span></a>
+    <nav aria-label="Primary"><a href="#notes">The composition</a><a href="#notes">Atelier</a><a href="#footer">Journal</a></nav>
+    <div class="headRight mono"><span>EN / FR</span><span><b>N° 07</b> / 50 ml</span></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">Eau de parfum — No. 07</p>
+        <h1>The dark<br>has a <em>warmth.</em></h1>
+        <div class="notesLine mono"><span>Bergamot</span><i></i><span>Iris</span><i></i><span>Amber</span><i></i><span>Oud</span></div>
+        <p>Ambre Noir is a scent for late rooms: a slow amber warmed by skin, shadowed with oud and lifted, at the very start, by a cold twist of bergamot. <b>Composed in Grasse, bottled in small batches.</b></p>
+        <div class="buyRow">
+          <button class="buy" id="addBtn">Add to discovery set <span aria-hidden="true">↗</span></button>
+          <div class="price">€185<small>50 ml / extrait 18%</small></div>
+        </div>
+        <button class="capBtn" id="capBtn" aria-pressed="false" style="margin-top:16px">Lift the cap</button>
+        <p class="confirm" id="confirm" aria-live="polite"></p>
+      </div>
+
+      <div class="bottleStage">
+        <div class="glow" aria-hidden="true"></div>
+        <div class="dust" aria-hidden="true"><i style="left:35%;top:18%"></i><i></i><i></i><i></i><i></i></div>
+        <button class="bottleBtn" id="bottleBtn" aria-label="Ambre Noir bottle. Lift the cap.">
+          <div class="bottle" id="bottle">
+            <div class="liquid"></div>
+            <div class="label">
+              <span class="house">Maison Orré</span>
+              <span class="num">No. 07</span>
+              <span class="name">Ambre Noir</span>
+              <span class="size">Eau de parfum · 50 ml</span>
+            </div>
+            <div class="atomiser"></div>
+            <div class="cap"></div>
+            <div class="reflection"></div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section class="notes" id="notes" aria-label="Fragrance composition">
+      <div class="noteCol">
+        <span>01 — Top</span>
+        <h2>Bergamot, cold</h2>
+        <p>A first breath of Calabrian bergamot and pink pepper — brief, bright, and gone before the room notices.</p>
+        <div class="ing"><i>Bergamot</i><i>Pink pepper</i><i>Bitter orange</i></div>
+      </div>
+      <div class="noteCol">
+        <span>02 — Heart</span>
+        <h2>Iris, powder</h2>
+        <p>Orris butter and a little violet leaf. The soft, expensive middle of the fragrance; skin but better.</p>
+        <div class="ing"><i>Iris</i><i>Violet leaf</i><i>Cedar</i></div>
+      </div>
+      <div class="noteCol">
+        <span>03 — Base</span>
+        <h2>Amber, shadow</h2>
+        <p>Labdanum, oud and a trace of vanilla that stays on a collar for days. The part you remember.</p>
+        <div class="ing"><i>Labdanum</i><i>Oud</i><i>Vanilla</i></div>
+      </div>
+    </section>
+
+    <section class="perfumer">
+      <p>“I wanted a perfume that behaves like candlelight — <b>not bright, but impossible to ignore.</b>” — Clara Orré, perfumer</p>
+      <span class="seal" aria-hidden="true">Maison<br>Orré<br>Grasse</span>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Maison Orré — a fictional perfume house</span>
+    <span>Composed in Grasse · 18% extrait · batch 07/26</span>
+    <span>© 2026 · keep away from direct sunlight</span>
+  </footer>
+</div>
+
+<script>
+  const bottle = document.getElementById('bottle');
+  const bottleBtn = document.getElementById('bottleBtn');
+  const capBtn = document.getElementById('capBtn');
+  const confirm = document.getElementById('confirm');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let open = false;
+
+  function toggleCap(){
+    open = !open;
+    bottle.classList.toggle('open', open);
+    capBtn.setAttribute('aria-pressed', String(open));
+    capBtn.textContent = open ? 'Replace the cap' : 'Lift the cap';
+    confirm.textContent = open ? 'Atomiser exposed. One press is enough.' : '';
+  }
+  capBtn.addEventListener('click', toggleCap);
+  bottleBtn.addEventListener('click', toggleCap);
+
+  document.getElementById('addBtn').addEventListener('click', function(){
+    confirm.textContent = 'Added to your discovery set — quietly.';
+    this.textContent = 'In the discovery set ✓';
+    this.setAttribute('aria-pressed', 'true');
+  });
+
+  if (!reduce){
+    const stage = document.querySelector('.bottleStage');
+    stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      bottle.style.transform = 'rotateY(' + (x * 12).toFixed(1) + 'deg) rotateX(' + (-y * 8).toFixed(1) + 'deg)';
+    });
+    stage.addEventListener('pointerleave', () => { bottle.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
+  }
+</script>
+</body>
+</html>

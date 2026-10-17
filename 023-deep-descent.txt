@@ -1,0 +1,20 @@
+TITLE
+Descent — A Vertical Poem to 8,000 Metres
+
+PROMPT
+Create a scroll-driven descent through the ocean's depth zones titled "Descent". The page starts in dark teal surface water and grows darker as the visitor scrolls, ending in near-black hadal space. A fixed sensor panel shows the current depth, zone, pressure and temperature, updating with scroll; a vertical depth rail marks 0, 1,000, 4,000 and 8,000 m. Five full-height narrative sections — Surface, Twilight, Midnight, Abyss, Hadal — carry poetic copy, scientific asides and a glowing bioluminescent creature drawn inline in SVG (jellyfish, lanternfish, anglerfish, siphonophore, amphipod). Add drifting marine snow, a sonar ping button that emits a ripple and surfaces a note, and an ending that returns to the surface. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+A descent you can feel in the scrollbar. The page is a vertical column of water rather than a series of cards: the background darkens continuously, the creatures become stranger, and the interface behaves like a submersible's instrument panel. Typography alternates between a calm editorial serif and precise monospaced telemetry. Bioluminescence is the only warm light.
+
+VISUAL TECHNIQUES
+- Continuous background colour interpolation between depth stops, driven by scroll progress.
+- Fixed depth rail and live telemetry (depth, pressure, temperature, zone) with tabular numerals.
+- Inline SVG creatures with glow filters, tentacle animations and reveal transitions.
+- Layered marine-snow particles with slow parallax drift and radial vignette.
+- Sonar ping ripple animation plus rotating deep-sea field notes.
+- Full-height sections with generous type, thin rules and small scientific captions.
+- Reduced-motion freezes the snow, creature drift and ripple while keeping all content.
+
+INTERACTION MODEL
+Scrolling is the primary interaction: it changes depth, updates the instrument readout and triggers each zone's reveal. Clicking "Send a ping" produces a sonar ripple and displays a rotating note from the descent log. Clicking a creature brightens its glow. The depth rail can be clicked to jump to a zone. All sections remain readable without JavaScript, and reduced-motion removes continuous animation.

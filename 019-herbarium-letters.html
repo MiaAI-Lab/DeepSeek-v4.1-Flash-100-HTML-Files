@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A herbarium of letters — each capital pressed with its own botanical arrangement.">
+<title>Herbarium of Letters — Specimen Book</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#eef0e5; --paper2:#e7e9dc; --ink:#22331f; --sage:#8fa382; --terra:#b45f3f; --gold:#b08b45; --dim:rgba(34,51,31,.58);
+    --line:rgba(34,51,31,.24);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 20% 0%,#f7f7ee,transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--terra);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--terra);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1300px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px)}
+
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:18px 0 12px;border-bottom:2px solid var(--ink)}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .leaf{width:20px;height:28px;border:1px solid var(--ink);border-radius:0 100% 0 100%;transform:rotate(-8deg);position:relative;flex:none}
+  .brand .leaf::after{content:"";position:absolute;left:50%;top:6%;bottom:6%;width:1px;background:var(--ink);transform:rotate(30deg)}
+  .brand b{font-weight:400;font-size:1.18rem;letter-spacing:.02em}
+  .brand span{display:block;font-family:var(--mono);font-size:.42rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+  .headMeta{text-align:right;color:var(--dim);line-height:1.8}
+  .headMeta b{color:var(--ink);font-weight:400}
+
+  .hero{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4.4vw,56px);align-items:start;padding:clamp(22px,3.6vw,36px) 0 20px}
+  .plateWrap{position:relative}
+  .plate{border:1px solid var(--ink);outline:1px solid var(--ink);outline-offset:5px;background:linear-gradient(160deg,#f5f5ea,#e9ebde);padding:14px;position:relative;
+    box-shadow:14px 18px 0 rgba(34,51,31,.06);transition:transform .4s ease}
+  .plate:hover{transform:translateY(-3px)}
+  .plateTop{display:flex;justify-content:space-between;align-items:center;padding-bottom:7px;border-bottom:1px solid var(--line);color:var(--dim)}
+  .plateTop b{color:var(--ink);font-weight:400}
+  .plateInner{position:relative;margin-top:10px;border:1px solid var(--line);overflow:hidden;background:rgba(255,255,255,.12)}
+  #botanical{display:block;width:100%;height:auto;min-height:390px}
+  .glyph{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:2}
+  .glyph span{font-size:clamp(13rem,26vw,20rem);line-height:.7;color:var(--ink);transform:translateY(2%);opacity:.92;
+    text-shadow:2px 2px 0 rgba(238,240,229,.8)}
+  .plateBottom{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;padding-top:9px;border-top:1px solid var(--line);margin-top:9px}
+  .specName{font-size:1.05rem;font-style:italic;line-height:1.2}
+  .specName small{display:block;font-family:var(--mono);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-style:normal;margin-top:4px}
+  .plateBottom .date{color:var(--dim);text-align:right;line-height:1.7}
+  .annotation{position:absolute;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;color:var(--dim);z-index:3}
+  .a1{left:16px;top:64px}.a2{right:16px;top:44%}.a3{left:22px;bottom:66px}
+  .tape{position:absolute;width:86px;height:24px;background:rgba(238,232,206,.72);border:1px solid rgba(34,51,31,.12);top:-11px;left:34%;transform:rotate(-3deg);z-index:4;
+    box-shadow:0 1px 4px rgba(34,51,31,.08)}
+  .stamp{position:absolute;right:14px;bottom:74px;width:64px;height:64px;border:2px solid var(--terra);color:var(--terra);display:grid;place-items:center;
+    text-align:center;font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;line-height:1.3;text-transform:uppercase;transform:rotate(8deg);opacity:0;transition:opacity .3s,transform .4s;z-index:5}
+  .stamp.on{opacity:.85;transform:rotate(8deg) scale(1)}
+
+  .intro{padding-top:4px}
+  .kicker{display:flex;align-items:center;gap:10px;color:var(--terra);margin-bottom:18px}
+  .kicker::before{content:"";width:24px;height:1px;background:var(--terra)}
+  h1{font-size:clamp(2.8rem,5.2vw,4.8rem);line-height:.94;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--terra)}
+  .intro p{margin-top:20px;max-width:38ch;font-size:.86rem;line-height:1.8;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .ruleNote{display:flex;gap:22px;margin-top:20px;padding-top:10px;border-top:1px solid var(--line);color:var(--dim);flex-wrap:wrap}
+  .ruleNote span b{color:var(--ink);font-weight:400}
+
+  .indexBox{margin-top:24px;border-top:2px solid var(--ink);padding-top:9px}
+  .indexHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:7px}
+  .index{display:grid;grid-template-columns:repeat(13,1fr);gap:2px}
+  .let{aspect-ratio:1;display:grid;place-items:center;border:1px solid transparent;font-size:.94rem;color:var(--dim);transition:background .18s,color .18s,border-color .18s;position:relative}
+  .let:hover{border-color:var(--ink);color:var(--ink)}
+  .let[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .let[aria-pressed="true"]::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--gold)}
+  .indexFoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:12px;flex-wrap:wrap}
+  .press{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--ink);padding:9px 13px;font-family:var(--mono);font-size:.48rem;letter-spacing:.11em;text-transform:uppercase;transition:background .2s,color .2s}
+  .press:hover{background:var(--ink);color:var(--paper)}
+  .press .dot{width:5px;height:5px;border-radius:50%;background:var(--terra)}
+  .press:hover .dot{background:var(--gold)}
+  .collection{color:var(--dim);text-align:right;line-height:1.7}
+  .collection b{color:var(--ink);font-weight:400}
+  .collected{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-top:4px;min-height:14px}
+  .collected span{font-family:var(--mono);font-size:.45rem;width:16px;height:16px;display:grid;place-items:center;border:1px solid var(--line);color:var(--dim)}
+
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:6px}
+  .notes div{padding:16px clamp(12px,2.4vw,26px);border-right:1px solid var(--line);color:var(--dim);line-height:1.7;font-size:.7rem}
+  .notes div:first-child{padding-left:0}
+  .notes div:last-child{border-right:0}
+  .notes b{display:block;font-family:var(--mono);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:400;margin-bottom:5px}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:15px 0 26px;color:var(--dim)}
+
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr;gap:28px}
+    .plateWrap{order:2;max-width:620px;width:100%;margin:0 auto}
+    .intro{order:1}
+    .index{grid-template-columns:repeat(13,1fr)}
+    .glyph span{font-size:clamp(12rem,30vw,18rem)}
+    #botanical{min-height:360px}
+  }
+  @media(max-width:620px){
+    .index{grid-template-columns:repeat(9,1fr)}
+    .let{font-size:.82rem}
+    .plate{padding:9px;box-shadow:8px 10px 0 rgba(34,51,31,.06)}
+    .glyph span{font-size:clamp(10rem,44vw,15rem)}
+    #botanical{min-height:300px}
+    .plateBottom{flex-wrap:wrap}
+    .plateBottom .date{text-align:left}
+    .notes{grid-template-columns:1fr}
+    .notes div{border-right:0;border-bottom:1px solid var(--line);padding-left:0}
+    .notes div:last-child{border-bottom:0}
+    .headMeta{display:none}
+    .stamp{width:52px;height:52px;font-size:.35rem;right:9px;bottom:70px}
+    .specName{font-size:.95rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="leaf" aria-hidden="true"></span><div><b>Herbarium of Letters</b><span>Pressed typography / volume ii</span></div></div>
+    <div class="headMeta mono">Collected in the browser<br><b>17 October 2026</b></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <figure class="plateWrap">
+        <div class="tape" aria-hidden="true"></div>
+        <div class="plate" id="plate">
+          <div class="plateTop mono"><span>Specimen <b id="specNo">No. 019 / 026</b></span><span>Folio <b>H–ii</b></span></div>
+          <div class="plateInner">
+            <svg id="botanical" viewBox="0 0 520 560" role="img" aria-label="Botanical arrangement generated around a letter">
+              <g id="stems" fill="none" stroke="#22331f" stroke-width="1.2" stroke-linecap="round"></g>
+              <g id="leaves"></g>
+              <g id="flowers"></g>
+              <g fill="none" stroke="rgba(34,51,31,.25)" stroke-width=".7">
+                <path d="M22,540 L498,540"/><path d="M498,540 L498,520"/><path d="M22,540 L22,520"/>
+              </g>
+            </svg>
+            <div class="glyph" aria-hidden="true"><span id="glyph">A</span></div>
+            <span class="annotation a1 mono">fig. a</span>
+            <span class="annotation a2 mono">xit. 02</span>
+            <span class="annotation a3 mono">leaf study</span>
+          </div>
+          <div class="plateBottom">
+            <div class="specName"><span id="specName">Alphabetum acutum</span><small id="specNote">A pressed capital, with alternate leaves</small></div>
+            <div class="date mono">Collected<br><b id="specDate">x. 2026</b></div>
+          </div>
+          <div class="stamp" id="stamp" aria-hidden="true">In<br>herbario</div>
+        </div>
+      </figure>
+
+      <div class="intro">
+        <p class="kicker mono">A specimen book of capitals</p>
+        <h1>Letters,<br><em>pressed.</em></h1>
+        <p>Every capital keeps a small wilderness inside it. Select a letter and the herbarium will grow its leaves — <b>deterministic, tender, and slightly different from the last.</b></p>
+        <div class="ruleNote mono"><span>Plate <b>019</b></span><span>Method <b>bezier botany</b></span><span>Ink <b>one green</b></span></div>
+
+        <div class="indexBox">
+          <div class="indexHead mono"><span>Index of capitals</span><span><b id="activeLabel">A</b> / selected</span></div>
+          <div class="index" id="index" role="group" aria-label="Select a letter"></div>
+          <div class="indexFoot">
+            <button class="press" id="pressBtn"><span class="dot" aria-hidden="true"></span>Press this specimen</button>
+            <div class="collection mono"><span>In herbario</span> <b id="count">00</b><div class="collected" id="collected"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="notes">
+      <div><b>Method</b>Stems grow from a shared root and curve toward the light of the page. Leaves alternate; flowers appear only where the letter has a serif.</div>
+      <div><b>Naming</b>Each specimen is named for its temperament: acutum for sharp corners, rotundum for bowls, longum for stems and descenders.</div>
+      <div><b>Care</b>Keep out of direct sunlight. Water once a week with attention. Do not correct the letter; it has already decided what it is.</div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Herbarium of Letters / a fictional specimen book</span>
+    <span>One file · 26 capitals · no pressed plants harmed</span>
+    <span>© 2026 · collected in the browser</span>
+  </footer>
+</div>
+
+<script>
+  const glyph = document.getElementById('glyph');
+  const stemsG = document.getElementById('stems');
+  const leavesG = document.getElementById('leaves');
+  const flowersG = document.getElementById('flowers');
+  const specName = document.getElementById('specName');
+  const specNote = document.getElementById('specNote');
+  const specNo = document.getElementById('specNo');
+  const specDate = document.getElementById('specDate');
+  const activeLabel = document.getElementById('activeLabel');
+  const countEl = document.getElementById('count');
+  const collected = document.getElementById('collected');
+  const stamp = document.getElementById('stamp');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NS = 'http://www.w3.org/2000/svg';
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  let current = 'A';
+  let collection = [];
+
+  const names = ['acutum','rotundum','longum','quietum','apertum','flexum','nobile','tenerum','obliquum','grave','lucidum','serratum'];
+  const index = document.getElementById('index');
+
+  alphabet.forEach(ch => {
+    const b = document.createElement('button');
+    b.className = 'let';
+    b.textContent = ch;
+    b.setAttribute('aria-pressed', String(ch === 'A'));
+    b.setAttribute('aria-label', 'Specimen letter ' + ch);
+    b.addEventListener('click', () => selectLetter(ch));
+    index.appendChild(b);
+  });
+
+  function rng(seed){
+    let s = seed;
+    return function(){ s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  }
+
+  function selectLetter(ch){
+    current = ch;
+    glyph.textContent = ch;
+    activeLabel.textContent = ch;
+    document.querySelectorAll('.let').forEach(b => b.setAttribute('aria-pressed', String(b.textContent === ch)));
+    stemsG.innerHTML = ''; leavesG.innerHTML = ''; flowersG.innerHTML = '';
+    const seed = ch.charCodeAt(0) * 137;
+    const rand = rng(seed);
+    const count = 5 + Math.floor(rand() * 4);
+    const cols = ['#8fa382', '#7a916d', '#a4b596', '#b45f3f'];
+    for (let i = 0; i < count; i++){
+      const side = i % 2 === 0 ? -1 : 1;
+      const baseX = 260 + (rand() * 40 - 20);
+      const tipX = 260 + side * (72 + rand() * 120);
+      const tipY = 120 + rand() * 170;
+      const c1x = 260 + side * 20, c1y = 400 + rand() * 30;
+      const c2x = tipX + side * 22, c2y = tipY + 120 + rand() * 40;
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', 'M' + baseX + ',560 C' + c1x + ',' + c1y + ' ' + c2x + ',' + c2y + ' ' + tipX + ',' + tipY);
+      p.setAttribute('stroke-width', (1 + rand() * .7).toFixed(2));
+      p.setAttribute('stroke', 'rgba(34,51,31,' + (.4 + rand() * .35).toFixed(2) + ')');
+      if (!reduce){
+        const len = 520;
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+        p.style.transition = 'stroke-dashoffset 1s ease ' + (i * 60) + 'ms';
+      }
+      stemsG.appendChild(p);
+
+      const leafCount = 2 + Math.floor(rand() * 3);
+      for (let l = 0; l < leafCount; l++){
+        const t = .3 + l / leafCount * .55;
+        const lx = baseX + (tipX - baseX) * t + side * (rand() * 16 - 8);
+        const ly = 560 + (tipY - 560) * t;
+        const leaf = document.createElementNS(NS, 'ellipse');
+        leaf.setAttribute('cx', lx); leaf.setAttribute('cy', ly);
+        leaf.setAttribute('rx', 15 + rand() * 13); leaf.setAttribute('ry', 6 + rand() * 5);
+        leaf.setAttribute('fill', cols[Math.floor(rand() * cols.length)]);
+        leaf.setAttribute('opacity', (0.5 + rand() * .35).toFixed(2));
+        leaf.setAttribute('transform', 'rotate(' + (rand() * 80 - 40 + (side * 30)) + ' ' + lx + ' ' + ly + ')');
+        if (!reduce){
+          leaf.style.transformOrigin = lx + 'px ' + ly + 'px';
+          leaf.style.transform = 'scale(0)';
+          leaf.style.transition = 'transform .5s cubic-bezier(.2,.9,.2,1) ' + (i * 60 + l * 45) + 'ms';
+          requestAnimationFrame(() => { requestAnimationFrame(() => { leaf.style.transform = 'scale(1)'; }); });
+        }
+        leavesG.appendChild(leaf);
+      }
+      if (rand() > .55){
+        const f = document.createElementNS(NS, 'g');
+        for (let k = 0; k < 5; k++){
+          const petal = document.createElementNS(NS, 'ellipse');
+          petal.setAttribute('cx', tipX); petal.setAttribute('cy', tipY - 8);
+          petal.setAttribute('rx', 5); petal.setAttribute('ry', 10);
+          petal.setAttribute('fill', '#b45f3f'); petal.setAttribute('opacity', '.8');
+          petal.setAttribute('transform', 'rotate(' + (k * 72) + ' ' + tipX + ' ' + tipY + ')');
+          f.appendChild(petal);
+        }
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', tipX); c.setAttribute('cy', tipY); c.setAttribute('r', 3);
+        c.setAttribute('fill', '#b08b45');
+        f.appendChild(c);
+        flowersG.appendChild(f);
+      }
+    }
+    specName.textContent = ch + ' ' + names[seed % names.length];
+    specNote.textContent = 'A pressed capital, with ' + count + ' stems and alternate leaves';
+    specNo.textContent = 'No. ' + String(alphabet.indexOf(ch) + 1).padStart(3, '0') + ' / 026';
+    specDate.textContent = 'x. 2026';
+    stamp.classList.remove('on');
+  }
+
+  document.getElementById('pressBtn').addEventListener('click', () => {
+    stamp.classList.add('on');
+    if (!collection.includes(current)){
+      collection.push(current);
+      const s = document.createElement('span');
+      s.textContent = current;
+      collected.appendChild(s);
+    }
+    countEl.textContent = String(collection.length).padStart(2, '0');
+  });
+
+  selectLetter('A');
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+TITLE
+MONOLITH — Type Specimen N° 002
+
+PROMPT
+Create a brutalist typographic specimen page for a fictional neo-grotesque typeface called MONOLITH. It must feel like a printed type catalogue from an uncompromising foundry: warm off-white paper (#efede4), hard black ink (#121212) and one acid accent (#d8ff3e), with visible grid rules, monospaced metadata labels and enormous display type that bleeds toward the edges of the page. The hero is a single word "GROTESK" set at roughly 15vw with tight negative tracking; controls let the viewer adjust its width and letter-spacing live, switch to an inverted ink/paper scheme, and click any glyph in a full A–Z 0–9 inventory to replace the hero character. Include a black marquee manifesto strip, a letter-anatomy plate with dashed measurement callouts, a specification table, and a colophon footer. No rounded corners except the pill control, no gradients, no soft shadows — only mass, counter and silence. Fully responsive single file, inline CSS and JS, no external fonts or assets.
+
+DESIGN INTENT
+An anti-glassmorphism statement piece: structural, flat and confident. The page is organised like a type specimen brochure — a masthead, a giant display line, marginalia in monospace, numbered sections and a glyph inventory — using hairline rules to expose the grid rather than hide it. The acid green appears only where the page wants the eye to go, so the whole composition reads as black type on paper with one electric interruption.
+
+VISUAL TECHNIQUES
+- Oversized viewport-scaled display typography with negative tracking and horizontal scale transform controlled by CSS custom properties.
+- Strict 12-column editorial grid, visible hairline boundaries and numbered section markers.
+- Full-bleed inverted marquee band in acid green and black, animated with a seamless CSS loop.
+- Glyph inventory as a bordered modular grid with invert-on-hover cells.
+- Letter anatomy plate using an outlined glyph, dashed measurement rules and monospaced callouts.
+- Paper grain supplied by an inline SVG feTurbulence data URI; no shadows, no gradients, sharp corners.
+- Responsive reflow that turns the three-column anatomy plate into stacked cards.
+
+INTERACTION MODEL
+Two range sliders adjust the hero's width and tracking in real time, with numeric readouts. An "invert" toggle flips the whole page from paper-on-ink to ink-on-paper, including the accent colour. Clicking a glyph in the inventory promotes it to the hero with a short mechanical swap animation. Hovering an inventory cell inverts it. Keyboard users can tab to every glyph and slider; reduced-motion disables the marquee and transitions.

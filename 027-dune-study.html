@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Dune Study 03 — a quiet desert in three hours, drawn in layers of light.">
+<title>Dune Study 03 — The Quiet Is a Place</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --sky1:#dce6e6; --sky2:#f0e3cd; --sand1:#efd9b7; --sand2:#d9b98b; --sand3:#b98f5f; --sun:#fff3d2; --halo:rgba(255,239,200,.5);
+    --ink:#3a2c1f; --dim:rgba(58,44,31,.55); --accent:#b96135;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.dusk{--sky1:#5c4a72;--sky2:#e08a5c;--sand1:#c98354;--sand2:#9c5c3e;--sand3:#60372e;--sun:#ffd9a0;--halo:rgba(255,190,120,.45);--ink:#f6e8d6;--dim:rgba(246,232,214,.6);--accent:#ffbd80}
+  body.night{--sky1:#071221;--sky2:#182b45;--sand1:#455364;--sand2:#2b3949;--sand3:#17222f;--sun:#e8f1ff;--halo:rgba(200,225,255,.4);--ink:#e8eef7;--dim:rgba(232,238,247,.55);--accent:#a9c8e8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--sky1);color:var(--ink);font-family:var(--sans);overflow:hidden;height:100svh;transition:background 1.2s ease,color 1.2s ease}
+  ::selection{background:var(--accent);color:#fff}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.7}
+  .scene{position:fixed;inset:0;z-index:0;overflow:hidden}
+  .sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 62%);transition:background 1.2s ease}
+  .sky::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--halo));opacity:.4;mix-blend-mode:screen}
+  .sun{position:absolute;left:68%;top:23%;width:clamp(90px,13vw,180px);aspect-ratio:1;border-radius:50%;background:var(--sun);
+    box-shadow:0 0 60px 22px var(--halo),0 0 160px 70px var(--halo);transition:all 1.2s ease;animation:breathe 8s ease-in-out infinite}
+  @keyframes breathe{50%{box-shadow:0 0 70px 26px var(--halo),0 0 190px 80px var(--halo)}}
+  body.dusk .sun{left:44%;top:46%;width:clamp(110px,16vw,210px)}
+  body.night .sun{left:74%;top:14%;width:clamp(50px,6vw,80px);box-shadow:0 0 40px 8px var(--halo),0 0 110px 30px var(--halo)}
+  .stars{position:absolute;inset:0;opacity:0;transition:opacity 1.2s;background-image:radial-gradient(rgba(255,255,255,.7) .7px,transparent .8px);background-size:90px 70px;mix-blend-mode:screen}
+  body.night .stars{opacity:.5}
+  .svgDunes{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .shimmer{position:absolute;left:0;right:0;bottom:18%;height:16%;pointer-events:none;mix-blend-mode:overlay;opacity:.22;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.4) 0 1px,transparent 1px 3px);animation:heat 6s ease-in-out infinite alternate}
+  @keyframes heat{to{transform:translateY(-8px) scaleY(1.06);opacity:.12}}
+  .grain{position:fixed;inset:0;z-index:20;pointer-events:none;opacity:.24;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  .vignette{position:fixed;inset:0;z-index:10;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 42%,rgba(30,20,10,.28) 85%,rgba(20,14,8,.6))}
+
+  .ui{position:relative;z-index:5;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,40px);pointer-events:none}
+  .ui a,.ui button{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:18px 0;border-bottom:1px solid var(--dim);color:var(--dim);transition:color 1.2s}
+  .brand{display:flex;align-items:baseline;gap:10px;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink)}
+  .brand span{font-family:var(--mono);font-size:.4rem;letter-spacing:.14em;color:var(--dim)}
+  .headMeta{display:flex;gap:26px;text-align:right}
+  .headMeta b{color:var(--ink);font-weight:400}
+  .main{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(24px,6vh,52px)}
+  .caption{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+  .caption .text{max-width:690px}
+  .eyebrow{display:flex;align-items:center;gap:10px;color:var(--accent);margin-bottom:16px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+  h1{font-family:var(--serif);font-size:clamp(2.8rem,7.2vw,7rem);line-height:.9;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--accent)}
+  .sub{margin-top:14px;max-width:36ch;color:var(--dim);font-size:.72rem;line-height:1.8}
+  .hourControl{text-align:right;min-width:180px}
+  .hourName{font-family:var(--serif);font-style:italic;font-size:clamp(1.1rem,2.2vw,1.5rem);color:var(--ink);transition:color 1.2s}
+  .hourSub{color:var(--dim);margin-top:3px}
+  .change{margin-top:12px;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--dim);padding:8px 12px;border-radius:100px;color:var(--ink);
+    font-family:var(--mono);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;transition:border-color .3s,color .3s,background .3s}
+  .change:hover{border-color:var(--accent);color:var(--accent)}
+  .change i{width:5px;height:5px;border-radius:50%;background:var(--accent);display:block}
+  footer{display:flex;justify-content:space-between;gap:16px;padding:13px 0 18px;border-top:1px solid var(--dim);color:var(--dim);flex-wrap:wrap}
+  footer b{color:var(--ink);font-weight:400}
+
+  @media(max-width:900px){
+    .headMeta span:nth-child(2){display:none}
+    .sun{left:70%;top:18%}
+    body.dusk .sun{left:58%;top:38%}
+    .caption{flex-direction:column;align-items:flex-start;gap:18px}
+    .hourControl{text-align:left}
+  }
+  @media(max-width:560px){
+    h1{font-size:13vw}
+    .brand{font-size:.56rem;letter-spacing:.22em}
+    .headMeta{display:none}
+    .ui{padding:0 16px}
+    h1 em{display:block}
+    .sub{font-size:.66rem;max-width:30ch}
+    footer span:nth-child(2){display:none}
+    .sun{width:110px}
+    .hourName{font-size:1rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+  #d1 stop:first-child{stop-color:var(--sand1)} #d1 stop:last-child{stop-color:var(--sand2)} #d2 stop:first-child{stop-color:var(--sand2)} #d2 stop:last-child{stop-color:var(--sand3)} #d3 stop:first-child{stop-color:var(--sand2)} #d3 stop:last-child{stop-color:var(--sand3)}
+</style>
+</head>
+<body class="day">
+<div class="scene" aria-hidden="true">
+  <div class="sky"></div>
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <svg class="svgDunes" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sand1)"/><stop offset="1" stop-color="var(--sand2)"/></linearGradient>
+      <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sand2)"/><stop offset="1" stop-color="var(--sand3)"/></linearGradient>
+      <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sand2)"/><stop offset="1" stop-color="var(--sand3)"/></linearGradient>
+    </defs>
+    <g class="layer" data-depth="6"><path d="M-40,640 C220,560 380,520 600,575 C820,630 1020,540 1200,560 C1320,575 1420,610 1480,630 L1480,900 L-40,900Z" fill="url(#d1)" opacity=".85"/></g>
+    <g class="layer" data-depth="12"><path d="M-40,700 C180,620 330,600 540,660 C760,725 900,640 1100,655 C1260,668 1380,710 1480,735 L1480,900 L-40,900Z" fill="url(#d2)" opacity=".92"/></g>
+    <g class="layer" data-depth="20"><path d="M-40,760 C150,700 340,690 520,735 C690,776 840,720 1010,725 C1180,730 1320,770 1480,805 L1480,900 L-40,900Z" fill="url(#d2)"/></g>
+    <g class="layer" data-depth="30"><path d="M-40,825 C170,780 320,775 500,805 C700,838 880,790 1060,795 C1230,800 1370,825 1480,850 L1480,900 L-40,900Z" fill="url(#d3)"/></g>
+    <g class="layer" data-depth="42"><path d="M-40,875 C180,840 360,845 550,862 C760,880 940,850 1120,848 C1280,846 1400,860 1480,872 L1480,900 L-40,900Z" fill="var(--sand3)" opacity=".95"/></g>
+    <g opacity=".35" stroke="rgba(255,255,255,.4)" fill="none">
+      <path d="M300,700 C500,665 700,690 980,660" stroke-width="1"/>
+      <path d="M180,790 C380,760 640,780 900,745" stroke-width=".8"/>
+      <path d="M480,845 C700,820 980,835 1240,800" stroke-width=".8"/>
+    </g>
+  </svg>
+  <div class="shimmer"></div>
+</div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top">Dune Study <span>/ 03</span></a>
+    <div class="headMeta mono"><span>Namib-Naukluft<br><b>24° 45′ S / 15° 17′ E</b></span><span>Plate 03 —<br><b>five horizons</b></span></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="caption">
+      <div class="text">
+        <p class="eyebrow mono">A study in heat, distance and quiet</p>
+        <h1>The quiet<br>is <em>a place.</em></h1>
+        <p class="sub">Nothing here moves quickly except the shadow of a cloud crossing a ridge. Stay long enough and the dunes start to feel like architecture.</p>
+      </div>
+      <div class="hourControl">
+        <div class="hourName" id="hourName">Day</div>
+        <div class="hourSub mono" id="hourSub">14:20 · 38°C · heat haze</div>
+        <button class="change" id="change"><i aria-hidden="true"></i>Change the hour</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Dune Study 03 — a fictional landscape</span>
+    <span>Sun <b id="sunPos">38° above horizon</b> · Wind <b>NE 08 km/h</b></span>
+    <span>© 2026 · grain, heat, patience</span>
+  </footer>
+</div>
+
+<script>
+  const body = document.body;
+  const layers = Array.from(document.querySelectorAll('.layer'));
+  const hourName = document.getElementById('hourName');
+  const hourSub = document.getElementById('hourSub');
+  const sunPos = document.getElementById('sunPos');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const states = [
+    { cls: 'day', name: 'Day', sub: '14:20 · 38°C · heat haze', sun: '38° above horizon' },
+    { cls: 'dusk', name: 'Dusk', sub: '18:47 · 24°C · long shadows', sun: '6° above horizon' },
+    { cls: 'night', name: 'Night', sub: '23:10 · 11°C · no wind', sun: '— below horizon' }
+  ];
+  let index = 0;
+  let mx = 0, my = 0, tx = 0, ty = 0;
+
+  function apply(n){
+    const s = states[n];
+    body.className = s.cls;
+    hourName.textContent = s.name;
+    hourSub.textContent = s.sub;
+    sunPos.textContent = s.sun;
+  }
+  document.getElementById('change').addEventListener('click', () => {
+    index = (index + 1) % states.length;
+    apply(index);
+  });
+
+  window.addEventListener('pointermove', e => {
+    mx = (e.clientX / innerWidth - .5);
+    my = (e.clientY / innerHeight - .5);
+  }, { passive: true });
+  function tick(){
+    tx += (mx - tx) * .06;
+    ty += (my - ty) * .06;
+    layers.forEach(l => {
+      const d = Number(l.dataset.depth);
+      l.style.transform = 'translate(' + (tx * d).toFixed(2) + 'px,' + (ty * d * .5).toFixed(2) + 'px)';
+    });
+    if (!reduce) requestAnimationFrame(tick);
+  }
+  if (!reduce) requestAnimationFrame(tick);
+  apply(0);
+</script>
+</body>
+</html>

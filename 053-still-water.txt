@@ -1,0 +1,20 @@
+TITLE
+Still Water — A Pond You Can Disturb
+
+PROMPT
+Create a serene interactive pond called "Still Water". A full-screen canvas of deep teal water with soft caustic light, lily pads, three slow koi and reed silhouettes. Clicking or dragging the water sends out concentric ripples; a "Rain" toggle adds gentle random droplets; a ripple counter tracks disturbances. Large editorial serif type sits low in the frame: "Drop a stone. Watch the lake remember." with a small scientific caption and controls in cream and pale aqua. The mood is early morning, no wind. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A digital pond that behaves like a real one: quiet, reflective, responsive to touch but never busy. The water is painted from gradients and sine lines rather than photographed, and the koi and lily pads are simple, confident shapes. Typography is calm and large, placed at the edges so the surface remains the subject. The interface is almost apologetic for existing.
+
+VISUAL TECHNIQUES
+- Canvas water with a vertical gradient, drifting caustic sine lines and surface highlights.
+- Expanding ripple rings with elliptical perspective and fading alpha.
+- Lily pads drawn as notched ellipses with lighter rims and a slow bob.
+- Three koi drawn as bezier bodies with tails and translucent fins, moving on long curves.
+- Reed silhouettes along the edges, anchored to the waterline.
+- Cream serif typography, tracked monospaced captions and minimal pill controls.
+- Retina-aware canvas, gentle ambient ripples on idle, reduced-motion static scene.
+
+INTERACTION MODEL
+Clicking creates a large ripple at that point; dragging creates a trail of smaller ripples. "Rain" starts or stops a gentle shower of random ripples. "Clear" removes all active ripples. The counter updates with each disturbance. Keyboard users can trigger a ripple at the centre and toggle rain. Reduced-motion removes the ambient animation and displays a still pond with koi and pads.

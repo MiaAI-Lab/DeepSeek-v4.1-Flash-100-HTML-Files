@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Latent — a research preview of a model that generates abstract compositions from language.">
+<title>Latent — A Model That Dreams in Coordinates</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --bg:#07080c; --panel:#0c0e15; --ink:#eef0e8; --dim:rgba(238,240,232,.48); --line:rgba(238,240,232,.13);
+    --blue:#6f8dff; --blue2:#9bb0ff; --lime:#c9f25e; --violet:#a77bff;
+    --sans:"Helvetica Neue","Inter",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #mesh{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.75}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.13;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--lime);color:var(--bg)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--lime);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:1.05rem;letter-spacing:-.02em}
+  .brand .dot{width:9px;height:9px;background:var(--lime);border-radius:50%;box-shadow:0 0 12px var(--lime);flex:none}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;color:var(--dim);font-weight:400;text-transform:uppercase;margin-top:1px}
+  .headMid{display:flex;gap:22px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--lime);font-weight:400}
+
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(22px,4vw,56px);align-items:center;padding:clamp(22px,4vw,48px) 0 clamp(18px,3vw,34px)}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--lime);margin-bottom:16px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--lime)}
+  h1{font-size:clamp(2.9rem,6.4vw,6.2rem);line-height:.9;letter-spacing:-.07em;font-weight:600}
+  h1 em{font-style:normal;color:transparent;background:linear-gradient(92deg,var(--blue),var(--violet) 55%,var(--lime));-webkit-background-clip:text;background-clip:text}
+  .lede{margin-top:18px;max-width:44ch;color:var(--dim);font-size:.8rem;line-height:1.8}
+  .lede b{color:var(--ink);font-weight:400}
+  .prompt{margin-top:18px;max-width:520px}
+  .promptBox{display:flex;align-items:center;gap:6px;border:1px solid rgba(238,240,232,.22);background:rgba(10,12,18,.65);padding:5px 5px 5px 13px;backdrop-filter:blur(8px);transition:border-color .2s}
+  .promptBox:focus-within{border-color:var(--blue)}
+  .promptBox input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--ink);font-family:var(--mono);font-size:.62rem;padding:6px 0;letter-spacing:.02em}
+  .promptBox input::placeholder{color:rgba(238,240,232,.3)}
+  .gen{background:var(--ink);color:var(--bg);padding:8px 12px;font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transition:background .2s}
+  .gen:hover{background:var(--lime)}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+  .chip{border:1px solid var(--line);color:var(--dim);padding:4px 7px;font-family:var(--mono);font-size:.36rem;letter-spacing:.03em;transition:color .2s,border-color .2s}
+  .chip:hover{color:var(--ink);border-color:rgba(238,240,232,.35)}
+  .stats{display:flex;gap:22px;margin-top:18px;padding-top:10px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .stat b{display:block;font-family:var(--mono);font-size:.86rem;letter-spacing:-.02em;color:var(--ink)}
+  .stat span{color:var(--dim)}
+
+  .preview{position:relative}
+  .card{border:1px solid rgba(238,240,232,.18);background:linear-gradient(160deg,rgba(16,18,28,.92),rgba(9,10,16,.95));padding:9px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .canvasWrap{position:relative;aspect-ratio:4/3;overflow:hidden;background:#0a0c13}
+  #art{display:block;width:100%;height:100%}
+  .scan{position:absolute;left:0;right:0;top:0;height:22%;background:linear-gradient(180deg,transparent,rgba(201,245,94,.1),transparent);animation:scan 4.5s linear infinite;pointer-events:none}
+  @keyframes scan{from{transform:translateY(-120%)}to{transform:translateY(520%)}}
+  .badge{position:absolute;left:16px;bottom:14px;display:flex;gap:8px;align-items:center;background:rgba(7,8,12,.7);padding:4px 7px;backdrop-filter:blur(6px);border:1px solid rgba(238,240,232,.15)}
+  .badge .li{width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 6px var(--lime)}
+  .meta{display:flex;justify-content:space-between;gap:10px;padding:7px 2px 0;color:var(--dim);flex-wrap:wrap}
+  .meta b{color:var(--ink);font-weight:400}
+  .generating .scan{animation-duration:.8s}
+  .generating #art{opacity:.4;filter:blur(2px)}
+  #art{transition:opacity .3s,filter .3s}
+
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:10px}
+  .feature{padding:14px 16px;border-right:1px solid var(--line)}
+  .feature:first-child{padding-left:0}
+  .feature:last-child{border-right:0}
+  .feature .num{color:var(--lime);margin-bottom:6px;display:flex;justify-content:space-between}
+  .feature h3{font-size:.9rem;letter-spacing:-.02em;font-weight:500;margin-bottom:5px}
+  .feature p{color:var(--dim);font-size:.64rem;line-height:1.75}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 18px;color:rgba(238,240,232,.3)}
+
+  @media(max-width:940px){
+    .hero{grid-template-columns:1fr;gap:22px}
+    .preview{order:1}
+    .copy{order:2}
+    .headMid{display:none}
+    .features{grid-template-columns:1fr}
+    .feature{border-right:0;border-bottom:1px solid var(--line);padding-left:0}
+    .feature:last-child{border-bottom:0}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    h1{font-size:clamp(2.5rem,12vw,4rem)}
+    .stats{gap:14px}
+    .promptBox{flex-wrap:wrap;padding:6px}
+    .promptBox input{width:100%;padding:6px}
+    .gen{width:100%}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .scan{display:none}
+    *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<canvas id="mesh" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span><span>Latent<small>Research preview 0.4</small></span></a>
+    <div class="headMid mono"><span>Model <b>latent-4b</b></span><span>Modality <b>text → form</b></span><span>Status <b>live</b></span></div>
+    <div class="headRight mono">Latent Labs<br><b>Build 0417</b></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="copy">
+        <p class="eyebrow mono">A small model for large ideas</p>
+        <h1>A model that<br>dreams in<br><em>coordinates.</em></h1>
+        <p class="lede">Describe a shape, a weather, a feeling. Latent composes it from a seed and a vocabulary of gradients, arcs and noise — <b>deterministically, in under a second.</b></p>
+        <div class="prompt">
+          <form class="promptBox" id="form"><input id="prompt" type="text" maxlength="90" value="a quiet blue room with one warm lamp" aria-label="Prompt"><button class="gen" type="submit" id="genBtn">Generate ↗</button></form>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div class="stats">
+          <div class="stat mono"><b>1.2B</b><span>parameters</span></div>
+          <div class="stat mono"><b>47ms</b><span>median render</span></div>
+          <div class="stat mono"><b>8k</b><span>context</span></div>
+          <div class="stat mono"><b>∞</b><span>seeds</span></div>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="card">
+          <div class="canvasWrap"><canvas id="art" width="760" height="570" role="img" aria-label="Generated abstract composition"></canvas><div class="scan"></div><div class="badge mono"><span class="li"></span>latent / live render</div></div>
+          <div class="meta mono"><span>Prompt <b id="mPrompt">a quiet blue room…</b></span><span>Seed <b id="mSeed">—</b></span><span><b id="mTime">—</b> ms</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <article class="feature"><div class="num mono"><span>01 / Language</span><span>→</span></div><h3>Words become coordinates</h3><p>Every phrase is folded into a point in a high-dimensional space. Nearby points share weather, geometry and mood, not pixels.</p></article>
+      <article class="feature"><div class="num mono"><span>02 / Seed</span><span>→</span></div><h3>The same prompt, the same world</h3><p>Seeds are visible and stable. Return tomorrow with the same phrase and the composition will be waiting, unchanged.</p></article>
+      <article class="feature"><div class="num mono"><span>03 / Surface</span><span>→</span></div><h3>Built for the first draft</h3><p>Latent is a sketching surface, not a finish line. Export the seed, keep the palette, take it somewhere else.</p></article>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Latent / a fictional research preview</span>
+    <span>No images were harmed · all output generated here</span>
+    <span>© 2026 · think in coordinates</span>
+  </footer>
+</div>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('art');
+  const ctx = canvas.getContext('2d');
+  const mesh = document.getElementById('mesh');
+  const mctx = mesh.getContext('2d');
+  let seed = 0, generating = false;
+
+  function hash(str){
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  function rng(s){
+    return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+
+  function drawArt(prompt){
+    seed = hash(prompt);
+    const r = rng(seed);
+    const W = canvas.width, H = canvas.height;
+    const palettes = [
+      ['#0a1024','#1d3b8a','#6f8dff','#c9f25e','#eef0e8'],
+      ['#140a1c','#4a1f6b','#a77bff','#ff8ac2','#f4ead4'],
+      ['#0a1512','#12463a','#3fbf9a','#c9f25e','#e8f4e8'],
+      ['#1a0f08','#6b2c14','#ff8a3c','#ffc46b','#fff1dc'],
+      ['#08131a','#123c4c','#3fa9bf','#8ee8d8','#e6fbf6']
+    ];
+    const pal = palettes[Math.floor(r() * palettes.length)];
+    // background field
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, pal[0]); g.addColorStop(.55 + r() * .2, pal[1]); g.addColorStop(1, pal[0]);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // soft blobs
+    for (let i = 0; i < 7; i++){
+      const x = r() * W, y = r() * H, rad = 70 + r() * 300;
+      const rg = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      rg.addColorStop(0, (i % 2 ? pal[2] : pal[3]) + '55');
+      rg.addColorStop(1, 'transparent');
+      ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+    }
+    // arcs
+    ctx.lineWidth = 1 + r() * 2;
+    for (let i = 0; i < 18; i++){
+      ctx.beginPath();
+      const x = r() * W, y = r() * H, rad = 30 + r() * 260;
+      ctx.arc(x, y, rad, r() * Math.PI * 2, r() * Math.PI * 2 + .6 + r());
+      ctx.strokeStyle = (i % 3 ? pal[2] : pal[3]) + '88';
+      ctx.stroke();
+    }
+    // horizon / grid
+    ctx.strokeStyle = pal[4] + '22';
+    ctx.lineWidth = 1;
+    const hy = H * (.4 + r() * .25);
+    ctx.beginPath(); ctx.moveTo(0, hy); ctx.lineTo(W, hy); ctx.stroke();
+    for (let i = 0; i < 20; i++){
+      const x = r() * W, y = hy + (r() * (H - hy));
+      ctx.beginPath(); ctx.moveTo(x, hy); ctx.lineTo(x + (r() - .5) * 80, y); ctx.stroke();
+    }
+    // particles
+    for (let i = 0; i < 160; i++){
+      const x = r() * W, y = r() * H, s = .5 + r() * 2.4;
+      ctx.fillStyle = r() > .8 ? pal[3] + 'cc' : pal[4] + '55';
+      ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fill();
+    }
+    // foreground shape
+    ctx.globalAlpha = .9;
+    ctx.fillStyle = pal[3] + '22';
+    ctx.strokeStyle = pal[3] + 'aa';
+    ctx.lineWidth = 1.4;
+    const cx = W * (.3 + r() * .4), cy = H * (.35 + r() * .3), rad = 40 + r() * 90;
+    ctx.beginPath();
+    const sides = 3 + Math.floor(r() * 5);
+    for (let i = 0; i <= sides; i++){
+      const a = (i / sides) * Math.PI * 2 + r() * .3;
+      const px = cx + Math.cos(a) * rad, py = cy + Math.sin(a) * rad;
+      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+    }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    document.getElementById('mSeed').textContent = seed.toString(16).slice(0, 8).toUpperCase();
+    document.getElementById('mTime').textContent = String(120 + Math.floor(r() * 180));
+    document.getElementById('mPrompt').textContent = prompt.length > 30 ? prompt.slice(0, 28) + '…' : prompt;
+  }
+
+  function generate(prompt){
+    if (generating) return;
+    generating = true;
+    const card = document.querySelector('.card');
+    card.classList.add('generating');
+    document.getElementById('genBtn').textContent = 'Thinking…';
+    setTimeout(() => {
+      drawArt(prompt);
+      card.classList.remove('generating');
+      document.getElementById('genBtn').textContent = 'Generate ↗';
+      generating = false;
+    }, reduce ? 60 : 620);
+  }
+
+  const examples = ['a quiet blue room with one warm lamp','a coastline remembered in green','an orange argument','the shape of a held breath','a library after closing'];
+  const chips = document.getElementById('chips');
+  examples.forEach(e => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = e;
+    b.addEventListener('click', () => { document.getElementById('prompt').value = e; generate(e); });
+    chips.appendChild(b);
+  });
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    generate(document.getElementById('prompt').value.trim() || 'untitled');
+  });
+  drawArt('a quiet blue room with one warm lamp');
+
+  // mesh
+  let nodes = [], W = 0, H = 0, dpr = Math.min(2, devicePixelRatio || 1);
+  function size(){
+    W = innerWidth; H = innerHeight;
+    mesh.width = W * dpr; mesh.height = H * dpr;
+    mesh.style.width = W + 'px'; mesh.style.height = H + 'px';
+    mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    nodes = Array.from({ length: Math.min(80, Math.round(W * H / 24000)) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22,
+      r: .6 + Math.random() * 1.4
+    }));
+  }
+  let mouse = { x: -999, y: -999 };
+  addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  addEventListener('pointerleave', () => { mouse.x = -999; mouse.y = -999; });
+  addEventListener('resize', size);
+
+  function frame(){
+    mctx.clearRect(0, 0, W, H);
+    for (const n of nodes){
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+      const dx = n.x - mouse.x, dy = n.y - mouse.y, d = Math.hypot(dx, dy);
+      if (d < 130){ n.x += dx / d * .7; n.y += dy / d * .7; }
+    }
+    for (let i = 0; i < nodes.length; i++){
+      for (let j = i + 1; j < nodes.length; j++){
+        const a = nodes[i], b = nodes[j];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 120){
+          mctx.strokeStyle = 'rgba(111,141,255,' + (1 - d / 120) * .18 + ')';
+          mctx.beginPath(); mctx.moveTo(a.x, a.y); mctx.lineTo(b.x, b.y); mctx.stroke();
+        }
+      }
+      const n = nodes[i];
+      mctx.fillStyle = 'rgba(201,242,94,.6)';
+      mctx.beginPath(); mctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); mctx.fill();
+    }
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  size(); frame();
+</script>
+</body>
+</html>

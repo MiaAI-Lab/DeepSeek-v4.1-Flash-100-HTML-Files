@@ -1,0 +1,21 @@
+TITLE
+Mycelium — The Ground Is Talking
+
+PROMPT
+Create a living mycelium growth page called "Mycelium". A near-black forest floor fills the screen under a slow-growing network of glowing threads that branch outward from seeded colonies. Overlay a serif title "The forest is one organism.", a short explanation, a live statistics card (colonies, threads, nodes), and a bottom control bench with Growth, Branching and Spore controls, a teal/amber palette toggle, pause and reset. Clicking anywhere on the ground seeds a new colony. Fully responsive, one standalone HTML file with inline CSS/JS/canvas, no external images or fonts.
+
+DESIGN INTENT
+A quiet, slightly eerie biology lesson. The network should look alive: thin hyphae advancing, branching, occasionally flaring brighter at the tips. The page is mostly darkness so the growth is the only event. Controls should feel like lab equipment left on a bench, not a game HUD.
+
+VISUAL TECHNIQUES
+- Agent-based hyphal growth with branching probability, wander, step length and life limits.
+- Canvas rendering with additive glow, faint older threads and brighter growing tips.
+- Seeded colonies on load plus click-to-seed anywhere.
+- Live counters for colonies, threads and branch nodes.
+- Teal / amber palette switch that recolours the whole network.
+- Growth, branching and spore-density sliders; pause and reset.
+- Grain, vignette and forest-floor gradient behind the canvas.
+- Reduced-motion lowers growth rate and removes glow pulsing.
+
+INTERACTION MODEL
+Click or tap the ground to plant a new colony. Growth and Branching sliders alter speed and fork probability live; Spores adds a burst of new colonies. Pause freezes growth, Reset clears the network and plants a central colony, and the palette button switches between Lumen (teal) and Amber. All controls are keyboard accessible and counters update continuously.

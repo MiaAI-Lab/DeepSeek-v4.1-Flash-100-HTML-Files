@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Night Garden — a luminous garden revealed by a moving circle of moonlight.">
+<title>Night Garden — A Luminous Garden</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --night:#03100c; --deep:#061a14; --moon:#e8f3e6; --mint:#7cf0c8; --rose:#ff9fca; --violet:#b79cff; --gold:#f1cf86; --ink:#eef6ec;
+    --dim:rgba(238,246,236,.5); --line:rgba(238,246,236,.16); --r:180px;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.full{--r:310px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--night);color:var(--ink);font-family:var(--sans);overflow:hidden;height:100svh;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--mint);color:var(--night)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--mint);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.7}
+  .scene{position:fixed;inset:0;z-index:0;overflow:hidden;background:
+    radial-gradient(900px 600px at 74% 18%,rgba(50,96,80,.25),transparent 60%),
+    radial-gradient(700px 500px at 15% 90%,rgba(20,70,55,.3),transparent 65%),
+    linear-gradient(180deg,#020b09,#04130f 52%,#020a07)}
+  .scene::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 52%,transparent 35%,rgba(1,6,4,.55) 85%,rgba(1,5,3,.9))}
+  .layer{position:absolute;inset:0}
+  .layer svg{width:100%;height:100%;display:block}
+  .base{filter:brightness(.33) saturate(.7)}
+  .lit{mask-image:radial-gradient(circle var(--r) at var(--mx,50%) var(--my,52%),#000 0 46%,rgba(0,0,0,.72) 70%,transparent 100%);
+    -webkit-mask-image:radial-gradient(circle var(--r) at var(--mx,50%) var(--my,52%),#000 0 46%,rgba(0,0,0,.72) 70%,transparent 100%)}
+  .beam{position:fixed;left:0;top:0;width:calc(var(--r)*2);height:calc(var(--r)*2);margin:calc(var(--r)*-1) 0 0 calc(var(--r)*-1);border-radius:50%;pointer-events:none;z-index:2;
+    background:radial-gradient(circle,rgba(190,255,225,.09),rgba(190,255,225,.03) 45%,transparent 68%);
+    box-shadow:0 0 60px rgba(150,255,215,.06);transform:translate3d(var(--lx,50vw),var(--ly,52vh),0)}
+  .beam::after{content:"";position:absolute;inset:-2px;border:1px solid rgba(190,255,225,.09);border-radius:50%}
+  .grain{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+
+  .ui{position:relative;z-index:4;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,42px);pointer-events:none}
+  .ui button,.ui a{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase}
+  .brand .moonmark{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 36% 34%,#fbfff7,#b9d7c7 60%,#567568);box-shadow:0 0 16px rgba(232,243,230,.35);position:relative;flex:none}
+  .brand .moonmark::after{content:"";position:absolute;inset:0;border-radius:50%;background:#04130f;transform:translateX(5px)}
+  .brand small{display:block;font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;color:var(--dim);margin-top:2px}
+  .headMid{color:var(--dim);display:flex;gap:26px}
+  .headMid b{color:var(--mint);font-weight:400}
+  .headRight{display:flex;align-items:center;gap:12px}
+  .toggle{border:1px solid rgba(124,240,200,.4);padding:7px 11px;border-radius:100px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mint);transition:background .3s,color .3s}
+  .toggle:hover{background:var(--mint);color:var(--night)}
+  .toggle[aria-pressed="true"]{background:var(--mint);color:var(--night)}
+
+  .main{flex:1;display:flex;align-items:flex-end;padding-bottom:clamp(24px,6vh,52px)}
+  .caption{max-width:760px}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--mint);margin-bottom:15px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--mint)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,6vw,5.8rem);line-height:.95;letter-spacing:-.05em;font-weight:400;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+  h1 em{font-style:italic;color:var(--mint)}
+  .sub{margin-top:14px;max-width:38ch;color:var(--dim);font-size:.72rem;line-height:1.8}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  .flower{transform-origin:bottom center;animation:sway 7s ease-in-out infinite alternate}
+  .flower:nth-child(2n){animation-delay:-2s;animation-duration:9s}
+  .flower:nth-child(3n){animation-delay:-4s;animation-duration:6s}
+  @keyframes sway{to{transform:rotate(1.6deg)}}
+  .firefly{animation:blink 4s ease-in-out infinite}
+  .firefly:nth-child(2n){animation-delay:-1.5s}
+  .firefly:nth-child(3n){animation-delay:-3s;animation-duration:5.4s}
+  @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    h1{font-size:clamp(2.4rem,8vw,4rem)}
+    .caption{max-width:100%}
+    .sub{max-width:32ch}
+    .brand{font-size:.58rem;letter-spacing:.22em}
+  }
+  @media(max-width:600px){
+    .headRight .mono{display:none}
+    h1{font-size:11.5vw}
+    .ui{padding:0 14px}
+    .sub{font-size:.66rem}
+    footer span:nth-child(2){display:none}
+    .toggle{padding:6px 9px;font-size:.38rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .flower{animation:none}
+  }
+</style>
+</head>
+<body>
+<div class="scene" aria-hidden="true">
+  <div class="layer base" id="base"></div>
+  <div class="layer lit" id="lit">
+    <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="moonGlow" cx="50%" cy="50%"><stop offset="0" stop-color="#fbfff2" stop-opacity=".9"/><stop offset=".35" stop-color="#d6efe0" stop-opacity=".4"/><stop offset="1" stop-color="#d6efe0" stop-opacity="0"/></radialGradient>
+        <radialGradient id="bloomMint" cx="50%" cy="50%"><stop offset="0" stop-color="#eafff5"/><stop offset=".4" stop-color="#7cf0c8"/><stop offset="1" stop-color="#1d7359"/></radialGradient>
+        <radialGradient id="bloomRose" cx="50%" cy="50%"><stop offset="0" stop-color="#fff0f7"/><stop offset=".45" stop-color="#ff9fca"/><stop offset="1" stop-color="#7c3357"/></radialGradient>
+        <radialGradient id="bloomViolet" cx="50%" cy="50%"><stop offset="0" stop-color="#f5efff"/><stop offset=".45" stop-color="#b79cff"/><stop offset="1" stop-color="#49337c"/></radialGradient>
+        <radialGradient id="bloomGold" cx="50%" cy="50%"><stop offset="0" stop-color="#fff9e8"/><stop offset=".45" stop-color="#f1cf86"/><stop offset="1" stop-color="#7c5f2b"/></radialGradient>
+        <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b241b"/><stop offset="1" stop-color="#06170f"/></linearGradient>
+        <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f3024"/><stop offset="1" stop-color="#071c13"/></linearGradient>
+        <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#154232"/><stop offset="1" stop-color="#082218"/></linearGradient>
+        <radialGradient id="fgGlow" cx="50%" cy="62%"><stop offset="0" stop-color="#2b7a5e" stop-opacity=".35"/><stop offset="1" stop-color="#2b7a5e" stop-opacity="0"/></radialGradient>
+      </defs>
+      <circle cx="694" cy="118" r="98" fill="url(#moonGlow)"/>
+      <circle cx="694" cy="118" r="32" fill="#e9f4e6"/>
+      <circle cx="706" cy="110" r="32" fill="#04130f" opacity=".94"/>
+      <g fill="#eaf7ec" opacity=".7">
+        <circle cx="120" cy="76" r="1.2"/><circle cx="220" cy="128" r=".8"/><circle cx="340" cy="62" r="1"/><circle cx="480" cy="102" r=".9"/>
+        <circle cx="810" cy="68" r="1.1"/><circle cx="760" cy="172" r=".7"/><circle cx="58" cy="188" r=".8"/><circle cx="590" cy="44" r=".9"/>
+      </g>
+      <path d="M0,330 C120,286 250,300 360,326 C480,354 610,286 760,308 C830,318 870,326 900,334 L900,560 L0,560Z" fill="url(#hill1)"/>
+      <path d="M0,384 C150,330 300,358 440,384 C580,410 700,342 900,372 L900,560 L0,560Z" fill="url(#hill2)" opacity=".95"/>
+      <path d="M0,438 C160,398 320,424 470,446 C640,470 760,414 900,438 L900,560 L0,560Z" fill="url(#hill3)"/>
+      <ellipse cx="450" cy="500" rx="460" ry="140" fill="url(#fgGlow)"/>
+      <!-- grass -->
+      <g stroke="#2f7c5f" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".65">
+        <path d="M40,540 C38,506 30,486 22,466"/><path d="M58,544 C62,512 74,492 84,474"/><path d="M92,540 C88,514 80,500 72,484"/>
+        <path d="M150,548 C148,520 140,502 132,486"/><path d="M176,544 C180,514 192,496 202,480"/><path d="M236,550 C232,524 224,508 216,492"/>
+        <path d="M320,544 C318,516 310,498 302,482"/><path d="M356,548 C360,520 372,502 382,486"/><path d="M418,552 C414,526 406,510 398,494"/>
+        <path d="M520,548 C518,520 510,502 502,486"/><path d="M560,544 C564,516 576,498 586,482"/><path d="M640,552 C636,524 628,508 620,492"/>
+        <path d="M720,546 C718,518 710,500 702,484"/><path d="M780,550 C784,522 796,504 806,488"/><path d="M842,544 C838,516 830,500 822,484"/>
+      </g>
+      <!-- flowers -->
+      <g class="flower" transform="translate(130,470)">
+        <path d="M0,70 C-2,40 -6,18 -2,-4" stroke="#4c9f7e" stroke-width="2" fill="none"/>
+        <path d="M-2,22 C-24,10 -34,-4 -30,-18 C-12,-14 -2,-4 -2,22Z" fill="#2d7c5e" opacity=".8"/>
+        <g transform="translate(-2,-12)">
+          <ellipse cx="0" cy="-32" rx="15" ry="30" fill="url(#bloomMint)" opacity=".95"/>
+          <ellipse cx="0" cy="-32" rx="15" ry="30" transform="rotate(60)" fill="url(#bloomMint)" opacity=".82"/>
+          <ellipse cx="0" cy="-32" rx="15" ry="30" transform="rotate(120)" fill="url(#bloomMint)" opacity=".68"/>
+          <ellipse cx="0" cy="-32" rx="15" ry="30" transform="rotate(180)" fill="url(#bloomMint)" opacity=".6"/>
+          <ellipse cx="0" cy="-32" rx="15" ry="30" transform="rotate(240)" fill="url(#bloomMint)" opacity=".7"/>
+          <ellipse cx="0" cy="-32" rx="15" ry="30" transform="rotate(300)" fill="url(#bloomMint)" opacity=".85"/>
+          <circle r="11" fill="#f2ffe8"/><circle r="5" fill="#ffe9a8"/>
+        </g>
+      </g>
+      <g class="flower" transform="translate(286,505)">
+        <path d="M0,44 C4,20 2,4 0,-16" stroke="#4c9f7e" stroke-width="1.6" fill="none"/>
+        <path d="M2,10 C18,2 28,-10 26,-22" stroke="#3b8a69" stroke-width="1.3" fill="none"/>
+        <g transform="translate(0,-20)">
+          <path d="M0,0 C-22,2 -26,28 -10,38 C0,44 14,36 16,22 C18,8 10,0 0,0Z" fill="url(#bloomRose)" opacity=".92"/>
+          <path d="M0,4 C-10,8 -12,22 -4,28" stroke="#ffd6e8" stroke-width="1" fill="none" opacity=".6"/>
+          <circle cx="-3" cy="18" r="4" fill="#ffe9a8"/>
+        </g>
+      </g>
+      <g class="flower" transform="translate(430,488)">
+        <path d="M0,62 C-4,32 2,8 4,-18" stroke="#4c9f7e" stroke-width="1.8" fill="none"/>
+        <g transform="translate(4,-34)">
+          <ellipse cx="0" cy="-28" rx="12" ry="26" fill="url(#bloomViolet)"/>
+          <ellipse cx="0" cy="-28" rx="12" ry="26" transform="rotate(72)" fill="url(#bloomViolet)" opacity=".8"/>
+          <ellipse cx="0" cy="-28" rx="12" ry="26" transform="rotate(144)" fill="url(#bloomViolet)" opacity=".65"/>
+          <ellipse cx="0" cy="-28" rx="12" ry="26" transform="rotate(216)" fill="url(#bloomViolet)" opacity=".75"/>
+          <ellipse cx="0" cy="-28" rx="12" ry="26" transform="rotate(288)" fill="url(#bloomViolet)" opacity=".85"/>
+          <circle r="9" fill="#f7f1ff"/><circle r="4" fill="#c8b4ff"/>
+        </g>
+        <path d="M2,20 C-16,12 -24,2 -22,-10" stroke="#3b8a69" stroke-width="1.1" fill="none"/>
+      </g>
+      <g class="flower" transform="translate(586,460)">
+        <path d="M0,86 C-4,50 -2,22 2,-6" stroke="#4c9f7e" stroke-width="2" fill="none"/>
+        <g transform="translate(2,-18)">
+          <path d="M0,0 C-18,-6 -30,-22 -26,-38 C-12,-38 -2,-24 0,0Z" fill="url(#bloomGold)" opacity=".9"/>
+          <path d="M0,0 C18,-6 30,-22 26,-38 C12,-38 2,-24 0,0Z" fill="url(#bloomGold)" opacity=".8"/>
+          <path d="M0,0 C-6,-20 4,-34 18,-38 C22,-24 14,-8 0,0Z" fill="url(#bloomGold)" opacity=".6"/>
+          <circle cx="0" cy="-2" r="5" fill="#fff6d5"/>
+        </g>
+      </g>
+      <g class="flower" transform="translate(730,500)">
+        <path d="M0,50 C6,26 4,6 0,-14" stroke="#4c9f7e" stroke-width="1.6" fill="none"/>
+        <g transform="translate(0,-24)">
+          <ellipse cx="0" cy="-18" rx="10" ry="20" fill="url(#bloomMint)"/>
+          <ellipse cx="0" cy="-18" rx="10" ry="20" transform="rotate(60)" fill="url(#bloomMint)" opacity=".8"/>
+          <ellipse cx="0" cy="-18" rx="10" ry="20" transform="rotate(120)" fill="url(#bloomMint)" opacity=".7"/>
+          <ellipse cx="0" cy="-18" rx="10" ry="20" transform="rotate(180)" fill="url(#bloomMint)" opacity=".7"/>
+          <ellipse cx="0" cy="-18" rx="10" ry="20" transform="rotate(240)" fill="url(#bloomMint)" opacity=".8"/>
+          <ellipse cx="0" cy="-18" rx="10" ry="20" transform="rotate(300)" fill="url(#bloomMint)" opacity=".9"/>
+          <circle r="7" fill="#f2ffe8"/><circle r="3" fill="#ffe9a8"/>
+        </g>
+      </g>
+      <g class="flower" transform="translate(824,520)">
+        <path d="M0,30 C-2,14 0,2 2,-10" stroke="#4c9f7e" stroke-width="1.3" fill="none"/>
+        <circle cx="0" cy="-14" r="7" fill="url(#bloomRose)"/><circle cx="0" cy="-14" r="2.5" fill="#ffe9a8"/>
+      </g>
+      <!-- fireflies -->
+      <g fill="#eaffc4">
+        <circle class="firefly" cx="214" cy="420" r="2.4"/><circle class="firefly" cx="262" cy="446" r="1.7"/>
+        <circle class="firefly" cx="378" cy="430" r="2"/><circle class="firefly" cx="512" cy="454" r="2.6"/>
+        <circle class="firefly" cx="606" cy="410" r="1.6"/><circle class="firefly" cx="676" cy="446" r="2.1"/>
+        <circle class="firefly" cx="790" cy="428" r="1.8"/><circle class="firefly" cx="92" cy="452" r="1.9"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<div class="beam" id="beam" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="moonmark" aria-hidden="true"></span><span>Night Garden<small>A luminous place / after dark</small></span></a>
+    <div class="headMid mono"><span>Garden 03 / <b>nocturnal</b></span><span>Latitude <b>59° N</b></span><span>Moon <b>waning</b></span></div>
+    <div class="headRight"><span class="mono" style="color:var(--dim)">Move the light</span><button class="toggle" id="toggle" aria-pressed="false">Full moon</button></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="caption">
+      <p class="eyebrow mono">For the parts of the garden that prefer the dark</p>
+      <h1>The garden only exists<br><em>where you look.</em></h1>
+      <p class="sub">Move the light across the bed. The flowers do not mind being seen; they only insist on choosing when.</p>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Night Garden / a fictional place</span>
+    <span>Drawn twice — once in the dark, once for the light</span>
+    <span>© 2026 · please do not pick the glowing ones</span>
+  </footer>
+</div>
+
+<script>
+  const base = document.getElementById('base');
+  const lit = document.getElementById('lit');
+  const beam = document.getElementById('beam');
+  const toggle = document.getElementById('toggle');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  base.innerHTML = lit.innerHTML;
+  let mx = .5, my = .52, tx = .5, ty = .52;
+  let idle = true, idleStart = performance.now(), lastMove = performance.now();
+  let glowX = innerWidth * .5, glowY = innerHeight * .52;
+  let gtx = glowX, gty = glowY;
+
+  function setLight(x, y){
+    mx = x; my = y;
+    lit.style.setProperty('--mx', (x * 100).toFixed(2) + '%');
+    lit.style.setProperty('--my', (y * 100).toFixed(2) + '%');
+    beam.style.setProperty('--lx', (x * innerWidth).toFixed(1) + 'px');
+    beam.style.setProperty('--ly', (y * innerHeight).toFixed(1) + 'px');
+  }
+  setLight(.5, .52);
+
+  window.addEventListener('pointermove', e => {
+    idle = false; lastMove = performance.now();
+    setLight(e.clientX / innerWidth, e.clientY / innerHeight);
+  }, { passive: true });
+  window.addEventListener('pointerdown', e => {
+    setLight(e.clientX / innerWidth, e.clientY / innerHeight);
+  });
+
+  toggle.addEventListener('click', () => {
+    const on = document.body.classList.toggle('full');
+    toggle.setAttribute('aria-pressed', String(on));
+    toggle.textContent = on ? 'Half moon' : 'Full moon';
+  });
+
+  if (!reduce){
+    function drift(now){
+      if (performance.now() - lastMove > 6000){
+        const t = now / 1000;
+        const x = .5 + Math.cos(t * .14) * .2;
+        const y = .52 + Math.sin(t * .19) * .12;
+        setLight(x, y);
+      }
+      requestAnimationFrame(drift);
+    }
+    requestAnimationFrame(drift);
+  }
+</script>
+</body>
+</html>

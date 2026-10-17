@@ -1,0 +1,20 @@
+TITLE
+Lantern River — Send Something Up
+
+PROMPT
+Create a dreamlike lantern-release page called "Lantern River". Deep indigo night, a low city silhouette, a dark river with soft reflections, and dozens of warm paper lanterns drifting upward. A large serif title "Send something up." sits at the lower left; a slim input at the bottom lets visitors write a wish, and the release button creates a new lantern carrying that wish. Clicking a lantern shows its message. Include a live count, a quiet instruction and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A page that feels like standing at the water at 9pm. The lanterns are the only warm light; everything else is indigo, blue-black and a little hazy. Interaction should feel ceremonial but simple: write a short wish, let it go, watch it join the others. No gamification, no confetti.
+
+VISUAL TECHNIQUES
+- CSS lanterns: warm radial gradients, paper ribs, flame core, soft glow and a small hanging base.
+- Per-lantern rise and sway animations with randomised duration, drift and delay.
+- Layered night sky, stars, fog, city silhouette and river reflections in CSS.
+- Wish input and release action generating new lanterns with accessible status updates.
+- Clicking a lantern reveals its wish in a quiet toast.
+- Muted indigo palette with one warm amber accent; grain and vignette.
+- Responsive layout; reduced-motion makes lanterns drift very slowly with no rise animation.
+
+INTERACTION MODEL
+Type a short wish and press "Release" to add a glowing lantern to the sky; its wish is stored and can be seen by clicking it. The count updates. Clicking any existing lantern shows its wish; clicking empty sky dismisses the message. Input length is limited, empty submissions are ignored, and everything is keyboard accessible with a clear focus ring.

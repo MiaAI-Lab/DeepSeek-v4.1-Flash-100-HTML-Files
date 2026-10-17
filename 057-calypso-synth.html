@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Calypso 8 — a warm analog polyphonic synthesizer panel in one HTML file.">
+<title>Calypso 8 — Analog Polyphonic Synthesizer</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --room:#221a14; --wood:#6b4428; --wood2:#8a5a35; --panel:#f1e7d3; --panel2:#e7dbc3; --ink:#3a2b1e; --dim:rgba(58,43,30,.55);
+    --orange:#d4622f; --amber:#ffb347; --green:#7be8a8; --line:rgba(58,43,30,.22);
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--room);color:var(--ink);font-family:var(--sans);overflow-x:hidden;display:grid;place-items:center;padding:24px 12px;
+    background-image:radial-gradient(900px 600px at 50% 0%,#3a2b20,#1b140f 70%)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .wrap{width:min(1120px,100%);position:relative}
+  .topNote{display:flex;justify-content:space-between;gap:16px;color:rgba(241,231,211,.55);margin-bottom:10px;flex-wrap:wrap}
+  .topNote b{color:rgba(241,231,211,.85);font-weight:400}
+  .synth{display:flex;border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.4)}
+  .cheek{width:34px;flex:none;background:linear-gradient(90deg,#4e2f1b,#8a5a35 26%,#6b4428 50%,#8a5a35 74%,#4a2b18);
+    background-image:repeating-linear-gradient(92deg,rgba(0,0,0,.16) 0 2px,transparent 2px 7px),linear-gradient(90deg,#4e2f1b,#8a5a35 26%,#6b4428 50%,#8a5a35 74%,#4e2f1b);position:relative}
+  .cheek::after{content:"";position:absolute;left:0;right:0;top:12px;bottom:12px;border-block:1px solid rgba(0,0,0,.25);opacity:.6}
+  .panel{flex:1;background:linear-gradient(170deg,#f6eddb,#eadfc8);padding:clamp(14px,2.4vw,26px);position:relative;min-width:0}
+  .panel::before{content:"";position:absolute;inset:9px;border:1px solid rgba(58,43,30,.16);border-radius:9px;pointer-events:none}
+  .screw{position:absolute;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff8e8,#b6a890);box-shadow:0 1px 2px rgba(0,0,0,.35),inset 0 0 0 1px rgba(58,43,30,.25);z-index:3}
+  .s1{left:16px;top:16px}.s2{right:16px;top:16px}.s3{left:16px;bottom:16px}.s4{right:16px;bottom:16px}
+  .screw::after{content:"";position:absolute;left:2px;right:2px;top:3.5px;height:1px;background:#6a5a48;transform:rotate(24deg)}
+
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--line);position:relative;z-index:2;flex-wrap:wrap}
+  .brand{display:flex;align-items:baseline;gap:9px;font-family:var(--serif);font-size:clamp(1.2rem,2.6vw,1.7rem);letter-spacing:.02em}
+  .brand b{font-weight:400}
+  .brand span{font-family:var(--mono);font-size:.36rem;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+  .headRight{display:flex;align-items:center;gap:14px;color:var(--dim)}
+  .power{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.38rem;letter-spacing:.1em;text-transform:uppercase}
+  .switch{width:34px;height:15px;border-radius:20px;background:#c9bda6;border:1px solid rgba(58,43,30,.35);position:relative;box-shadow:inset 0 2px 4px rgba(58,43,30,.2)}
+  .switch::after{content:"";position:absolute;left:2px;top:2px;width:11px;height:9px;border-radius:20px;background:linear-gradient(180deg,#fff8e8,#c9bda6);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .2s}
+  .power.on .switch::after{transform:translateX(18px)}
+  .lamp{width:7px;height:7px;border-radius:50%;background:#6b5b45;box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
+  .power.on .lamp{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+
+  .controls{display:grid;grid-template-columns:1.05fr 1fr .9fr;gap:clamp(10px,2vw,22px);padding:14px 0 10px;position:relative;z-index:2}
+  .scopeBox{border:1px solid var(--line);border-radius:6px;background:#16231b;padding:8px;box-shadow:inset 0 4px 14px rgba(0,0,0,.5)}
+  .scopeTop{display:flex;justify-content:space-between;color:rgba(123,232,168,.55);margin-bottom:4px}
+  #scope{display:block;width:100%;height:104px}
+  .scopeFoot{display:flex;justify-content:space-between;color:rgba(123,232,168,.4);margin-top:5px}
+  .knobRow{display:flex;justify-content:space-between;gap:6px;padding:2px 2px 0}
+  .knobCol{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+  .knob{position:relative;width:clamp(54px,6.4vw,70px);aspect-ratio:1;border-radius:50%;cursor:ns-resize;touch-action:none;
+    background:radial-gradient(circle at 36% 30%,#fdf7e9,#dfd2b8 52%,#b8a98d 78%,#8d7d63);
+    box-shadow:0 4px 8px rgba(58,43,30,.35),inset 0 2px 3px rgba(255,255,255,.85),inset 0 -3px 6px rgba(58,43,30,.35);border:1px solid rgba(58,43,30,.28)}
+  .knob::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px dashed rgba(58,43,30,.28);pointer-events:none}
+  .knob .ind{position:absolute;left:50%;top:12%;width:2px;height:34%;margin-left:-1px;background:var(--orange);border-radius:2px;transform-origin:50% 112%;transform:rotate(var(--rot,-40deg));box-shadow:0 0 2px rgba(212,98,47,.5)}
+  .knob .cap{position:absolute;left:50%;top:50%;width:18%;aspect-ratio:1;border-radius:50%;background:rgba(58,43,30,.16);transform:translate(-50%,-50%);box-shadow:inset 0 1px 2px rgba(58,43,30,.3)}
+  .knobLabel{font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:center}
+  .knobVal{font-family:var(--mono);font-size:.36rem;color:var(--ink);letter-spacing:.03em;text-transform:none}
+
+  .sliders{display:flex;justify-content:center;gap:18px;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:0 10px}
+  .sliderCol{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .sliderCol span{font-family:var(--mono);font-size:.32rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);writing-mode:vertical-rl;transform:rotate(180deg);margin-top:3px}
+  input[type=range].v{writing-mode:vertical-lr;direction:rtl;-webkit-appearance:none;appearance:none;width:18px;height:120px;background:transparent;cursor:ns-resize}
+  input[type=range].v::-webkit-slider-runnable-track{width:3px;background:linear-gradient(0deg,var(--orange),#c7b99f);border-radius:2px}
+  input[type=range].v::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:9px;border-radius:2px;background:linear-gradient(180deg,#fff8e8,#c8b99f);border:1px solid rgba(58,43,30,.4);margin-left:-6.5px;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  input[type=range].v::-moz-range-track{width:3px;background:#c7b99f}
+  input[type=range].v::-moz-range-thumb{width:15px;height:9px;border-radius:2px;background:#eadfc8;border:1px solid rgba(58,43,30,.4)}
+
+  .patch{position:relative;border:1px solid var(--line);border-radius:6px;padding:8px;min-height:150px;background:rgba(255,255,255,.16);overflow:hidden}
+  .patchTop{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:6px}
+  .jacks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 10px;position:relative;z-index:3}
+  .jack{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#efe5d0,#a89880 60%,#5f5142);border:1px solid rgba(58,43,30,.4);display:grid;place-items:center;justify-content:center;margin:0 auto;font-family:var(--mono);font-size:.28rem;color:rgba(58,43,30,.5);box-shadow:inset 0 1px 2px rgba(255,255,255,.6)}
+  .jack::after{content:"";width:8px;height:8px;border-radius:50%;background:#2c231a;box-shadow:inset 0 1px 2px #000}
+  .cables{position:absolute;inset:0;z-index:2;pointer-events:none}
+  .repatch{margin-top:7px;border:1px solid var(--line);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:border-color .2s,color .2s;width:100%}
+  .repatch:hover{border-color:var(--ink);color:var(--ink)}
+
+  .keybed{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;position:relative;z-index:2}
+  .keybedTop{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:6px}
+  .keys{display:flex;height:clamp(62px,8vw,86px);position:relative;border:1px solid rgba(58,43,30,.35);border-radius:4px;overflow:hidden;background:#2c231a}
+  .key{position:relative;flex:1;background:linear-gradient(180deg,#fbf6e9,#e6dac2);border-right:1px solid rgba(58,43,30,.35);display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-family:var(--mono);font-size:.28rem;color:rgba(58,43,30,.4);transition:background .08s}
+  .key:last-child{border-right:0}
+  .key.black{position:absolute;width:4.5%;height:58%;top:0;background:linear-gradient(180deg,#3a2b1e,#1e1711);border-right:1px solid #000;z-index:2;border-radius:0 0 3px 3px;font-size:0}
+  .key.active{background:linear-gradient(180deg,var(--amber),#e08b3a);color:#3a2b1e}
+  .key.black.active{background:linear-gradient(180deg,#b56a3a,#8a4522)}
+  .noteRead{display:flex;justify-content:space-between;color:var(--dim);margin-top:6px}
+  .noteRead b{color:var(--ink);font-weight:400}
+  .specs{display:flex;justify-content:space-between;gap:16px;padding-top:10px;margin-top:10px;border-top:1px solid var(--line);color:var(--dim);position:relative;z-index:2;flex-wrap:wrap}
+
+  @media(max-width:900px){
+    .controls{grid-template-columns:1fr 1fr}
+    .patch{grid-column:1/-1;min-height:110px}
+    .jacks{grid-template-columns:repeat(6,1fr)}
+    .sliders{border-right:0}
+    .cheek{width:22px}
+    .synth{border-radius:12px}
+  }
+  @media(max-width:600px){
+    body{padding:12px 0}
+    .wrap{width:100%}
+    .synth{border-radius:0}
+    .cheek{display:none}
+    .panel{padding:14px 12px}
+    .controls{grid-template-columns:1fr;gap:12px}
+    .scopeBox{order:1}
+    .knobRow{order:2}
+    .sliders{order:3;border:1px solid var(--line);border-radius:6px;padding:8px;justify-content:space-around}
+    .patch{order:4}
+    .head{padding-bottom:7px}
+    .brand{font-size:1.15rem}
+    .headRight{display:none}
+    .screw{display:none}
+    .keys{height:60px}
+    .specs{font-size:.38rem}
+    .topNote{font-size:.4rem;padding:0 12px}
+    .topNote span:last-child{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">Calypso 8</h1>
+<div class="wrap">
+  <div class="topNote mono"><span>Calypso Instruments / <b>serial CP-08-1124</b></span><span>Hand-built in one HTML file · <b>no samples</b></span></div>
+  <div class="synth">
+    <div class="cheek" aria-hidden="true"></div>
+    <div class="panel">
+      <span class="screw s1" aria-hidden="true"></span><span class="screw s2" aria-hidden="true"></span><span class="screw s3" aria-hidden="true"></span><span class="screw s4" aria-hidden="true"></span>
+      <div class="head">
+        <a class="brand" href="#top"><b>Calypso 8</b><span>Analog polyphonic / eight voices</span></a>
+        <div class="headRight mono"><span>VCO <b>3</b></span><span>VCF <b>24 dB</b></span><span>LFO <b>1</b></span><button class="power on" id="power" aria-pressed="true"><span class="lamp" aria-hidden="true"></span><span class="switch" aria-hidden="true"></span>Power</button></div>
+      </div>
+
+      <div class="controls">
+        <div class="scopeBox">
+          <div class="scopeTop mono"><span>Monitor / waveform</span><span id="waveName">saw</span></div>
+          <canvas id="scope" aria-label="Oscilloscope waveform"></canvas>
+          <div class="scopeFoot mono"><span>Rate <b>0.42 s</b></span><span id="scopeNote">C4</span></div>
+        </div>
+
+        <div class="knobRow" aria-label="Filter and envelope">
+          <div class="knobCol"><div class="knob" id="k1" data-min="120" data-max="8000" data-val="2400" tabindex="0" role="slider" aria-label="Cutoff" aria-valuemin="120" aria-valuemax="8000" aria-valuenow="2400"><span class="ind"></span><span class="cap"></span></div><div class="knobLabel">Cutoff</div><div class="knobVal" id="k1v">2400</div></div>
+          <div class="knobCol"><div class="knob" id="k2" data-min="0" data-max="10" data-val="4.2" tabindex="0" role="slider" aria-label="Resonance" aria-valuemin="0" aria-valuemax="10" aria-valuenow="4.2"><span class="ind"></span><span class="cap"></span></div><div class="knobLabel">Res</div><div class="knobVal" id="k2v">4.2</div></div>
+          <div class="knobCol"><div class="knob" id="k3" data-min="1" data-max="100" data-val="24" tabindex="0" role="slider" aria-label="Attack" aria-valuemin="1" aria-valuemax="100" aria-valuenow="24"><span class="ind"></span><span class="cap"></span></div><div class="knobLabel">Attack</div><div class="knobVal" id="k3v">24</div></div>
+          <div class="knobCol"><div class="knob" id="k4" data-min="1" data-max="100" data-val="62" tabindex="0" role="slider" aria-label="Release" aria-valuemin="1" aria-valuemax="100" aria-valuenow="62"><span class="ind"></span><span class="cap"></span></div><div class="knobLabel">Release</div><div class="knobVal" id="k4v">62</div></div>
+        </div>
+
+        <div class="sliders">
+          <div class="sliderCol"><input class="v" type="range" min="0" max="100" value="62" id="mix" aria-label="Oscillator mix"><span>Mix</span></div>
+          <div class="sliderCol"><input class="v" type="range" min="0" max="100" value="34" id="lfo" aria-label="LFO depth"><span>LFO</span></div>
+          <div class="patch">
+            <div class="patchTop mono"><span>Patch bay</span><span id="patchName">route A</span></div>
+            <div class="jacks" aria-hidden="true"><span class="jack">1</span><span class="jack">2</span><span class="jack">3</span><span class="jack">4</span><span class="jack">5</span><span class="jack">6</span></div>
+            <svg class="cables" viewBox="0 0 180 120" aria-hidden="true"><path id="cable1" d="M32,34 C70,8 94,90 124,76" fill="none" stroke="#d4622f" stroke-width="3" stroke-linecap="round"/><path id="cable2" d="M72,34 C108,40 110,100 150,52" fill="none" stroke="#4f7c9b" stroke-width="3" stroke-linecap="round"/></svg>
+            <button class="repatch" id="repatch">Re-patch ↻</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="keybed">
+        <div class="keybedTop mono"><span>Keyboard / one octave &amp; a bit</span><span>Velocity <b>soft</b></span></div>
+        <div class="keys" id="keys" role="group" aria-label="Keyboard"></div>
+        <div class="noteRead mono"><span>Note <b id="noteOut">C4</b></span><span>Gate <b id="gate">closed</b></span><span>Tune <b>440 Hz</b></span></div>
+      </div>
+
+      <div class="specs mono"><span>Oscillators <b>3 × saw</b></span><span>Filter <b>24 dB ladder</b></span><span>Envelope <b>ADSR</b></span><span>© 1978—2026 Calypso</span></div>
+    </div>
+    <div class="cheek" aria-hidden="true"></div>
+  </div>
+</div>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scope = document.getElementById('scope');
+  const ctx = scope.getContext('2d');
+  const power = document.getElementById('power');
+  let powered = true;
+  let phase = 0;
+  let activeNote = 440;
+
+  function knobSetup(el, outId){
+    let val = Number(el.dataset.val);
+    const min = Number(el.dataset.min), max = Number(el.dataset.max);
+    function apply(){
+      const t = (val - min) / (max - min);
+      el.style.setProperty('--rot', (-130 + t * 260).toFixed(1) + 'deg');
+      el.setAttribute('aria-valuenow', val.toFixed(1));
+      document.getElementById(outId).textContent = val >= 1000 ? Math.round(val) : val.toFixed(1);
+      if (outId === 'k1v') document.getElementById('k1v').textContent = Math.round(val) + ' Hz';
+      drawStatic();
+    }
+    let drag = null;
+    el.addEventListener('pointerdown', e => {
+      drag = { y: e.clientY, val: val };
+      el.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    el.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const speed = (max - min) / 220;
+      val = Math.max(min, Math.min(max, drag.val + (drag.y - e.clientY) * speed));
+      apply();
+    });
+    el.addEventListener('pointerup', () => { drag = null; });
+    el.addEventListener('keydown', e => {
+      const step = (max - min) / 40;
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight'){ val = Math.min(max, val + step); apply(); e.preventDefault(); }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowLeft'){ val = Math.max(min, val - step); apply(); e.preventDefault(); }
+    });
+    apply();
+  }
+  knobSetup(document.getElementById('k1'), 'k1v');
+  knobSetup(document.getElementById('k2'), 'k2v');
+  knobSetup(document.getElementById('k3'), 'k3v');
+  knobSetup(document.getElementById('k4'), 'k4v');
+
+  function sizeScope(){
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const r = scope.getBoundingClientRect();
+    scope.width = Math.round(r.width * dpr); scope.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawStatic();
+  }
+  function drawStatic(){
+    const r = scope.getBoundingClientRect();
+    const W = r.width, H = r.height;
+    if (!W || !H) return;
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(123,232,168,.12)'; ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 20){ ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 18){ ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    const cutoff = Number(document.getElementById('k1').getAttribute('aria-valuenow'));
+    const mix = Number(document.getElementById('mix').value) / 100;
+    const amp = H * .3 * (0.5 + mix * .5);
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 1.5){
+      const p = x / W;
+      const y = H / 2
+        + Math.sin(p * (14 + cutoff / 500) + phase) * amp * .6
+        + Math.sin(p * (27 + cutoff / 300) + phase * 1.7) * amp * .25;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#7be8a8'; ctx.lineWidth = 1.5;
+    ctx.shadowColor = 'rgba(123,232,168,.7)'; ctx.shadowBlur = 8;
+    ctx.stroke(); ctx.shadowBlur = 0;
+  }
+
+  // keyboard
+  const keysEl = document.getElementById('keys');
+  const notes = ['C4','C#4','D4','D#4','E4','F4','F#4','G4','G#4','A4','A#4','B4','C5','C#5'];
+  notes.forEach((n, i) => {
+    const k = document.createElement('button');
+    k.className = 'key' + (n.includes('#') ? ' black' : '');
+    k.dataset.note = n;
+    k.textContent = n;
+    k.setAttribute('aria-label', 'Play ' + n);
+    k.addEventListener('pointerdown', () => playNote(n, k));
+    k.addEventListener('click', () => playNote(n, k));
+    keysEl.appendChild(k);
+  });
+  const keyEls = Array.from(keysEl.children);
+  const freq = { C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392, A4:440, B4:493.88, C5:523.25, 'C#4':277.18, 'D#4':311.13, 'F#4':369.99, 'G#4':415.3, 'A#4':466.16, 'C#5':554.37 };
+  let lastKey = null;
+  function playNote(n, el){
+    activeNote = freq[n] || 440;
+    document.getElementById('noteOut').textContent = n;
+    document.getElementById('scopeNote').textContent = n;
+    document.getElementById('gate').textContent = 'open';
+    if (lastKey) lastKey.classList.remove('active');
+    lastKey = el; el.classList.add('active');
+    if (lastKey) setTimeout(() => { el.classList.remove('active'); document.getElementById('gate').textContent = 'closed'; }, 420);
+    drawStatic();
+  }
+
+  // scope animation
+  function loop(){
+    if (powered && !reduce){
+      phase += .12;
+      drawStatic();
+    }
+    requestAnimationFrame(loop);
+  }
+  setTimeout(() => { sizeScope(); if (!reduce) loop(); }, 100);
+  window.addEventListener('resize', sizeScope);
+
+  power.addEventListener('click', () => {
+    powered = !powered;
+    power.classList.toggle('on', powered);
+    power.setAttribute('aria-pressed', String(powered));
+    document.getElementById('waveName').textContent = powered ? 'saw' : 'off';
+  });
+
+  document.getElementById('repatch').addEventListener('click', () => {
+    const colors = ['#d4622f','#4f7c9b','#b08b45','#7c9b5a','#9b5a7c'];
+    const c1 = colors[Math.floor(Math.random() * colors.length)];
+    const c2 = colors[Math.floor(Math.random() * colors.length)];
+    const d1 = 'M32,34 C' + (40 + Math.random() * 50) + ',' + (0 + Math.random() * 30) + ' ' + (90 + Math.random() * 20) + ',' + (60 + Math.random() * 50) + ' 124,76';
+    const d2 = 'M72,34 C' + (90 + Math.random() * 30) + ',' + (20 + Math.random() * 30) + ' ' + (100 + Math.random() * 40) + ',' + (70 + Math.random() * 30) + ' 150,52';
+    document.getElementById('cable1').setAttribute('d', d1);
+    document.getElementById('cable1').setAttribute('stroke', c1);
+    document.getElementById('cable2').setAttribute('d', d2);
+    document.getElementById('cable2').setAttribute('stroke', c2);
+    document.getElementById('patchName').textContent = 'route ' + String.fromCharCode(65 + Math.floor(Math.random() * 6));
+  });
+
+  document.getElementById('mix').addEventListener('input', drawStatic);
+</script>
+</body>
+</html>

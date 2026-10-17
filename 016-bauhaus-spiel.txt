@@ -1,0 +1,20 @@
+TITLE
+Bauhaus Spiel — A Composition Playground
+
+PROMPT
+Design "Bauhaus Spiel", an interactive geometric composition playground in the spirit of the Bauhaus poster tradition. Paper cream, hard black ink, and the three canonical primaries — red, blue and yellow — applied as flat, overprinted shapes. The page is arranged like a studio workbench: a compact masthead, a left tool rail for choosing circle / square / triangle / rule and selecting one of the four colours, and a large stage with a curated initial composition and oversized typography. Visitors click the stage to stamp a new shape, drag any shape to reposition it, and double-click one to remove it. Overlapping shapes use multiply blending to feel printed. Include a "recompose" button that rearranges the curated layout, a live object count, and a short manifesto footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external assets.
+
+DESIGN INTENT
+Bold, flat, joyful and disciplined. This is not a random shape generator: the initial composition is art-directed with strong diagonal rhythm, one large primary form anchoring each corner, and typography treated as another geometric element. The interaction is deliberately simple so every visitor can make a poster in seconds without breaking the visual system.
+
+VISUAL TECHNIQUES
+- CSS-drawn circle, square, triangle and rule shapes with flat colour and multiply blend modes.
+- Drag-and-drop with pointer capture, percentage-based positioning that survives resize.
+- A curated initial composition layered with rotated type, numerals and thin rules.
+- Tool rail styled like a print-shop control panel with clear selected states.
+- Scale-in animation on stamping; double-click removal; keyboard-operable tool buttons.
+- Paper grain, crop marks and a subtle vignette over the whole stage.
+- Responsive reflow that turns the rail into a horizontal toolbar on mobile.
+
+INTERACTION MODEL
+Choose a shape and a colour, then click anywhere on the stage to stamp it at that point with a slight random rotation. Drag shapes to compose; double-click or double-tap to send one back to the drawer. "Recompose" resets the curated arrangement. The object counter updates live. Buttons expose pressed states and focus rings; reduced-motion removes the stamp animation.

@@ -1,0 +1,20 @@
+TITLE
+Syntax — A Portfolio That Compiles
+
+PROMPT
+Create a developer portfolio designed as a modern code editor. A dark IDE window fills the page: mac-style window chrome, a file explorer with four files, tabs, a line-numbered gutter and syntax-highlighted source code that tells the story. Files include about.ts, projects.tsx, contact.json and readme.md; clicking a tab or file loads its code with a short typing reveal. A terminal panel at the bottom responds to a "Run" button, printing a playful output, and the status bar shows branch, language and a live clock. Palette: editor graphite, soft off-white text, violet keywords, green strings, amber numbers and a single coral accent. Fully responsive, one standalone HTML file with inline CSS/JS, no external fonts or libraries.
+
+DESIGN INTENT
+A portfolio for someone who lives in a code editor, built with the same care as a magazine. The interface is convincing but more beautiful than any real IDE: generous line height, a calm colour system, a soft outer glow and a terminal with personality. The code itself is the copy — reading it should tell you who this person is.
+
+VISUAL TECHNIQUES
+- Realistic editor chrome: sidebar, file tree, tabs, active tab highlight, line-number gutter, minimap and status bar.
+- Hand-tokenised syntax highlighting via spans for keywords, types, strings, comments, functions and punctuation.
+- Typing reveal per file with a blinking caret.
+- Terminal with coloured prompts, command history and success output.
+- Soft dusk gradient behind the window, ambient shadow and a faint noise overlay.
+- Live clock in the status bar; branch and language labels.
+- Responsive collapse: sidebar hidden, tabs scrollable, terminal shortened.
+
+INTERACTION MODEL
+Clicking a file in the explorer or a tab opens that file with a typing reveal. "Run" executes a fictional command and appends output lines to the terminal, including a hiring hint. "Clear" empties the terminal. The traffic lights decorate the chrome. Everything is keyboard accessible; reduced-motion shows files instantly without typing.

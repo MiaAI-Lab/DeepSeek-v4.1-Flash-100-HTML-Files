@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="GOO — translucent gummy bears in four flavours. A softer kind of sweet.">
+<title>GOO — A Softer Kind of Sweet</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --cream:#fff4e0; --pink:#ffe1ee; --ink:#2a1b22; --dim:rgba(42,27,34,.55); --line:rgba(42,27,34,.14);
+    --g1:#ff9fc4; --g2:#ff5f9e; --g3:#d62e74; --accent:#ff5f9e;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:linear-gradient(165deg,var(--pink),var(--cream) 60%);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .6s}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.22;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:var(--cream)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1300px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:1.35rem;letter-spacing:-.06em}
+  .brand span{width:10px;height:10px;border-radius:50%;background:var(--accent);display:block;transition:background .4s}
+  .brand small{font-family:var(--mono);font-size:.34rem;letter-spacing:.12em;color:var(--dim);font-weight:400;margin-left:4px;text-transform:uppercase}
+  nav{display:flex;gap:24px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--ink)}
+  .bag{border:1.5px solid var(--ink);border-radius:100px;padding:6px 12px;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.4)}
+
+  .hero{flex:1;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4vw,52px);align-items:center;padding:clamp(22px,4vw,44px) 0}
+  .kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.5);border:1px solid rgba(42,27,34,.16);border-radius:100px;padding:5px 10px;margin-bottom:18px}
+  .kicker i{width:5px;height:5px;border-radius:50%;background:var(--accent);display:block;transition:background .4s}
+  h1{font-size:clamp(3rem,6.4vw,5.9rem);line-height:.9;letter-spacing:-.065em;font-weight:800}
+  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);transition:color .4s}
+  .intro > p{margin-top:16px;max-width:35ch;font-size:.78rem;line-height:1.8;color:var(--dim)}
+  .intro > p b{color:var(--ink);font-weight:500}
+  .flavours{display:flex;gap:7px;margin-top:20px;flex-wrap:wrap}
+  .flav{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.35);padding:6px 10px;border-radius:100px;font-family:var(--mono);font-size:.38rem;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);transition:border-color .2s,color .2s,background .2s}
+  .flav i{width:8px;height:8px;border-radius:50%;background:var(--f);display:block}
+  .flav:hover{color:var(--ink);border-color:var(--ink)}
+  .flav[aria-pressed="true"]{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+  .buyRow{display:flex;align-items:center;gap:16px;margin-top:22px;flex-wrap:wrap}
+  .buy{background:var(--ink);color:var(--cream);padding:12px 20px;border-radius:100px;font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;transition:transform .2s,background .2s}
+  .buy:hover{transform:translateY(-2px);background:#4a303c}
+  .price{font-family:var(--serif);font-size:1.15rem}
+  .price small{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;color:var(--dim);margin-top:2px}
+  .promises{display:flex;gap:18px;margin-top:24px;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);flex-wrap:wrap}
+  .promises span{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.38rem;letter-spacing:.04em;text-transform:uppercase}
+  .promises i{width:5px;height:5px;border-radius:50%;background:var(--accent);display:block;transition:background .4s}
+
+  .product{position:relative;display:grid;place-items:center;min-height:clamp(360px,54vh,520px)}
+  .blob{position:absolute;width:74%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.7),rgba(255,255,255,.1) 55%,transparent 70%);filter:blur(12px)}
+  .ring{position:absolute;width:76%;aspect-ratio:1;border-radius:50%;border:1px dashed rgba(42,27,34,.18)}
+  .ring.two{width:60%;border-style:solid;border-color:rgba(42,27,34,.08)}
+  .card{position:relative;width:min(86%,400px);background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.8);border-radius:34px;padding:22px;box-shadow:0 30px 60px rgba(130,50,80,.16),inset 0 1px 0 #fff;backdrop-filter:blur(10px);cursor:pointer;transition:transform .3s}
+  .card:hover{transform:translateY(-4px)}
+  .card .tag{display:flex;justify-content:space-between;gap:10px;color:var(--dim);margin-bottom:4px}
+  .card .tag b{color:var(--ink);font-weight:400}
+  #bear{width:100%;height:auto;display:block;filter:drop-shadow(0 20px 18px rgba(90,30,55,.22));transition:filter .4s}
+  .card .flavName{text-align:center;font-family:var(--serif);font-style:italic;font-size:1.15rem;margin-top:2px;color:var(--accent);transition:color .4s}
+  .card .cardFoot{display:flex;justify-content:space-between;gap:10px;margin-top:9px;padding-top:8px;border-top:1px solid rgba(42,27,34,.12);color:var(--dim)}
+  .card .cardFoot b{color:var(--ink);font-weight:400}
+  .bearShape{transform-origin:50% 80%}
+  .wobble{animation:wobble .6s cubic-bezier(.2,.8,.2,1)}
+  @keyframes wobble{0%,100%{transform:scale(1,1)}25%{transform:scale(1.06,.93) rotate(-2deg)}55%{transform:scale(.95,1.06) rotate(2deg)}80%{transform:scale(1.02,.98)}}
+  .mini{position:absolute;z-index:5;pointer-events:none;animation:floatAway 1.2s ease-out forwards}
+  @keyframes floatAway{from{opacity:1;transform:translate(0,0) scale(.7) rotate(0)}to{opacity:0;transform:translate(var(--x),var(--y)) scale(1.15) rotate(var(--r))}}
+  .scatter{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .scatter i{position:absolute;width:9px;height:7px;border-radius:50%;background:var(--sc);opacity:.55;transform:rotate(24deg)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 20px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr;gap:20px}
+    .product{order:2;min-height:340px}
+    .intro{order:1}
+    nav{display:none}
+    h1{font-size:clamp(2.7rem,8.6vw,4.2rem)}
+    .card{width:min(78%,360px)}
+  }
+  @media(max-width:560px){
+    h1{font-size:12.6vw}
+    .brand{font-size:1.1rem}
+    .brand small{display:none}
+    .product{min-height:280px}
+    .card{padding:14px;border-radius:24px;width:min(90%,330px)}
+    .promises{gap:10px}
+    .promises span{font-size:.34rem}
+    .buyRow{gap:10px}
+    footer span:nth-child(2){display:none}
+    .kicker{font-size:.4rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+  #gummy stop:first-child{stop-color:var(--g1)}
+  #gummy stop:nth-child(2){stop-color:var(--g2)}
+  #gummy stop:nth-child(3){stop-color:var(--g3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span aria-hidden="true"></span>GOO<small>/ softer sweets</small></a>
+    <nav aria-label="Primary"><a href="#top">Shop</a><a href="#top">Flavours</a><a href="#top">Our goo</a></nav>
+    <button class="bag" id="bag">Bag · 0</button>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="hero">
+      <div class="intro">
+        <span class="kicker mono"><i aria-hidden="true"></i>New batch — very squishy</span>
+        <h1>A softer<br>kind of <em>sweet.</em></h1>
+        <p>Four translucent gummies, cooked slowly and dusted with sugar. No gelatine, no sharp edges, <b>no reason to hurry.</b></p>
+        <div class="flavours" role="group" aria-label="Flavour">
+          <button class="flav" data-flav="Raspberry" data-g1="#ffb3d1" data-g2="#ff5f9e" data-g3="#c82366" data-bg="#ffe1ee" style="--f:#ff5f9e" aria-pressed="true"><i aria-hidden="true"></i>Raspberry</button>
+          <button class="flav" data-flav="Mango" data-g1="#ffe1a1" data-g2="#ffb347" data-g3="#d27a10" data-bg="#fff0d2" style="--f:#ffb347" aria-pressed="false"><i aria-hidden="true"></i>Mango</button>
+          <button class="flav" data-flav="Lime" data-g1="#d9f5a8" data-g2="#a6e05f" data-g3="#5e9e2a" data-bg="#eef8d9" style="--f:#a6e05f" aria-pressed="false"><i aria-hidden="true"></i>Lime</button>
+          <button class="flav" data-flav="Grape" data-g1="#ddc9ff" data-g2="#a98bff" data-g3="#6b4bc4" data-bg="#eee5ff" style="--f:#a98bff" aria-pressed="false"><i aria-hidden="true"></i>Grape</button>
+        </div>
+        <div class="buyRow">
+          <button class="buy" id="buy">Add to bag</button>
+          <div class="price">€6.50<small>120 g / 8 bears</small></div>
+        </div>
+        <div class="promises"><span><i aria-hidden="true"></i>Plant-based</span><span><i aria-hidden="true"></i>Small batch</span><span><i aria-hidden="true"></i>Very soft</span></div>
+      </div>
+
+      <div class="product">
+        <div class="blob" aria-hidden="true"></div><div class="ring" aria-hidden="true"></div><div class="ring two" aria-hidden="true"></div>
+        <div class="scatter" id="scatter" aria-hidden="true"></div>
+        <div class="card" id="bearCard" role="button" tabindex="0" aria-label="The GOO gummy bear. Click to wobble it.">
+          <div class="tag mono"><span>Classic bear / 01</span><b id="flavLabel">Raspberry</b></div>
+          <svg id="bear" viewBox="0 0 260 300" aria-hidden="true">
+            <defs>
+              <linearGradient id="gummy" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="var(--g1)" stop-opacity=".92"/>
+                <stop offset=".55" stop-color="var(--g2)" stop-opacity=".82"/>
+                <stop offset="1" stop-color="var(--g3)" stop-opacity=".9"/>
+              </linearGradient>
+              <radialGradient id="sugar" cx="38%" cy="24%">
+                <stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".4" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <g class="bearShape">
+              <ellipse cx="130" cy="286" rx="80" ry="10" fill="rgba(90,30,55,.16)"/>
+              <circle cx="86" cy="72" r="25" fill="url(#gummy)" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>
+              <circle cx="174" cy="72" r="25" fill="url(#gummy)" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>
+              <circle cx="86" cy="72" r="11" fill="rgba(255,255,255,.25)"/>
+              <circle cx="174" cy="72" r="11" fill="rgba(255,255,255,.25)"/>
+              <path d="M130 58 C166 58 186 90 184 130 C182 166 168 184 130 184 C92 184 78 166 76 130 C74 90 94 58 130 58Z" fill="url(#gummy)" stroke="rgba(255,255,255,.6)" stroke-width="1.4"/>
+              <circle cx="104" cy="126" r="7" fill="rgba(50,20,35,.55)"/>
+              <circle cx="156" cy="126" r="7" fill="rgba(50,20,35,.55)"/>
+              <circle cx="106" cy="123" r="2.4" fill="#fff"/>
+              <circle cx="158" cy="123" r="2.4" fill="#fff"/>
+              <path d="M112 148 C120 156 140 156 148 148" fill="none" stroke="rgba(60,25,40,.45)" stroke-width="3" stroke-linecap="round"/>
+              <path d="M62 126 C40 128 34 148 48 160 C60 170 80 162 84 148" fill="url(#gummy)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+              <path d="M198 126 C220 128 226 148 212 160 C200 170 180 162 176 148" fill="url(#gummy)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+              <rect x="86" y="176" width="34" height="52" rx="17" fill="url(#gummy)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+              <rect x="140" y="176" width="34" height="52" rx="17" fill="url(#gummy)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+              <ellipse cx="103" cy="236" rx="22" ry="11" fill="url(#gummy)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+              <ellipse cx="157" cy="236" rx="22" ry="11" fill="url(#gummy)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+              <path d="M130 62 C150 62 164 78 166 104 C148 92 112 92 94 104 C96 78 110 62 130 62Z" fill="url(#sugar)"/>
+              <ellipse cx="108" cy="166" rx="22" ry="10" fill="rgba(255,255,255,.18)"/>
+            </g>
+          </svg>
+          <div class="flavName" id="flavName">Raspberry, mostly</div>
+          <div class="cardFoot mono"><span>Translucent <b>yes</b></span><span>Bite <b>soft</b></span><span>№ <b>01</b></span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>GOO / a fictional confection</span>
+    <span>Four flavours · one very soft bear</span>
+    <span>© 2026 · keep cool, eat slowly</span>
+  </footer>
+</div>
+
+<script>
+  const card = document.getElementById('bearCard');
+  const bear = document.getElementById('bear');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let bag = 0;
+
+  document.querySelectorAll('.flav').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const d = btn.dataset;
+      document.documentElement.style.setProperty('--g1', d.g1);
+      document.documentElement.style.setProperty('--g2', d.g2);
+      document.documentElement.style.setProperty('--g3', d.g3);
+      document.documentElement.style.setProperty('--accent', d.g2);
+      document.body.style.background = 'linear-gradient(165deg,' + d.bg + ',var(--cream) 60%)';
+      document.getElementById('flavLabel').textContent = d.flav;
+      document.getElementById('flavName').textContent = d.flav + ', mostly';
+      document.querySelectorAll('.flav').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    });
+  });
+
+  function wobble(){
+    bear.classList.remove('wobble');
+    void bear.getBoundingClientRect();
+    bear.classList.add('wobble');
+    if (reduce) return;
+    const rect = card.getBoundingClientRect();
+    for (let i = 0; i < 7; i++){
+      const mini = document.createElement('span');
+      mini.className = 'mini';
+      mini.style.left = (35 + Math.random() * 30) + '%';
+      mini.style.top = (40 + Math.random() * 20) + '%';
+      mini.style.width = '12px'; mini.style.height = '10px';
+      mini.style.borderRadius = '50%';
+      mini.style.background = 'var(--g2)';
+      mini.style.setProperty('--x', ((Math.random() - .5) * 180) + 'px');
+      mini.style.setProperty('--y', (-60 - Math.random() * 100) + 'px');
+      mini.style.setProperty('--r', (Math.random() * 180 - 90) + 'deg');
+      card.appendChild(mini);
+      setTimeout(() => mini.remove(), 1300);
+    }
+  }
+  card.addEventListener('click', wobble);
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ wobble(); e.preventDefault(); } });
+  document.getElementById('buy').addEventListener('click', function(){
+    bag++;
+    document.getElementById('bag').textContent = 'Bag · ' + bag;
+    this.textContent = 'In the bag ✓';
+    setTimeout(() => { this.textContent = 'Add to bag'; }, 1600);
+  });
+
+  // scatter candies
+  const scatter = document.getElementById('scatter');
+  const cols = ['#ffb3d1','#ffd28a','#cdeba6','#d5c1ff'];
+  for (let i = 0; i < 26; i++){
+    const c = document.createElement('i');
+    c.style.left = (Math.random() * 96) + '%';
+    c.style.top = (Math.random() * 92) + '%';
+    c.style.setProperty('--sc', cols[Math.floor(Math.random() * cols.length)]);
+    c.style.transform = 'rotate(' + Math.random() * 180 + 'deg)';
+    c.style.width = (5 + Math.random() * 8) + 'px';
+    c.style.height = (4 + Math.random() * 7) + 'px';
+    scatter.appendChild(c);
+  }
+</script>
+</body>
+</html>

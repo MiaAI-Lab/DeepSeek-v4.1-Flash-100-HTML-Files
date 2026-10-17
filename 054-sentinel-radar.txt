@@ -1,0 +1,20 @@
+TITLE
+Sentinel — Passive Array 04
+
+PROMPT
+Create a futuristic radar interface called "Sentinel / Passive Array 04". Near-black green room, phosphor green and cold cyan, faint grid and scanlines. The layout pairs a left editorial and telemetry column with a large circular radar on the right: concentric range rings, crosshair, bearing labels, a rotating sweep and several contact blips with pulse rings. The left column carries the title "Nothing is empty space." in a severe serif, a short paragraph, range buttons (10 / 25 / 50 km), a Scan button, and a hovered-contact readout. Clicking empty radar adds a contact; Scan regenerates the field; hovering a blip shows its designation, bearing, range and signal. Include a bottom status strip with UTC and array health. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+A military-grade instrument designed by a science-fiction art director. Every pixel should feel calibrated: thin rings, exact ticks, restrained glow, no unnecessary decoration. Green is the primary signal colour, cyan marks live data, amber marks warnings. The typography contrasts a cold editorial serif with tiny monospaced readouts.
+
+VISUAL TECHNIQUES
+- CSS radar with repeating-radial-gradient rings, crosshair axes, bearing ticks and a conic-gradient sweep rotating in 7 seconds.
+- Contact blips as absolutely positioned dots with pulse rings and small labels.
+- Hover/selection states with a cyan halo and a data readout.
+- Range filtering and random regeneration of contacts with a short radar wipe.
+- Scanlines, grid, vignette and phosphor glow.
+- Monospaced telemetry, a serif statement and a bottom status bar.
+- Reduced-motion stops the sweep and pulse animations while keeping all data accessible.
+
+INTERACTION MODEL
+Hovering a contact updates the readout with its designation, bearing, range and signal strength. Clicking a contact pins it; clicking empty radar adds a new contact. Range buttons filter contacts by distance and update the count. "Scan" clears and regenerates the field with a sweep highlight. All contacts are keyboard-focusable; reduced-motion displays a static sweep.

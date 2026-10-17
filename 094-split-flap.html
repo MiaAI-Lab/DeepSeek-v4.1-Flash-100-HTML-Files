@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Split-Flap — a live station clock in four cities.">
+<title>Split-Flap — A Station Clock</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --hall:#0b0c0e; --board:#17181b; --card:#efe5cf; --card2:#e3d6bb; --ink:#1d1b17; --cream:#efe8d8; --dim:rgba(239,232,216,.46); --line:rgba(239,232,216,.12);
+    --amber:#e8b567; --red:#c4553c;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--hall);color:var(--cream);font-family:var(--sans);display:flex;flex-direction:column;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    background-image:linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(180deg,#121316,#08090b 75%);
+    background-size:88px 100%,100% 100%}
+  body::before{content:"";position:fixed;left:50%;top:-10%;width:70vw;height:50vh;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(232,181,103,.13),transparent 70%);pointer-events:none;z-index:0}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.16;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--amber);color:var(--ink)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1.5px solid var(--amber);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .wrap{width:min(1240px,100%);margin:0 auto;padding:0 clamp(12px,3vw,34px);position:relative;z-index:2;min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1rem;letter-spacing:.08em}
+  .brand .sq{width:11px;height:13px;flex:none;background:linear-gradient(180deg,var(--card) 0 48%,#6b6353 48% 52%,var(--card2) 52%);border:1px solid rgba(0,0,0,.4)}
+  .brand span{display:block;font-family:var(--mono);font-size:.33rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--amber);font-weight:400}
+
+  .main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:clamp(16px,3.5vh,34px) 0}
+  .plate{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:7px;color:var(--dim);flex-wrap:wrap}
+  .cityPlate{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.46rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+  .cityPlate .pin{width:5px;height:5px;background:var(--amber);border-radius:50%;box-shadow:0 0 7px var(--amber)}
+  .utc{letter-spacing:.08em}
+  .board{border:1px solid rgba(239,232,216,.18);border-radius:5px;padding:clamp(10px,1.8vw,20px);background:linear-gradient(180deg,#1d1e22,#101114);box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);position:relative}
+  .board::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+  .digits{display:flex;justify-content:center;align-items:center;gap:clamp(3px,.8vw,9px);perspective:900px}
+  .group{display:flex;gap:clamp(3px,.55vw,7px)}
+  .flap{position:relative;width:clamp(39px,10.2vw,118px);height:clamp(56px,14vw,150px);border-radius:3px;background:linear-gradient(180deg,var(--card),var(--card2));color:var(--ink);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 5px 10px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.6);transform-style:preserve-3d}
+  .flap::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(29,27,23,.45);z-index:3;box-shadow:0 1px 0 rgba(255,255,255,.35)}
+  .flap::after{content:"";position:absolute;left:3px;top:3px;bottom:3px;width:2px;border-radius:2px;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(120,105,80,.35));box-shadow:inset -2px 0 0 rgba(120,105,80,.3);opacity:.5}
+  .flap .digit{position:relative;z-index:2;font-family:var(--mono);font-size:clamp(2.1rem,7.2vw,6.8rem);line-height:1;letter-spacing:-.06em;font-variant-numeric:tabular-nums;transform-origin:50% 50%;backface-visibility:hidden}
+  .flap.flip .digit{animation:flap .44s cubic-bezier(.3,.7,.3,1)}
+  @keyframes flap{0%{transform:rotateX(0)}45%{transform:rotateX(-88deg)}55%{transform:rotateX(88deg)}100%{transform:rotateX(0)}}
+  .colon{font-family:var(--mono);font-size:clamp(1.1rem,4.6vw,4rem);color:var(--card);opacity:.85;padding:0 clamp(1px,.4vw,4px);transform:translateY(-4%);transition:opacity .25s}
+  .colon.blink{opacity:.22}
+  .labels{display:flex;justify-content:center;gap:clamp(3px,.8vw,9px);margin-top:7px;color:rgba(239,232,216,.35)}
+  .labels .lg{width:clamp(81px,21vw,243px);display:flex;justify-content:center;gap:clamp(3px,.55vw,7px)}
+  .labels .lg span{flex:1;text-align:center;font-family:var(--mono);font-size:.3rem;letter-spacing:.1em;text-transform:uppercase}
+  .labels .sep{width:clamp(6px,1.8vw,18px)}
+  .ampm{position:absolute;right:clamp(8px,1.5vw,16px);top:clamp(8px,1.5vw,14px);border:1px solid rgba(239,232,216,.22);padding:2px 5px;font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;color:var(--dim)}
+  .dateLine{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px;color:var(--dim)}
+  .dateLine b{color:var(--cream);font-weight:400}
+
+  .timetable{margin-top:clamp(12px,2.4vh,22px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .ttLabel{color:var(--dim)}
+  .cities{display:flex;gap:3px;flex-wrap:wrap}
+  .city{border:1px solid rgba(239,232,216,.18);padding:5px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .city:hover{color:var(--cream);border-color:rgba(239,232,216,.4)}
+  .city[aria-pressed="true"]{background:var(--amber);border-color:var(--amber);color:#1b1710}
+  .tools{margin-left:auto;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+  .toggle{border:1px solid rgba(239,232,216,.18);padding:5px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s}
+  .toggle:hover{color:var(--cream);border-color:rgba(239,232,216,.4)}
+  .toggle[aria-pressed="true"]{color:var(--amber);border-color:rgba(232,181,103,.5)}
+  .flipAll{border:1px solid rgba(239,232,216,.18);padding:5px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s}
+  .flipAll:hover{color:var(--cream);border-color:rgba(239,232,216,.4)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .marquee{margin-top:9px;overflow:hidden;color:rgba(239,232,216,.28);white-space:nowrap}
+  .marquee span{display:inline-block;padding-left:100%;animation:marq 30s linear infinite;font-family:var(--mono);font-size:.36rem;letter-spacing:.1em;text-transform:uppercase}
+  @keyframes marq{to{transform:translateX(-100%)}}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:8px 0 12px;color:rgba(239,232,216,.28)}
+
+  @media(max-width:760px){
+    .headMid{display:none}
+    .flap{width:clamp(35px,12vw,62px);height:clamp(52px,17vw,88px)}
+    .flap .digit{font-size:clamp(1.9rem,9vw,3.6rem)}
+    .labels .lg{width:clamp(75px,25vw,130px)}
+    .brand{font-size:.9rem}
+    .ttLabel{width:100%}
+    .tools{margin-left:0;width:100%;justify-content:space-between}
+  }
+  @media(max-width:520px){
+    .wrap{padding:0 9px}
+    .headRight{display:none}
+    .board{padding:9px 6px}
+    .flap{width:clamp(33px,12.4vw,52px);height:clamp(48px,17vw,72px)}
+    .flap .digit{font-size:clamp(1.7rem,9.4vw,3rem)}
+    .colon{font-size:1.3rem}
+    .labels{display:none}
+    .dateLine{font-size:.4rem}
+    .cities{gap:2px}
+    .city{padding:5px 6px;font-size:.3rem}
+    .toggle,.flipAll{padding:5px 6px;font-size:.3rem}
+    .marquee{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    .marquee span{animation:none}
+  }
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">Split-Flap</h1>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="sq" aria-hidden="true"></span><span>Split-Flap<small>Station clock / platform 4</small></span></a>
+    <div class="headMid mono"><span>Mechanism <b>solenoid</b></span><span>Cards <b>06</b></span><span>Drift <b>0.0 s</b></span></div>
+    <div class="headRight mono">Automatic service<br><b id="headDate">17.10.2026</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="plate"><div class="cityPlate"><span class="pin" aria-hidden="true"></span><span id="cityName">Local time</span></div><div class="utc mono" id="utcOut">UTC +02:00</div></div>
+    <div class="board">
+      <span class="ampm" id="ampm" hidden>PM</span>
+      <div class="digits" id="digits" role="timer" aria-live="off" aria-label="Current time">
+        <div class="group" id="gh"></div>
+        <span class="colon" aria-hidden="true">:</span>
+        <div class="group" id="gm"></div>
+        <span class="colon" aria-hidden="true">:</span>
+        <div class="group" id="gs"></div>
+      </div>
+      <div class="labels mono" aria-hidden="true"><span class="lg"><span>hour</span><span>hour</span></span><span class="sep"></span><span class="lg"><span>minute</span><span>minute</span></span><span class="sep"></span><span class="lg"><span>second</span><span>second</span></span></div>
+    </div>
+    <div class="dateLine mono"><span><b id="dateOut">Saturday, 17 October 2026</b></span><span id="zoneOut">Europe / local</span></div>
+
+    <div class="timetable">
+      <span class="ttLabel mono">Board</span>
+      <div class="cities" role="group" aria-label="City">
+        <button class="city" data-tz="" aria-pressed="true">Local</button>
+        <button class="city" data-tz="Europe/Helsinki" aria-pressed="false">Helsinki</button>
+        <button class="city" data-tz="Asia/Tokyo" aria-pressed="false">Tokyo</button>
+        <button class="city" data-tz="America/New_York" aria-pressed="false">New York</button>
+      </div>
+      <div class="tools"><button class="toggle" id="h12" aria-pressed="false">24 h</button><button class="flipAll" id="flipAll">↻ Flip all</button></div>
+    </div>
+    <div class="marquee" aria-hidden="true"><span>The 17:42 to the coast is running on time · Please mind the gap between the platform and the evening · This clock is fictional, but the seconds are real ·</span></div>
+    <p class="sr" id="srTime"></p>
+  </main>
+
+  <footer class="mono">
+    <span>Split-Flap / a fictional station clock</span>
+    <span>Local time, four cities, one mechanism</span>
+    <span>© 2026 · no trains were delayed</span>
+  </footer>
+</div>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const groups = { h: document.getElementById('gh'), m: document.getElementById('gm'), s: document.getElementById('gs') };
+  const digitsEl = document.getElementById('digits');
+  let tz = '', use24 = true, timer = null, last = { h:'--', m:'--', s:'--' };
+
+  Object.keys(groups).forEach(k => {
+    for (let i = 0; i < 2; i++){
+      const f = document.createElement('div');
+      f.className = 'flap';
+      f.innerHTML = '<span class="digit">0</span>';
+      groups[k].appendChild(f);
+    }
+  });
+  const flaps = {
+    h: groups.h.querySelectorAll('.flap'),
+    m: groups.m.querySelectorAll('.flap'),
+    s: groups.s.querySelectorAll('.flap')
+  };
+
+  function setFlap(el, val, animate){
+    const digit = el.querySelector('.digit');
+    if (digit.textContent === val) return;
+    if (!animate || reduce){ digit.textContent = val; return; }
+    el.classList.remove('flip');
+    void el.offsetWidth;
+    el.classList.add('flip');
+    setTimeout(() => { digit.textContent = val; }, 180);
+  }
+  function cityUTC(tz){
+    try {
+      const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz || undefined, timeZoneName: 'shortOffset' }).formatToParts(new Date());
+      const t = parts.find(p => p.type === 'timeZoneName');
+      return t ? t.value.replace('GMT', 'UTC') : 'UTC';
+    } catch (e){ return 'UTC'; }
+  }
+
+  function tick(force){
+    const now = new Date();
+    const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: !use24 };
+    if (tz) opts.timeZone = tz;
+    const parts = new Intl.DateTimeFormat('en-GB', opts).formatToParts(now);
+    const get = t => (parts.find(p => p.type === t) || {}).value || '00';
+    let h = get('hour'), m = get('minute'), s = get('second');
+    if (h === '24') h = '00';
+    const hh = h.padStart(2, '0'), mm = m.padStart(2, '0'), ss = s.padStart(2, '0');
+    setFlap(flaps.h[0], hh[0], force);
+    setFlap(flaps.h[1], hh[1], force);
+    setFlap(flaps.m[0], mm[0], force);
+    setFlap(flaps.m[1], mm[1], force);
+    setFlap(flaps.s[0], ss[0], force);
+    setFlap(flaps.s[1], ss[1], force);
+    last = { h: hh, m: mm, s: ss };
+
+    document.querySelectorAll('.colon').forEach(c => c.classList.toggle('blink', ss % 2 === 1));
+    const ampm = parts.find(p => p.type === 'dayPeriod');
+    const ampmEl = document.getElementById('ampm');
+    if (!use24 && ampm){ ampmEl.hidden = false; ampmEl.textContent = ampm.value.toUpperCase(); }
+    else ampmEl.hidden = true;
+
+    const dateOpts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+    if (tz) dateOpts.timeZone = tz;
+    document.getElementById('dateOut').textContent = new Intl.DateTimeFormat('en-GB', dateOpts).format(now);
+    document.getElementById('headDate').textContent = new Intl.DateTimeFormat('en-GB', { day:'2-digit', month:'2-digit', year:'numeric' }).format(now);
+    document.getElementById('zoneOut').textContent = (tz || 'Local') + ' / ' + cityUTC(tz);
+    document.getElementById('utcOut').textContent = cityUTC(tz);
+    document.getElementById('cityName').textContent = tz ? tz.split('/')[1].replace('_',' ') : 'Local time';
+    digitsEl.setAttribute('aria-label', hh + ':' + mm + ':' + ss);
+    document.getElementById('srTime').textContent = 'The time is ' + hh + ':' + mm + ':' + ss + ' in ' + (tz || 'local time') + '.';
+  }
+
+  document.querySelectorAll('.city').forEach(b => b.addEventListener('click', () => {
+    tz = b.dataset.tz;
+    document.querySelectorAll('.city').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    tick(true);
+  }));
+  document.getElementById('h12').addEventListener('click', function(){
+    use24 = !use24;
+    this.setAttribute('aria-pressed', String(!use24));
+    this.textContent = use24 ? '24 h' : '12 h';
+    tick(true);
+  });
+  document.getElementById('flipAll').addEventListener('click', () => tick(true));
+
+  tick(false);
+  setInterval(() => tick(false), 1000);
+</script>
+</body>
+</html>

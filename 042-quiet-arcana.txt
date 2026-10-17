@@ -1,0 +1,20 @@
+TITLE
+The Quiet Arcana — A Deck for Uncertain Days
+
+PROMPT
+Create an elegant tarot experience called "The Quiet Arcana". Midnight-blue room, antique gold linework, cream type and a muted wine accent. The left column holds a high-serif title "The cards are in no hurry.", a short invitation, a live reading panel and two actions: Draw a card and Shuffle. The right side holds three large tarot cards fanned across the space, each with an ornate navy-and-gold back and a hand-drawn face for The Sun, The Moon or The Star. Clicking a card flips it in 3D and updates the reading; Draw chooses one at random, Shuffle nudges all three. Add a gold rule frame, small constellation marks, a deck number and a footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external fonts or images.
+
+DESIGN INTENT
+Mystical without theatre. The page should feel like a small, well-made object: heavy paper, gold foil, a quiet room. The illustrations are line engravings, not fantasy paintings, and the readings are written like gentle advice rather than prophecy. Motion is slow and deliberate, like turning a card over on a table.
+
+VISUAL TECHNIQUES
+- CSS 3D card flips with a visible back and a detailed front, both with gold borders and inner frames.
+- SVG line illustrations for sun, moon and star, composed of circles, rays and dotted constellations.
+- Ornate card backs with repeating gold dots, a central diamond and fine concentric circles.
+- Deep midnight background with a faint star field, warm vignette and gold hairline page frame.
+- Serif display typography, tracked monospaced labels, drop caps in the reading panel.
+- Card fan with slight rotations and hover lift; shuffle keyframe that nudges each card.
+- Responsive layout that stacks the reading beneath a horizontally scrollable card row.
+
+INTERACTION MODEL
+Clicking any card flips it, raises it and updates the reading with the card's name, keyword and a sentence. "Draw a card" shuffles briefly then flips one at random; "Shuffle" only animates the fan. Cards are real buttons with pressed states and keyboard focus. Reduced-motion removes the flip transition, showing the face immediately while keeping all readings available.

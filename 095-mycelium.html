@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mycelium — a living underground network you can seed and grow.">
+<title>Mycelium — The Ground Is Talking</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --floor:#050b08; --floor2:#0a1410; --ink:#e9f4ea; --dim:rgba(233,244,234,.46); --line:rgba(233,244,234,.12);
+    --lumen:#7ff0c8; --amber:#ffc978;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--floor);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  #myc{position:fixed;inset:0;z-index:0;display:block;cursor:crosshair}
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(800px 500px at 70% 20%,rgba(20,60,42,.3),transparent 65%),
+    radial-gradient(700px 500px at 20% 85%,rgba(30,45,20,.28),transparent 70%),
+    linear-gradient(180deg,#071009,#030604 80%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  .vignette{position:fixed;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(2,6,4,.65) 100%)}
+  ::selection{background:var(--lumen);color:#04100b}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--lumen);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .ui{position:relative;z-index:5;height:100svh;display:flex;flex-direction:column;padding:0 clamp(14px,3vw,38px);pointer-events:none}
+  .ui button,.ui input,.ui a{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid rgba(233,244,234,.14)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1rem;letter-spacing:.12em;text-transform:uppercase}
+  .brand .node{width:12px;height:12px;position:relative;flex:none}
+  .brand .node::before,.brand .node::after{content:"";position:absolute;border-radius:50%;background:var(--lumen);box-shadow:0 0 8px var(--lumen)}
+  .brand .node::before{inset:3px}.brand .node::after{width:3px;height:3px;right:-2px;bottom:-1px;opacity:.6}
+  .brand span{display:block;font-family:var(--mono);font-size:.33rem;letter-spacing:.13em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--lumen);font-weight:400}
+
+  .main{flex:1;display:flex;align-items:center;justify-content:space-between;gap:20px;pointer-events:none;padding-bottom:10px}
+  .statement{max-width:560px;pointer-events:none}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--lumen);margin-bottom:12px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--lumen)}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,5.2vw,4.8rem);line-height:.92;letter-spacing:-.05em;font-weight:400;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+  h1 em{font-style:italic;color:var(--lumen)}
+  .statement p{margin-top:13px;max-width:34ch;color:var(--dim);font-size:.68rem;line-height:1.8}
+
+  .stats{pointer-events:auto;border:1px solid rgba(233,244,234,.16);background:rgba(6,14,10,.55);backdrop-filter:blur(9px);padding:10px 12px;min-width:170px}
+  .stats .row{display:flex;justify-content:space-between;gap:14px;padding:3px 0;border-bottom:1px solid rgba(233,244,234,.07);color:var(--dim)}
+  .stats .row:last-child{border-bottom:0}
+  .stats b{font-family:var(--mono);font-size:.46rem;letter-spacing:.02em;color:var(--ink);font-weight:400}
+  .stats .hi{color:var(--lumen)}
+  .hint{position:absolute;left:50%;transform:translateX(-50%);bottom:104px;color:rgba(233,244,234,.36);pointer-events:none;white-space:nowrap}
+
+  .bench{pointer-events:auto;background:rgba(5,12,8,.82);border:1px solid rgba(233,244,234,.16);backdrop-filter:blur(12px);padding:9px clamp(11px,2vw,16px);display:flex;align-items:center;gap:clamp(10px,2vw,22px);flex-wrap:wrap;margin-bottom:10px}
+  .benchTitle{min-width:100px}
+  .benchTitle b{font-family:var(--serif);font-size:.95rem;font-weight:400;display:block}
+  .benchTitle span{color:var(--dim)}
+  .ctrl{width:125px}
+  .ctrl .row{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:1px}
+  .ctrl .row b{color:var(--ink);font-weight:400}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(233,244,234,.25)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:9px;height:9px;border-radius:50%;background:var(--lumen);margin-top:-4px;box-shadow:0 0 6px rgba(127,240,200,.5)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(233,244,234,.25)}
+  input[type=range]::-moz-range-thumb{width:8px;height:8px;border:0;border-radius:50%;background:var(--lumen)}
+  .bench .btns{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+  .bench button{border:1px solid rgba(233,244,234,.2);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .bench button:hover{color:var(--ink);border-color:rgba(233,244,234,.45)}
+  .bench button[aria-pressed="true"]{color:#04100b;background:var(--lumen);border-color:var(--lumen)}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:7px 0 10px;color:rgba(233,244,234,.28)}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .stats{position:absolute;right:14px;top:74px;min-width:150px}
+    .statement{max-width:70%}
+    .benchTitle{min-width:100%}
+    .ctrl{flex:1;min-width:100px}
+    .bench .btns{margin-left:0}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    h1{font-size:clamp(2.2rem,10vw,3.4rem)}
+    .statement p{display:none}
+    .stats{top:auto;bottom:210px;right:10px;padding:8px;min-width:130px}
+    .stats .row{font-size:.38rem}
+    .bench{gap:8px;padding:8px 10px}
+    .ctrl{min-width:44%}
+    .bench .btns{width:100%;justify-content:space-between}
+    .hint{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<canvas id="myc"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="node" aria-hidden="true"></span><span>Mycelium<small>Below the leaves / network 06</small></span></a>
+    <div class="headMid mono"><span>Depth <b>−20 cm</b></span><span>Kingdom <b>Fungi</b></span><span>Status <b>growing</b></span></div>
+    <div class="headRight mono">Forest floor<br><b>After rain / 12°C</b></div>
+  </header>
+
+  <div class="main" id="top">
+    <div class="statement">
+      <p class="eyebrow mono">A network, not a plant</p>
+      <h1>The forest<br>is one<br><em>organism.</em></h1>
+      <p>Under the leaf litter, hyphae thread between roots and stone. What looks like soil is a conversation. Plant a colony and watch it find its way.</p>
+    </div>
+    <div class="stats mono" id="stats">
+      <div class="row"><span>Colonies</span><b class="hi" id="stCol">01</b></div>
+      <div class="row"><span>Threads</span><b id="stThr">0000</b></div>
+      <div class="row"><span>Branch nodes</span><b id="stNod">000</b></div>
+      <div class="row"><span>Age</span><b id="stAge">00:00</b></div>
+      <div class="row"><span>Palette</span><b class="hi" id="stPal">Lumen</b></div>
+    </div>
+    <div class="hint mono">Click the ground to seed a colony</div>
+  </div>
+
+  <div class="bench">
+    <div class="benchTitle"><b>Ground control</b><span class="mono">tend the network</span></div>
+    <div class="ctrl"><div class="row mono"><span>Growth</span><b id="gOut">1.0×</b></div><input id="growth" type="range" min="10" max="300" value="100" aria-label="Growth speed"></div>
+    <div class="ctrl"><div class="row mono"><span>Branching</span><b id="bOut">0.22</b></div><input id="branch" type="range" min="4" max="60" value="22" aria-label="Branching"></div>
+    <div class="ctrl"><div class="row mono"><span>Spores</span><b id="sOut">3</b></div><input id="spores" type="range" min="1" max="8" value="3" aria-label="Spore burst size"></div>
+    <div class="btns">
+      <button id="palette" aria-pressed="false">Amber</button>
+      <button id="pause" aria-pressed="false">Pause</button>
+      <button id="sporeBtn">Spore burst</button>
+      <button id="reset">Reset</button>
+    </div>
+  </div>
+
+  <footer class="mono">
+    <span>Mycelium / a fictional field study</span>
+    <span>Hyphae are agents, not biology</span>
+    <span>© 2026 · tread lightly</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('myc');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+  let tips = [], threads = [], nodes = [];
+  let growth = 1, branch = .22, spores = 3, paused = false, palette = 'lumen';
+  let started = Date.now();
+
+  const palettes = {
+    lumen: { line:'127,240,200', tip:'211,255,240', node:'127,240,200' },
+    amber: { line:'255,201,120', tip:'255,238,196', node:'255,201,120' }
+  };
+  function pal(){ return palettes[palette]; }
+
+  function resize(){
+    dpr = Math.min(2, devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function seed(x, y, n){
+    const count = n || 1;
+    for (let c = 0; c < count; c++){
+      const ox = x + (Math.random() - .5) * 40, oy = y + (Math.random() - .5) * 40;
+      const arms = 2 + Math.floor(Math.random() * 3);
+      for (let a = 0; a < arms; a++){
+        tips.push({
+          x: ox, y: oy, angle: Math.random() * Math.PI * 2,
+          life: 170 + Math.random() * 150, gen: 0
+        });
+      }
+      nodes.push({ x: ox, y: oy, r: 1.8, born: Date.now() });
+    }
+    updateStats();
+  }
+  function step(){
+    const next = [];
+    for (const t of tips){
+      if (t.life <= 0) continue;
+      const speed = .9 + Math.random() * .7;
+      const nx = t.x + Math.cos(t.angle) * speed;
+      const ny = t.y + Math.sin(t.angle) * speed;
+      if (nx < -20 || nx > W + 20 || ny < -20 || ny > H + 20){ continue; }
+      threads.push({ x1: t.x, y1: t.y, x2: nx, y2: ny, gen: t.gen, a: .12 + Math.random() * .12 });
+      if (threads.length > 7000) threads.shift();
+      t.x = nx; t.y = ny;
+      t.angle += (Math.random() - .5) * .32;
+      t.life--;
+      t.gen++;
+      if (Math.random() < branch && t.life > 18 && tips.length + next.length < 420){
+        const na = t.angle + (Math.random() > .5 ? 1 : -1) * (.45 + Math.random() * .5);
+        next.push({ x: t.x, y: t.y, angle: na, life: t.life * (0.5 + Math.random() * .35), gen: t.gen });
+        nodes.push({ x: t.x, y: t.y, r: .9 + Math.random() * 1.3, born: Date.now() });
+        if (nodes.length > 1400) nodes.shift();
+      }
+      if (t.life > 0) next.push(t);
+    }
+    tips = next;
+    tips = tips.slice(0, 420);
+    if (tips.length === 0 && threads.length > 0){
+      // occasional revival from a random node to keep the field alive
+      if (Math.random() < .004 && nodes.length){
+        const n = nodes[Math.floor(Math.random() * nodes.length)];
+        tips.push({ x: n.x, y: n.y, angle: Math.random() * Math.PI * 2, life: 120, gen: 0 });
+      }
+    }
+    updateStats();
+  }
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    const p = pal();
+    ctx.lineCap = 'round';
+    ctx.globalCompositeOperation = 'lighter';
+    for (const t of threads){
+      const age = Math.min(1, t.gen / 120);
+      ctx.strokeStyle = 'rgba(' + p.line + ',' + (t.a * (1 - age * .45)) + ')';
+      ctx.lineWidth = Math.max(.35, 1.15 - t.gen * .004);
+      ctx.beginPath(); ctx.moveTo(t.x1, t.y1); ctx.lineTo(t.x2, t.y2); ctx.stroke();
+    }
+    // nodes
+    for (const n of nodes){
+      ctx.fillStyle = 'rgba(' + p.node + ',.5)';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+    }
+    // tips
+    for (const t of tips){
+      ctx.fillStyle = 'rgba(' + p.tip + ',.95)';
+      ctx.shadowColor = 'rgba(' + p.tip + ',.8)';
+      ctx.shadowBlur = reduce ? 0 : 8;
+      ctx.beginPath(); ctx.arc(t.x, t.y, 1.5, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  let last = performance.now(), acc = 0;
+  function loop(now){
+    const dt = Math.min(50, now - last); last = now;
+    if (!paused){
+      acc += dt * growth;
+      let iterations = 0;
+      while (acc > 28 && iterations < 6){ step(); acc -= 28; iterations++; }
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+  function updateStats(){
+    document.getElementById('stCol').textContent = String(Math.max(1, Math.round(nodes.length / 6))).padStart(2,'0');
+    document.getElementById('stThr').textContent = String(threads.length).padStart(4,'0');
+    document.getElementById('stNod').textContent = String(nodes.length).padStart(3,'0');
+    const sec = Math.floor((Date.now() - started) / 1000);
+    document.getElementById('stAge').textContent = String(Math.floor(sec / 60)).padStart(2,'0') + ':' + String(sec % 60).padStart(2,'0');
+  }
+
+  canvas.addEventListener('pointerdown', e => {
+    seed(e.clientX, e.clientY, 1);
+  });
+  document.getElementById('growth').addEventListener('input', function(){
+    growth = this.value / 100;
+    document.getElementById('gOut').textContent = growth.toFixed(1) + '×';
+  });
+  document.getElementById('branch').addEventListener('input', function(){
+    branch = this.value / 100;
+    document.getElementById('bOut').textContent = branch.toFixed(2);
+  });
+  document.getElementById('spores').addEventListener('input', function(){
+    spores = Number(this.value);
+    document.getElementById('sOut').textContent = spores;
+  });
+  document.getElementById('palette').addEventListener('click', function(){
+    palette = palette === 'lumen' ? 'amber' : 'lumen';
+    this.setAttribute('aria-pressed', String(palette === 'amber'));
+    this.textContent = palette === 'lumen' ? 'Amber' : 'Lumen';
+    document.getElementById('stPal').textContent = palette === 'lumen' ? 'Lumen' : 'Amber';
+    document.documentElement.style.setProperty('--lumen', palette === 'lumen' ? '#7ff0c8' : '#ffc978');
+    draw();
+  });
+  document.getElementById('pause').addEventListener('click', function(){
+    paused = !paused;
+    this.setAttribute('aria-pressed', String(paused));
+    this.textContent = paused ? 'Resume' : 'Pause';
+  });
+  document.getElementById('sporeBtn').addEventListener('click', () => {
+    for (let i = 0; i < spores; i++) seed(Math.random() * W, Math.random() * H, 1);
+  });
+  document.getElementById('reset').addEventListener('click', () => {
+    threads = []; tips = []; nodes = []; started = Date.now();
+    seed(W / 2, H / 2, 1);
+    draw();
+  });
+  addEventListener('resize', () => { resize(); });
+  resize();
+  seed(W * .38, H * .55, 2);
+  seed(W * .72, H * .4, 1);
+  seed(W * .55, H * .74, 1);
+  requestAnimationFrame(loop);
+</script>
+</body>
+</html>

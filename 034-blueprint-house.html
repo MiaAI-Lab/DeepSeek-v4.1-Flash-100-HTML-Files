@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="House No. 7 — an interactive architectural blueprint with four rooms and a title block.">
+<title>House No. 7 — Ground Floor Blueprint</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --blue:#062744; --blue2:#041d34; --line:#cfe8ff; --glow:rgba(207,232,255,.6); --dim:rgba(207,232,255,.55); --ochre:#e6b35c;
+    --grid:rgba(207,232,255,.08);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--blue);color:var(--line);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ochre);color:var(--blue)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--ochre);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1460px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid rgba(207,232,255,.3)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.68rem;letter-spacing:.26em;text-transform:uppercase}
+  .brand .sq{width:15px;height:15px;border:1px solid var(--line);position:relative;flex:none}
+  .brand .sq::after{content:"";position:absolute;inset:4px;border:1px solid var(--ochre)}
+  .brand span{font-family:var(--mono);font-size:.4rem;letter-spacing:.13em;color:var(--dim)}
+  .headMid{display:flex;gap:26px;color:var(--dim)}
+  .headMid b{color:var(--line);font-weight:400}
+  .headRight{display:flex;align-items:center;gap:14px}
+  .toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(207,232,255,.35);padding:6px 10px;border-radius:100px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .toggle:hover{border-color:var(--line);color:var(--line)}
+  .toggle[aria-pressed="true"]{background:var(--line);color:var(--blue);border-color:var(--line)}
+  .toggle i{width:5px;height:5px;border-radius:50%;background:var(--ochre);display:block}
+
+  .titleRow{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:16px 0 12px;flex-wrap:wrap}
+  .titleRow h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,3.3vw,2.7rem);letter-spacing:-.03em;line-height:1}
+  .titleRow h1 em{font-style:italic;color:var(--ochre)}
+  .titleRow p{color:var(--dim);max-width:38ch;font-size:.66rem;line-height:1.7;text-align:right}
+
+  .drawingRow{flex:1;display:grid;grid-template-columns:1fr 270px;gap:16px;min-height:0;padding-bottom:14px}
+  .sheet{position:relative;border:1px solid rgba(207,232,255,.5);background:rgba(2,19,34,.35);padding:10px;display:flex;flex-direction:column;min-width:0;
+    box-shadow:0 30px 80px rgba(0,0,0,.3),inset 0 0 80px rgba(2,10,20,.3)}
+  .sheet::before{content:"";position:absolute;inset:19px;border:1px solid rgba(207,232,255,.18);pointer-events:none}
+  .sheetTop{display:flex;justify-content:space-between;gap:16px;padding:2px 4px 8px;color:var(--dim);z-index:2}
+  .sheetTop b{color:var(--line);font-weight:400}
+  svg#plan{display:block;width:100%;height:auto;flex:1;min-height:0;overflow:visible}
+  .planLine{stroke:var(--line);fill:none;vector-effect:non-scaling-stroke}
+  .planThin{stroke:rgba(207,232,255,.6);fill:none;stroke-width:.8;vector-effect:non-scaling-stroke}
+  .dashed{stroke-dasharray:4 4}
+  .hatch{stroke:rgba(207,232,255,.35);stroke-width:.6}
+  .label{fill:var(--line);font-family:var(--mono);font-size:8.5px;letter-spacing:2px;text-transform:uppercase}
+  .label.small{font-size:6.5px;letter-spacing:1.4px;fill:var(--dim)}
+  .dimText{fill:var(--dim);font-family:var(--mono);font-size:7px;letter-spacing:1.2px}
+  .furniture{stroke:rgba(207,232,255,.5);fill:none;stroke-width:.9}
+  .room{fill:transparent;cursor:pointer;transition:fill .25s}
+  .room:hover{fill:rgba(207,232,255,.06)}
+  .room.sel{fill:rgba(230,179,92,.13);stroke:var(--ochre);stroke-width:1.4;stroke-dasharray:5 3}
+  .roomLabel{fill:var(--line);font-family:var(--mono);font-size:9px;letter-spacing:2px;pointer-events:none;text-transform:uppercase}
+  .roomArea{fill:var(--dim);font-family:var(--mono);font-size:7px;letter-spacing:1px;pointer-events:none}
+  .annot{transition:opacity .3s}
+  .no-annot .annot{opacity:0}
+  .north{fill:none;stroke:var(--line);stroke-width:.8}
+  .northText{fill:var(--line);font-family:var(--mono);font-size:7px;letter-spacing:1px}
+  .sheetFoot{display:flex;justify-content:space-between;gap:14px;padding:8px 4px 2px;color:var(--dim);border-top:1px solid rgba(207,232,255,.18);margin-top:6px;flex-wrap:wrap}
+  .sheetFoot b{color:var(--line);font-weight:400}
+
+  .spec{border:1px solid rgba(207,232,255,.3);background:rgba(3,22,38,.5);display:flex;flex-direction:column}
+  .specTop{padding:10px 12px;border-bottom:1px solid rgba(207,232,255,.18);display:flex;justify-content:space-between;color:var(--dim)}
+  .specTop b{color:var(--line);font-weight:400}
+  .roomInfo{padding:14px 12px;border-bottom:1px solid rgba(207,232,255,.18)}
+  .roomInfo .no{color:var(--ochre);font-family:var(--mono);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase}
+  .roomInfo h2{font-family:var(--serif);font-weight:400;font-size:1.5rem;letter-spacing:-.02em;margin:5px 0 8px;color:var(--line)}
+  .roomInfo p{color:var(--dim);font-size:.66rem;line-height:1.75;min-height:4.6em}
+  .roomData{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(207,232,255,.15);margin-top:12px;border:1px solid rgba(207,232,255,.15)}
+  .roomData div{background:var(--blue2);padding:7px 8px}
+  .roomData span{display:block;color:var(--dim);font-family:var(--mono);font-size:.38rem;letter-spacing:.1em;text-transform:uppercase}
+  .roomData b{display:block;margin-top:3px;font-family:var(--serif);font-weight:400;font-size:.9rem;color:var(--line)}
+  .legend{padding:12px;border-bottom:1px solid rgba(207,232,255,.18)}
+  .legendRow{display:flex;align-items:center;gap:9px;padding:4px 0;color:var(--dim)}
+  .legendRow svg{flex:none}
+  .legendRow span{font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase}
+  .specFoot{margin-top:auto;padding:12px;color:var(--dim);line-height:1.8}
+  .specFoot b{color:var(--line);font-weight:400}
+  .revision{display:flex;justify-content:space-between;border-top:1px solid rgba(207,232,255,.15);padding-top:6px;margin-top:6px;color:var(--dim)}
+
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 20px;border-top:1px solid rgba(207,232,255,.16);color:rgba(207,232,255,.35)}
+
+  @media(max-width:980px){
+    .drawingRow{grid-template-columns:1fr}
+    .spec{display:grid;grid-template-columns:1fr 1fr;align-items:start}
+    .specTop{grid-column:1/-1}
+    .specFoot{grid-column:1/-1;margin-top:0}
+    .roomInfo{border-bottom:0;border-right:1px solid rgba(207,232,255,.18)}
+    .legend{border-bottom:0}
+  }
+  @media(max-width:640px){
+    .headMid{display:none}
+    .headRight .mono{display:none}
+    .titleRow{flex-direction:column;align-items:flex-start;gap:6px}
+    .titleRow p{text-align:left}
+    .sheet{padding:6px}
+    .sheet::before{inset:11px}
+    .spec{grid-template-columns:1fr}
+    .roomInfo{border-right:0;border-bottom:1px solid rgba(207,232,255,.18)}
+    .sheetFoot{font-size:.4rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+  #plan [stroke="var(--line)"]{stroke:#cfe8ff}
+  #plan [fill="var(--line)"]{fill:#cfe8ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="sq" aria-hidden="true"></span>Atelier Nord <span>/ architecture</span></a>
+    <div class="headMid mono"><span>Project <b>N° 07</b></span><span>Ground floor</span><span>Issue <b>04</b></span></div>
+    <div class="headRight"><button class="toggle" id="annot" aria-pressed="true"><i aria-hidden="true"></i>Annotations</button></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <div class="titleRow">
+      <div><h1>House No. 7 — <em>a plan for slow light.</em></h1></div>
+      <p>A four-room dwelling on a south-facing slope. Drawing set A: ground floor, sealed and issued for construction. All dimensions in millimetres.</p>
+    </div>
+
+    <div class="drawingRow">
+      <div class="sheet">
+        <div class="sheetTop mono"><span>Drawing <b>A-101</b> — ground floor plan</span><span>Scale <b>1:100</b> · 17.10.26</span></div>
+        <svg id="plan" viewBox="0 0 900 600" role="img" aria-label="Ground floor plan of House No. 7">
+          <g id="annotations">
+            <!-- dimensions -->
+            <g class="annot">
+              <line x1="90" y1="56" x2="810" y2="56" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <line x1="90" y1="50" x2="90" y2="62" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <line x1="810" y1="50" x2="810" y2="62" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <line x1="90" y1="56" x2="120" y2="50" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <line x1="810" y1="56" x2="780" y2="50" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <text x="450" y="48" text-anchor="middle" class="dimText">14 400</text>
+              <line x1="56" y1="80" x2="56" y2="520" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <line x1="50" y1="80" x2="62" y2="80" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <line x1="50" y1="520" x2="62" y2="520" stroke="rgba(207,232,255,.4)" stroke-width=".7"/>
+              <text x="42" y="304" text-anchor="middle" transform="rotate(-90 42 304)" class="dimText">8 800</text>
+            </g>
+
+            <!-- outer walls -->
+            <rect x="90" y="80" width="720" height="440" fill="rgba(2,17,30,.55)" stroke="var(--line)" stroke-width="5"/>
+            <rect x="98" y="88" width="704" height="424" fill="none" stroke="rgba(207,232,255,.5)" stroke-width="1"/>
+            <!-- windows -->
+            <g stroke="var(--blue2)" stroke-width="7">
+              <line x1="200" y1="80" x2="310" y2="80"/><line x1="580" y1="80" x2="700" y2="80"/>
+              <line x1="90" y1="170" x2="90" y2="260"/><line x1="90" y1="390" x2="90" y2="470"/>
+              <line x1="810" y1="150" x2="810" y2="250"/><line x1="810" y1="400" x2="810" y2="470"/>
+              <line x1="720" y1="520" x2="790" y2="520"/>
+            </g>
+            <g stroke="var(--line)" stroke-width=".8">
+              <line x1="200" y1="80" x2="310" y2="80"/><line x1="580" y1="80" x2="700" y2="80"/>
+              <line x1="90" y1="170" x2="90" y2="260"/><line x1="90" y1="390" x2="90" y2="470"/>
+              <line x1="810" y1="150" x2="810" y2="250"/><line x1="810" y1="400" x2="810" y2="470"/>
+              <line x1="720" y1="520" x2="790" y2="520"/>
+            </g>
+
+            <!-- interior walls with door gaps -->
+            <g stroke="var(--line)" stroke-width="4" fill="none">
+              <line x1="420" y1="80" x2="420" y2="230"/>
+              <line x1="420" y1="290" x2="420" y2="330"/>
+              <line x1="90" y1="330" x2="160" y2="330"/>
+              <line x1="220" y1="330" x2="420" y2="330"/>
+              <line x1="480" y1="330" x2="810" y2="330"/>
+              <line x1="620" y1="330" x2="620" y2="380"/>
+              <line x1="620" y1="450" x2="620" y2="520"/>
+            </g>
+            <!-- door swings -->
+            <g stroke="rgba(207,232,255,.7)" stroke-width=".8" fill="none">
+              <path d="M420,230 A60,60 0 0 1 480,290"/>
+              <line x1="420" y1="230" x2="420" y2="290" stroke-dasharray="2 3"/>
+              <path d="M160,330 A60,60 0 0 0 220,270"/>
+              <line x1="160" y1="330" x2="220" y2="330" stroke-dasharray="2 3"/>
+              <path d="M480,330 A60,60 0 0 1 420,270" transform="translate(0,0)" opacity="0"/>
+              <path d="M620,380 A70,70 0 0 1 690,450"/>
+              <line x1="620" y1="380" x2="690" y2="380" stroke-dasharray="2 3"/>
+            </g>
+
+            <!-- furniture, living -->
+            <g class="furniture">
+              <rect x="140" y="190" width="120" height="38" rx="3"/>
+              <rect x="140" y="190" width="38" height="38" rx="2"/>
+              <rect x="222" y="190" width="38" height="38" rx="2"/>
+              <ellipse cx="250" cy="270" rx="54" ry="24"/>
+              <circle cx="250" cy="270" r="14"/>
+              <rect x="140" y="120" width="42" height="42" rx="1"/>
+              <path d="M146,126 L176,156 M176,126 L146,156"/>
+              <rect x="330" y="110" width="42" height="70" rx="1"/>
+              <path d="M336,120 L366,120 M336,130 L366,130 M336,140 L366,140"/>
+            </g>
+            <!-- kitchen/dining -->
+            <g class="furniture">
+              <rect x="500" y="120" width="160" height="34" rx="1"/>
+              <circle cx="540" cy="137" r="7"/><circle cx="580" cy="137" r="7"/><circle cx="620" cy="137" r="7"/>
+              <rect x="500" y="180" width="120" height="64" rx="2"/>
+              <circle cx="560" cy="212" r="24"/>
+              <rect x="680" y="120" width="52" height="120" rx="1"/>
+              <path d="M686,130 L726,130 M686,150 L726,150 M686,170 L726,170"/>
+              <rect x="700" y="250" width="60" height="28" rx="2"/>
+            </g>
+            <!-- bedroom -->
+            <g class="furniture">
+              <rect x="150" y="390" width="150" height="100" rx="2"/>
+              <rect x="158" y="398" width="52" height="24" rx="2"/>
+              <rect x="240" y="398" width="52" height="24" rx="2"/>
+              <path d="M158,440 L292,440"/>
+              <rect x="280" y="440" width="34" height="50" rx="1"/>
+              <rect x="120" y="360" width="28" height="28" rx="1"/>
+              <rect x="460" y="380" width="80" height="90" rx="1"/>
+              <path d="M470,390 L530,390 M470,400 L530,400"/>
+            </g>
+            <!-- bath -->
+            <g class="furniture">
+              <rect x="670" y="380" width="96" height="54" rx="20"/>
+              <circle cx="718" cy="407" r="6"/>
+              <rect x="780" y="380" width="18" height="30" rx="6"/>
+              <path d="M660,470 h60 v30 h-60 z"/>
+              <path d="M660,478 h60 M660,486 h60 M660,494 h60"/>
+            </g>
+            <!-- plants -->
+            <g stroke="rgba(207,232,255,.55)" fill="none" stroke-width=".9">
+              <circle cx="360" cy="470" r="20"/><path d="M360,450 v40 M340,470 h40 M347,457 l26,26 M373,457 l-26,26"/>
+              <circle cx="760" cy="290" r="17"/><path d="M760,273 v34 M743,290 h34"/>
+            </g>
+
+            <!-- labels -->
+            <g class="annot">
+              <text x="200" y="300" class="roomLabel">Living</text><text x="200" y="312" class="roomArea">42.6 m² · south light</text>
+              <text x="520" y="220" class="roomLabel">Kitchen / dining</text><text x="520" y="232" class="roomArea">38.2 m² · east light</text>
+              <text x="200" y="380" class="roomLabel">Bedroom</text><text x="200" y="392" class="roomArea">28.4 m² · quiet</text>
+              <text x="660" y="500" class="roomLabel">Bath</text><text x="660" y="512" class="roomArea">9.8 m²</text>
+              <text x="640" y="270" text-anchor="middle" class="label small">ENTRY</text>
+              <line x1="620" y1="260" x2="620" y2="330" stroke="rgba(207,232,255,.4)" stroke-width=".8" stroke-dasharray="3 3"/>
+            </g>
+
+            <!-- north arrow -->
+            <g transform="translate(838,92)">
+              <circle r="22" class="north"/>
+              <path d="M0,-15 L6,10 L0,5 L-6,10 Z" fill="var(--line)"/>
+              <text x="0" y="-28" text-anchor="middle" class="northText">N</text>
+            </g>
+            <!-- section marks -->
+            <g stroke="rgba(230,179,92,.7)" fill="none" stroke-width="1">
+              <circle cx="70" cy="330" r="10"/><line x1="64" y1="330" x2="76" y2="330"/><text x="70" y="354" text-anchor="middle" fill="var(--ochre)" font-family="ui-monospace,monospace" font-size="7">A</text>
+              <circle cx="830" cy="330" r="10"/><line x1="824" y1="330" x2="836" y2="330"/><text x="830" y="354" text-anchor="middle" fill="var(--ochre)" font-family="ui-monospace,monospace" font-size="7">A</text>
+            </g>
+
+            <!-- interactive room overlays -->
+            <rect class="room" data-room="living" x="98" y="88" width="322" height="242" aria-label="Living room"/>
+            <rect class="room" data-room="kitchen" x="420" y="88" width="390" height="242" aria-label="Kitchen and dining"/>
+            <rect class="room" data-room="bedroom" x="98" y="330" width="522" height="190" aria-label="Bedroom"/>
+            <rect class="room" data-room="bath" x="620" y="330" width="190" height="190" aria-label="Bathroom"/>
+          </g>
+
+          <!-- title block -->
+          <g transform="translate(560,548)">
+            <rect width="250" height="46" fill="none" stroke="rgba(207,232,255,.5)"/>
+            <line x1="0" y1="23" x2="250" y2="23" stroke="rgba(207,232,255,.3)"/>
+            <line x1="160" y1="0" x2="160" y2="46" stroke="rgba(207,232,255,.3)"/>
+            <text x="8" y="15" fill="var(--line)" font-family="ui-monospace,monospace" font-size="7" letter-spacing="1">HOUSE N° 07 / ATELIER NORD</text>
+            <text x="8" y="38" fill="var(--dim)" font-family="ui-monospace,monospace" font-size="6" letter-spacing="1">DRAWN 17.10.26 · CHECKED A.N.</text>
+            <text x="169" y="15" fill="var(--line)" font-family="ui-monospace,monospace" font-size="7" letter-spacing="1">A-101</text>
+            <text x="169" y="38" fill="var(--dim)" font-family="ui-monospace,monospace" font-size="6" letter-spacing="1">1:100 / GROUND</text>
+          </g>
+        </svg>
+        <div class="sheetFoot mono"><span>All dimensions in mm · do not scale from drawing</span><span>Revision <b>04</b> / issued for construction</span></div>
+      </div>
+
+      <aside class="spec">
+        <div class="specTop mono"><span>Room schedule</span><span><b id="roomIndex">01</b> / 04</span></div>
+        <div class="roomInfo">
+          <span class="no" id="roomNo">01 — Living</span>
+          <h2 id="roomName">Living room</h2>
+          <p id="roomDesc">The long room faces south and takes the whole afternoon. A deep window seat and a low ceiling make it feel like a place to stay.</p>
+          <div class="roomData">
+            <div><span>Area</span><b id="roomArea">42.6 m²</b></div>
+            <div><span>Ceiling</span><b id="roomHeight">2.7 m</b></div>
+            <div><span>Aspect</span><b id="roomAspect">South</b></div>
+            <div><span>Floor</span><b id="roomFloor">Oak</b></div>
+          </div>
+        </div>
+        <div class="legend">
+          <div class="legendRow"><svg width="30" height="8" aria-hidden="true"><line x1="0" y1="4" x2="30" y2="4" stroke="var(--line)" stroke-width="2"/><line x1="0" y1="4" x2="30" y2="4" stroke="rgba(207,232,255,.4)" stroke-width="5" opacity=".2"/></svg><span>Wall / 240 mm</span></div>
+          <div class="legendRow"><svg width="30" height="8" aria-hidden="true"><line x1="0" y1="4" x2="30" y2="4" stroke="var(--line)" stroke-width="2" stroke-dasharray="5 3"/></svg><span>Glazing</span></div>
+          <div class="legendRow"><svg width="30" height="8" aria-hidden="true"><circle cx="15" cy="4" r="3" fill="none" stroke="var(--ochre)"/></svg><span>Selected room</span></div>
+          <div class="legendRow"><svg width="30" height="8" aria-hidden="true"><line x1="0" y1="4" x2="30" y2="4" stroke="rgba(207,232,255,.4)" stroke-width=".8"/></svg><span>Dimension line</span></div>
+        </div>
+        <div class="specFoot mono">
+          Atelier Nord · drawing set 07<br>
+          <b>Ground floor</b> / 88 m²<br>
+          <div class="revision"><span>Rev. 04</span><span>17.10.26</span></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>House No. 7 / a fictional drawing set</span>
+    <span>Plan, line, dimension — one HTML file</span>
+    <span>© 2026 Atelier Nord</span>
+  </footer>
+</div>
+
+<script>
+  const rooms = {
+    living: { no: '01 — Living', name: 'Living room', area: '42.6 m²', height: '2.7 m', aspect: 'South', floor: 'Oak', desc: 'The long room faces south and takes the whole afternoon. A deep window seat and a low ceiling make it feel like a place to stay.' },
+    kitchen: { no: '02 — Kitchen', name: 'Kitchen / dining', area: '38.2 m²', height: '2.9 m', aspect: 'East', floor: 'Terrazzo', desc: 'Morning light arrives over the counter. The table sits in the bay, close enough to the garden to eat outside without moving the plates.' },
+    bedroom: { no: '03 — Bedroom', name: 'Bedroom', area: '28.4 m²', height: '2.6 m', aspect: 'West', floor: 'Wool', desc: 'A quiet room at the back of the plan. One window, high and wide, so the last light lands on the wall rather than the bed.' },
+    bath: { no: '04 — Bath', name: 'Bathroom', area: '9.8 m²', height: '2.4 m', aspect: 'North', floor: 'Stone', desc: 'Small, warm and deliberately dim. A tall slot window lets steam leave and a little blue light in.' }
+  };
+  const order = ['living', 'kitchen', 'bedroom', 'bath'];
+  const roomEls = Array.from(document.querySelectorAll('.room'));
+  let selected = 'living';
+
+  function selectRoom(key){
+    selected = key;
+    const r = rooms[key];
+    roomEls.forEach(el => el.classList.toggle('sel', el.dataset.room === key));
+    document.getElementById('roomNo').textContent = r.no;
+    document.getElementById('roomName').textContent = r.name;
+    document.getElementById('roomDesc').textContent = r.desc;
+    document.getElementById('roomArea').textContent = r.area;
+    document.getElementById('roomHeight').textContent = r.height;
+    document.getElementById('roomAspect').textContent = r.aspect;
+    document.getElementById('roomFloor').textContent = r.floor;
+    document.getElementById('roomIndex').textContent = String(order.indexOf(key) + 1).padStart(2, '0');
+  }
+
+  roomEls.forEach(el => {
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.addEventListener('click', () => selectRoom(el.dataset.room));
+    el.addEventListener('pointerenter', () => { document.getElementById('roomName').textContent = rooms[el.dataset.room].name; });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ selectRoom(el.dataset.room); e.preventDefault(); } });
+  });
+
+  const annot = document.getElementById('annot');
+  annot.addEventListener('click', () => {
+    const on = annot.getAttribute('aria-pressed') !== 'true';
+    annot.setAttribute('aria-pressed', String(on));
+    document.getElementById('plan').classList.toggle('no-annot', !on);
+  });
+  selectRoom('living');
+</script>
+</body>
+</html>

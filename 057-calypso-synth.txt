@@ -1,0 +1,20 @@
+TITLE
+Calypso 8 — An Analog Polyphonic Instrument
+
+PROMPT
+Create a warm, vintage analog synthesizer panel called "Calypso 8". Cream enamel faceplate, walnut side cheeks, burnt-orange accents and dark brown engraving. The panel contains a small green oscilloscope, four large cream knobs (Cutoff, Resonance, Attack, Release) with tick rings and orange indicators, two vertical sliders, a patch bay with six jacks and two curved patch cables, a power switch with an amber lamp, and a fourteen-key keyboard along the bottom. Knobs can be dragged or operated with arrow keys; the oscilloscope waveform responds to the knob values and to keys being played. A "Re-patch" button changes the cable routing colours. Include serial plate and specification notes. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+An instrument photographed on a workbench: warm, tactile and slightly worn. The design is inspired by 1970s European synths but redrawn with contemporary precision — no fake scratches, just beautiful materials, generous spacing and engraved labels. Orange is used only for indicators, cables and the power lamp.
+
+VISUAL TECHNIQUES
+- Walnut side cheeks with layered CSS wood grain gradients; cream enamel panel with inset shadows and screw details.
+- Four rotary knobs built from radial gradients, conic tick rings, engraved pointer lines and a soft drop shadow.
+- Drag-to-turn knobs with vertical pointer movement, clamped values, numeric readouts and arrow-key support.
+- Canvas oscilloscope with a green phosphor waveform, grid and glow, responding to knob values and key presses.
+- Six patch jacks and two SVG bezier cables; re-patch randomises colours and curves.
+- Cream and black keys with press states; note names and a small LED.
+- Responsive reflow from a wide instrument to a compact two-column control panel.
+
+INTERACTION MODEL
+Drag a knob up or down to change its value; arrow keys nudge it when focused. Sliders work natively. Pressing or clicking a key lights it, updates the note display and briefly alters the waveform. "Re-patch" redraws the cables with new colours and shapes. The power switch toggles the amber lamp and pauses the oscilloscope animation. Reduced-motion draws a still waveform and disables cable transitions.

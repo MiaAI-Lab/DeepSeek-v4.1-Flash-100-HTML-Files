@@ -1,0 +1,20 @@
+TITLE
+Nocturne — We Are Made of Old Light
+
+PROMPT
+Create a full-viewport generative star-field experience called "Nocturne". On load, thousands of tiny stars form the word "NOCTURNE" across a deep midnight sky, then drift slowly; a few nearby stars are joined by faint cyan constellation lines. Moving the pointer repels the nearest stars and clicking them sends a ripple through the field before it reforms. The composition is cinematic and minimal: an index at the top, a large editorial statement "We are made of old light." in the lower left, and a small technical readout in the lower right. Palette: near-black navy (#04060d), starlight ivory (#e4ebff), a single warm amber star and pale cyan lines. Use a monospaced scientific vocabulary, a serif italic accent and very restrained UI. The canvas must be the hero. Fully responsive, one standalone HTML file with inline CSS and JS, no external libraries, images or fonts.
+
+DESIGN INTENT
+A quiet, astronomical version of a hero section — closer to an observatory plate than a website header. The word is legible as a constellation only when you look for it; individual stars remain distinct points with their own brightness and drift. UI is placed at the edges like annotations on a star chart, leaving the centre to the sky. The single amber star is the emotional anchor.
+
+VISUAL TECHNIQUES
+- Offscreen canvas text rasterization to sample the word NOCTURNE into star positions.
+- Particle system with depth, brightness, easing toward target positions and subtle twinkle.
+- Proximity repulsion around the pointer; click impulse and spring return.
+- Constellation lines drawn between stars within a distance threshold, with a cap for performance.
+- Radial nebula gradients, scattered dim stars and a faint horizon glow.
+- Retina-aware canvas sizing, throttled resize and a reduced-motion static star chart.
+- Edge-anchored editorial typography and monospaced technical readouts.
+
+INTERACTION MODEL
+Stars drift and twinkle continuously. Moving the pointer pushes nearby stars away; releasing lets them ease back. Clicking anywhere emits a ripple and briefly scatters the constellation. A "trace" button toggles constellation lines, and a "scatter / reform" control animates the whole field. Keyboard control: the trace and scatter actions are buttons, and reduced-motion renders a still, fully legible star word.

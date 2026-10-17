@@ -1,0 +1,20 @@
+TITLE
+Maison Orré — Ambre Noir, No. 07
+
+PROMPT
+Create a luxury perfume landing page for a fictional house, Maison Orré, presenting "Ambre Noir No. 07". The palette is warm near-black burgundy, antique gold and ivory; the mood is a dim atelier at dusk, lit by one low lamp. The left column carries a small house mark, the fragrance name in an oversized high-contrast serif ("The dark has a warmth."), a note line (bergamot, iris, amber), and a quiet price and CTA. The right side holds a CSS-built glass bottle — amber liquid, gold cap, cream label, edge highlights and a soft reflection — that tilts with the pointer. Clicking "Lift the cap" raises the cap to reveal the atomiser. Below, a three-part composition of top, heart and base notes and a short perfumer's note. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Quiet luxury, not gloss. The page is mostly darkness and one warm pool of light; the bottle is the single bright object, built from gradients rather than a photograph. Type is the other luxury material: a large serif with tight, confident spacing, tiny tracked sans labels, and gold used as a line, never as a fill.
+
+VISUAL TECHNIQUES
+- CSS glass bottle with multiple linear gradients, inner highlights, edge lines and amber liquid.
+- Gold cap with engraved horizontal ridges and a soft metallic gradient; cap lifts to reveal a dark atomiser.
+- Pointer-driven 3D tilt on the bottle and a moving specular highlight.
+- Warm radial spotlight, soft floor reflection, dust motes and film grain.
+- Editorial serif display type with italic gold accents; tracked monospaced metadata.
+- Note composition in three columns with hairline rules and hover emphasis.
+- Responsive stacking with the bottle centred above the notes on mobile.
+
+INTERACTION MODEL
+Moving the pointer over the bottle tilts it gently and shifts its highlight. Clicking "Lift the cap" raises the gold cap, revealing the atomiser, and changes the label to "Cap lifted". A "Add to discovery set" button gives a quiet inline confirmation. Note rows highlight on hover. All controls are buttons with keyboard focus, and reduced-motion removes the tilt and transition while keeping the cap states.

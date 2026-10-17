@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Prism — drag glass, bend white light into a spectrum.">
+<title>Prism — White Is a Crowd</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --bg:#07080b; --panel:#0d0f14; --cream:#eee9dc; --dim:rgba(238,233,220,.46); --line:rgba(238,233,220,.13);
+    --amber:#e8b567;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--bg);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 68% 36%,#141821,transparent 65%),radial-gradient(600px 400px at 10% 90%,#0e1118,transparent 70%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.17;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:#d9a441;color:#08090c}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--amber);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.02rem;letter-spacing:.06em}
+  .brand .tri{width:15px;height:14px;flex:none;background:linear-gradient(150deg,rgba(255,255,255,.7),rgba(255,255,255,.1));clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--amber);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.62fr 1.38fr;gap:clamp(14px,2.5vw,34px);align-items:center;padding:clamp(14px,2.5vw,26px) 0}
+  .intro{padding-right:clamp(0px,1vw,10px)}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--amber);margin-bottom:12px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--amber)}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,4.6vw,4.4rem);line-height:.92;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--amber)}
+  .intro p{margin-top:14px;max-width:35ch;color:var(--dim);font-size:.7rem;line-height:1.8}
+  .readouts{margin-top:16px;border-top:1px solid var(--line);padding-top:8px;display:grid;gap:5px;color:var(--dim)}
+  .readouts div{display:flex;justify-content:space-between;border-bottom:1px solid rgba(238,233,220,.06);padding-bottom:3px}
+  .readouts b{color:var(--cream);font-weight:400}
+  .readouts .v{color:var(--amber);font-family:var(--mono);font-size:.46rem;letter-spacing:.03em}
+
+  .stageWrap{position:relative;min-width:0}
+  .stage{position:relative;border:1px solid var(--line);background:radial-gradient(600px 400px at 55% 45%,#10141c,#080a0e 70%);overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.5)}
+  .stage svg{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+  .stage svg:active{cursor:grabbing}
+  .stage .glass{transition:filter .3s}
+  .stage.hot .glass{filter:drop-shadow(0 0 10px rgba(160,210,255,.35))}
+  .beam{stroke-linecap:round}
+  .ray{cursor:pointer;transition:stroke-width .15s,opacity .15s}
+  .ray.dim{opacity:.22}
+  .ray.sel{stroke-width:5}
+  .stageLabel{position:absolute;left:12px;top:10px;color:rgba(238,233,220,.3);pointer-events:none}
+  .stageLabel b{color:rgba(238,233,220,.55);font-weight:400}
+  .controls{margin-top:10px;display:flex;gap:clamp(10px,2vw,22px);align-items:center;flex-wrap:wrap;border:1px solid var(--line);padding:8px clamp(10px,1.6vw,14px);background:rgba(13,15,20,.6)}
+  .ctrl{flex:1;min-width:110px}
+  .ctrl .row{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:1px}
+  .ctrl .row b{color:var(--cream);font-weight:400}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(238,233,220,.25)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:9px;height:9px;border-radius:50%;background:var(--amber);margin-top:-4px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(238,233,220,.25)}
+  input[type=range]::-moz-range-thumb{width:8px;height:8px;border:0;border-radius:50%;background:var(--amber)}
+  .reset{border:1px solid var(--line);padding:6px 9px;color:var(--dim);font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase;transition:color .2s,border-color .2s}
+  .reset:hover{color:var(--cream);border-color:var(--cream)}
+
+  .spectrum{display:flex;height:26px;margin-top:8px;border:1px solid var(--line);overflow:hidden}
+  .spectrum button{flex:1;border:0;position:relative;transition:flex-grow .2s,filter .2s;filter:saturate(.8)}
+  .spectrum button:hover,.spectrum button[aria-pressed="true"]{flex-grow:2;filter:saturate(1.3) brightness(1.15)}
+  .spectrum button span{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-family:var(--mono);font-size:.28rem;color:rgba(0,0,0,.55);letter-spacing:.02em}
+  .wlRead{margin-top:5px;color:var(--dim);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .wlRead b{color:var(--cream);font-weight:400}
+
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:8px 0 14px;border-top:1px solid var(--line);color:rgba(238,233,220,.3)}
+
+  @media(max-width:900px){
+    .main{grid-template-columns:.9fr 1.1fr}
+    .intro p{display:none}
+    .headMid{display:none}
+  }
+  @media(max-width:700px){
+    .main{grid-template-columns:1fr;gap:14px}
+    .intro{display:flex;flex-wrap:wrap;gap:0 16px;align-items:flex-end}
+    .intro h1{font-size:clamp(2.3rem,9vw,3.4rem)}
+    .eyebrow{width:100%;margin-bottom:6px}
+    .readouts{width:100%;grid-template-columns:1fr 1fr;gap:0 14px;margin-top:10px}
+    .stageWrap{order:1}
+    .intro{order:2}
+    .headRight{display:none}
+  }
+  @media(max-width:480px){
+    .wrap{padding:0 10px}
+    h1{font-size:2.3rem}
+    .controls{gap:8px}
+    .ctrl{min-width:44%}
+    .reset{width:100%}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="tri" aria-hidden="true"></span><span>Prism<small>Optics study no. 3</small></span></a>
+    <div class="headMid mono"><span>Medium <b>glass</b></span><span>Apex <b>60°</b></span><span>Band <b>400–700 nm</b></span></div>
+    <div class="headRight mono">Optical bench<br><b>Room 3 / dark</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="eyebrow mono">A demonstration</p>
+      <h1>White is<br>a <em>crowd.</em></h1>
+      <p>One beam goes in. Inside the glass, every wavelength takes a slightly different road. What leaves is a disagreement we call colour.</p>
+      <div class="readouts mono">
+        <div><span>Apex angle</span><b class="v">60.0°</b></div>
+        <div><span>Incoming tilt</span><b class="v" id="tiltOut">−12°</b></div>
+        <div><span>Dispersion</span><b class="v" id="dispOut">28°</b></div>
+        <div><span>Selected</span><b id="selOut">Full spectrum</b></div>
+      </div>
+    </div>
+
+    <div class="stageWrap">
+      <div class="stage" id="stage">
+        <svg id="svg" viewBox="0 0 900 600" role="img" aria-label="Glass prism splitting a white beam into a spectrum">
+          <defs>
+            <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="rgba(200,230,255,.24)"/>
+              <stop offset=".45" stop-color="rgba(170,210,255,.07)"/>
+              <stop offset="1" stop-color="rgba(230,245,255,.2)"/>
+            </linearGradient>
+            <linearGradient id="incoming" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="rgba(255,255,255,0)"/>
+              <stop offset=".75" stop-color="rgba(255,255,255,.85)"/>
+              <stop offset="1" stop-color="rgba(255,255,255,1)"/>
+            </linearGradient>
+          </defs>
+          <g id="beams"></g>
+          <g id="prismGroup" transform="translate(430,300)">
+            <polygon class="glass" points="0,-140 -155,105 155,105" fill="url(#glass)" stroke="rgba(215,238,255,.65)" stroke-width="1.2"/>
+            <polygon points="0,-140 -155,105 20,105" fill="rgba(255,255,255,.035)"/>
+            <line x1="0" y1="-140" x2="-60" y2="105" stroke="rgba(255,255,255,.25)" stroke-width=".7"/>
+            <line x1="0" y1="-140" x2="70" y2="105" stroke="rgba(255,255,255,.18)" stroke-width=".7"/>
+            <line x1="-155" y1="105" x2="155" y2="105" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+            <circle cx="0" cy="-140" r="1.6" fill="#fff"/>
+            <circle cx="-155" cy="105" r="1.6" fill="#fff"/>
+            <circle cx="155" cy="105" r="1.6" fill="#fff"/>
+          </g>
+        </svg>
+        <div class="stageLabel mono">Drag the glass · <b>optical bench</b></div>
+      </div>
+
+      <div class="controls">
+        <div class="ctrl"><div class="row mono"><span>Tilt</span><b id="tiltOut2">−12°</b></div><input id="tilt" type="range" min="-35" max="20" value="-12" aria-label="Beam tilt"></div>
+        <div class="ctrl"><div class="row mono"><span>Dispersion</span><b id="dispOut2">28°</b></div><input id="disp" type="range" min="8" max="48" value="28" aria-label="Dispersion"></div>
+        <button class="reset" id="reset">↺ Reset bench</button>
+      </div>
+
+      <div class="spectrum" id="spectrum" role="group" aria-label="Wavelengths"></div>
+      <div class="wlRead mono"><span id="wlLabel">Drag a ray or choose a band</span><span>400 <b>→</b> 700 nm</span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Prism / a fictional optics bench</span>
+    <span>Angle of deviation exaggerated for pleasure</span>
+    <span>© 2026 · in a dark room</span>
+  </footer>
+</div>
+
+<script>
+  const svg = document.getElementById('svg');
+  const beams = document.getElementById('beams');
+  const prismGroup = document.getElementById('prismGroup');
+  const stage = document.getElementById('stage');
+  let px = 430, py = 300, tilt = -12, disp = 28, selected = null;
+  const bands = [
+    { name:'Red', nm:650, color:'#ff3b30', angle:-1 },
+    { name:'Orange', nm:610, color:'#ff8a00', angle:-.66 },
+    { name:'Yellow', nm:580, color:'#ffe14a', angle:-.33 },
+    { name:'Green', nm:540, color:'#5ce65c', angle:0 },
+    { name:'Cyan', nm:500, color:'#2fd8e8', angle:.33 },
+    { name:'Blue', nm:470, color:'#3b6bff', angle:.66 },
+    { name:'Violet', nm:420, color:'#9a4dff', angle:1 }
+  ];
+  const NS = 'http://www.w3.org/2000/svg';
+
+  function rayAngle(b, i){
+    return (b.angle) * (disp / 2) + (i - 3) * 2.2;
+  }
+  function line(x1, y1, x2, y2, stroke, width, opacity){
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('stroke', stroke); l.setAttribute('stroke-width', width); l.setAttribute('opacity', opacity || 1);
+    return l;
+  }
+  function draw(){
+    beams.innerHTML = '';
+    prismGroup.setAttribute('transform', 'translate(' + px + ',' + py + ')');
+    // incoming beam
+    const inY = py - 30 + Math.sin(tilt * Math.PI / 180) * 160;
+    beams.appendChild(line(0, Math.max(40, inY), px - 65, py + 18, 'url(#incoming)', 2.4, .95));
+    beams.appendChild(line(px - 65, py + 18, px + 18, py + 30, 'rgba(255,255,255,.66)', 1.4, .8));
+    // outgoing rays
+    const hitX = px + 60, hitY = py + 38;
+    bands.forEach((b, i) => {
+      const a = (rayAngle(b, i) + tilt * .35) * Math.PI / 180;
+      const ex = 920, ey = hitY + Math.tan(a) * (920 - hitX);
+      const l = line(hitX, hitY, ex, ey, b.color, 2.6, .92);
+      l.setAttribute('class', 'ray' + (selected !== null && selected !== i ? ' dim' : '') + (selected === i ? ' sel' : ''));
+      l.dataset.i = i;
+      l.style.cursor = 'pointer';
+      l.addEventListener('click', () => selectBand(i));
+      beams.appendChild(l);
+      // glow
+      const g = line(hitX, hitY, ex, ey, b.color, 9, .12);
+      beams.insertBefore(g, l);
+    });
+  }
+  function selectBand(i){
+    selected = selected === i ? null : i;
+    draw();
+    const b = bands[i];
+    document.getElementById('selOut').textContent = b ? b.name + ' · ' + b.nm + ' nm' : 'Full spectrum';
+    document.getElementById('wlLabel').textContent = b ? b.name + ' — ' + b.nm + ' nanometres, one road through the glass.' : 'Drag a ray or choose a band';
+    document.querySelectorAll('.spectrum button').forEach((x, j) => x.setAttribute('aria-pressed', String(j === i && selected !== null)));
+  }
+
+  const spectrum = document.getElementById('spectrum');
+  bands.slice().reverse().forEach((b, ri) => {
+    const i = bands.length - 1 - ri;
+    const btn = document.createElement('button');
+    btn.style.background = b.color;
+    btn.setAttribute('aria-label', b.name + ', ' + b.nm + ' nanometres');
+    btn.setAttribute('aria-pressed', 'false');
+    btn.dataset.i = i;
+    btn.innerHTML = '<span>' + b.nm + '</span>';
+    btn.addEventListener('click', () => selectBand(i));
+    btn.addEventListener('mouseenter', () => {
+      if (selected === null) { selected = i; draw(); }
+    });
+    btn.addEventListener('mouseleave', () => {
+      if (document.querySelector('.spectrum [aria-pressed="true"]') === null && selected === i){ selected = null; draw(); }
+    });
+    spectrum.appendChild(btn);
+  });
+
+  function syncLabels(){
+    document.getElementById('tiltOut').textContent = tilt + '°';
+    document.getElementById('tiltOut2').textContent = tilt + '°';
+    document.getElementById('dispOut').textContent = disp + '°';
+    document.getElementById('dispOut2').textContent = disp + '°';
+  }
+  document.getElementById('tilt').addEventListener('input', function(){ tilt = Number(this.value); syncLabels(); draw(); });
+  document.getElementById('disp').addEventListener('input', function(){ disp = Number(this.value); syncLabels(); draw(); });
+  document.getElementById('reset').addEventListener('click', () => {
+    px = 430; py = 300; tilt = -12; disp = 28; selected = null;
+    document.getElementById('tilt').value = tilt;
+    document.getElementById('disp').value = disp;
+    syncLabels(); draw();
+    document.getElementById('selOut').textContent = 'Full spectrum';
+    document.getElementById('wlLabel').textContent = 'Drag a ray or choose a band';
+    document.querySelectorAll('.spectrum button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+  });
+
+  let drag = null;
+  svg.addEventListener('pointerdown', e => {
+    const r = svg.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width * 900;
+    const y = (e.clientY - r.top) / r.height * 600;
+    if (Math.abs(x - px) < 190 && Math.abs(y - py) < 150){
+      drag = { x: e.clientX, y: e.clientY, px, py };
+      svg.setPointerCapture(e.pointerId);
+      stage.classList.add('hot');
+      e.preventDefault();
+    }
+  });
+  svg.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const r = svg.getBoundingClientRect();
+    px = Math.max(220, Math.min(620, drag.px + (e.clientX - drag.x) / r.width * 900));
+    py = Math.max(220, Math.min(400, drag.py + (e.clientY - drag.y) / r.height * 600));
+    draw();
+  });
+  svg.addEventListener('pointerup', () => { drag = null; stage.classList.remove('hot'); });
+  svg.addEventListener('pointerleave', () => { if (!drag) stage.classList.remove('hot'); });
+
+  draw(); syncLabels();
+</script>
+</body>
+</html>

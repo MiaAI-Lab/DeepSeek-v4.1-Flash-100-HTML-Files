@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bloom Lab — a generative botany experiment. Plant flowers, change the palette, let the field sway.">
+<title>Bloom Lab — Generative Botany 07</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f6f1e7; --ink:#1d3a2f; --coral:#d96a4a; --muted:#6f7d70; --line:rgba(29,58,47,.18);
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:linear-gradient(90deg,rgba(29,58,47,.045) 1px,transparent 1px),linear-gradient(rgba(29,58,47,.045) 1px,transparent 1px);
+    background-size:28px 28px}
+  ::selection{background:var(--coral);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--coral);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.56rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.6}
+  .wrap{max-width:1300px;margin:0 auto;padding:0 clamp(16px,3.4vw,40px)}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0;border-bottom:1px solid var(--ink)}
+  .brand{display:flex;align-items:baseline;gap:10px;font-family:var(--serif);font-size:1.05rem;letter-spacing:-.01em}
+  .brand b{font-weight:400}
+  .brand span{font-family:var(--mono);font-size:.48rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .headMeta{display:flex;gap:24px;color:var(--muted)}
+  .headMeta span b{color:var(--ink);font-weight:400}
+
+  .hero{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(28px,4.6vw,60px);align-items:start;padding:clamp(26px,4vw,46px) 0 30px}
+  .intro{padding-top:6px}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--coral);margin-bottom:18px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--coral)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,5.4vw,4.6rem);line-height:.96;letter-spacing:-.045em;font-weight:400}
+  h1 em{color:var(--coral);font-style:italic}
+  .note{margin-top:20px;max-width:38ch;font-size:.83rem;line-height:1.8;color:var(--muted)}
+  .note b{color:var(--ink);font-weight:500}
+
+  .controlCard{margin-top:26px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:16px 0}
+  .ctl{border-bottom:1px solid var(--line);padding:12px 0}
+  .ctl:last-child{border-bottom:0;padding-bottom:0}
+  .ctlHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--muted)}
+  .ctlHead output{color:var(--ink)}
+  input[type=range]{width:100%;height:18px;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--ink)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;background:var(--coral);border:1px solid var(--ink);margin-top:-6px}
+  input[type=range]::-moz-range-track{height:1px;background:var(--ink)}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--coral);border:1px solid var(--ink)}
+  .palettes{display:flex;gap:8px}
+  .pal{display:flex;align-items:center;gap:8px;border:1px solid transparent;padding:5px 9px 5px 6px;font-family:var(--mono);font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:border-color .2s,color .2s}
+  .pal i{width:12px;height:12px;border-radius:50%;background:var(--p);box-shadow:inset 0 0 0 1px rgba(29,58,47,.25)}
+  .pal:hover{color:var(--ink)}
+  .pal[aria-pressed="true"]{border-color:var(--ink);color:var(--ink)}
+  .toggles{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{border:1px solid var(--line);padding:7px 11px;font-family:var(--mono);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px;transition:background .2s,color .2s,border-color .2s}
+  .pill:hover{border-color:var(--ink);color:var(--ink)}
+  .pill[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .pill.plant{border-color:var(--coral);color:var(--coral)}
+  .pill.plant:hover{background:var(--coral);color:var(--paper);border-color:var(--coral)}
+  .readout{display:flex;justify-content:space-between;gap:12px;padding-top:14px;color:var(--muted)}
+  .readout b{color:var(--ink);font-weight:400}
+
+  .fieldWrap{border:1px solid var(--ink);background:rgba(255,255,255,.22);position:relative;box-shadow:10px 10px 0 rgba(29,58,47,.055)}
+  .fieldTop{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);color:var(--muted)}
+  .fieldTop .dot{width:5px;height:5px;border-radius:50%;background:var(--coral);display:inline-block;margin-right:6px}
+  .field{position:relative;height:clamp(380px,58vh,580px);cursor:crosshair;overflow:hidden;
+    background-image:linear-gradient(90deg,rgba(29,58,47,.09) 1px,transparent 1px),linear-gradient(rgba(29,58,47,.09) 1px,transparent 1px);
+    background-size:34px 34px}
+  #bloom{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .fieldHint{position:absolute;left:14px;bottom:12px;color:var(--muted);pointer-events:none;transition:opacity .6s}
+  .fieldHint.off{opacity:0}
+  .plate{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);padding:10px 12px;color:var(--muted)}
+  .plate b{color:var(--ink);font-weight:400}
+  .plate .stamp{width:26px;height:26px;border:1px solid var(--coral);border-radius:50%;display:grid;place-items:center;color:var(--coral);font-size:.6rem;flex:none}
+
+  .footNote{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:26px}
+  .footNote div{padding:14px 18px;border-right:1px solid var(--line);color:var(--muted);line-height:1.7}
+  .footNote div:first-child{padding-left:0}
+  .footNote div:last-child{border-right:0}
+  .footNote b{display:block;color:var(--ink);font-weight:400;margin-bottom:4px;font-family:var(--serif);font-size:.95rem}
+  footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:0 0 30px;color:var(--muted)}
+
+  @media(max-width:940px){
+    .hero{grid-template-columns:1fr;gap:30px}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+    .intro .kicker,.intro h1,.intro .note{grid-column:1}
+    .controlCard{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .fieldWrap{max-width:700px;width:100%}
+  }
+  @media(max-width:640px){
+    .headMeta span:last-child{display:none}
+    .intro{grid-template-columns:1fr}
+    .controlCard{grid-column:1;grid-row:auto;margin-top:8px}
+    .field{height:clamp(340px,52vh,440px)}
+    .footNote{grid-template-columns:1fr}
+    .footNote div{border-right:0;border-bottom:1px solid var(--line);padding-left:0}
+    .footNote div:last-child{border-bottom:0}
+    .palettes{flex-wrap:wrap}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><b>Bloom Lab</b><span>Generative botany · Experiment 07</span></a>
+    <div class="headMeta mono"><span>Field station: <b>the browser</b></span><span>Conditions: <b>gentle</b></span><span>Last revision <b>17.10.26</b></span></div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="bloom-title">
+      <div class="intro">
+        <p class="kicker mono">Generative botany / no. 07</p>
+        <h1 id="bloom-title">Grow something<br><em>improbable.</em></h1>
+        <p class="note">A small field that exists only while you are looking at it. Plant a seed by clicking the paper; the lab will choose the stem, the leaves and the number of petals. <b>Nothing here is rare except your attention.</b></p>
+
+        <div class="controlCard">
+          <div class="ctl">
+            <div class="ctlHead mono"><label for="petals">Petal count</label><output id="petalsOut" for="petals">8 petals</output></div>
+            <input id="petals" type="range" min="5" max="14" value="8" step="1">
+          </div>
+          <div class="ctl">
+            <div class="ctlHead mono"><span>Palette</span><span id="paletteName">Meadow</span></div>
+            <div class="palettes" role="group" aria-label="Palette">
+              <button class="pal" data-pal="meadow" style="--p:#7fae6a" aria-pressed="true"><i aria-hidden="true"></i>Meadow</button>
+              <button class="pal" data-pal="ember" style="--p:#d96a4a" aria-pressed="false"><i aria-hidden="true"></i>Ember</button>
+              <button class="pal" data-pal="dusk" style="--p:#8e86c9" aria-pressed="false"><i aria-hidden="true"></i>Dusk</button>
+            </div>
+          </div>
+          <div class="ctl">
+            <div class="toggles">
+              <button class="pill" id="wind" aria-pressed="true"><span aria-hidden="true">≈</span> Wind</button>
+              <button class="pill plant" id="plant">+ Plant a specimen</button>
+            </div>
+          </div>
+          <div class="readout mono">
+            <span>Specimens <b id="count">0</b></span>
+            <span>Last planted <b id="last">—</b></span>
+          </div>
+        </div>
+      </div>
+
+      <figure class="fieldWrap" aria-label="Interactive flower field">
+        <div class="fieldTop mono"><span><span class="dot" aria-hidden="true"></span>Living field / plot 03</span><span>Scale 1:1</span></div>
+        <div class="field" id="field">
+          <canvas id="bloom" role="img" aria-label="A field of drawn flowers growing on graph paper"></canvas>
+          <span class="fieldHint mono" id="hint">Click anywhere to plant</span>
+        </div>
+        <figcaption class="plate mono">
+          <span>Plate 07 — <b>specimens drawn, not grown</b></span>
+          <span class="stamp" aria-hidden="true">✿</span>
+        </figcaption>
+      </figure>
+    </section>
+
+    <div class="footNote">
+      <div><b>Method</b>Each specimen is generated from three decisions: a position, a petal count and a palette. The rest is wind.</div>
+      <div><b>Observation</b>Flowers lean toward the nearest edge of the frame, as if the paper were a window left open.</div>
+      <div><b>Conservation</b>Nothing is saved, nothing is sent. Close the tab and the field returns to being a field.</div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Bloom Lab · a fictional research programme</span>
+    <span>Botany for screens · ink, canvas, patience</span>
+  </footer>
+</div>
+
+<script>
+  const field = document.getElementById('field');
+  const canvas = document.getElementById('bloom');
+  const ctx = canvas.getContext('2d');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const palettes = {
+    meadow: ['#7fae6a','#a5c98a','#e0a84f','#6f9c7a','#d96a4a'],
+    ember:  ['#d96a4a','#e7a15c','#c94f3d','#e8c07a','#8e3b2c'],
+    dusk:   ['#8e86c9','#b3a6de','#7f9fc4','#d7a6c4','#6e7fae']
+  };
+  let petalCount = 8;
+  let palette = 'meadow';
+  let flowers = [];
+  let windOn = !reduce;
+
+  function resetField(){
+    flowers = [];
+    const seeds = [
+      [.18,.74,.82,.3],[.33,.66,1.05,2.1],[.52,.78,.72,4.2],[.68,.62,1.16,1.2],[.83,.75,.9,3.4],[.45,.55,.6,5.1]
+    ];
+    seeds.forEach(s => plantAt(s[0], s[1], s[2], s[3]));
+    updateReadout();
+  }
+
+  function plantAt(nx, ny, scale, phase){
+    const colors = palettes[palette];
+    flowers.push({
+      x: Math.max(.06, Math.min(.94, nx)),
+      y: Math.max(.35, Math.min(.86, ny)),
+      scale: scale || (.62 + Math.random() * .62),
+      petals: petalCount + (Math.random() > .72 ? 1 : 0),
+      colors: colors,
+      colorIdx: flowers.length % colors.length,
+      phase: phase === undefined ? Math.random() * Math.PI * 2 : phase,
+      lean: (Math.random() - .5) * .12,
+      leaves: Math.random() > .35 ? 2 : 1
+    });
+    updateReadout();
+  }
+
+  function updateReadout(){
+    document.getElementById('count').textContent = String(flowers.length).padStart(2, '0');
+    document.getElementById('last').textContent = flowers.length ? 'just now' : '—';
+    document.getElementById('hint').classList.toggle('off', flowers.length > 0);
+  }
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = field.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!windOn) drawStatic();
+  }
+
+  function draw(t){
+    const w = field.clientWidth, h = field.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+    const ground = h * .88;
+    ctx.strokeStyle = 'rgba(29,58,47,.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, ground + .5); ctx.lineTo(w, ground + .5); ctx.stroke();
+
+    flowers.forEach((f, i) => {
+      const sway = windOn ? Math.sin(t / 1400 + f.phase) * 8 * f.scale : 0;
+      const bx = f.x * w;
+      const by = f.y * h;
+      const headX = bx + sway + f.lean * h;
+      const headY = by - 8;
+      const stemTopY = headY + 14 * f.scale;
+      const hue = f.colors[0];
+
+      ctx.strokeStyle = '#466b50';
+      ctx.lineWidth = 1.5 * f.scale;
+      ctx.beginPath();
+      ctx.moveTo(bx, ground);
+      ctx.bezierCurveTo(bx - 12 * f.lean * 20, ground - (ground - stemTopY) * .45, headX - sway * .4, stemTopY + 20, headX, stemTopY);
+      ctx.stroke();
+
+      for (let l = 0; l < f.leaves; l++){
+        const ly = ground - (ground - stemTopY) * (.32 + l * .18);
+        const side = (i + l) % 2 === 0 ? -1 : 1;
+        ctx.save();
+        ctx.translate(bx + side * 7, ly);
+        ctx.rotate(side * (.55 + f.phase * .02));
+        ctx.fillStyle = 'rgba(70,107,80,.72)';
+        ctx.beginPath();
+        ctx.ellipse(side * 12 * f.scale, 0, 15 * f.scale, 5.5 * f.scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.translate(headX, stemTopY);
+      const r = 26 * f.scale;
+      const baseColor = f.colors[f.colorIdx % f.colors.length];
+      for (let p = 0; p < f.petals; p++){
+        const a = p / f.petals * Math.PI * 2 + Math.sin(t / 2600 + f.phase) * .04;
+        ctx.save();
+        ctx.rotate(a);
+        ctx.fillStyle = p % 3 === 0 ? f.colors[(f.colorIdx + 1) % f.colors.length] : baseColor;
+        ctx.globalAlpha = .92;
+        ctx.beginPath();
+        ctx.ellipse(0, -r * .66, r * .35, r * .64, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#e8c07a';
+      ctx.beginPath(); ctx.arc(0, 0, r * .3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(29,58,47,.7)';
+      ctx.beginPath(); ctx.arc(0, 0, r * .1, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    });
+
+    if (windOn) requestAnimationFrame(draw);
+  }
+
+  function drawStatic(){ draw(0); }
+
+  document.getElementById('petals').addEventListener('input', function(){
+    petalCount = parseInt(this.value, 10);
+    document.getElementById('petalsOut').textContent = petalCount + ' petals';
+  });
+
+  document.querySelectorAll('.pal').forEach(btn => {
+    btn.addEventListener('click', function(){
+      palette = btn.dataset.pal;
+      const names = { meadow:'Meadow', ember:'Ember', dusk:'Dusk' };
+      document.getElementById('paletteName').textContent = names[palette];
+      document.querySelectorAll('.pal').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      flowers.forEach(f => { f.colors = palettes[palette]; });
+      if (!windOn) drawStatic();
+    });
+  });
+
+  document.getElementById('wind').addEventListener('click', function(){
+    windOn = !windOn;
+    this.setAttribute('aria-pressed', String(windOn));
+    if (windOn) requestAnimationFrame(draw); else drawStatic();
+  });
+
+  document.getElementById('plant').addEventListener('click', function(){
+    plantAt(.15 + Math.random() * .7, .5 + Math.random() * .3, .6 + Math.random() * .6);
+    if (!windOn) drawStatic();
+  });
+
+  field.addEventListener('click', function(e){
+    const r = field.getBoundingClientRect();
+    plantAt((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+    if (!windOn) drawStatic();
+  });
+
+  let rt;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(resize, 120); });
+
+  resetField();
+  resize();
+  if (windOn) requestAnimationFrame(draw);
+</script>
+</body>
+</html>

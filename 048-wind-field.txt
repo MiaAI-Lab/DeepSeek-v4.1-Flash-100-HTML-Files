@@ -1,0 +1,20 @@
+TITLE
+Wind Made Visible — A Flow-Field Study
+
+PROMPT
+Create an interactive flow-field artwork called "Wind Made Visible". Warm paper background, fine ink lines, one vermilion accent, and a scientific-instrument interface at the edges. Thousands of short line segments trace a continuously evolving vector field, accumulating into silky wind currents across the page. Moving the pointer bends the field around it; "Gust" briefly increases the wind speed; a density slider adds or removes particles; "Still" pauses the motion. Large editorial serif type sits in the lower left: "Wind, made visible." with a short caption and coordinates. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A drawing made by physics. The page looks like a meteorological plate from a design annual: cream paper, graphite ink, a single red trace. The field is dense but never noisy; lines fade in and out so the surface feels continuously drawn rather than animated. Interface controls are small, monospaced and precise, allowing the artwork to occupy almost the whole page.
+
+VISUAL TECHNIQUES
+- Canvas flow field driven by layered sine/cosine functions and a slowly rotating phase.
+- Hundreds of particles drawing short segments; the canvas is veiled with low-alpha paper colour to create trailing silk lines.
+- Pointer influence adds a local rotation and attraction to the field.
+- Occasional vermilion particles as accent traces.
+- Density control rebuilds the particle set; gust temporarily multiplies velocity; still freezes the canvas.
+- Paper grain, faint coordinate grid and editorial serif typography.
+- Reduced-motion draws a static field of wind lines once.
+
+INTERACTION MODEL
+Move the pointer to disturb the wind. "Gust" increases speed and curl for two seconds. The density slider changes how many particles are drawing, from sparse to dense. "Still" pauses and resumes the simulation without clearing the existing drawing. "New wind" resets the canvas and phase. All controls are keyboard accessible, and reduced-motion renders a still composition.

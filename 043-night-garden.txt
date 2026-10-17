@@ -1,0 +1,20 @@
+TITLE
+Night Garden — The Garden Only Exists Where You Look
+
+PROMPT
+Create an atmospheric "Night Garden" — a dark, enchanted botanical scene that is only fully visible inside a soft circle of light following the cursor. A near-black green backdrop with a low luminous moon, layered hills, tall grasses, strange luminous flowers and drifting fireflies. The whole illustration is drawn inline in SVG and shown twice: a dim base layer and a vivid layer revealed through a radial mask. Large serif type sits low in the frame: "The garden only exists where you look." A slim masthead and a single "Full moon" toggle that widens the light complete the interface. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A page that rewards moving the pointer. The darkness is not empty — it holds a complete garden, but only the part under the light is allowed to be bright. The illustration should feel like a contemporary botanical engraving coloured with bioluminescent ink: strange shapes, fine stems, a moon that looks borrowed from a dream.
+
+VISUAL TECHNIQUES
+- Duplicated inline SVG: a dimmed base layer and a vivid layer clipped by a radial CSS mask that tracks the pointer.
+- Soft light disc and glow following the cursor for a visible beam edge.
+- Luminescent flowers with radial gradients, glowing centres and delicate stems; varied bloom forms.
+- Low moon with layered halos; grass blades, hills and drifting firefly dots animated with CSS.
+- Elegant serif typography with an italic mint accent and tracked monospaced captions.
+- Idle light drift when the pointer has not moved, so the page breathes on its own.
+- Reduced-motion stops drift, fireflies and flower sway, keeping a centred light circle.
+
+INTERACTION MODEL
+Moving the pointer moves the circle of light across the garden, revealing colour and detail; on touch, dragging does the same. The "Full moon" toggle widens the light and intensifies the glow, changing the label to "Half moon". After a few idle seconds the light begins a slow automatic drift, which stops as soon as the pointer moves. All text is readable without interaction, and reduced-motion fixes the light at the centre.

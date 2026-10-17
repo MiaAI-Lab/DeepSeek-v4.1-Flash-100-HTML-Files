@@ -1,0 +1,20 @@
+TITLE
+The Quiet Hours — A Silent Listening Room
+
+PROMPT
+Create a refined music-player page called "The Quiet Hours" for a fictional album of the same name. Deep charcoal room, warm cream type, coral and lavender accents. The player card pairs a square CSS album cover (soft gradient, grain, a large serif letter) with track information, a live waveform, transport controls, timeline and volume. Below, a playlist of four tracks with durations and small mood tags. Selecting a track changes the cover palette, title, waveform and duration. Play begins a simulated, silent playback: the timeline moves, the waveform fills in coral and the equaliser animates. Fully responsive, one standalone HTML file with inline CSS/JS, no external images, audio or fonts.
+
+DESIGN INTENT
+A listening room, not a streaming service. The player is a single composed object: one beautiful cover, one waveform, four tracks and a lot of quiet. The interface is dark and warm, with a single coral light for progress. Typography is a high-contrast serif for titles and tiny monospaced metadata.
+
+VISUAL TECHNIQUES
+- Square album cover built from layered gradients, a huge serif initial, grain and a soft inner light.
+- Canvas waveform with rounded bars, played portion in coral, hover seek preview and time labels.
+- Transport controls with circular play button, previous/next, shuffle and repeat states.
+- Animated equaliser while playing; track progress simulated in real time.
+- Playlist rows with index, mood tag, duration and active state.
+- Warm charcoal background, cream type, coral and lavender accents, subtle vignette.
+- Responsive layout: cover above details on mobile, playlist below.
+
+INTERACTION MODEL
+Play/pause starts or pauses simulated playback and the equaliser. Previous/next change tracks; clicking a playlist row selects it. Clicking or dragging the waveform seeks to that position. Volume is a working slider. Shuffle and repeat toggle states. All controls are keyboard accessible; reduced-motion keeps the time moving but removes the equaliser and waveform pulse.

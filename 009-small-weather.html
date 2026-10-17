@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Small Weather — an original poem in six movements, staged as a kinetic typographic experience.">
+<title>Small Weather — A Poem in Six Movements</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f3efe6; --ink:#17160f; --red:#e2462c; --blue:#1c4059; --faded:rgba(23,22,15,.5);
+    --line:rgba(23,22,15,.16);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--red);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--red);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.6}
+  .progress{position:fixed;left:0;top:0;height:2px;background:var(--red);width:100%;transform:scaleX(0);transform-origin:left;z-index:60}
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:15px clamp(16px,3.4vw,40px);background:rgba(243,239,230,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .t{display:flex;align-items:baseline;gap:9px}
+  .topbar .t b{font-weight:500;font-size:.78rem;letter-spacing:-.01em}
+  .topbar .t span{color:var(--faded);font-family:var(--serif);font-style:italic;font-size:.78rem}
+  .topbar .r{display:flex;gap:22px;color:var(--faded);align-items:center}
+  .topbar .r .scrollCue{display:flex;align-items:center;gap:7px}
+  .topbar .r .scrollCue i{display:block;width:1px;height:14px;background:var(--red);animation:drop 2.2s infinite}
+  @keyframes drop{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+  .rail{position:fixed;left:clamp(12px,2.4vw,30px);top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:15px}
+  .rail button{display:flex;align-items:center;gap:8px;color:var(--faded);font-family:var(--mono);font-size:.5rem;letter-spacing:.1em}
+  .rail .dot{width:5px;height:5px;border-radius:50%;border:1px solid currentColor;transition:background .3s,transform .3s}
+  .rail button.active{color:var(--ink)}
+  .rail button.active .dot{background:var(--red);border-color:var(--red);transform:scale(1.35)}
+  .rail .lbl{opacity:0;transform:translateX(-4px);transition:opacity .25s,transform .25s;white-space:nowrap;text-transform:uppercase}
+  .rail button:hover .lbl,.rail button.active .lbl{opacity:1;transform:none}
+
+  .opening{min-height:100svh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:110px clamp(20px,6vw,90px) 48px;overflow:hidden}
+  .opening .sun{position:absolute;right:-6vw;top:12vh;width:clamp(220px,34vw,520px);aspect-ratio:1;border-radius:50%;background:var(--red);opacity:.92}
+  .opening .sun::after{content:"";position:absolute;inset:9%;border-radius:50%;border:1px solid rgba(243,239,230,.4)}
+  .opening .kicker{position:relative;z-index:2;color:var(--red);margin-bottom:26px;display:flex;align-items:center;gap:11px}
+  .opening .kicker::before{content:"";width:26px;height:1px;background:var(--red)}
+  .opening h1{position:relative;z-index:2;font-size:clamp(3.6rem,12.4vw,12rem);line-height:.83;letter-spacing:-.07em;font-weight:500}
+  .opening h1 .italic{display:block;font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.04em;margin-left:clamp(20px,8vw,140px)}
+  .opening .meta{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:clamp(34px,7vh,70px);border-top:1px solid rgba(23,22,15,.4);padding-top:12px;max-width:940px}
+  .opening .meta p{max-width:36ch;font-size:.74rem;line-height:1.7;color:rgba(23,22,15,.7)}
+  .opening .meta .stamp{font-family:var(--serif);font-style:italic;font-size:1.05rem;white-space:nowrap}
+
+  .stanza{position:relative;min-height:100svh;display:flex;align-items:center;padding:clamp(90px,14vh,150px) clamp(20px,8vw,110px);border-top:1px solid var(--line);overflow:hidden;isolation:isolate}
+  .stanza .backNum{position:absolute;right:clamp(8px,3vw,48px);top:8%;font-size:clamp(8rem,24vw,24rem);font-weight:600;line-height:.7;color:rgba(23,22,15,.045);z-index:-1;letter-spacing:-.08em}
+  .poem{width:100%;max-width:1200px;margin:0 auto}
+  .line{display:block;overflow:hidden;font-size:clamp(2.5rem,7.6vw,7.6rem);line-height:.98;letter-spacing:-.055em;font-weight:500;margin-bottom:.06em}
+  .line > span{display:block;transform:translateY(112%);transition:transform 1.1s cubic-bezier(.2,.85,.2,1)}
+  .line em{font-family:var(--serif);font-weight:400;font-style:italic;letter-spacing:-.02em;transition:color .3s,transform .4s;display:inline-block}
+  .line em:hover{color:var(--red);transform:translateY(-.05em)}
+  .stanza.in .line > span{transform:none}
+  .stanza.in .line:nth-child(2) > span{transition-delay:.09s}
+  .stanza.in .line:nth-child(3) > span{transition-delay:.18s}
+  .stanza.in .line:nth-child(4) > span{transition-delay:.27s}
+  .stanza.in .line:nth-child(5) > span{transition-delay:.36s}
+  .caption{display:flex;justify-content:space-between;gap:16px;max-width:1200px;margin:clamp(28px,5vh,52px) auto 0;padding-top:10px;border-top:1px solid var(--line);color:var(--faded)}
+  .caption b{font-weight:400;color:var(--ink);font-family:var(--serif);font-style:italic;font-size:.85rem}
+
+  .stanza:nth-of-type(even){background:#efeade}
+  .stanza:nth-of-type(3){background:linear-gradient(180deg,#f3efe6,#ece6d9)}
+  .right .poem{text-align:right}
+  .right .line em{color:var(--blue)}
+  .indent .line:nth-child(2){padding-left:12%}
+  .indent .line:nth-child(4){padding-left:5%}
+  .disc{position:absolute;z-index:-1;width:clamp(180px,28vw,420px);aspect-ratio:1;border-radius:50%;background:var(--red);right:8vw;bottom:8vh;opacity:.9}
+  .horizon{position:absolute;z-index:-1;left:0;right:0;bottom:26%;height:clamp(28px,5vw,70px);background:var(--blue);opacity:.16}
+  .ringSet{position:absolute;z-index:-1;right:6vw;top:16%;width:clamp(220px,34vw,500px);aspect-ratio:1}
+  .ringSet i{position:absolute;inset:0;border:1px solid rgba(28,64,89,.3);border-radius:50%}
+  .ringSet i:nth-child(2){inset:16%}.ringSet i:nth-child(3){inset:32%}.ringSet i:nth-child(4){inset:48%;border-color:var(--red)}
+  .rainRules{position:absolute;inset:0;z-index:-1;opacity:.5;
+    background-image:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),rgba(23,22,15,.14) calc(10% - 1px) 10%);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%,transparent);mask-image:linear-gradient(180deg,transparent,#000 40%,transparent)}
+  .arch{position:absolute;z-index:-1;left:50%;top:50%;transform:translate(-50%,-50%);width:min(64vw,620px);height:min(64vw,620px);
+    border:1px solid rgba(23,22,15,.18);border-radius:50% 50% 0 0}
+  .end{min-height:74svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:80px 20px 40px;border-top:1px solid var(--line);position:relative}
+  .end .fin{font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.1rem);color:var(--faded)}
+  .end .rule{width:40px;height:1px;background:var(--red);margin:22px 0}
+  .end h2{font-size:clamp(2.2rem,6vw,4.6rem);letter-spacing:-.05em;line-height:.95;font-weight:500}
+  .end h2 span{font-family:var(--serif);font-style:italic;color:var(--red);font-weight:400}
+  .end .colophon{display:flex;justify-content:space-between;gap:20px;width:100%;max-width:1100px;margin-top:60px;border-top:1px solid var(--line);padding-top:12px;color:var(--faded)}
+  footer{padding:20px clamp(20px,4vw,46px);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;color:var(--faded);flex-wrap:wrap}
+
+  @media(max-width:900px){
+    .rail{display:none}
+    .topbar .r .copy{display:none}
+    .stanza{padding-left:22px;padding-right:22px}
+    .line{font-size:clamp(2.4rem,8.6vw,4.6rem)}
+    .opening h1{font-size:clamp(3.2rem,13.2vw,8rem)}
+    .opening .sun{right:-24vw;opacity:.85}
+    .right .poem{text-align:left}
+    .indent .line:nth-child(2),.indent .line:nth-child(4){padding-left:0}
+    .disc{right:-8vw;bottom:4vh;opacity:.6}
+  }
+  @media(max-width:560px){
+    .opening .meta{flex-direction:column;align-items:flex-start;gap:14px}
+    .line{font-size:10.4vw}
+    .caption b{font-size:.76rem}
+    .end .colophon{flex-direction:column;gap:8px}
+    .topbar .t span{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    .line > span{transform:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="topbar">
+  <a class="t" href="#top"><b>Small Weather</b><span>a poem in six movements</span></a>
+  <div class="r mono"><span class="copy">Text — 2026 · for reading aloud</span><span class="scrollCue">Scroll <i aria-hidden="true"></i></span></div>
+</div>
+
+<nav class="rail" aria-label="Movements">
+  <button data-target="m1" class="active"><span class="dot" aria-hidden="true"></span><span class="lbl">Indoors</span></button>
+  <button data-target="m2"><span class="dot" aria-hidden="true"></span><span class="lbl">Kettle</span></button>
+  <button data-target="m3"><span class="dot" aria-hidden="true"></span><span class="lbl">Maps</span></button>
+  <button data-target="m4"><span class="dot" aria-hidden="true"></span><span class="lbl">Margin</span></button>
+  <button data-target="m5"><span class="dot" aria-hidden="true"></span><span class="lbl">Door</span></button>
+  <button data-target="m6"><span class="dot" aria-hidden="true"></span><span class="lbl">Home</span></button>
+</nav>
+
+<main id="top">
+  <header class="opening">
+    <div class="sun" aria-hidden="true"></div>
+    <p class="kicker mono">Poem / six movements / after the rain</p>
+    <h1>Small<br><span class="italic">Weather</span></h1>
+    <div class="meta">
+      <p>A poem for the hour between putting the kettle on and deciding to go outside. Written in the margins of a weather report.</p>
+      <span class="stamp">— for whoever is reading this</span>
+    </div>
+  </header>
+
+  <section class="stanza" id="m1" data-index="0">
+    <span class="backNum" aria-hidden="true">01</span>
+    <div class="poem">
+      <span class="line"><span>The weather</span></span>
+      <span class="line"><span>begins</span></span>
+      <span class="line"><span><em>indoors.</em></span></span>
+    </div>
+    <div class="caption"><span class="mono">Movement I — Indoors</span><span class="mono">1 / 6</span></div>
+  </section>
+
+  <section class="stanza indent" id="m2" data-index="1">
+    <span class="backNum" aria-hidden="true">02</span>
+    <div class="rainRules" aria-hidden="true"></div>
+    <div class="poem">
+      <span class="line"><span>A kettle exhales.</span></span>
+      <span class="line"><span>The window decides</span></span>
+      <span class="line"><span>to become</span></span>
+      <span class="line"><span><em>a horizon.</em></span></span>
+    </div>
+    <div class="caption"><span class="mono">Movement II — Kettle</span><span class="mono">2 / 6</span></div>
+  </section>
+
+  <section class="stanza right" id="m3" data-index="2">
+    <span class="backNum" aria-hidden="true">03</span>
+    <div class="horizon" aria-hidden="true"></div>
+    <div class="poem">
+      <span class="line"><span>We are all</span></span>
+      <span class="line"><span><em>small maps</em></span></span>
+      <span class="line"><span>of places</span></span>
+      <span class="line"><span>we have not</span></span>
+      <span class="line"><span>left yet.</span></span>
+    </div>
+    <div class="caption"><span class="mono">Movement III — Maps</span><span class="mono">3 / 6</span></div>
+  </section>
+
+  <section class="stanza" id="m4" data-index="3">
+    <span class="backNum" aria-hidden="true">04</span>
+    <div class="disc" aria-hidden="true"></div>
+    <div class="poem">
+      <span class="line"><span>Rain writes</span></span>
+      <span class="line"><span>in the margin.</span></span>
+      <span class="line"><span>We read it</span></span>
+      <span class="line"><span><em>as permission.</em></span></span>
+    </div>
+    <div class="caption"><span class="mono">Movement IV — Margin</span><span class="mono">4 / 6</span></div>
+  </section>
+
+  <section class="stanza right" id="m5" data-index="4">
+    <span class="backNum" aria-hidden="true">05</span>
+    <div class="ringSet" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="poem">
+      <span class="line"><span>Somewhere</span></span>
+      <span class="line"><span>a door</span></span>
+      <span class="line"><span>is a question</span></span>
+      <span class="line"><span><em>left open.</em></span></span>
+    </div>
+    <div class="caption"><span class="mono">Movement V — Door</span><span class="mono">5 / 6</span></div>
+  </section>
+
+  <section class="stanza indent" id="m6" data-index="5">
+    <span class="backNum" aria-hidden="true">06</span>
+    <div class="arch" aria-hidden="true"></div>
+    <div class="poem">
+      <span class="line"><span>Take the long</span></span>
+      <span class="line"><span><em>way home.</em></span></span>
+      <span class="line"><span>The long way</span></span>
+      <span class="line"><span>is the weather.</span></span>
+    </div>
+    <div class="caption"><span class="mono">Movement VI — Home</span><span class="mono">6 / 6</span></div>
+  </section>
+
+  <section class="end">
+    <span class="fin">and the kettle, again,</span>
+    <div class="rule" aria-hidden="true"></div>
+    <h2>begin <span>small.</span></h2>
+    <div class="colophon mono"><span>Small Weather — a poem in six movements</span><span>Set in system grotesque &amp; Iowan italic</span><span>One file · no weather required</span></div>
+  </section>
+</main>
+<footer class="mono"><span>© 2026 · an original poem</span><span>Scroll slowly — the poem is not in a hurry</span><a href="#top">Return to the beginning ↑</a></footer>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sections = Array.from(document.querySelectorAll('.stanza'));
+  const railButtons = Array.from(document.querySelectorAll('.rail button'));
+  const progress = document.getElementById('progress');
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('in');
+        const index = sections.indexOf(entry.target);
+        railButtons.forEach((b, i) => b.classList.toggle('active', i === index));
+      }
+    });
+  }, { threshold: reduce ? 0.01 : 0.42 });
+  sections.forEach(s => io.observe(s));
+
+  railButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (target) target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  function onScroll(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    progress.style.transform = 'scaleX(' + p + ')';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+</script>
+</body>
+</html>

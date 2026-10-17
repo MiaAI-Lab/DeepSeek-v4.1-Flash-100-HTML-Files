@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Mint of Small Things — a specimen banknote with guilloche, engraving and a hidden thread.">
+<title>The Mint of Small Things — Specimen Note</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --desk:#17110b; --paper:#e9e0c8; --paper2:#ded2b3; --ink:#26352a; --green:#365b44; --gold:#b18a48; --red:#a4362a; --dim:rgba(233,224,200,.5);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.indigo{--paper:#e4e1d3;--paper2:#d2d4cb;--ink:#222f45;--green:#38516e;--gold:#8e8c62}
+  body.rose{--paper:#ecddd0;--paper2:#e0c9b8;--ink:#3f2528;--green:#7c3d43;--gold:#b08a5e}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--desk);color:var(--paper);font-family:var(--sans);overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:22px 12px;
+    background-image:repeating-linear-gradient(92deg,rgba(0,0,0,.14) 0 2px,transparent 2px 10px),radial-gradient(900px 700px at 50% 0%,#332519,#120d08 80%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--gold);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .wrap{width:min(1180px,100%);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--dim);padding-bottom:10px;border-bottom:1px solid rgba(233,224,200,.18);margin-bottom:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.02rem;color:var(--paper)}
+  .brand .coin{width:18px;height:18px;border:1px solid var(--gold);border-radius:50%;position:relative;flex:none}
+  .brand .coin::after{content:"7";position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:.5rem;color:var(--gold)}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headRight{display:flex;gap:20px;text-align:right;line-height:1.7}
+
+  .layout{display:grid;grid-template-columns:1fr 250px;gap:22px;align-items:center}
+  .noteWrap{perspective:1400px;display:flex;justify-content:center}
+  .note{position:relative;width:100%;aspect-ratio:2.05/1;background:linear-gradient(160deg,var(--paper),var(--paper2));color:var(--ink);
+    box-shadow:0 28px 50px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.4);overflow:hidden;transform:rotate(-.4deg);
+    transition:filter .5s,background .5s;font-family:var(--serif)}
+  .note::before{content:"";position:absolute;inset:10px;border:1px solid rgba(38,53,42,.4);pointer-events:none;z-index:5}
+  .note::after{content:"";position:absolute;inset:16px;border:1px solid rgba(38,53,42,.22);pointer-events:none;z-index:5}
+  .guilloche{position:absolute;inset:0;z-index:0;opacity:.85}
+  .guilloche svg{width:100%;height:100%;display:block}
+  .microBand{position:absolute;left:24px;right:24px;height:8px;overflow:hidden;z-index:2;opacity:.5;color:var(--ink);font-family:var(--mono);font-size:5px;letter-spacing:1.2px;white-space:nowrap;line-height:8px}
+  .microBand.top{top:20px}.microBand.bottom{bottom:20px}
+  .noteContent{position:relative;z-index:4;height:100%;display:grid;grid-template-columns:.42fr .58fr;padding:34px 30px 28px;gap:14px}
+  .leftPortrait{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .oval{position:relative;width:78%;aspect-ratio:.8;border:1.5px solid var(--ink);border-radius:50%;overflow:hidden;background:rgba(255,255,255,.18)}
+  .oval::before{content:"";position:absolute;inset:5px;border:1px solid rgba(38,53,42,.35);border-radius:50%}
+  .oval svg{width:100%;height:100%;display:block;color:var(--ink)}
+  .portraitName{font-family:var(--mono);font-size:.32rem;letter-spacing:.08em;text-transform:uppercase;margin-top:5px;text-align:center;color:rgba(38,53,42,.7)}
+  .rightInfo{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+  .noteTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .bank{font-family:var(--serif);font-size:clamp(.5rem,1.1vw,.78rem);letter-spacing:.14em;text-transform:uppercase;line-height:1.4;max-width:18ch}
+  .bank small{display:block;font-family:var(--mono);font-size:.28rem;letter-spacing:.1em;color:rgba(38,53,42,.55);margin-top:2px}
+  .serial{font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-align:right;line-height:1.7;color:rgba(38,53,42,.75)}
+  .denomination{font-family:var(--serif);font-size:clamp(2.4rem,6vw,5rem);line-height:.8;letter-spacing:-.05em;text-align:center;margin:4px 0}
+  .denomination small{font-size:.28em;vertical-align:top;letter-spacing:0;margin-left:2px}
+  .noteWords{display:flex;justify-content:space-between;gap:10px;align-items:flex-end;margin-top:2px}
+  .noteWords .sig{font-family:var(--serif);font-style:italic;font-size:clamp(.55rem,1.1vw,.8rem);border-top:1px solid rgba(38,53,42,.4);padding-top:3px;min-width:80px}
+  .noteWords .sig small{display:block;font-family:var(--mono);font-size:.26rem;letter-spacing:.08em;color:rgba(38,53,42,.55);font-style:normal;margin-top:2px;text-transform:uppercase}
+  .rosette{position:absolute;right:30px;top:50%;transform:translateY(-50%);width:37%;aspect-ratio:1;z-index:1;opacity:.8}
+  .rosette svg{width:100%;height:100%;display:block}
+  .thread{position:absolute;top:0;bottom:0;right:23%;width:7px;background:linear-gradient(180deg,var(--green),var(--gold),var(--green));z-index:1;opacity:.55;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+  .threadText{position:absolute;right:23%;top:0;bottom:0;width:7px;display:grid;place-items:center;overflow:hidden;z-index:6}
+  .threadText span{writing-mode:vertical-rl;font-family:var(--mono);font-size:4px;letter-spacing:1px;color:rgba(255,255,255,.75)}
+  .watermark{position:absolute;left:29%;top:50%;transform:translate(-50%,-50%);width:17%;aspect-ratio:.8;border-radius:50%;border:1px solid rgba(38,53,42,.18);z-index:1;display:grid;place-items:center;opacity:.5;font-family:var(--serif);font-style:italic;font-size:1.2rem;color:rgba(38,53,42,.35)}
+  .stampNote{position:absolute;left:24px;bottom:30px;z-index:7;border:2px solid rgba(164,54,42,.7);color:rgba(164,54,42,.8);padding:2px 5px;font-family:var(--mono);font-size:.36rem;letter-spacing:.12em;text-transform:uppercase;transform:rotate(-7deg)}
+  .hiddenPattern,.hiddenThread{position:absolute;inset:0;z-index:3;opacity:0;pointer-events:none;transition:opacity .5s}
+  .hiddenThread{left:23%;right:23%;top:24%;bottom:24%;width:auto;background:repeating-linear-gradient(45deg,rgba(143,240,210,.5) 0 2px,transparent 2px 8px)}
+  .note.uv{filter:brightness(.55) saturate(.7) contrast(1.2);background:linear-gradient(160deg,#141a1a,#0d1413)}
+  .note.uv .hiddenPattern,.note.uv .hiddenThread{opacity:1}
+  .note.uv .guilloche{opacity:.16}
+  .note.uv .noteContent{filter:brightness(1.8) contrast(1.1)}
+  .note.uv .thread{box-shadow:0 0 16px rgba(143,240,210,.9);opacity:1}
+
+  .panel{color:var(--dim);display:flex;flex-direction:column;gap:10px}
+  .panel h1{font-family:var(--serif);font-size:1.35rem;color:var(--paper);font-weight:400;line-height:1.05}
+  .panel p{font-size:.64rem;line-height:1.7}
+  .row{display:flex;gap:5px;flex-wrap:wrap}
+  .pill{border:1px solid rgba(233,224,200,.25);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .pill:hover{color:var(--paper);border-color:var(--paper)}
+  .pill[aria-pressed="true"]{background:var(--paper);color:var(--desk);border-color:var(--paper)}
+  .facts{margin-top:6px;border-top:1px solid rgba(233,224,200,.18);padding-top:8px;line-height:1.9}
+  .facts b{color:var(--paper);font-weight:400}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);background:rgba(233,224,200,.95);color:var(--desk);padding:6px 11px;border-radius:100px;
+    font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:60}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:8px;border-top:1px solid rgba(233,224,200,.15);color:rgba(233,224,200,.35);font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .panel{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;align-items:start}
+    .panel h1,.panel p{grid-column:1/-1}
+    .panel .facts{grid-column:1/-1}
+    .noteContent{padding:24px 20px 20px}
+    .rosette{right:20px;width:36%}
+    .note{font-size:.9em}
+  }
+  @media(max-width:600px){
+    body{padding:14px 8px}
+    .headRight{display:none}
+    .brand{font-size:.86rem}
+    .noteContent{grid-template-columns:1fr;padding:26px 16px 20px}
+    .leftPortrait{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:31%}
+    .rightInfo{margin-left:35%;min-height:150px}
+    .denomination{font-size:2.2rem;text-align:right}
+    .rosette{right:8px;width:24%;opacity:.4}
+    .thread,.threadText,.watermark{display:none}
+    .microBand{font-size:3.5px;letter-spacing:.8px}
+    .note{aspect-ratio:1.9/1}
+    .bank{font-size:.46rem}
+    .serial{font-size:.28rem}
+    .noteWords .sig{font-size:.48rem}
+    .stampNote{font-size:.26rem;left:16px;bottom:22px}
+    footer span:nth-child(2){display:none}
+    .panel{grid-template-columns:1fr}
+    .panel .facts{grid-column:auto}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="coin" aria-hidden="true"></span><span>The Mint of Small Things<small>Specimen note / series 07</small></span></a>
+    <div class="headRight mono">Specimen only — not legal tender<br><b>Printed for the archive</b></div>
+  </header>
+
+  <div class="layout">
+    <div class="noteWrap">
+      <div class="note" id="note">
+        <div class="guilloche" id="guilloche" aria-hidden="true"></div>
+        <div class="rosette" id="rosette" aria-hidden="true"></div>
+        <div class="thread" aria-hidden="true"></div>
+        <div class="threadText" aria-hidden="true"><span>MINT OF SMALL THINGS · SPECIMEN ·</span></div>
+        <div class="watermark" aria-hidden="true">7</div>
+        <div class="hiddenPattern" id="hiddenPattern" aria-hidden="true"></div>
+        <div class="hiddenThread" aria-hidden="true"></div>
+        <div class="microBand top" id="microTop" aria-hidden="true"></div>
+        <div class="microBand bottom" id="microBottom" aria-hidden="true"></div>
+        <div class="stampNote">Specimen</div>
+        <div class="noteContent">
+          <div class="leftPortrait">
+            <div class="oval">
+              <svg viewBox="0 0 200 250" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="1.1">
+                  <path d="M100,38 C130,38 146,64 146,98 C146,124 132,148 114,158 L114,188 C114,200 86,200 86,188 L86,158 C68,148 54,124 54,98 C54,64 70,38 100,38Z"/>
+                  <path d="M62,96 C70,82 84,74 100,74 C116,74 130,82 138,96"/>
+                  <path d="M76,96 C80,92 86,92 90,96 M110,96 C114,92 120,92 124,96"/>
+                  <path d="M94,118 C98,122 104,122 108,118"/>
+                  <path d="M92,132 C98,136 104,136 110,132"/>
+                  <g stroke-width=".7" opacity=".6">
+                    <path d="M54,100 C58,110 62,120 68,128 M58,88 C64,100 68,112 72,124 M146,100 C142,110 138,120 132,128 M142,88 C136,100 132,112 128,124"/>
+                    <path d="M78,46 C88,56 94,70 96,84 M84,42 C94,54 100,68 102,84 M116,42 C106,54 100,68 98,84 M122,46 C112,56 106,70 104,84"/>
+                    <path d="M86,160 L86,196 M94,162 L94,198 M102,162 L102,198 M110,162 L110,198 M118,160 L118,196"/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="portraitName">The Keeper of Small Change</span>
+          </div>
+
+          <div class="rightInfo">
+            <div class="noteTop">
+              <div class="bank">The Mint of Small Things<small>Founded on a Tuesday · est. 2026</small></div>
+              <div class="serial" id="serial">SPECIMEN<br>07 019 421</div>
+            </div>
+            <div class="denomination"><span id="denom">7</span><small>£</small></div>
+            <div class="noteWords">
+              <div class="sig">A. Voss<small>Chief engraver</small></div>
+              <div class="sig">M. Bell<small>Controller</small></div>
+              <div class="sig">E. Marlowe<small>Teller</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <h1>Money for<br>small things.</h1>
+      <p>A specimen note from a bank that deals only in modest transactions: a coffee, a stamp, a good afternoon. Engraved, patterned and held together by one hidden thread.</p>
+      <div class="row" role="group" aria-label="Colourway"><button class="pill" data-pal="sage" aria-pressed="true">Sage</button><button class="pill" data-pal="indigo" aria-pressed="false">Indigo</button><button class="pill" data-pal="rose" aria-pressed="false">Rose</button></div>
+      <div class="row"><button class="pill" id="newNote">New note ↻</button><button class="pill" id="uv" aria-pressed="false">Hold to the light</button></div>
+      <div class="facts mono">Denomination <b id="denomFact">£7</b><br>Serial <b id="serialFact">07 019 421</b><br>Security <b>guilloche / thread</b><br>Paper <b>cotton, 120 gsm</b></div>
+    </aside>
+  </div>
+
+  <footer class="mono">
+    <span>The Mint of Small Things — a fictional specimen</span>
+    <span>Not legal tender · keep away from moisture</span>
+    <span>© 2026 · worth exactly one afternoon</span>
+  </footer>
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+  const note = document.getElementById('note');
+  const guilloche = document.getElementById('guilloche');
+  const rosette = document.getElementById('rosette');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let denom = 7, serial = '07 019 421', palette = 'sage', seed = 7;
+
+  function buildPatterns(){
+    // wide wave guilloche
+    let g = '<svg viewBox="0 0 1000 480" preserveAspectRatio="none">';
+    for (let i = 0; i < 14; i++){
+      const off = 24 + i * 30;
+      g += '<path d="M0,' + off + ' C160,' + (off - 36 + i * 4) + ' 300,' + (off + 48) + ' 480,' + off + ' S800,' + (off - 32) + ' 1000,' + (off + 12) + '" fill="none" stroke="rgba(38,53,42,' + (0.06 + i * .006) + ')" stroke-width="1.2"/>';
+      g += '<path d="M0,' + (off + 8) + ' C180,' + (off + 30) + ' 340,' + (off - 24) + ' 520,' + (off + 8) + ' S840,' + (off + 32) + ' 1000,' + (off - 6) + '" fill="none" stroke="rgba(54,91,68,' + (0.04 + i * .004) + ')" stroke-width=".8"/>';
+    }
+    g += '</svg>';
+    guilloche.innerHTML = g;
+
+    // rosette of rotated ellipses
+    let r = '<svg viewBox="0 0 300 300">';
+    for (let i = 0; i < 36; i++){
+      const rot = i * 5 + seed;
+      r += '<ellipse cx="150" cy="150" rx="120" ry="32" fill="none" stroke="rgba(54,91,68,' + (.08 + (i % 5) * .025) + ')" stroke-width="' + (i % 3 === 0 ? 1.2 : .6) + '" transform="rotate(' + rot + ' 150 150)"/>';
+    }
+    for (let i = 0; i < 12; i++){
+      r += '<ellipse cx="150" cy="150" rx="' + (40 + i * 6) + '" ry="' + (12 + i * 2) + '" fill="none" stroke="rgba(177,138,72,.25)" stroke-width=".6" transform="rotate(' + (i * 15 + seed) + ' 150 150)"/>';
+    }
+    r += '<circle cx="150" cy="150" r="3" fill="rgba(38,53,42,.4)"/></svg>';
+    rosette.innerHTML = r;
+
+    const micro = 'THE MINT OF SMALL THINGS · SPECIMEN · NOT LEGAL TENDER · '.repeat(12);
+    document.getElementById('microTop').textContent = micro;
+    document.getElementById('microBottom').textContent = micro;
+
+    let hidden = '<svg viewBox="0 0 1000 480" preserveAspectRatio="none">';
+    for (let i = 0; i < 10; i++){
+      hidden += '<ellipse cx="500" cy="240" rx="' + (180 + i * 28) + '" ry="' + (60 + i * 12) + '" fill="none" stroke="rgba(143,240,210,.5)" stroke-width="1" transform="rotate(' + (i * 9 + seed) + ' 500 240)"/>';
+    }
+    hidden += '</svg>';
+    document.getElementById('hiddenPattern').innerHTML = hidden;
+  }
+
+  function updateFacts(){
+    document.getElementById('denom').textContent = denom;
+    document.getElementById('denomFact').textContent = '£' + denom;
+    const s = 'SPECIMEN<br>' + serial;
+    document.getElementById('serial').innerHTML = s;
+    document.getElementById('serialFact').textContent = serial;
+  }
+
+  document.getElementById('newNote').addEventListener('click', () => {
+    const denoms = [5, 7, 10, 20];
+    denom = denoms[Math.floor(Math.random() * denoms.length)];
+    serial = String(Math.floor(1 + Math.random() * 89)).padStart(2,'0') + ' ' + String(Math.floor(100 + Math.random() * 899)) + ' ' + String(Math.floor(100 + Math.random() * 899));
+    seed = Math.floor(Math.random() * 40);
+    buildPatterns(); updateFacts();
+  });
+  document.querySelectorAll('[data-pal]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.body.className = b.dataset.pal === 'sage' ? '' : b.dataset.pal;
+      document.querySelectorAll('[data-pal]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      buildPatterns();
+    });
+  });
+  const uv = document.getElementById('uv');
+  uv.addEventListener('click', () => {
+    const on = uv.getAttribute('aria-pressed') !== 'true';
+    uv.setAttribute('aria-pressed', String(on));
+    uv.textContent = on ? 'Return to daylight' : 'Hold to the light';
+    note.classList.toggle('uv', on);
+  });
+  document.getElementById('note').addEventListener('click', () => {
+    const t = document.getElementById('toast');
+    t.textContent = 'Specimen — cannot be spent, only admired.';
+    t.classList.add('on');
+    setTimeout(() => t.classList.remove('on'), 2200);
+  });
+
+  buildPatterns();
+  updateFacts();
+</script>
+</body>
+</html>

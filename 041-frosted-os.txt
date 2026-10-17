@@ -1,0 +1,20 @@
+TITLE
+Frosted — A Desktop Made of Glass
+
+PROMPT
+Create a fictional desktop operating system called "Frosted" living inside one HTML page. A deep aurora wallpaper, a translucent glass menu bar, three draggable windows, a weather widget, desktop icons and a magnifying dock. The windows are Studio Notes (a checklist), Now Playing (an abstract album cover, progress bar and controls) and a compact Files window. All surfaces use frosted glass with thin borders and inner highlights; the palette is midnight blue with mint, peach and lilac accents. Clicking dock icons opens, focuses or minimises windows; windows can be dragged by their title bars and brought to the front. The clock is live, the wallpaper can shuffle between three aurora schemes, and a small toast confirms actions. Fully responsive, one standalone HTML file with inline CSS/JS, no external assets.
+
+DESIGN INTENT
+A desktop you want to live in for five minutes. It should feel like a real operating system designed by a glass artist: quiet chrome, luminous wallpaper, soft depth. The interaction model is familiar enough to be immediately understood, but every surface is more beautiful than it needs to be.
+
+VISUAL TECHNIQUES
+- Layered glass windows with backdrop blur, 1px translucent borders, inner top highlights and deep ambient shadows.
+- Aurora wallpaper made from three animated blurred gradients with a grain overlay.
+- Mac-style traffic lights, window title bars, dock magnification and tooltips.
+- Draggable windows with pointer capture and z-index focus management; minimise and restore.
+- Live clock, weather data, checklist interactions and a play/pause state for the music window.
+- Desktop icons with glass tiles and small labels.
+- Responsive fallback: windows become stacked sheets within the viewport on small screens.
+
+INTERACTION MODEL
+Drag windows by their title bars; clicking any window raises it. Dock icons open or focus the matching app, and the traffic lights close or minimise. The notes checklist toggles with updates to the title count. The player button toggles a progress animation. The wallpaper icon cycles three aurora schemes. Every dock item is a labelled button; reduced-motion stops the wallpaper and equaliser animations.

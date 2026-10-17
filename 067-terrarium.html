@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Terrarium No. 4 — a small living world under glass, with mist and a paper butterfly.">
+<title>Terrarium No. 4 — A World Under Glass</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --cream:#f2ecdd; --paper:#f7f2e6; --ink:#2d3b2b; --dim:rgba(45,59,43,.52); --line:rgba(45,59,43,.2);
+    --moss:#6f8a5b; --fern:#466a4a; --sand:#d9c39d; --soil:#5a4633; --stone:#9a958a; --glass:rgba(255,255,255,.35);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 800px at 68% 8%,#fbf8ee,transparent 62%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--moss);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--fern);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1300px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.06rem}
+  .brand .leaf{width:16px;height:22px;border:1px solid var(--ink);border-radius:0 100% 0 100%;transform:rotate(-12deg);position:relative;flex:none}
+  .brand .leaf::after{content:"";position:absolute;inset:4px 6px 4px 5px;border-left:1px solid var(--ink);transform:rotate(22deg)}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  nav{display:flex;gap:24px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--ink)}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--ink);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.86fr 1.14fr;gap:clamp(24px,4vw,54px);align-items:center;padding:clamp(20px,3.4vw,36px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--moss);margin-bottom:16px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--moss)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,5.2vw,4.8rem);line-height:.96;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--moss)}
+  .intro p{margin-top:16px;max-width:35ch;font-size:.75rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .conditions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:20px}
+  .conditions div{background:var(--cream);padding:8px 9px}
+  .conditions span{display:block;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase}
+  .conditions b{display:block;font-family:var(--serif);font-size:.9rem;font-weight:400;margin-top:2px}
+  .controls{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);padding:8px 12px;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .status{margin-top:12px;color:var(--dim);min-height:1.2em}
+  .status b{color:var(--moss);font-weight:400}
+  .care{margin-top:18px;padding-top:10px;border-top:1px solid var(--line);color:var(--dim);line-height:1.8;max-width:36ch;font-size:.64rem}
+  .care b{color:var(--ink);font-weight:400}
+
+  .terrarium{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:clamp(400px,62vh,600px)}
+  .light{position:absolute;top:0;width:70%;height:60%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,240,200,.45),transparent 65%);filter:blur(20px);pointer-events:none}
+  .jar{position:relative;width:min(84%,400px);aspect-ratio:.78;cursor:pointer;transition:transform .4s}
+  .jar:hover{transform:translateY(-3px)}
+  .jar .glass{position:absolute;inset:0;border-radius:44% 44% 14% 14% / 30% 30% 6% 6%;border:1px solid rgba(255,255,255,.6);
+    background:linear-gradient(100deg,rgba(255,255,255,.35),rgba(255,255,255,.08) 30%,rgba(255,255,255,.02) 62%,rgba(255,255,255,.18));
+    box-shadow:inset 0 0 40px rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.3),0 26px 40px rgba(70,60,40,.18)}
+  .jar .glass::before{content:"";position:absolute;left:8%;top:7%;width:14%;height:54%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,.05));filter:blur(1px);opacity:.8}
+  .jar .glass::after{content:"";position:absolute;right:6%;top:18%;bottom:22%;width:2px;background:linear-gradient(180deg,rgba(255,255,255,.6),transparent);opacity:.7}
+  .lid{position:absolute;left:-3%;right:-3%;top:-5%;height:11%;border-radius:44% 44% 12% 12% / 70% 70% 30% 30%;background:linear-gradient(160deg,#4b3c2c,#2f261c);
+    box-shadow:0 5px 12px rgba(60,45,30,.35),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .6s cubic-bezier(.2,.8,.2,1);z-index:5}
+  .lid::after{content:"";position:absolute;left:50%;top:18%;width:34%;height:38%;border-radius:50%;background:rgba(255,255,255,.12);transform:translateX(-50%)}
+  .jar.open .lid{transform:translate(14%,-58%) rotate(10deg)}
+  .soil{position:absolute;left:4%;right:4%;bottom:3%;height:30%;border-radius:0 0 10% 10%;background:linear-gradient(180deg,var(--sand) 0 18%,var(--soil) 20% 100%);overflow:hidden;z-index:1}
+  .soil::before{content:"";position:absolute;left:0;right:0;top:16%;height:4px;background:rgba(255,255,255,.2)}
+  .pebble{position:absolute;border-radius:50% 45% 55% 50%;background:radial-gradient(circle at 35% 30%,#d3cfc2,#8e897d);z-index:2}
+  .moss{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,#a9c088,#5f7d4b);z-index:2;box-shadow:0 2px 4px rgba(30,50,25,.3)}
+  .plant{position:absolute;z-index:3;transform-origin:bottom center;transition:transform .5s}
+  .jar:hover .plant{transform:rotate(1.2deg)}
+  #scene{position:absolute;inset:0;z-index:3;width:100%;height:100%}
+  .drops{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;border-radius:44% 44% 14% 14%/30% 30% 6% 6%}
+  .drop{position:absolute;width:4px;height:7px;border-radius:50%;background:rgba(255,255,255,.75);box-shadow:0 0 3px rgba(255,255,255,.7);animation:drop 2.6s ease-in forwards}
+  @keyframes drop{0%{opacity:0;transform:translateY(-10px)}20%{opacity:1}100%{opacity:0;transform:translateY(140px)}}
+  .butterfly{position:absolute;left:40%;top:12%;width:30px;height:22px;z-index:8;opacity:0;pointer-events:none}
+  .butterfly.fly{animation:butterfly 4s cubic-bezier(.3,.1,.4,1) forwards}
+  @keyframes butterfly{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:1}35%{transform:translate(70px,-60px) rotate(12deg)}65%{opacity:1;transform:translate(150px,-100px) rotate(-8deg)}100%{opacity:0;transform:translate(230px,-160px) rotate(20deg)}}
+  .caption{position:relative;z-index:9;display:flex;justify-content:space-between;width:min(84%,400px);margin-top:12px;padding-top:9px;border-top:1px solid var(--line);color:var(--dim)}
+  .caption b{color:var(--ink);font-weight:400}
+  .shadow{position:absolute;bottom:2%;width:70%;height:5%;border-radius:50%;background:radial-gradient(ellipse,rgba(60,55,40,.22),transparent 70%);filter:blur(5px)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 20px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:940px){
+    .main{grid-template-columns:1fr;gap:20px}
+    .terrarium{order:2;min-height:380px}
+    .intro{order:1;display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .kicker,.intro h1,.intro p{grid-column:1}
+    .conditions{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .controls{grid-column:1}
+    .status{grid-column:1}
+    .care{grid-column:1}
+    .headRight{display:none}
+  }
+  @media(max-width:600px){
+    .intro{grid-template-columns:1fr}
+    .conditions{grid-column:1;grid-row:auto;margin-top:12px}
+    h1{font-size:11.8vw}
+    .brand{font-size:.92rem}
+    .jar{width:min(92%,330px)}
+    .terrarium{min-height:320px}
+    .caption{width:92%}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="leaf" aria-hidden="true"></span><span>Terrarium No. 4<small>A small world / assembled by hand</small></span></a>
+    <nav aria-label="Primary"><a href="#top">Object</a><a href="#top">Care</a><a href="#top">Archive</a></nav>
+    <div class="headRight mono">Closed ecosystem<br><b>Est. 2026 · 4.2 litres</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">A living object for a quiet desk</p>
+      <h1>A world<br><em>under glass.</em></h1>
+      <p>Moss, sand, a fern and a single mushroom, sealed under a glass lid. It makes its own weather; you only need to <b>look in now and then.</b></p>
+      <div class="conditions">
+        <div><span>Humidity</span><b id="humidity">78%</b></div>
+        <div><span>Light</span><b id="lightVal">Soft</b></div>
+        <div><span>Temp</span><b>19.4°C</b></div>
+      </div>
+      <div class="controls"><button class="btn" id="mist">Mist the glass</button><button class="btn" id="lidBtn" aria-pressed="false">Open lid</button><button class="btn" id="light">Low light</button></div>
+      <p class="status mono" id="status">Sealed and settled.</p>
+      <p class="care">Care: indirect light, no direct sun, one mist every ten days. If the glass clears completely, open the lid for an hour. If it fogs entirely, leave it alone; it is raining inside.</p>
+    </div>
+
+    <div class="terrarium">
+      <div class="light" aria-hidden="true"></div>
+      <div class="jar" id="jar" role="button" tabindex="0" aria-label="Terrarium. Activate to open or close the lid.">
+        <div class="lid" aria-hidden="true"></div>
+        <div class="glass" aria-hidden="true"></div>
+        <div class="soil" aria-hidden="true">
+          <span class="pebble" style="left:12%;top:26%;width:11%;height:8%"></span>
+          <span class="pebble" style="left:28%;top:38%;width:7%;height:5%"></span>
+          <span class="pebble" style="right:14%;top:30%;width:14%;height:9%"></span>
+          <span class="moss" style="left:8%;top:16%;width:24%;height:10%"></span>
+          <span class="moss" style="right:10%;top:16%;width:20%;height:9%"></span>
+        </div>
+        <svg id="scene" viewBox="0 0 320 420" aria-hidden="true">
+          <g stroke="#466a4a" stroke-width="2" fill="none" stroke-linecap="round">
+            <path d="M96,280 C92,240 80,214 60,198"/><path d="M96,280 C104,238 118,216 136,202"/><path d="M96,280 C96,242 100,214 106,186"/>
+            <path d="M60,198 C50,190 44,176 46,164 M60,198 C70,188 74,176 72,166"/>
+            <path d="M136,202 C146,190 150,176 148,166 M136,202 C126,190 122,178 124,168"/>
+            <path d="M106,186 C100,172 100,158 106,148 M106,186 C112,172 112,160 108,150"/>
+          </g>
+          <g fill="#6f8a5b" opacity=".85">
+            <ellipse cx="56" cy="254" rx="36" ry="13"/><ellipse cx="252" cy="264" rx="42" ry="15"/><ellipse cx="176" cy="276" rx="30" ry="10"/>
+          </g>
+          <g fill="#8b5b3e">
+            <ellipse cx="230" cy="250" rx="11" ry="4"/><rect x="226" y="228" width="8" height="22" rx="4"/>
+            <ellipse cx="230" cy="228" rx="18" ry="10"/><ellipse cx="230" cy="225" rx="12" ry="6" fill="#c98d68"/>
+          </g>
+          <g stroke="#466a4a" stroke-width="1.3" fill="none">
+            <path d="M176,276 C180,256 188,246 198,240"/><path d="M198,240 C204,232 214,230 220,234 M198,240 C190,232 182,232 176,236"/>
+          </g>
+          <g fill="#2d3b2b"><circle cx="242" cy="274" r="2"/><circle cx="246" cy="278" r="1.4"/><circle cx="238" cy="278" r="1.2"/></g>
+        </svg>
+        <div class="drops" id="drops" aria-hidden="true"></div>
+        <div class="butterfly" id="butterfly" aria-hidden="true">
+          <svg viewBox="0 0 30 22"><path d="M15 11 C6 0 1 4 4 11 C1 18 6 22 15 11 C24 0 29 4 26 11 C29 18 24 22 15 11Z" fill="#e5b06a" stroke="#8f6a3a" stroke-width=".8"/><path d="M15 11v8" stroke="#8f6a3a"/></svg>
+        </div>
+      </div>
+      <div class="shadow" aria-hidden="true"></div>
+      <div class="caption mono"><span>Fig. 04 — <b>closed ecosystem</b></span><span>Glass / moss / fern</span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Terrarium No. 4 / a fictional object</span>
+    <span>Assembled in one file · no watering required</span>
+    <span>© 2026 · look, do not shake</span>
+  </footer>
+</div>
+
+<script>
+  const jar = document.getElementById('jar');
+  const drops = document.getElementById('drops');
+  const humidity = document.getElementById('humidity');
+  const status = document.getElementById('status');
+  const lidBtn = document.getElementById('lidBtn');
+  const butterfly = document.getElementById('butterfly');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let open = false;
+
+  function mist(){
+    humidity.textContent = '92%';
+    status.innerHTML = 'Misted — <b>the glass is breathing.</b>';
+    if (!reduce){
+      for (let i = 0; i < 18; i++){
+        const d = document.createElement('span');
+        d.className = 'drop';
+        d.style.left = (8 + Math.random() * 84) + '%';
+        d.style.top = (Math.random() * 30) + '%';
+        d.style.animationDelay = (Math.random() * .7) + 's';
+        d.style.width = (2 + Math.random() * 4) + 'px';
+        d.style.height = (5 + Math.random() * 7) + 'px';
+        drops.appendChild(d);
+        setTimeout(() => d.remove(), 3600);
+      }
+    }
+    setTimeout(() => { humidity.textContent = open ? '64%' : '84%'; }, 3800);
+  }
+  document.getElementById('mist').addEventListener('click', mist);
+
+  function toggleLid(){
+    open = !open;
+    jar.classList.toggle('open', open);
+    lidBtn.setAttribute('aria-pressed', String(open));
+    lidBtn.textContent = open ? 'Close lid' : 'Open lid';
+    humidity.textContent = open ? '64%' : '78%';
+    status.innerHTML = open ? 'Lid open — <b>a small exchange of weather.</b>' : 'Sealed and settled.';
+    if (open && !reduce){
+      butterfly.classList.remove('fly');
+      void butterfly.offsetWidth;
+      butterfly.classList.add('fly');
+    }
+  }
+  jar.addEventListener('click', toggleLid);
+  jar.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ toggleLid(); e.preventDefault(); } });
+  lidBtn.addEventListener('click', toggleLid);
+
+  document.getElementById('light').addEventListener('click', function(){
+    const low = this.getAttribute('aria-pressed') !== 'true';
+    this.setAttribute('aria-pressed', String(low));
+    this.textContent = low ? 'Softer light' : 'Low light';
+    document.getElementById('lightVal').textContent = low ? 'Low' : 'Soft';
+    document.body.style.background = low ? '#e8e3d5' : '';
+  });
+</script>
+</body>
+</html>

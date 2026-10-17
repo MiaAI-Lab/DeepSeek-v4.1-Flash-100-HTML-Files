@@ -1,0 +1,20 @@
+TITLE
+The Cartographer's Sleep — A Flip Book
+
+PROMPT
+Create an interactive 3D flip book telling a short illustrated story called "The Cartographer's Sleep". Warm paper, ink blue and vermilion; a book on a table with a visible spine, page edges and a soft shadow. The left page carries the title and a short introduction; the right side is a stack of three turning sheets with stories and simple SVG illustrations — a map, a window, a sleeping figure and a small boat. Clicking the page corner or the Next button turns a sheet in 3D; Previous turns it back. Page numbers, a progress line and a "close the book" reset complete the interface. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A book as an object, not a slideshow. The paper should feel thick enough to turn, with a visible stack, a spine shadow and a slight curl on hover. Illustrations are quiet and diagrammatic — maps, constellations, a room — and the prose is short enough to read in the time it takes to turn a page.
+
+VISUAL TECHNIQUES
+- CSS 3D page-turning sheets with front and back faces and backface-visibility.
+- Stacked page edges, spine gradient, cover board and a soft table shadow.
+- SVG illustrations in ink blue and vermilion with paper-grain texture.
+- Page numbers, running heads and a hairline progress rule.
+- Hover corner curl and click-to-turn on the right page.
+- Responsive scaling of the whole book; single-page mode on narrow screens.
+- Reduced-motion flips pages instantly.
+
+INTERACTION MODEL
+Next and Previous buttons turn the sheets with a 3D rotation. The right page can be clicked to turn forward; the left page to turn back. Arrow keys work when the book is focused. "Close the book" returns to the first spread. The page counter and progress line update with each turn. Reduced-motion changes pages without rotation.

@@ -1,0 +1,20 @@
+TITLE
+BRUT FORMS — Say Something Useful
+
+PROMPT
+Create a brutalist enquiry form called "BRUT FORMS". Off-white paper, black ink, safety orange and raw grid lines. The left column holds an oversized headline "Say something useful." and a short manifesto; the right holds a numbered form with Name, Email, Project and Budget fields drawn as underlined inputs with huge labels, a budget chip group and a large black submit block. Real inline validation appears in orange under invalid fields; on success the form is replaced by a stamped confirmation card with a reset action. Include a masthead, response-time note and footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A form that feels like a printed application for something worth applying to. No rounded corners, no soft shadows, no friendly illustrations: just hierarchy, weight and a clear sense of consequence. Orange is used only for errors, focus and the one active chip.
+
+VISUAL TECHNIQUES
+- Asymmetric brutalist grid with thick rules, numbered fields and oversized labels.
+- Underline inputs with large type, no boxes; focus shifts the rule to orange.
+- Budget chips as toggle buttons with pressed states.
+- Inline error messages and an aria-live status region.
+- Submit block with an offset shadow and hover inversion.
+- Success state as a stamped card with the submitted name and a reset button.
+- Responsive single-column form with preserved type hierarchy.
+
+INTERACTION MODEL
+Submitting validates name, email format, project length and budget selection. Invalid fields show an orange message and focus the first error. Valid submission swaps the form for a confirmation card showing the name and a reference number. Budget chips toggle a single selection. "Start again" restores the empty form. All fields and buttons are keyboard accessible; reduced-motion removes the success transition.

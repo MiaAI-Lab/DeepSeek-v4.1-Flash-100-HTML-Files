@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Marconi 8 — a fictional vintage radio with wood, glass and patience.">
+<title>Marconi 8 — A Radio With Patience</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --room:#19120c; --wood:#6a4428; --wood2:#8b5a33; --cream:#e9ddc4; --cream2:#d8c8a8; --ink:#33291c; --dim:rgba(233,221,196,.5); --line:rgba(233,221,196,.16);
+    --amber:#ffb45c; --red:#b8422f; --green:#8fbf87;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--room);color:var(--cream);font-family:var(--sans);display:flex;align-items:center;justify-content:center;padding:22px 12px;overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 50% 20%,#38271a,#120d08 80%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--amber);color:var(--room)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--amber);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.7}
+  .wrap{width:min(1080px,100%);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--dim);padding-bottom:10px;border-bottom:1px solid var(--line);flex-wrap:wrap;margin-bottom:14px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.02rem;color:var(--cream)}
+  .brand .valve{width:12px;height:18px;border:1px solid var(--amber);border-radius:50% 50% 20% 20%;position:relative;flex:none}
+  .brand .valve::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--amber);opacity:.5;box-shadow:0 0 8px var(--amber)}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headRight{text-align:right;line-height:1.7}
+
+  .layout{display:grid;grid-template-columns:1fr 250px;gap:18px;align-items:center}
+  .radio{display:flex;background:linear-gradient(90deg,#4e301b,#8a5a34 18%,#6a4428 45%,#8b5a33 72%,#4e301b);
+    background-image:repeating-linear-gradient(92deg,rgba(0,0,0,.14) 0 2px,transparent 2px 7px),linear-gradient(90deg,#4e301b,#8a5a34 18%,#6a4428 45%,#8b5a33 72%,#4e301b);
+    border-radius:18px;padding:14px;border:1px solid rgba(0,0,0,.5);box-shadow:0 30px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.18)}
+  .panel{flex:1;background:linear-gradient(160deg,#efe3cd,#d9c6a3);color:var(--ink);border-radius:8px;padding:clamp(12px,2vw,20px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(80,50,20,.25)}
+  .panelTop{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid rgba(51,41,28,.3);padding-bottom:6px}
+  .panelTop .name{font-family:var(--serif);font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase}
+  .panelTop .model{font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(51,41,28,.55)}
+  .power{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.32rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(51,41,28,.55)}
+  .lamp{width:7px;height:7px;border-radius:50%;background:#8a7a60;box-shadow:inset 0 1px 1px rgba(0,0,0,.3)}
+  .on .lamp{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+  .on .power{color:var(--ink)}
+
+  .dial{position:relative;margin-top:10px;border-radius:6px;background:linear-gradient(180deg,#f7efd9,#e5d3ac);border:1px solid rgba(51,41,28,.4);height:92px;overflow:hidden;
+    box-shadow:inset 0 2px 6px rgba(60,40,15,.25);transition:filter .4s}
+  .dial::before{content:"";position:absolute;inset:0;background:linear-gradient(130deg,rgba(255,255,255,.5),transparent 35%);z-index:3;pointer-events:none}
+  .dial .freqs{position:absolute;left:8px;right:8px;top:10px;height:36px;border-bottom:1px solid rgba(51,41,28,.35)}
+  .dial .freqs span{position:absolute;bottom:4px;transform:translateX(-50%);font-family:var(--mono);font-size:.32rem;color:rgba(51,41,28,.6)}
+  .dial .ticks{position:absolute;left:8px;right:8px;top:50px;height:12px;
+    background:repeating-linear-gradient(90deg,rgba(51,41,28,.55) 0 1px,transparent 1px 12px);}
+  .dial .ticks::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(51,41,28,.35)}
+  .needle{position:absolute;top:6px;bottom:8px;left:0;width:1.5px;background:var(--red);z-index:2;box-shadow:0 0 6px rgba(184,66,47,.5);transition:left .12s ease-out}
+  .needle::before{content:"";position:absolute;left:-3px;top:-3px;width:8px;height:8px;border-left:1px solid var(--red);border-top:1px solid var(--red);transform:rotate(45deg)}
+  .needle::after{content:"";position:absolute;left:-4px;bottom:-6px;width:9px;height:9px;border-radius:50%;background:var(--red)}
+  .dialScale{position:absolute;left:8px;right:8px;top:70px;display:flex;justify-content:space-between;color:rgba(51,41,28,.55);font-family:var(--mono);font-size:.3rem;letter-spacing:.04em}
+  .static{position:absolute;inset:0;z-index:4;pointer-events:none;background-image:repeating-linear-gradient(0deg,rgba(40,30,15,.1) 0 1px,transparent 1px 3px);opacity:0;transition:opacity .4s;mix-blend-mode:multiply}
+  .static.hot{opacity:.65;animation:static .3s steps(2) infinite}
+  @keyframes static{to{background-position:0 3px}}
+
+  .controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .knobWrap{display:flex;gap:14px;align-items:center}
+  .knobCol{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .knob{position:relative;width:54px;height:54px;border-radius:50%;cursor:ns-resize;touch-action:none;
+    background:radial-gradient(circle at 36% 30%,#fdf7ea,#d4c3a1 55%,#9d8a68 80%,#6f5c3f);
+    box-shadow:0 4px 7px rgba(40,25,10,.4),inset 0 2px 2px rgba(255,255,255,.75),inset 0 -3px 5px rgba(40,25,10,.35);border:1px solid rgba(51,41,28,.35)}
+  .knob::before{content:"";position:absolute;left:50%;top:7%;width:2px;height:32%;margin-left:-1px;background:var(--red);transform-origin:50% 130%;transform:rotate(var(--kr,0deg))}
+  .knob::after{content:"";position:absolute;inset:26%;border-radius:50%;border:1px solid rgba(51,41,28,.18)}
+  .knobLabel{font-family:var(--mono);font-size:.3rem;letter-spacing:.05em;text-transform:uppercase;color:rgba(51,41,28,.55)}
+  .bands{display:flex;gap:4px}
+  .band{border:1px solid rgba(51,41,28,.3);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(51,41,28,.55);transition:background .2s,color .2s}
+  .band[aria-pressed="true"]{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+  .grille{margin-top:12px;height:26px;border-top:1px solid rgba(51,41,28,.3);border-bottom:1px solid rgba(51,41,28,.3);
+    background:repeating-linear-gradient(90deg,rgba(51,41,28,.4) 0 1px,transparent 1px 6px);opacity:.55}
+  .readout{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:8px;color:rgba(51,41,28,.6);flex-wrap:wrap}
+  .readout .freq{font-family:var(--mono);font-size:1.1rem;letter-spacing:.03em;color:var(--ink)}
+  .readout .freq small{font-size:.42rem;letter-spacing:.1em}
+  .stationName{font-family:var(--serif);font-style:italic;font-size:.96rem;color:var(--ink)}
+  .meter{height:3px;background:rgba(51,41,28,.18);margin-top:6px;overflow:hidden}
+  .meter i{display:block;height:100%;background:var(--ink);width:20%;transition:width .3s}
+  .off .dial{filter:brightness(.55) saturate(.6)}
+  .off .needle{opacity:.3}
+  .slider{flex:1;min-width:120px}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(51,41,28,.35)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--red);margin-top:-5px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(51,41,28,.35)}
+  input[type=range]::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--red);border:0}
+
+  .side{color:var(--dim)}
+  .side h1{font-family:var(--serif);font-size:1.35rem;color:var(--cream);font-weight:400;line-height:1.05;margin-bottom:5px}
+  .side p{font-size:.62rem;line-height:1.7;margin-bottom:10px}
+  .stations{border-top:1px solid var(--line)}
+  .station{width:100%;display:flex;justify-content:space-between;gap:8px;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(233,221,196,.1);text-align:left;color:var(--dim);transition:color .2s,padding-left .2s}
+  .station:hover,.station[aria-pressed="true"]{color:var(--cream);padding-left:4px}
+  .station b{font-family:var(--serif);font-weight:400;font-size:.78rem}
+  .station span{font-family:var(--mono);font-size:.36rem}
+  .sideFoot{margin-top:10px;color:rgba(233,221,196,.35);line-height:1.8}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:8px;border-top:1px solid rgba(233,221,196,.15);color:rgba(233,221,196,.3);font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .radio{max-width:640px;margin:0 auto;width:100%}
+    .side{max-width:640px;margin:0 auto;width:100%}
+    .side h1,.side p{max-width:100%}
+    .layout{gap:14px}
+  }
+  @media(max-width:560px){
+    body{padding:12px 8px}
+    .headRight{display:none}
+    .brand{font-size:.86rem}
+    .panel{padding:10px}
+    .knob{width:44px;height:44px}
+    .dial{height:78px}
+    .readout .freq{font-size:.9rem}
+    .stationName{font-size:.82rem}
+    .side{font-size:.6rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="valve" aria-hidden="true"></span><span>Marconi 8<small>Valve receiver / model 08</small></span></a>
+    <div class="headRight mono">Serial M8-1184<br><b>Warm-up: 20 seconds</b></div>
+  </header>
+
+  <div class="layout">
+    <div class="radio">
+      <div class="panel on" id="panel">
+        <div class="panelTop"><span class="name">Marconi</span><span class="model">Eight · valve · 1958</span><button class="power" id="power"><span class="lamp" aria-hidden="true"></span>Power</button></div>
+        <div class="dial">
+          <div class="freqs" id="freqs"></div>
+          <div class="needle" id="needle" style="left:30%"></div>
+          <div class="ticks"></div>
+          <div class="dialScale"><span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span></div>
+          <div class="static" id="static"></div>
+        </div>
+        <div class="controls">
+          <div class="knobWrap">
+            <div class="knobCol"><div class="knob" id="tuneKnob" focusable="true" tabindex="0" role="slider" aria-label="Tuning" aria-valuemin="880" aria-valuemax="1080" aria-valuenow="945" style="--kr:0deg"></div><span class="knobLabel">Tuning</span></div>
+            <div class="knobCol"><div class="knob" id="volKnob" tabindex="0" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="10" aria-valuenow="6" style="--kr:-50deg"></div><span class="knobLabel">Volume</span></div>
+          </div>
+          <div class="bands" role="group" aria-label="Band"><button class="band" data-band="FM" aria-pressed="true">FM</button><button class="band" data-band="AM" aria-pressed="false">AM</button></div>
+          <div class="slider"><input id="tune" type="range" min="880" max="1080" value="945" aria-label="Tuning frequency"></div>
+        </div>
+        <div class="readout"><div class="freq"><span id="freqOut">94.5</span> <small>MHz</small></div><div class="stationName" id="stationOut">Radio Silence</div></div>
+        <div class="meter"><i id="meter"></i></div>
+        <div class="grille" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <h1>Turn it<br>slowly.</h1>
+      <p>The good stations arrive between numbers. Drag the tuning knob, or use the slider, and let the needle find the warm spots.</p>
+      <div class="stations" id="stations"></div>
+      <p class="sideFoot mono">Signal <b id="signalOut">weak</b><br>Band <b id="bandOut">FM</b><br>Dial lamp <b id="lampOut">warm</b></p>
+    </aside>
+  </div>
+
+  <footer class="mono">
+    <span>Marconi 8 — a fictional receiver</span>
+    <span>Wood, glass, valves, patience</span>
+    <span>© 2026 · mind the warmth</span>
+  </footer>
+</div>
+
+<script>
+  const stations = [
+    { name:'Radio Silence', freq:88.0, band:'FM' },
+    { name:'Coastal FM', freq:91.4, band:'FM' },
+    { name:'The Long Wave', freq:94.5, band:'FM' },
+    { name:'Elsewhere', freq:99.1, band:'FM' },
+    { name:'Night Service', freq:103.7, band:'FM' },
+    { name:'Atelier AM', freq:96, band:'AM' },
+    { name:'The Shipping Forecast', freq:198, band:'AM' }
+  ];
+  let freq = 94.5, band = 'FM', powered = true;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const freqs = document.getElementById('freqs');
+  const scale = band === 'FM' ? [88,92,96,100,104,108] : [53,70,90,110,130,160];
+  function drawScale(){
+    freqs.innerHTML = '';
+    const marks = band === 'FM' ? [88,92,96,100,104,108] : [54,68,82,96,110,124];
+    marks.forEach(m => {
+      const s = document.createElement('span');
+      const p = band === 'FM' ? (m - 88) / 20 : (m - 54) / 70;
+      s.style.left = (p * 100) + '%';
+      s.textContent = m;
+      freqs.appendChild(s);
+    });
+    document.getElementById('tune').min = band === 'FM' ? 880 : 540;
+    document.getElementById('tune').max = band === 'FM' ? 1080 : 1240;
+    if (band === 'AM'){
+      freq = 960; document.getElementById('tune').value = 960;
+    } else {
+      freq = 945; document.getElementById('tune').value = 945;
+    }
+    tune(freq);
+  }
+  function stationAt(f){
+    if (band === 'AM') return null;
+    let found = null, best = 99;
+    stations.filter(s => s.band === 'FM').forEach(s => {
+      const d = Math.abs(s.freq - f);
+      if (d < best && d < .45){ best = d; found = s; }
+    });
+    return found;
+  }
+  function tune(f){
+    freq = Number(f);
+    const min = band === 'FM' ? 88 : 54, max = band === 'FM' ? 108 : 124;
+    const p = Math.max(0, Math.min(100, (freq / 10 - min) / (max - min) * 100));
+    const station = stationAt(freq / 10);
+    document.getElementById('needle').style.left = (3 + p * .94) + '%';
+    document.getElementById('freqOut').textContent = (freq / 10).toFixed(1);
+    document.getElementById('stationOut').textContent = station ? station.name : 'Radio Silence';
+    document.getElementById('static').classList.toggle('hot', !station);
+    document.getElementById('meter').style.width = station ? (58 + Math.random() * 38) + '%' : (8 + Math.random() * 14) + '%';
+    document.getElementById('signalOut').textContent = station ? 'strong' : 'weak';
+    document.getElementById('bandOut').textContent = band;
+    document.getElementById('tune').value = freq;
+    document.querySelectorAll('.station').forEach(s => s.setAttribute('aria-pressed', String(station && s.dataset.name === station.name)));
+    const knob = document.getElementById('tuneKnob');
+    const rot = -120 + ((freq / 10 - min) / (max - min)) * 240;
+    knob.style.setProperty('--kr', rot.toFixed(1) + 'deg');
+    knob.setAttribute('aria-valuenow', freq);
+    knob.setAttribute('aria-valuetext', (freq / 10).toFixed(1) + (band === 'FM' ? ' MHz' : ' kHz'));
+  }
+  document.getElementById('tune').addEventListener('input', function(){ tune(this.value); });
+  document.querySelectorAll('.band').forEach(b => {
+    b.addEventListener('click', () => {
+      band = b.dataset.band;
+      document.querySelectorAll('.band').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      drawScale();
+    });
+  });
+
+  const stationList = document.getElementById('stations');
+  stations.filter(s => s.band === 'FM').forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'station';
+    b.dataset.name = s.name;
+    b.setAttribute('aria-pressed', String(s.freq === 94.5));
+    b.innerHTML = '<b>' + s.name + '</b><span>' + s.freq.toFixed(1) + '</span>';
+    b.addEventListener('click', () => { band = 'FM'; document.querySelectorAll('.band').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.band === 'FM'))); tune(s.freq * 10); });
+    stationList.appendChild(b);
+  });
+
+  let drag = null;
+  const knob = document.getElementById('tuneKnob');
+  knob.addEventListener('pointerdown', e => { drag = { y: e.clientY, f: freq }; knob.setPointerCapture(e.pointerId); e.preventDefault(); });
+  knob.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const min = band === 'FM' ? 880 : 540, max = band === 'FM' ? 1080 : 1240;
+    tune(Math.max(min, Math.min(max, drag.f + (drag.y - e.clientY) * 2.2)));
+  });
+  knob.addEventListener('pointerup', () => { drag = null; });
+  knob.addEventListener('keydown', e => {
+    const step = band === 'FM' ? 2 : 5;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowRight'){ tune(freq + step); e.preventDefault(); }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowLeft'){ tune(freq - step); e.preventDefault(); }
+  });
+
+  const volKnob = document.getElementById('volKnob');
+  let volDrag = null, vol = 6;
+  volKnob.addEventListener('pointerdown', e => { volDrag = { y: e.clientY, v: vol }; volKnob.setPointerCapture(e.pointerId); e.preventDefault(); });
+  volKnob.addEventListener('pointermove', e => {
+    if (!volDrag) return;
+    vol = Math.max(0, Math.min(10, volDrag.v + (volDrag.y - e.clientY) * .06));
+    volKnob.style.setProperty('--kr', (-120 + vol * 24).toFixed(1) + 'deg');
+    volKnob.setAttribute('aria-valuenow', vol.toFixed(0));
+  });
+  volKnob.addEventListener('pointerup', () => { volDrag = null; });
+
+  document.getElementById('power').addEventListener('click', () => {
+    powered = !powered;
+    document.getElementById('panel').classList.toggle('on', powered);
+    document.getElementById('panel').classList.toggle('off', !powered);
+    document.getElementById('lampOut').textContent = powered ? 'warm' : 'off';
+  });
+
+  drawScale();
+  if (!reduce) setInterval(() => { if (powered && !stationAt(freq / 10)) document.getElementById('static').style.opacity = String(.3 + Math.random() * .35); }, 140);
+</script>
+</body>
+</html>

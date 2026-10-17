@@ -1,0 +1,20 @@
+TITLE
+Ink Calendar — October, Torn Slowly
+
+PROMPT
+Create a tactile wall calendar called "Ink Calendar" for October 2026. Warm cream paper, black sumi ink, one vermilion seal and soft pencil-grey annotations. A single calendar sheet hangs from a nail by a linen thread, with a large ink-wash mountain and sun illustration at the top, the month set in a generous serif, a seven-column day grid, a narrow margin for handwritten notes and a red hanko stamp. Clicking a day selects it and leaves a small ink dot; the margin note changes to a line for that date. "Tear off the month" animates the sheet falling away and reveals November with a new ink drawing. Include a header, care note about paper and a footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A calendar you would actually keep on a wall. It should feel printed on thick stock and drawn on with a brush: imperfect, quiet, slightly irregular. The interface is nearly invisible; the paper and the month do the work. Vermilion appears once or twice, like a stamp.
+
+VISUAL TECHNIQUES
+- Hanging paper sheet with nail, thread, soft cast shadow and deckled bottom edge suggestion.
+- Ink-wash SVG landscape with layered mountain silhouettes, a red sun and dry-brush texture.
+- Hand-set serif month title, monospaced weekday labels, grid with hairline rules.
+- Clickable day cells with ink-dot marks and selected ring.
+- Paper-tear animation that reveals the next month with a different ink drawing.
+- Margin notes in a handwriting font stack; red seal and small print details.
+- Responsive: landscape sheet scales down, note margin moves under the grid on mobile.
+
+INTERACTION MODEL
+Selecting a day marks it with a small ink dot, outlines it and updates the margin note with a short line for that date. "Tear off the month" plays a short tear-and-fall animation and loads November with its own artwork and notes; "Return to October" restores the first sheet. All days are buttons with labels; reduced-motion swaps months instantly.

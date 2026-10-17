@@ -1,0 +1,20 @@
+TITLE
+FLUID® — A Liquid Chrome Identity
+
+PROMPT
+Create a high-fashion identity-studio landing page for a fictional brand called FLUID. The aesthetic is liquid chrome on graphite: a near-black (#0a0a0d) gallery-like space, mirror-polished silver gradients, one tiny acid-chartreuse signal, and an enormous metallic wordmark. The hero features the statement "Form follows fluid." set in a tight grotesque with a chrome gradient and a small italic serif counterpoint, plus a living SVG metaball sculpture made of five merging chrome blobs that drift organically and lean toward the cursor. Add a circular rotating micro-label, a live "state / viscosity" readout, a manifesto section, and three project index rows that flood with a chrome sweep on hover. Every surface should feel machined and expensive; no colour except silver, black and one acid accent. Fully responsive, one standalone HTML file, inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+A digital object that behaves like a luxury material study. The metaball is the centrepiece — a single continuous chrome form that never resolves into separate circles — surrounded by severe typography and generous black space. The page uses contrast as its main tool: soft organic motion against hard grid rules, mirror highlights against matte black, tiny acid type against vast neutral fields. It should read like the identity launch for a fashion house that makes objects from melted mirrors.
+
+VISUAL TECHNIQUES
+- SVG goo filter (feGaussianBlur + feColorMatrix) merging five independently animated circles into one liquid silhouette.
+- Multi-stop metallic gradient plus a moving specular hotspot and soft outer glow for a chrome read.
+- Chrome-filled display type using background-clip:text with layered highlight and shadow.
+- Rotating circular label built from SVG textPath on an invisible circle.
+- Hairline grid, tracked microcopy and a vertical section index.
+- Chrome sweep hover effect on project rows using a translated gradient pseudo-element.
+- Pointer-driven blob attraction with eased interpolation; reduced-motion gives a stable sculpture.
+
+INTERACTION MODEL
+Moving the pointer pulls the metaball cluster gently toward it and shifts the specular highlight; clicking fires a short ripple impulse that briefly separates the blobs before they merge again. The live readout updates viscosity and state. Project rows reveal a chrome sweep and an arrow on hover. The rotating label pauses on hover. Keyboard users can tab to project rows and the contact link; reduced-motion stops drift and rotation.

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Chroma Field — an interactive colour study in four palettes and forty-eight tiles.">
+<title>Chroma Field — Interactive Colour Study</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f2efe6; --ink:#121211; --dim:rgba(18,18,17,.55); --line:rgba(18,18,17,.22);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--ink);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--ink)}
+  .brand{display:flex;align-items:baseline;gap:9px;font-weight:700;letter-spacing:-.03em;font-size:.94rem;text-transform:uppercase}
+  .brand span{font-family:var(--mono);font-size:.42rem;letter-spacing:.14em;color:var(--dim);font-weight:400}
+  .headMeta{display:flex;gap:26px;color:var(--dim)}
+  .headMeta b{color:var(--ink);font-weight:400}
+
+  main{flex:1;display:flex;flex-direction:column;padding:clamp(16px,2.6vw,26px) 0 14px}
+  .topTitle{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:12px}
+  h1{font-size:clamp(1.7rem,3.4vw,2.7rem);line-height:.92;letter-spacing:-.055em;font-weight:600}
+  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--dim)}
+  .topTitle p{max-width:32ch;color:var(--dim);font-size:.7rem;line-height:1.65;text-align:right}
+
+  .workspace{flex:1;display:grid;grid-template-columns:238px 1fr;gap:clamp(16px,2.6vw,34px);align-items:stretch;min-height:0}
+  .panel{display:flex;flex-direction:column;justify-content:space-between;gap:16px;border-top:1px solid var(--ink);padding-top:12px}
+  .panelTop .label{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:8px}
+  .panelTop h2{font-family:var(--serif);font-size:1.35rem;line-height:1.05;font-weight:400;letter-spacing:-.02em}
+  .panelTop h2 em{font-style:italic;color:var(--dim)}
+  .panelTop p{margin-top:9px;font-size:.68rem;line-height:1.7;color:var(--dim)}
+  .palettes{display:grid;gap:3px;margin-top:14px}
+  .palRow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(18,18,17,.1);transition:opacity .2s}
+  .palRow:hover{opacity:.8}
+  .palRow[aria-pressed="true"]{border-bottom-color:var(--ink)}
+  .palRow span{font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-align:left}
+  .palRow[aria-pressed="true"] span{color:var(--ink)}
+  .palDots{display:flex;gap:2px}
+  .palDots i{display:block;width:9px;height:9px;border-radius:50%;border:1px solid rgba(18,18,17,.08)}
+  .pigments{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .pigment{width:30px;height:30px;border-radius:50%;border:1px solid rgba(18,18,17,.18);position:relative;transition:transform .2s}
+  .pigment:hover{transform:scale(1.08)}
+  .pigment[aria-pressed="true"]::after{content:"";position:absolute;inset:-4px;border:1px solid var(--ink);border-radius:50%}
+  .panelBottom{border-top:1px solid var(--ink);padding-top:10px}
+  .readout{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .chip{width:34px;height:34px;flex:none;border:1px solid rgba(18,18,17,.2);background:var(--chip,#2f4f3e)}
+  .readout .hex{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em}
+  .readout small{display:block;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;margin-top:3px}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .btn{border:1px solid var(--ink);padding:8px 7px;font-family:var(--mono);font-size:.44rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s;text-align:center}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.fill{background:var(--ink);color:var(--paper)}
+  .btn.fill:hover{background:transparent;color:var(--ink)}
+
+  .fieldArea{position:relative;min-height:0;display:flex;flex-direction:column}
+  .field{position:relative;flex:1;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(6,1fr);gap:3px;min-height:clamp(330px,52vh,520px);border-bottom:1px solid var(--ink)}
+  .cell{position:relative;border:0;padding:0;transition:transform .25s cubic-bezier(.2,.8,.2,1),opacity .3s;transform-origin:center;overflow:hidden}
+  .cell::after{content:attr(data-hex);position:absolute;left:4px;bottom:3px;font-family:var(--mono);font-size:.36rem;letter-spacing:.05em;opacity:0;transition:opacity .2s;color:rgba(255,255,255,.7);mix-blend-mode:difference}
+  .cell:hover::after{opacity:1}
+  .cell:hover{transform:scale(.965);z-index:2}
+  .cell:focus-visible{outline:2px solid var(--ink);outline-offset:-3px;z-index:3}
+  .cell.enter{animation:cellIn .5s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes cellIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+  .wordField{position:absolute;left:-.02em;bottom:-.16em;font-size:clamp(4.2rem,12vw,11rem);line-height:.7;letter-spacing:-.075em;font-weight:800;
+    mix-blend-mode:difference;color:#fff;pointer-events:none;z-index:4;text-transform:uppercase}
+  .wordField span{display:block;margin-left:.34em}
+  .fieldFoot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-top:8px;color:var(--dim)}
+  .fieldFoot b{color:var(--ink);font-weight:400}
+  .key{display:flex;align-items:center;gap:8px}
+  .key i{display:block;width:18px;height:1px;background:var(--ink)}
+
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 18px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:980px){
+    .workspace{grid-template-columns:1fr}
+    .panel{order:2;display:grid;grid-template-columns:1.2fr 1fr;gap:14px 22px;border-top:1px solid var(--ink);padding-top:12px}
+    .panelBottom{border-top:0;padding-top:0;display:flex;flex-direction:column;justify-content:flex-end}
+    .panelTop .palettes{margin-top:10px}
+    .field{min-height:clamp(320px,46vh,460px)}
+    .wordField{font-size:clamp(3.6rem,14vw,8rem);bottom:-.12em}
+  }
+  @media(max-width:640px){
+    .topTitle{flex-direction:column;align-items:flex-start;gap:6px}
+    .topTitle p{text-align:left;max-width:100%}
+    .panel{grid-template-columns:1fr;gap:12px}
+    .panelBottom{border-top:1px solid var(--line);padding-top:10px}
+    .field{grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(7,1fr);gap:2px}
+    .headMeta span:nth-child(2){display:none}
+    .wordField{font-size:17vw;bottom:-.1em}
+    .fieldFoot .key{display:none}
+    h1{font-size:8.4vw}
+    .cell::after{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">Chroma Field <span>/ colour study 04</span></a>
+    <div class="headMeta mono"><span>An interactive composition</span><span>17.10.26 — <b>series ii</b></span></div>
+  </header>
+
+  <main id="top">
+    <div class="topTitle">
+      <h1>Colour is a <em>relationship.</em></h1>
+      <p>No colour exists alone. Change one tile and every neighbour changes with it — this is the whole lesson, and the whole game.</p>
+    </div>
+
+    <div class="workspace">
+      <aside class="panel" aria-label="Colour controls">
+        <div class="panelTop">
+          <div class="label mono"><span>Palette</span><span id="palNo">01 / 04</span></div>
+          <h2>Choose a<br><em>weather.</em></h2>
+          <p>Four sets of five pigments. Select one, then paint the field. Try not to be tasteful for too long.</p>
+          <div class="palettes" id="palettes"></div>
+          <div class="pigments" id="pigments" role="group" aria-label="Pigment"></div>
+        </div>
+        <div class="panelBottom">
+          <div class="readout">
+            <span class="chip" id="chip" aria-hidden="true"></span>
+            <div><span class="hex" id="hex">#2F4F3E</span><small id="coord">Tile A1 · Terrain</small></div>
+          </div>
+          <div class="actions">
+            <button class="btn" id="shuffle">Shuffle field</button>
+            <button class="btn" id="clear">Bone field</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="fieldArea">
+        <div class="field" id="field" role="grid" aria-label="Colour field, 8 by 6 tiles"></div>
+        <div class="wordField" aria-hidden="true">Field<span>work</span></div>
+        <div class="fieldFoot mono">
+          <div class="key"><i aria-hidden="true"></i> Click / drag to paint · hover to read</div>
+          <div><b id="painted">48</b> tiles · 4 palettes · one relationship at a time</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mono">
+      <span>Chroma Field / after the teaching of Josef Albers</span>
+      <span>Interaction over decoration</span>
+      <span>© 2026 · all colours are borrowed</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  const palettes = {
+    terrain:  { name: 'Terrain',  colors: ['#2f4f3e','#6d8b6a','#c7b18a','#b4552f','#efe8d6'] },
+    salt:     { name: 'Salt',     colors: ['#e9e5d8','#a9c3cd','#6e8b96','#2a3b42','#c8a86b'] },
+    ember:    { name: 'Ember',    colors: ['#4a1c1a','#9d3f2e','#d9784a','#efb98b','#2b2521'] },
+    nocturne: { name: 'Nocturne', colors: ['#1d2440','#4b3f6e','#6d7a5a','#cfc6a6','#14141b'] }
+  };
+  const order = ['terrain','salt','ember','nocturne'];
+  let paletteKey = 'terrain';
+  let paintColor = palettes.terrain.colors[0];
+  let painting = false;
+
+  const field = document.getElementById('field');
+  const palettesEl = document.getElementById('palettes');
+  const pigmentsEl = document.getElementById('pigments');
+  const hexEl = document.getElementById('hex');
+  const coordEl = document.getElementById('coord');
+  const chip = document.getElementById('chip');
+  const paintedEl = document.getElementById('painted');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const COLS = () => window.innerWidth <= 640 ? 6 : 8;
+  const ROWS = () => window.innerWidth <= 640 ? 7 : 6;
+  let indices = [];
+
+  function initialComposition(){
+    return [4,4,2,2,1,1,0,0, 4,2,2,1,1,0,0,3, 2,2,1,1,0,0,3,3,
+            2,1,1,0,0,3,3,3, 1,1,0,0,3,3,2,2, 1,0,0,3,3,2,2,2];
+  }
+
+  function renderPaletteList(){
+    palettesEl.innerHTML = '';
+    order.forEach((key, i) => {
+      const b = document.createElement('button');
+      b.className = 'palRow';
+      b.setAttribute('aria-pressed', String(key === paletteKey));
+      b.innerHTML = '<span>' + String(i + 1).padStart(2,'0') + ' — ' + palettes[key].name + '</span><span class="palDots" aria-hidden="true">' +
+        palettes[key].colors.map(c => '<i style="background:' + c + '"></i>').join('') + '</span>';
+      b.addEventListener('click', () => setPalette(key));
+      palettesEl.appendChild(b);
+    });
+    document.getElementById('palNo').textContent = String(order.indexOf(paletteKey) + 1).padStart(2,'0') + ' / 04';
+  }
+
+  function renderPigments(){
+    pigmentsEl.innerHTML = '';
+    palettes[paletteKey].colors.forEach((c, i) => {
+      const b = document.createElement('button');
+      b.className = 'pigment';
+      b.style.background = c;
+      b.dataset.color = c;
+      b.setAttribute('aria-label', palettes[paletteKey].name + ' pigment ' + (i + 1) + ' ' + c);
+      b.setAttribute('aria-pressed', String(c === paintColor));
+      b.addEventListener('click', () => {
+        paintColor = c;
+        updateChip(c);
+        renderPigments();
+      });
+      pigmentsEl.appendChild(b);
+    });
+  }
+
+  function updateChip(c){
+    chip.style.background = c;
+    hexEl.textContent = c.toUpperCase();
+    coordEl.textContent = 'Selected · ' + palettes[paletteKey].name;
+  }
+
+  function buildField(){
+    field.innerHTML = '';
+    const cols = COLS(), rows = ROWS();
+    const total = cols * rows;
+    if (indices.length !== total){
+      indices = Array.from({ length: total }, (_, i) => initialComposition()[i % 48] % palettes[paletteKey].colors.length);
+    }
+    field.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+    field.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
+    const letters = 'ABCDEFGH';
+    for (let i = 0; i < total; i++){
+      const c = document.createElement('button');
+      c.type = 'button';
+      c.className = 'cell';
+      c.dataset.index = i;
+      const color = palettes[paletteKey].colors[indices[i] % 5];
+      c.style.background = color;
+      c.dataset.hex = color.toUpperCase();
+      c.setAttribute('aria-label', 'Tile ' + letters[i % cols] + (Math.floor(i / cols) + 1) + ', ' + color);
+      c.addEventListener('pointerdown', e => { painting = true; paintCell(i); e.preventDefault(); });
+      c.addEventListener('pointerenter', () => {
+        if (painting) paintCell(i);
+        coordEl.textContent = 'Tile ' + letters[i % cols] + (Math.floor(i / cols) + 1) + ' · ' + palettes[paletteKey].name;
+        hexEl.textContent = color.toUpperCase();
+        chip.style.background = color;
+      });
+      c.addEventListener('click', e => { if (e.detail === 0) paintCell(i); });
+      c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ paintCell(i); e.preventDefault(); } });
+      field.appendChild(c);
+    }
+    paintedEl.textContent = String(total);
+  }
+
+  function paintCell(i){
+    const cells = field.children;
+    const c = cells[i];
+    if (!c) return;
+    c.style.background = paintColor;
+    c.dataset.hex = paintColor.toUpperCase();
+    const cur = Array.from(cells).indexOf(c);
+    indices[cur] = palettes[paletteKey].colors.indexOf(paintColor);
+    c.animate ? c.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'ease-out' }) : null;
+    coordEl.textContent = 'Painted · ' + palettes[paletteKey].name;
+    hexEl.textContent = paintColor.toUpperCase();
+  }
+
+  function setPalette(key){
+    paletteKey = key;
+    paintColor = palettes[key].colors[0];
+    renderPaletteList();
+    renderPigments();
+    updateChip(paintColor);
+    Array.from(field.children).forEach((c, i) => {
+      const color = palettes[key].colors[indices[i] % 5];
+      c.style.background = color;
+      c.dataset.hex = color.toUpperCase();
+    });
+  }
+
+  function shuffleField(){
+    const cols = COLS(), rows = ROWS();
+    indices = [];
+    for (let y = 0; y < rows; y++){
+      let v = Math.floor(Math.random() * 5);
+      for (let x = 0; x < cols; x++){
+        if (Math.random() > .62) v = (v + (Math.random() > .5 ? 1 : 4)) % 5;
+        indices.push(v);
+      }
+    }
+    Array.from(field.children).forEach((c, i) => {
+      const color = palettes[paletteKey].colors[indices[i] % 5];
+      c.style.background = color;
+      c.dataset.hex = color.toUpperCase();
+      if (!reduce){
+        c.classList.remove('enter');
+        void c.offsetWidth;
+        c.style.animationDelay = ((i % cols) * 18 + Math.floor(i / cols) * 26) + 'ms';
+        c.classList.add('enter');
+      }
+    });
+    updateChip(paintColor);
+    coordEl.textContent = 'Field shuffled · ' + palettes[paletteKey].name;
+    hexEl.textContent = paintColor.toUpperCase();
+  }
+
+  document.getElementById('shuffle').addEventListener('click', shuffleField);
+  document.getElementById('clear').addEventListener('click', () => {
+    indices = indices.map(() => 4);
+    Array.from(field.children).forEach(c => {
+      const color = palettes[paletteKey].colors[4];
+      c.style.background = color; c.dataset.hex = color.toUpperCase();
+    });
+    coordEl.textContent = 'Bone field · ' + palettes[paletteKey].name;
+  });
+
+  window.addEventListener('pointerup', () => { painting = false; });
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(buildField, 220); });
+
+  renderPaletteList();
+  renderPigments();
+  buildField();
+  updateChip(paintColor);
+</script>
+</body>
+</html>

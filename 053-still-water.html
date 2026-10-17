@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Still Water — a quiet pond that answers when you touch it.">
+<title>Still Water — A Pond You Can Disturb</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --deep:#062a29; --water:#0b3b3a; --foam:#e9f6ee; --aqua:#8fe3cf; --dim:rgba(233,246,238,.55); --line:rgba(233,246,238,.18);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--deep);color:var(--foam);font-family:var(--sans);overflow:hidden;height:100svh;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--aqua);color:var(--deep)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--aqua);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.7}
+  #pond{position:fixed;inset:0;z-index:0;width:100%;height:100%;display:block;cursor:crosshair}
+  .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 42%,rgba(3,18,17,.5) 82%,rgba(3,15,14,.85))}
+  .grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.18;mix-blend-mode:soft-light;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  .ui{position:relative;z-index:4;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,42px);pointer-events:none}
+  .ui button,.ui a{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:17px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase}
+  .brand .drop{width:12px;height:16px;border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;background:var(--aqua);transform:rotate(2deg);box-shadow:0 0 12px rgba(143,227,207,.4);flex:none}
+  .brand small{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--foam);font-weight:400}
+  .headRight{display:flex;align-items:center;gap:8px}
+  .toggle{border:1px solid var(--line);padding:6px 10px;border-radius:100px;font-family:var(--mono);font-size:.4rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);transition:background .25s,color .25s,border-color .25s}
+  .toggle:hover{color:var(--foam);border-color:var(--foam)}
+  .toggle[aria-pressed="true"]{background:var(--aqua);border-color:var(--aqua);color:var(--deep)}
+  .main{flex:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:clamp(20px,5vh,44px)}
+  .caption{max-width:680px}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--aqua);margin-bottom:14px}
+  .kicker::before{content:"";width:24px;height:1px;background:var(--aqua)}
+  h1{font-family:var(--serif);font-size:clamp(2.6rem,5.6vw,5.3rem);line-height:.98;letter-spacing:-.05em;font-weight:400;text-shadow:0 4px 30px rgba(0,20,18,.5)}
+  h1 em{font-style:italic;color:var(--aqua)}
+  .sub{margin-top:13px;max-width:38ch;color:var(--dim);font-size:.72rem;line-height:1.8}
+  .controls{display:flex;align-items:center;gap:10px;color:var(--dim);flex-wrap:wrap;justify-content:flex-end}
+  .count{font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;line-height:1.7;text-align:right;margin-right:6px}
+  .count b{display:block;color:var(--foam);font-family:var(--serif);font-size:1.2rem;font-weight:400;letter-spacing:0}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:11px 0 15px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .main{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:14px}
+    .controls{justify-content:flex-start}
+    .sub{max-width:32ch}
+    h1{font-size:clamp(2.4rem,8.4vw,4rem)}
+  }
+  @media(max-width:600px){
+    .brand{font-size:.54rem;letter-spacing:.19em}
+    h1{font-size:10.6vw}
+    .ui{padding:0 14px}
+    .headRight .mono{display:none}
+    footer span:nth-child(2){display:none}
+    .count{text-align:left}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<canvas id="pond" aria-label="A still pond. Click to create ripples."></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="drop" aria-hidden="true"></span><span>Still Water<small>Pond study / early morning</small></span></a>
+    <div class="headMid mono"><span>Surface <b>18.4°C</b></span><span>Wind <b>0.2 m/s</b></span><span>Depth <b>1.6 m</b></span></div>
+    <div class="headRight"><button class="toggle" id="rain" aria-pressed="false">Rain</button><button class="toggle" id="clear">Clear</button></div>
+  </header>
+
+  <div class="main" id="top">
+    <div class="caption">
+      <p class="kicker mono">Touch the surface, gently</p>
+      <h1>Drop a stone.<br>Watch the lake <em>remember.</em></h1>
+      <p class="sub">No two circles return the same way. The koi have seen this before and are unimpressed.</p>
+    </div>
+    <div class="controls">
+      <div class="count mono">Disturbances<b id="count">00</b></div>
+      <button class="toggle" id="stone">Drop a stone</button>
+    </div>
+  </div>
+
+  <footer class="mono">
+    <span>Still Water / a fictional pond</span>
+    <span>Canvas, koi and patience</span>
+    <span>© 2026 · please do not feed the fish</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('pond');
+  const ctx = canvas.getContext('2d');
+  const countEl = document.getElementById('count');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+  let ripples = [], pads = [], koi = [], reeds = [];
+  let rainOn = false, rainTimer = null;
+  let count = 0, t = 0;
+
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    pads = [
+      { x: .2, y: .58, r: 42, a: -.2 },
+      { x: .78, y: .38, r: 55, a: .5 },
+      { x: .62, y: .74, r: 34, a: 1.1 },
+      { x: .38, y: .32, r: 28, a: 2.2 },
+      { x: .88, y: .68, r: 40, a: -1.2 }
+    ];
+    koi = [
+      { phase: 0, speed: .00012, size: 1, hue: '#e98b58' },
+      { phase: 2.1, speed: .00009, size: .8, hue: '#f4ede0' },
+      { phase: 4.4, speed: .00014, size: 1.1, hue: '#d9663c' }
+    ];
+    reeds = Array.from({ length: 16 }, (_, i) => ({ x: i < 8 ? .02 + i * .028 : .7 + (i - 8) * .038, h: .08 + Math.random() * .16, lean: (Math.random() - .5) * 30 }));
+    if (reduce){ ctx.fillStyle = '#0b3b3a'; ctx.fillRect(0, 0, W, H); drawScene(0); }
+  }
+
+  function drawScene(time){
+    // water
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#0e4b47'); g.addColorStop(.42, '#0b3b3a'); g.addColorStop(.75, '#072e2d'); g.addColorStop(1, '#052321');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // sky light
+    const sky = ctx.createRadialGradient(W * .62, -H * .2, 10, W * .62, -H * .2, H * .8);
+    sky.addColorStop(0, 'rgba(156,220,198,.28)'); sky.addColorStop(.5, 'rgba(90,160,150,.08)'); sky.addColorStop(1, 'transparent');
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    // caustics
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 26; i++){
+      const y0 = (i / 26) * H;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 12){
+        const y = y0 + Math.sin(x * .006 + time * .0004 + i * .7) * (4 + i * .25) + Math.cos(x * .011 - time * .0002 + i) * 2;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = i % 5 === 0 ? 'rgba(143,227,207,.13)' : 'rgba(143,227,207,.05)';
+      ctx.stroke();
+    }
+    // sparkles
+    for (let i = 0; i < 30; i++){
+      const x = ((i * 197.3) % W), y = ((i * 89.7) % H);
+      const a = .08 + .1 * Math.abs(Math.sin(time * .001 + i));
+      ctx.fillStyle = 'rgba(220,255,245,' + a + ')';
+      ctx.fillRect(x, y, 1.4, 1.4);
+    }
+
+    // reeds
+    reeds.forEach(r => {
+      ctx.beginPath();
+      ctx.moveTo(r.x * W, H * .94);
+      ctx.quadraticCurveTo(r.x * W + r.lean, H * (.94 - r.h * .5), r.x * W + r.lean * .5, H * (.94 - r.h));
+      ctx.strokeStyle = 'rgba(24,60,48,.85)';
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+    });
+
+    // pads
+    pads.forEach((p, i) => {
+      const bob = reduce ? 0 : Math.sin(time * .0008 + i) * 3;
+      const x = p.x * W, y = p.y * H + bob, r = p.r * Math.min(1, W / 900 + .35);
+      ctx.save();
+      ctx.translate(x, y); ctx.rotate(p.a);
+      ctx.beginPath();
+      ctx.arc(0, 0, r, .26, Math.PI * 2 - .04);
+      ctx.lineTo(0, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#2c6b50';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(160,220,180,.35)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(r * .96, 0); ctx.strokeStyle = 'rgba(20,60,45,.5)'; ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, r * .92, .3, Math.PI * 2 - .1); ctx.strokeStyle = 'rgba(180,240,205,.12)'; ctx.stroke();
+      ctx.restore();
+    });
+
+    // koi
+    koi.forEach((k, i) => {
+      const p = (time * k.speed + k.phase) % 1;
+      const x = W * (.2 + .6 * p);
+      const y = H * (.45 + Math.sin(p * Math.PI * 4 + i) * .12);
+      const dir = Math.cos(p * Math.PI * 4 + i) >= 0 ? 1 : -1;
+      drawFish(x, y, dir, k.size, k.hue, time + i * 1000);
+    });
+
+    // ripples
+    for (let i = ripples.length - 1; i >= 0; i--){
+      const rp = ripples[i];
+      rp.r += reduce ? 0 : 1.25;
+      rp.alpha *= .994;
+      if (rp.r > rp.max || rp.alpha < .01){ ripples.splice(i, 1); continue; }
+      const squash = .38;
+      for (let ring = 0; ring < 2; ring++){
+        const rr = rp.r - ring * 9;
+        if (rr <= 0) continue;
+        ctx.beginPath();
+        ctx.ellipse(rp.x, rp.y, rr, rr * squash, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(200,255,238,' + (rp.alpha * (ring === 0 ? .5 : .22)) + ')';
+        ctx.lineWidth = ring === 0 ? 1.2 : .7;
+        ctx.stroke();
+      }
+    }
+  }
+
+  function drawFish(x, y, dir, s, hue, time){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(dir * s, s);
+    ctx.rotate(Math.sin(time * .001) * .08);
+    ctx.fillStyle = hue; ctx.globalAlpha = .92;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 26, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-22, 0); ctx.lineTo(-38, -10 + Math.sin(time * .003) * 4); ctx.lineTo(-38, 10 + Math.sin(time * .003) * 4); ctx.closePath();
+    ctx.fillStyle = hue; ctx.globalAlpha = .55; ctx.fill();
+    ctx.fillStyle = 'rgba(255,245,225,.7)';
+    ctx.beginPath(); ctx.ellipse(4, -2, 9, 4, -.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#1b2b26';
+    ctx.beginPath(); ctx.arc(15, -2, 1.6, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function addRipple(x, y, max){
+    ripples.push({ x: x, y: y, r: 4, max: max || 160, alpha: .75 });
+    count++;
+    countEl.textContent = String(count).padStart(2, '0');
+    if (ripples.length > 60) ripples.shift();
+  }
+
+  function frame(now){
+    t = now;
+    if (!reduce){
+      drawScene(now);
+      requestAnimationFrame(frame);
+    }
+  }
+
+  canvas.addEventListener('pointerdown', e => addRipple(e.clientX, e.clientY, 230));
+  let lastRipple = 0;
+  canvas.addEventListener('pointermove', e => {
+    const n = performance.now();
+    if (n - lastRipple < 90) return;
+    if (e.buttons || Math.random() > .82){ lastRipple = n; addRipple(e.clientX, e.clientY, 90); }
+  });
+  document.getElementById('stone').addEventListener('click', () => addRipple(W * .5, H * .55, 240));
+  document.getElementById('clear').addEventListener('click', () => { ripples = []; count = 0; countEl.textContent = '00'; });
+  document.getElementById('rain').addEventListener('click', function(){
+    rainOn = !rainOn;
+    this.setAttribute('aria-pressed', String(rainOn));
+    this.textContent = rainOn ? 'Stop rain' : 'Rain';
+    if (rainOn){
+      rainTimer = setInterval(() => addRipple(Math.random() * W, Math.random() * H, 60 + Math.random() * 70), 420);
+    } else clearInterval(rainTimer);
+  });
+
+  window.addEventListener('resize', size);
+  size();
+  if (!reduce) requestAnimationFrame(frame);
+</script>
+</body>
+</html>

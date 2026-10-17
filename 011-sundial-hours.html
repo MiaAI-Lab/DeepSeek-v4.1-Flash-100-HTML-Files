@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Helio — an interactive sundial study on solar time, light and the long afternoon.">
+<title>Helio — The Sun Keeps Better Time</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --sand:#f3e7d0; --paper:#f8efdd; --ink:#2d2418; --ochre:#b86b2f; --deep:#5a3b22; --moss:#77704e;
+    --line:rgba(45,36,24,.22);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--sand);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1200px 700px at 78% 0%,rgba(255,225,178,.8),transparent 60%),radial-gradient(900px 600px at 8% 90%,rgba(184,107,47,.1),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ochre);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--ochre);outline-offset:5px}
+  .mono{font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.6}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3.6vw,46px)}
+
+  header{border-bottom:1px solid var(--ink)}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:17px 0}
+  .brand{display:flex;align-items:baseline;gap:10px;font-family:var(--serif);font-size:1.15rem;letter-spacing:.02em}
+  .brand b{font-weight:400}
+  .brand span{font-family:var(--mono);font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(45,36,24,.6)}
+  .top .mid{display:flex;gap:24px;color:rgba(45,36,24,.6)}
+  .top .mid a:hover{color:var(--ink)}
+  .coords{text-align:right;color:rgba(45,36,24,.62);white-space:nowrap}
+
+  .hero{display:grid;grid-template-columns:.92fr 1.08fr;gap:clamp(26px,4.8vw,64px);align-items:center;
+    padding:clamp(34px,5vw,60px) 0 clamp(36px,5vw,60px);min-height:calc(100svh - 67px)}
+  .eyebrow{display:flex;align-items:center;gap:11px;color:var(--ochre);margin-bottom:24px}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--ochre)}
+  h1{font-family:var(--serif);font-size:clamp(3rem,6.6vw,6rem);line-height:.94;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--ochre)}
+  .lede{margin-top:24px;max-width:37ch;font-size:.85rem;line-height:1.85;color:rgba(45,36,24,.72);font-weight:300}
+  .lede b{font-weight:500;color:var(--ink)}
+  .reading{display:flex;align-items:flex-end;gap:26px;margin-top:32px;padding-top:18px;border-top:1px solid var(--ink)}
+  .reading .clock{font-family:var(--serif);font-size:clamp(2.4rem,4.6vw,3.6rem);line-height:.9;letter-spacing:-.04em}
+  .reading .clock small{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;display:block;margin-top:8px;color:rgba(45,36,24,.55);text-transform:uppercase}
+  .reading .meta{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px 18px;padding-bottom:5px}
+  .reading .meta span{display:block;color:rgba(45,36,24,.55);font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase}
+  .reading .meta b{display:block;margin-top:4px;font-weight:400;font-family:var(--serif);font-size:.88rem}
+  .nowBtn{display:inline-flex;align-items:center;gap:9px;margin-top:22px;padding:9px 14px;border:1px solid rgba(45,36,24,.4);
+    font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;transition:background .25s,color .25s,border-color .25s}
+  .nowBtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .nowBtn i{width:5px;height:5px;border-radius:50%;background:var(--ochre);display:block}
+  .nowBtn:hover i{background:var(--sand)}
+
+  .dialPane{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .sunGlow{position:absolute;width:76%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,206,128,.5),rgba(255,206,128,.08) 45%,transparent 68%);filter:blur(18px);pointer-events:none}
+  .dial{position:relative;width:min(100%,540px);aspect-ratio:1;touch-action:none;cursor:grab;outline-offset:10px}
+  .dial:active{cursor:grabbing}
+  .dial svg{width:100%;height:100%;display:block;overflow:visible}
+  .dialCaption{display:flex;justify-content:space-between;width:100%;max-width:540px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line);color:rgba(45,36,24,.6)}
+  .dialCaption b{color:var(--ink);font-weight:400}
+  .controls{width:100%;max-width:540px;margin-top:14px;display:flex;align-items:center;gap:14px}
+  .controls label{color:rgba(45,36,24,.6);white-space:nowrap}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:18px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(45,36,24,.45)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;background:var(--ochre);border:1px solid var(--ink);margin-top:-6px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(45,36,24,.45)}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--ochre);border:1px solid var(--ink)}
+
+  .notes{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);display:grid;grid-template-columns:repeat(3,1fr)}
+  .notes div{padding:22px clamp(14px,2.5vw,28px);border-right:1px solid var(--line)}
+  .notes div:first-child{padding-left:0}
+  .notes div:last-child{border-right:0}
+  .notes .n{color:var(--ochre);margin-bottom:10px}
+  .notes h2{font-family:var(--serif);font-size:1.15rem;font-weight:400;margin-bottom:7px}
+  .notes p{font-size:.72rem;line-height:1.75;color:rgba(45,36,24,.66)}
+  .notes .num{font-family:var(--serif);font-size:2rem;line-height:1;color:var(--ochre);margin-top:12px}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 0 26px;color:rgba(45,36,24,.5)}
+
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;min-height:0;gap:30px;padding-top:28px}
+    .dialPane{order:2}
+    .dial{max-width:480px}
+    .top .mid{display:none}
+  }
+  @media(max-width:620px){
+    h1{font-size:12.5vw}
+    .reading{flex-wrap:wrap;gap:16px}
+    .reading .meta{grid-template-columns:1fr 1fr;flex-basis:100%}
+    .notes{grid-template-columns:1fr}
+    .notes div{border-right:0;border-bottom:1px solid var(--line);padding-left:0}
+    .notes div:last-child{border-bottom:0}
+    .coords{display:none}
+    .dialCaption{font-size:.48rem}
+    .top{padding:13px 0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <a class="brand" href="#top"><b>Helio</b><span>Solar instruments / study 03</span></a>
+      <div class="mid mono"><a href="#notes">Field notes</a><a href="#notes">Equation of time</a><a href="#notes">Archive</a></div>
+      <div class="coords mono">43° 17′ N / 5° 22′ E<br>Atelier de lumière</div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow mono">An instrument for the long afternoon</p>
+        <h1>The sun keeps<br><em>better time.</em></h1>
+        <p class="lede">Clocks are a human agreement. The dial is not. Drag the day around its face and watch the shadow insist on its own <b>slow, seasonal arithmetic.</b></p>
+        <div class="reading">
+          <div class="clock"><span id="solarTime">14:20</span><small id="periodLabel">Afternoon / solar</small></div>
+          <div class="meta">
+            <div><span>Elevation</span><b id="elevation">42.6°</b></div>
+            <div><span>Equation</span><b id="equation">+3m 12s</b></div>
+            <div><span>Declination</span><b>−9.2°</b></div>
+            <div><span>Shadow</span><b id="shadowLen">1.08 ×</b></div>
+          </div>
+        </div>
+        <button class="nowBtn" id="now"><i aria-hidden="true"></i> Return to now</button>
+      </div>
+
+      <div class="dialPane">
+        <div class="sunGlow" aria-hidden="true"></div>
+        <div class="dial" id="dial" role="slider" tabindex="0" aria-label="Solar hour" aria-valuemin="6" aria-valuemax="18" aria-valuenow="14" aria-valuetext="14:20 solar time">
+          <svg viewBox="0 0 560 560" aria-hidden="true">
+            <defs>
+              <radialGradient id="face" cx="45%" cy="40%">
+                <stop offset="0" stop-color="#fbf1dc"/><stop offset=".72" stop-color="#efe0c4"/><stop offset="1" stop-color="#e2d0ae"/>
+              </radialGradient>
+              <radialGradient id="sunFill" cx="38%" cy="34%">
+                <stop offset="0" stop-color="#fff8e8"/><stop offset=".4" stop-color="#ffd077"/><stop offset="1" stop-color="#d98a3d"/>
+              </radialGradient>
+              <filter id="soft"><feGaussianBlur stdDeviation="5"/></filter>
+            </defs>
+            <circle cx="280" cy="280" r="258" fill="url(#face)" stroke="rgba(45,36,24,.55)"/>
+            <circle cx="280" cy="280" r="243" fill="none" stroke="rgba(45,36,24,.24)"/>
+            <circle cx="280" cy="280" r="190" fill="none" stroke="rgba(45,36,24,.18)"/>
+            <circle cx="280" cy="280" r="120" fill="none" stroke="rgba(45,36,24,.12)"/>
+            <g id="ticks"></g>
+            <g id="numerals"></g>
+            <g id="arc" stroke="rgba(45,36,24,.32)" fill="none">
+              <path d="M48,280 A232,232 0 0 1 512,280" stroke-dasharray="2 6"/>
+            </g>
+            <line id="shadow" x1="280" y1="280" x2="280" y2="520" stroke="rgba(45,36,24,.5)" stroke-width="2"/>
+            <circle id="gnomonBase" cx="280" cy="280" r="5" fill="#2d2418"/>
+            <path d="M280,280 L262,300 L298,300 Z" fill="#2d2418" opacity=".9"/>
+            <g id="sunGroup">
+              <circle id="sunHalo" cx="280" cy="60" r="26" fill="rgba(255,198,106,.35)" filter="url(#soft)"/>
+              <circle id="sunDot" cx="280" cy="60" r="12" fill="url(#sunFill)" stroke="rgba(184,107,47,.5)"/>
+            </g>
+            <text x="280" y="345" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="rgba(45,36,24,.45)" font-style="italic">sol</text>
+            <text x="280" y="374" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" letter-spacing="3" fill="rgba(45,36,24,.45)">ATELIER DE LUMIÈRE</text>
+          </svg>
+        </div>
+        <div class="dialCaption mono"><span>Latitude <b>43° 17′ N</b></span><span>Drag the day →</span><span>Fig. <b>03 / 07</b></span></div>
+        <div class="controls">
+          <label class="mono" for="timeRange">Hour</label>
+          <input id="timeRange" type="range" min="6" max="18" step="0.05" value="14.33" aria-label="Hour of day">
+          <span class="mono" id="rangeOut" style="color:var(--ochre);width:42px;text-align:right">14:20</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="notes" id="notes" aria-label="Field notes">
+      <div>
+        <div class="n mono">Note 01 — the equation</div>
+        <h2>Noon is never on time.</h2>
+        <p>The gap between clock noon and solar noon shifts through the year by up to sixteen minutes, a wobble caused by an elliptical orbit and a tilted axis.</p>
+        <div class="num">±16′</div>
+      </div>
+      <div>
+        <div class="n mono">Note 02 — the shadow</div>
+        <h2>Light leaves a ruler.</h2>
+        <p>At this latitude the noon shadow doubles in winter and almost disappears in June. The dial reads the season as much as the hour.</p>
+        <div class="num">1 : 3.2</div>
+      </div>
+      <div>
+        <div class="n mono">Note 03 — the slower hour</div>
+        <h2>Every sundial runs slow.</h2>
+        <p>Not a fault — a refusal to round. A dial divides the day by light, not by agreement, and so keeps a little of the afternoon for itself.</p>
+        <div class="num">12.42</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Helio — solar instruments, study 03</span>
+    <span>Set in system serif · drawn entirely in SVG</span>
+    <span>© 2026 · the sun was here first</span>
+  </footer>
+</div>
+
+<script>
+  const dial = document.getElementById('dial');
+  const ticks = document.getElementById('ticks');
+  const numerals = document.getElementById('numerals');
+  const shadow = document.getElementById('shadow');
+  const sunDot = document.getElementById('sunDot');
+  const sunHalo = document.getElementById('sunHalo');
+  const range = document.getElementById('timeRange');
+  const solarTime = document.getElementById('solarTime');
+  const rangeOut = document.getElementById('rangeOut');
+  const elevation = document.getElementById('elevation');
+  const shadowLen = document.getElementById('shadowLen');
+  const periodLabel = document.getElementById('periodLabel');
+  const equation = document.getElementById('equation');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cx = 280, cy = 280;
+  let value = 14.33;
+  let dragging = false;
+
+  const roman = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+  for (let i = 0; i < 48; i++){
+    const a = (i / 48) * Math.PI * 2 - Math.PI / 2;
+    const major = i % 4 === 0;
+    const r1 = major ? 220 : 230, r2 = 243;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', cx + Math.cos(a) * r1); line.setAttribute('y1', cy + Math.sin(a) * r1);
+    line.setAttribute('x2', cx + Math.cos(a) * r2); line.setAttribute('y2', cy + Math.sin(a) * r2);
+    line.setAttribute('stroke', major ? 'rgba(45,36,24,.55)' : 'rgba(45,36,24,.25)');
+    line.setAttribute('stroke-width', major ? '1.4' : '.7');
+    ticks.appendChild(line);
+  }
+  for (let i = 6; i <= 18; i++){
+    const a = Math.PI - ((i - 6) / 12) * Math.PI;
+    const r = 196;
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', cx + Math.cos(a) * r); t.setAttribute('y', cy + Math.sin(a) * r + 4);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('fill', 'rgba(45,36,24,.58)');
+    t.setAttribute('font-family', 'Georgia, serif');
+    t.setAttribute('font-size', '13');
+    t.textContent = roman[i];
+    numerals.appendChild(t);
+  }
+
+  function format(v){
+    const h = Math.floor(v), m = Math.round((v - h) * 60);
+    return String(h).padStart(2,'0') + ':' + String(m === 60 ? 0 : m).padStart(2,'0');
+  }
+
+  function update(v, animate){
+    value = Math.max(6, Math.min(18, v));
+    range.value = value.toFixed(2);
+    solarTime.textContent = format(value);
+    rangeOut.textContent = format(value);
+    dial.setAttribute('aria-valuenow', value.toFixed(1));
+    dial.setAttribute('aria-valuetext', format(value) + ' solar time');
+    const sAngle = Math.PI - ((value - 6) / 12) * Math.PI;
+    const sx = cx + Math.cos(sAngle) * 232;
+    const sy = cy - Math.sin(sAngle) * 232;
+    sunDot.setAttribute('cx', sx); sunDot.setAttribute('cy', sy);
+    sunHalo.setAttribute('cx', sx); sunHalo.setAttribute('cy', sy);
+    const shadowAngle = sAngle + Math.PI;
+    const len = 226;
+    shadow.setAttribute('x2', cx + Math.cos(shadowAngle) * len);
+    shadow.setAttribute('y2', cy - Math.sin(shadowAngle) * len);
+    shadow.style.transition = animate && !reduce ? 'all .18s ease' : 'none';
+    const elev = Math.max(-8, 62 - Math.abs(value - 12.5) * 9.4);
+    elevation.textContent = elev.toFixed(1) + '°';
+    shadowLen.textContent = (1 / Math.max(.18, Math.sin(elev * Math.PI / 180))).toFixed(2) + ' ×';
+    periodLabel.textContent = value < 12 ? 'Morning / solar' : value < 17 ? 'Afternoon / solar' : 'Evening / solar';
+    const day = 17;
+    const eq = Math.sin((day + 284) * 2 * Math.PI / 365) * 9.4;
+    equation.textContent = (eq >= 0 ? '+' : '−') + Math.abs(eq).toFixed(1) + ' min';
+  }
+
+  function fromPointer(e){
+    const r = dial.getBoundingClientRect();
+    const x = e.clientX - (r.left + r.width / 2);
+    const y = e.clientY - (r.top + r.height / 2);
+    let a = Math.atan2(y, x);
+    if (a < 0) a = a > -Math.PI / 2 ? 0 : Math.PI;
+    return 6 + (Math.PI - a) / Math.PI * 12;
+  }
+
+  dial.addEventListener('pointerdown', e => {
+    dragging = true;
+    if (dial.setPointerCapture) dial.setPointerCapture(e.pointerId);
+    update(fromPointer(e), true);
+    e.preventDefault();
+  });
+  dial.addEventListener('pointermove', e => { if (dragging) update(fromPointer(e), true); });
+  dial.addEventListener('pointerup', () => { dragging = false; });
+  dial.addEventListener('pointercancel', () => { dragging = false; });
+  dial.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ update(value - .25, true); e.preventDefault(); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp'){ update(value + .25, true); e.preventDefault(); }
+  });
+  range.addEventListener('input', () => update(parseFloat(range.value), false));
+  document.getElementById('now').addEventListener('click', () => {
+    const d = new Date();
+    update(Math.max(6, Math.min(18, d.getHours() + d.getMinutes() / 60)), true);
+  });
+
+  update(14.33, false);
+</script>
+</body>
+</html>

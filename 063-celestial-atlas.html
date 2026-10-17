@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Celestial Atlas — six constellations, one circular chart, a rotating sky.">
+<title>Celestial Atlas — The Sky, Indexed</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --night:#06101f; --panel:#0a1a2e; --star:#eaf0f7; --gold:#c9a86a; --dim:rgba(234,240,247,.5); --line:rgba(234,240,247,.14);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--night);color:var(--star);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 75% 10%,rgba(30,60,110,.4),transparent 62%),radial-gradient(700px 600px at 0% 90%,rgba(20,40,80,.3),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--gold);color:var(--night)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.48rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase}
+  .brand .star{width:14px;height:14px;position:relative;flex:none}
+  .brand .star::before,.brand .star::after{content:"";position:absolute;background:var(--gold);left:50%;top:50%;transform:translate(-50%,-50%)}
+  .brand .star::before{width:14px;height:1px}.brand .star::after{width:1px;height:14px}
+  .brand small{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.12em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--star);font-weight:400}
+  .headRight{display:flex;align-items:center;gap:10px;color:var(--dim)}
+  .toggle{border:1px solid var(--line);border-radius:100px;padding:5px 9px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .toggle:hover{color:var(--star);border-color:var(--star)}
+  .toggle[aria-pressed="true"]{background:var(--gold);color:var(--night);border-color:var(--gold)}
+
+  .main{flex:1;display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(22px,4vw,50px);align-items:center;padding:clamp(16px,3vw,28px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--gold);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-size:clamp(2.5rem,4.8vw,4.5rem);line-height:.96;letter-spacing:-.045em;font-weight:400}
+  h1 em{font-style:italic;color:var(--gold)}
+  .intro p{margin-top:14px;max-width:35ch;font-size:.72rem;line-height:1.8;color:var(--dim)}
+  .index{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-top:18px}
+  .con{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid rgba(234,240,247,.08);text-align:left;color:var(--dim);transition:color .2s}
+  .con i{width:4px;height:4px;border-radius:50%;background:currentColor;display:block}
+  .con span{font-family:var(--serif);font-size:.9rem}
+  .con small{margin-left:auto;font-family:var(--mono);font-size:.32rem;letter-spacing:.06em;opacity:.6}
+  .con:hover{color:var(--star)}
+  .con[aria-pressed="true"]{color:var(--gold)}
+  .details{margin-top:16px;border-top:1px solid var(--line);padding-top:11px;min-height:120px}
+  .details .name{font-family:var(--serif);font-size:1.35rem;font-style:italic;color:var(--gold)}
+  .details .meta{display:flex;gap:14px;margin-top:4px;color:var(--dim);flex-wrap:wrap}
+  .details p{margin-top:8px;font-size:.68rem;line-height:1.7;color:var(--dim);max-width:36ch}
+  .details p b{color:var(--star);font-weight:400}
+
+  .chartWrap{position:relative;display:grid;place-items:center;min-height:clamp(360px,58vh,620px)}
+  .chart{width:min(100%,600px);height:auto;overflow:visible;filter:drop-shadow(0 20px 50px rgba(0,0,0,.5))}
+  .skyGroup{transform-origin:300px 300px;transition:transform .6s ease}
+  .constellation{cursor:pointer;transition:opacity .3s}
+  .constellation .line{stroke:rgba(234,240,247,.24);stroke-width:1;transition:stroke .3s,stroke-width .3s}
+  .constellation .dot{fill:rgba(234,240,247,.8);transition:fill .3s,r .3s}
+  .constellation .name{fill:rgba(234,240,247,.35);font-family:ui-monospace, monospace;font-size:7px;letter-spacing:1.4px;text-transform:uppercase;transition:fill .3s}
+  .constellation:hover .line,.constellation.sel .line{stroke:var(--gold);stroke-width:1.6}
+  .constellation:hover .dot,.constellation.sel .dot{fill:var(--gold)}
+  .constellation.sel .dot{filter:drop-shadow(0 0 5px rgba(201,168,106,.9))}
+  .constellation.sel .name{fill:var(--gold)}
+  .chartLabels.hide .name{opacity:0}
+  .chartFoot{display:flex;justify-content:space-between;width:100%;max-width:600px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--dim)}
+  .chartFoot b{color:var(--star);font-weight:400}
+  .sidereal{margin-top:10px;display:flex;align-items:center;gap:10px;width:100%;max-width:600px;color:var(--dim)}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(234,240,247,.25)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--gold);margin-top:-5px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(234,240,247,.25)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+  .readout{width:88px;text-align:right;color:var(--star);font-family:var(--mono);font-size:.42rem;letter-spacing:.03em}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:8px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:960px){
+    .main{grid-template-columns:1fr;gap:18px}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .kicker,.intro h1,.intro p{grid-column:1}
+    .index{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .details{grid-column:1/-1;margin-top:8px}
+    .chartWrap{min-height:340px}
+    .headMid{display:none}
+  }
+  @media(max-width:600px){
+    .intro{grid-template-columns:1fr}
+    .index{grid-column:1;grid-row:auto;margin-top:12px}
+    h1{font-size:10.8vw}
+    .brand{font-size:.56rem;letter-spacing:.18em}
+    .headRight .mono{display:none}
+    .details p{font-size:.62rem}
+    .chartFoot{font-size:.38rem}
+    .sidereal .mono{font-size:.36rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="star" aria-hidden="true"></span><span>Celestial Atlas<small>Plate ix / the northern sky</small></span></a>
+    <div class="headMid mono"><span>Constellations <b>06</b></span><span>Epoch <b>J2000</b></span><span>Limiting mag. <b>6.2</b></span></div>
+    <div class="headRight"><span class="mono">Labels</span><button class="toggle" id="labels" aria-pressed="true">On</button></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">A sky you can index</p>
+      <h1>The sky,<br><em>indexed.</em></h1>
+      <p>Six old shapes, drawn by hand between the stars. Turn the sidereal wheel and watch the whole sky lean a little.</p>
+      <div class="index" id="index" role="group" aria-label="Constellations"></div>
+      <div class="details">
+        <div class="name" id="conName">Orion</div>
+        <div class="meta mono"><span>Brightest <b id="conStar">Rigel</b></span><span>Best <b id="conMonth">January</b></span><span><b id="conArea">594°²</b></span></div>
+        <p id="conMyth">The hunter, with a belt of three bright stars and a sword that is really a nursery. Visible from almost everywhere on Earth, which may be why so many myths claim him.</p>
+      </div>
+    </div>
+
+    <div class="chartWrap">
+      <svg class="chart" viewBox="0 0 600 600" role="img" aria-label="A circular star chart with six constellations">
+        <defs>
+          <radialGradient id="chartBg" cx="46%" cy="42%"><stop offset="0" stop-color="#0d2036"/><stop offset=".72" stop-color="#071426"/><stop offset="1" stop-color="#040c17"/></radialGradient>
+          <radialGradient id="milky" cx="50%" cy="50%"><stop offset="0" stop-color="rgba(170,200,235,.13)"/><stop offset="1" stop-color="rgba(170,200,235,0)"/></radialGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="1.8"/></filter>
+        </defs>
+        <circle cx="300" cy="300" r="292" fill="url(#chartBg)" stroke="rgba(201,168,106,.4)"/>
+        <circle cx="300" cy="300" r="280" fill="none" stroke="rgba(234,240,247,.18)"/>
+        <circle cx="300" cy="300" r="232" fill="none" stroke="rgba(234,240,247,.1)"/>
+        <circle cx="300" cy="300" r="170" fill="none" stroke="rgba(234,240,247,.07)"/>
+        <circle cx="300" cy="300" r="100" fill="none" stroke="rgba(234,240,247,.05)"/>
+        <ellipse cx="300" cy="300" rx="280" ry="94" fill="url(#milky)" transform="rotate(-28 300 300)"/>
+        <g id="degreeTicks"></g>
+        <g id="fieldStars"></g>
+        <g class="skyGroup chartLabels" id="skyGroup"></g>
+        <circle cx="300" cy="300" r="3" fill="rgba(201,168,106,.8)"/>
+        <circle cx="300" cy="300" r="14" fill="none" stroke="rgba(201,168,106,.3)" stroke-dasharray="1 3"/>
+      </svg>
+      <div class="chartFoot mono"><span>Chart <b>ix / circumpolar</b></span><span>Drag the wheel below</span></div>
+      <div class="sidereal"><label class="mono" for="sidereal">Sidereal</label><input id="sidereal" type="range" min="0" max="360" value="0" aria-label="Rotate the sky"><span class="readout" id="siderealOut">000°</span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Celestial Atlas / a fictional plate</span>
+    <span>Stars approximate · myths borrowed</span>
+    <span>© 2026 · look up</span>
+  </footer>
+</div>
+
+<script>
+  const NS = 'http://www.w3.org/2000/svg';
+  const skyGroup = document.getElementById('skyGroup');
+  const fieldStars = document.getElementById('fieldStars');
+  const degreeTicks = document.getElementById('degreeTicks');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const constellations = [
+    { key:'orion', name:'Orion', star:'Rigel', month:'January', area:'594°²',
+      myth:'The hunter, with a belt of three bright stars and a sword that is really a nursery. Visible from almost everywhere on Earth, which may be why so many myths claim him.',
+      base:{x:300,y:300}, stars:[[-44,-58],[26,-66],[10,-8],[-24,4],[18,18],[-26,62],[34,48],[-8,-2]], lines:[[0,2],[1,2],[2,3],[2,4],[3,5],[4,6],[3,4],[0,3],[1,4]] },
+    { key:'cassiopeia', name:'Cassiopeia', star:'Schedar', month:'November', area:'598°²',
+      myth:'A queen condemned to circle the pole on a chair. The W is not a crown; it is the shape of someone refusing to apologise.',
+      base:{x:420,y:150}, stars:[[-44,8],[-18,-10],[0,8],[20,-10],[46,8]], lines:[[0,1],[1,2],[2,3],[3,4]] },
+    { key:'cygnus', name:'Cygnus', star:'Deneb', month:'September', area:'804°²',
+      myth:'A swan flying down the Milky Way. The long neck points to the summer triangle; the wings are wider than they look in a dark sky.',
+      base:{x:210,y:180}, stars:[[0,-54],[-30,-10],[28,-8],[0,22],[-6,66]], lines:[[0,1],[0,2],[1,3],[2,3],[3,4]] },
+    { key:'lyra', name:'Lyra', star:'Vega', month:'August', area:'286°²',
+      myth:'A small harp beside a very bright star. Vega was the pole star twelve thousand years ago and will be again, which is a long time to hold a note.',
+      base:{x:420,y:390}, stars:[[-6,-34],[-16,-8],[12,-14],[2,16],[22,30]], lines:[[0,1],[0,2],[1,3],[2,3],[3,4]] },
+    { key:'ursa', name:'Ursa Major', star:'Alioth', month:'April', area:'1280°²',
+      myth:'The great bear, whose tail is a ladle and whose paws are seven bright stars. Follow the two at the end of the bowl and you will find the north.',
+      base:{x:250,y:420}, stars:[[-46,10],[-28,22],[-8,26],[10,30],[28,44],[44,28],[58,38]], lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]] },
+    { key:'scorpius', name:'Scorpius', star:'Antares', month:'July', area:'497°²',
+      myth:'A scorpion with a red heart. In the north it barely lifts above the horizon, which makes seeing it feel like a small private achievement.',
+      base:{x:140,y:300}, stars:[[-20,-40],[-24,-12],[-16,14],[-4,38],[10,56],[28,66],[46,58],[56,40]], lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]] }
+  ];
+  let selected = 0;
+  const els = {};
+
+  for (let i = 0; i < 120; i++){
+    const a = Math.random() * Math.PI * 2;
+    const r = Math.sqrt(Math.random()) * 280;
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', 300 + Math.cos(a) * r); c.setAttribute('cy', 300 + Math.sin(a) * r);
+    c.setAttribute('r', Math.random() * 1.1 + .2);
+    c.setAttribute('fill', 'rgba(234,240,247,' + (.2 + Math.random() * .65) + ')');
+    fieldStars.appendChild(c);
+  }
+  for (let i = 0; i < 72; i++){
+    const a = i / 72 * Math.PI * 2;
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', 300 + Math.cos(a) * (i % 6 === 0 ? 266 : 273));
+    l.setAttribute('y1', 300 + Math.sin(a) * (i % 6 === 0 ? 266 : 273));
+    l.setAttribute('x2', 300 + Math.cos(a) * 281);
+    l.setAttribute('y2', 300 + Math.sin(a) * 281);
+    l.setAttribute('stroke', 'rgba(234,240,247,' + (i % 6 === 0 ? '.35' : '.14') + ')');
+    degreeTicks.appendChild(l);
+  }
+
+  constellations.forEach((c, ci) => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'constellation' + (ci === 0 ? ' sel' : ''));
+    g.setAttribute('data-i', ci);
+    g.setAttribute('tabindex', '0');
+    g.setAttribute('role', 'button');
+    g.setAttribute('aria-label', c.name);
+    const pts = c.stars.map(s => [c.base.x + s[0], c.base.y + s[1]]);
+    c.lines.forEach(pair => {
+      const l = document.createElementNS(NS, 'line');
+      l.setAttribute('class', 'line');
+      l.setAttribute('x1', pts[pair[0]][0]); l.setAttribute('y1', pts[pair[0]][1]);
+      l.setAttribute('x2', pts[pair[1]][0]); l.setAttribute('y2', pts[pair[1]][1]);
+      g.appendChild(l);
+    });
+    pts.forEach((p, i) => {
+      const d = document.createElementNS(NS, 'circle');
+      d.setAttribute('class', 'dot');
+      d.setAttribute('cx', p[0]); d.setAttribute('cy', p[1]);
+      d.setAttribute('r', i === 0 ? 2.3 : 1.4);
+      g.appendChild(d);
+    });
+    const label = document.createElementNS(NS, 'text');
+    label.setAttribute('class', 'name');
+    label.setAttribute('x', c.base.x + 8); label.setAttribute('y', c.base.y + 54);
+    label.textContent = c.name;
+    g.appendChild(label);
+    g.addEventListener('click', () => select(ci));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ select(ci); e.preventDefault(); } });
+    skyGroup.appendChild(g);
+    els[ci] = g;
+  });
+
+  const index = document.getElementById('index');
+  constellations.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.className = 'con';
+    b.setAttribute('aria-pressed', String(i === 0));
+    b.innerHTML = '<i aria-hidden="true"></i><span>' + c.name + '</span><small>' + String(i + 1).padStart(2,'0') + '</small>';
+    b.addEventListener('click', () => select(i));
+    index.appendChild(b);
+  });
+
+  function select(i){
+    selected = i;
+    const c = constellations[i];
+    document.querySelectorAll('.constellation').forEach((el, j) => el.classList.toggle('sel', j === i));
+    document.querySelectorAll('.con').forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
+    document.getElementById('conName').textContent = c.name;
+    document.getElementById('conStar').textContent = c.star;
+    document.getElementById('conMonth').textContent = c.month;
+    document.getElementById('conArea').textContent = c.area;
+    document.getElementById('conMyth').textContent = c.myth;
+  }
+  document.getElementById('sidereal').addEventListener('input', function(){
+    document.getElementById('skyGroup').style.transform = 'rotate(' + this.value + 'deg)';
+    document.getElementById('siderealOut').textContent = String(this.value).padStart(3,'0') + '°';
+  });
+  const labels = document.getElementById('labels');
+  labels.addEventListener('click', () => {
+    const on = labels.getAttribute('aria-pressed') !== 'true';
+    labels.setAttribute('aria-pressed', String(on));
+    labels.textContent = on ? 'On' : 'Off';
+    document.getElementById('skyGroup').classList.toggle('hide', !on);
+  });
+  select(0);
+</script>
+</body>
+</html>

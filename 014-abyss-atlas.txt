@@ -1,0 +1,20 @@
+TITLE
+Abyss — A Hydrographic Atlas of the Unseen
+
+PROMPT
+Create "Abyss", a dark hydrographic atlas page that maps the seafloor as a piece of data art. Palette: near-black teal (#041619), deep panel (#06252a), pale seafoam text (#cfe9e3), bioluminescent teal contours (#5ad1c1) and a single coral marker (#ff8a5c). The hero pairs an editorial left column — title "The map beneath the map.", a large live depth readout, a depth slider and a "Dive" button — with a wide SVG bathymetric chart on the right, built from dozens of hand-generated concentric contour lines around three seamounts, faint graticule lines, soundings and station markers. A glowing depth horizon sweeps down the chart as the slider moves. Below, a four-zone depth band (Sunlight, Twilight, Midnight, Abyss) highlights the current zone and describes its life and temperature. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+A scientific plate redesigned as a luxury object: quiet, precise, slightly ominous. The map is the hero and is drawn rather than photographed, with contour lines that feel engraved and a horizon line that behaves like a sonar sweep. Coral is reserved for the human presence — the station, the marker, the number you are changing. Typography mixes a severe grotesque with an italic serif for poetic asides.
+
+VISUAL TECHNIQUES
+- Procedurally generated closed contour paths with seeded wobble, drawn into SVG at several depths around three seamounts.
+- Graticule grid, depth soundings, station crosses and a scale bar rendered as SVG.
+- Animated depth horizon with a soft gradient glow, positioned by CSS custom property.
+- Large tabular depth readout with monospaced units and an animated interpolated number.
+- Four-zone depth band with active states, temperature and species notes.
+- Layered radial gradients, faint scanlines and a dark vignette for underwater atmosphere.
+- Responsive layout that stacks the chart under the title and reduces contour density on small screens.
+
+INTERACTION MODEL
+Dragging the depth slider or pressing "Dive" moves a submersible marker and a glowing depth horizon down the chart, updates the live depth number, highlights the matching depth zone and changes the species note. Hovering station markers reveals names and sample depths in a small tooltip. Arrow keys adjust the slider. Reduced-motion snaps to values without tweening; all text remains accessible without the chart.

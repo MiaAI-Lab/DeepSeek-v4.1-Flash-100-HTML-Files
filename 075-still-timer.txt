@@ -1,0 +1,20 @@
+TITLE
+Still — A Room to Breathe
+
+PROMPT
+Create a minimal meditation timer called "Still". Deep twilight background, a soft gradient aura, and a large breathing circle at the centre made of concentric translucent rings. The interface is reduced to: a title "A room to breathe.", a phase label inside the circle (Breathe in / Hold / Breathe out / Hold), a countdown, three duration presets (1, 3, 5 minutes), a start/pause control and a reset. The circle expands and contracts at a four-second rhythm while running; a thin outer ring shows remaining time; a quiet chime sounds when the session ends. Include a small session count and a calm footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A room with the lights low. The page should have almost no interface — one breathing object, one timing control, and enough darkness around them to let the shoulders drop. Typography is thin, generous and quiet. Motion is slow and continuous, never bouncy.
+
+VISUAL TECHNIQUES
+- Layered concentric circles with radial gradients, blur and low opacity, scaled by a four-second breathing animation.
+- Conic-gradient progress ring driven by a CSS custom property.
+- Soft aurora-like background wash and drifting particles.
+- Serif title, light sans phase text, monospaced countdown.
+- Preset pills and a single solid start control with pressed states.
+- Gentle WebAudio completion chime, initialized only after a user gesture.
+- Reduced-motion stops the breathing scale and particles while keeping the timer and progress ring.
+
+INTERACTION MODEL
+Selecting 1, 3 or 5 minutes sets the session duration and displays it. Start begins the countdown, the breathing cycle and the progress ring; Pause freezes all three; Reset returns to the selected duration. When the timer reaches zero it stops, shows "Complete. Stay a moment." and plays a soft two-note chime. All controls are keyboard accessible, and reduced-motion removes continuous animation.

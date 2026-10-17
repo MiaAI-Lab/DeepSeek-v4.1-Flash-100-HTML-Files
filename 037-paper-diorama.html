@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Paper Field — a miniature landscape cut from five layers of coloured paper.">
+<title>Paper Field — A Paper-Cut Diorama</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#efe5d2; --ink:#3a3125; --dim:rgba(58,49,37,.55); --line:rgba(58,49,37,.2); --accent:#b9603f;
+    --sky1:#dce8de; --sky2:#f6e6c8; --sun:#f0b45a; --far:#a8c3b2; --mid:#87ab92; --near:#6e967b; --fg:#557b62; --tree:#41674f; --house:#e7b25f; --roof:#b25a45; --window:#f4d27a; --cloud:#fbf6e9;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.night{--paper:#dcd0ba;--ink:#efe7d7;--dim:rgba(239,231,215,.55);--line:rgba(239,231,215,.2);
+    --sky1:#0b2130;--sky2:#233a49;--sun:#e8eef2;--far:#2c4350;--mid:#243a45;--near:#1c3038;--fg:#15262d;--tree:#12232b;--house:#c69a55;--roof:#8c4a3c;--window:#ffd980;--cloud:#4a5b64}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    transition:background .9s ease,color .9s ease;background-image:radial-gradient(1000px 700px at 25% 0%,rgba(255,255,255,.5),transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1300px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.1rem}
+  .brand .cut{width:17px;height:17px;background:var(--accent);clip-path:polygon(0 30%,45% 30%,45% 0,100% 50%,45% 100%,45% 70%,0 70%);flex:none;opacity:.85}
+  .brand span{display:block;font-family:var(--mono);font-size:.4rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  nav{display:flex;gap:24px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--ink)}
+  .headRight{color:var(--dim);text-align:right}
+
+  .hero{flex:1;display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(24px,4vw,52px);align-items:center;padding:clamp(24px,4vw,44px) 0}
+  .intro .kicker{display:flex;align-items:center;gap:9px;color:var(--accent);margin-bottom:18px}
+  .intro .kicker::before{content:"";width:22px;height:1px;background:var(--accent)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,5.2vw,4.8rem);line-height:.98;letter-spacing:-.045em;font-weight:400}
+  h1 em{font-style:italic;color:var(--accent)}
+  .intro p{margin-top:18px;max-width:34ch;font-size:.78rem;line-height:1.8;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .controls{display:flex;flex-direction:column;gap:9px;margin-top:24px;max-width:260px}
+  .btn{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);padding:9px 11px;font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);transition:background .25s,color .25s,border-color .25s}
+  .btn:hover{border-color:var(--ink)}
+  .btn.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.solid:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+  .btn span{font-family:var(--serif);font-style:italic;font-size:.72rem;letter-spacing:0;text-transform:none;color:var(--dim)}
+  .btn.solid span{color:var(--paper);opacity:.65}
+  .meta{margin-top:20px;color:var(--dim);line-height:1.9}
+  .meta b{color:var(--ink);font-weight:400}
+
+  .frameWrap{position:relative;transform:rotate(.6deg)}
+  .frame{position:relative;border:9px solid #f8f1e2;outline:1px solid rgba(58,49,37,.25);box-shadow:18px 22px 0 rgba(58,49,37,.1),0 26px 60px rgba(58,49,37,.18);
+    background:var(--sky1);overflow:hidden;aspect-ratio:9/5.6;transition:background .9s}
+  body.night .frame{border-color:#e8dcc6;box-shadow:18px 22px 0 rgba(0,0,0,.18),0 26px 60px rgba(0,0,0,.28)}
+  .frame::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 30px rgba(40,30,20,.16);pointer-events:none;z-index:8}
+  .scene{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky1),var(--sky2));transition:background .9s;overflow:hidden}
+  .scene svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .sun{position:absolute;right:16%;top:15%;width:clamp(46px,7vw,76px);aspect-ratio:1;border-radius:50%;background:var(--sun);box-shadow:0 0 0 12px rgba(240,180,90,.08),0 0 40px rgba(240,180,90,.22);transition:background .9s,transform .9s,box-shadow .9s;z-index:1}
+  body.night .sun{transform:translateY(6%) scale(.8);box-shadow:0 0 0 14px rgba(232,238,242,.06),0 0 40px rgba(232,238,242,.2)}
+  .stars{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity 1.1s;background-image:radial-gradient(rgba(255,255,255,.8) .7px,transparent .9px);background-size:67px 53px;pointer-events:none}
+  body.night .stars{opacity:.55}
+  .layer{transition:fill .9s ease;will-change:transform}
+  .cloud{fill:var(--cloud);transition:fill .9s}
+  .far{fill:var(--far)}.mid{fill:var(--mid)}.near{fill:var(--near)}.fg{fill:var(--fg)}.tree{fill:var(--tree)}
+  .houseBody{fill:var(--house)}.roof{fill:var(--roof)}.win{fill:var(--window);transition:fill .9s}
+  .paperEdge{stroke:rgba(255,255,255,.35);stroke-width:1;fill:none}
+  .shadow{filter:drop-shadow(0 8px 6px rgba(40,30,20,.16))}
+  .fireflies{position:absolute;inset:0;z-index:6;opacity:0;transition:opacity 1.2s;pointer-events:none}
+  body.night .fireflies{opacity:1}
+  .fireflies i{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffe08a;box-shadow:0 0 10px 3px rgba(255,224,138,.6);animation:fly 6s ease-in-out infinite alternate}
+  .fireflies i:nth-child(2){left:30%;top:62%;animation-delay:-2s}.fireflies i:nth-child(3){left:62%;top:70%;animation-delay:-4s}
+  .fireflies i:nth-child(4){left:76%;top:56%;animation-delay:-1s}.fireflies i:nth-child(5){left:48%;top:50%;animation-delay:-3.4s}
+  @keyframes fly{50%{transform:translate(8px,-14px);opacity:.4}}
+  .bird{position:absolute;left:8%;top:30%;z-index:7;width:34px;height:22px;opacity:0}
+  .bird.fly{animation:bird 7s linear forwards}
+  @keyframes bird{0%{opacity:0;transform:translate(0,0) rotate(-8deg)}8%{opacity:1}45%{transform:translate(40vw,-70px) rotate(-3deg)}80%{opacity:1}100%{opacity:0;transform:translate(84vw,-20px) rotate(6deg)}}
+  .frameLabel{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:14px;color:var(--dim);flex-wrap:wrap}
+  .frameLabel .brass{display:flex;align-items:center;gap:8px}
+  .frameLabel .brass i{width:10px;height:10px;border-radius:50%;background:linear-gradient(145deg,#f0d089,#a57b35);box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
+  .frameLabel b{color:var(--ink);font-weight:400}
+
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 0 24px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr;gap:24px}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .intro .kicker,.intro h1{grid-column:1}
+    .intro p{grid-column:1}
+    .controls{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .meta{grid-column:1}
+    .frame{max-width:720px;width:100%}
+    .frameWrap{margin:0 auto;width:100%}
+  }
+  @media(max-width:620px){
+    header nav{display:none}
+    h1{font-size:11.5vw}
+    .intro{grid-template-columns:1fr}
+    .controls{grid-column:1;grid-row:auto;max-width:100%}
+    .meta{grid-column:1}
+    .frame{border-width:6px;box-shadow:10px 12px 0 rgba(58,49,37,.1),0 16px 40px rgba(58,49,37,.15)}
+    .sun{right:12%;top:12%;width:44px}
+    .headRight{display:none}
+    .frameLabel{font-size:.4rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="cut" aria-hidden="true"></span><span>Paper Field<small>A diorama in five layers</small></span></a>
+    <nav aria-label="Primary"><a href="#top">Diorama</a><a href="#top">Cabinet</a><a href="#top">About</a></nav>
+    <div class="headRight mono">Cut &amp; assembled by hand<br><b>No. 02 / 2026</b></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">A miniature for a windowsill</p>
+        <h1>A small world,<br><em>cut from paper.</em></h1>
+        <p>Five layers of coloured card, a cottage with one lit window, and a bird that never quite lands. <b>Everything you need for a quiet afternoon.</b></p>
+        <div class="controls">
+          <button class="btn solid" id="light">Fold the light <span id="timeLabel">14:20</span></button>
+          <button class="btn" id="birdBtn">Send a paper bird <span>→</span></button>
+        </div>
+        <p class="meta mono">Layers <b>05</b> · scale <b>1:200</b><br>Materials <b>card, thread, brass</b><br>Edition <b>open</b></p>
+      </div>
+
+      <div class="frameWrap">
+        <div class="frame" id="frame">
+          <div class="scene" id="scene">
+            <div class="sun" aria-hidden="true"></div>
+            <div class="stars" aria-hidden="true"></div>
+            <svg viewBox="0 0 900 560" role="img" aria-label="A layered paper landscape with mountains, trees, a cottage and a path">
+              <!-- clouds -->
+              <g class="layer shadow" data-depth="1.5">
+                <g class="cloud" opacity=".9">
+                  <ellipse cx="180" cy="96" rx="62" ry="18"/><ellipse cx="226" cy="84" rx="40" ry="16"/><ellipse cx="144" cy="86" rx="30" ry="12"/>
+                </g>
+                <g class="cloud" opacity=".7">
+                  <ellipse cx="640" cy="126" rx="80" ry="16"/><ellipse cx="694" cy="114" rx="42" ry="14"/><ellipse cx="590" cy="116" rx="36" ry="12"/>
+                </g>
+              </g>
+              <!-- far mountains -->
+              <g class="layer shadow" data-depth="3">
+                <path class="far" d="M0,300 L110,196 L190,268 L282,160 L372,272 L470,186 L560,282 L654,206 L742,286 L820,224 L900,292 L900,560 L0,560Z"/>
+                <path class="paperEdge" d="M0,300 L110,196 L190,268 L282,160 L372,272 L470,186 L560,282 L654,206 L742,286 L820,224 L900,292"/>
+              </g>
+              <!-- mid hills -->
+              <g class="layer shadow" data-depth="6">
+                <path class="mid" d="M0,366 C120,316 210,324 300,352 C410,386 500,318 610,338 C710,356 800,326 900,354 L900,560 L0,560Z"/>
+                <path class="paperEdge" d="M0,366 C120,316 210,324 300,352 C410,386 500,318 610,338 C710,356 800,326 900,354"/>
+              </g>
+              <!-- trees and cottage -->
+              <g class="layer shadow" data-depth="10">
+                <g class="tree">
+                  <path d="M610,420 L632,350 L654,420Z"/><path d="M616,394 L632,336 L648,394Z" opacity=".9"/>
+                  <path d="M690,430 L716,342 L742,430Z"/><path d="M698,400 L716,326 L734,400Z" opacity=".9"/>
+                  <path d="M104,438 L126,376 L148,438Z"/><path d="M110,410 L126,360 L142,410Z" opacity=".9"/>
+                </g>
+                <g>
+                  <rect x="474" y="376" width="86" height="66" class="houseBody"/>
+                  <path d="M462,380 L517,330 L572,380Z" class="roof"/>
+                  <rect x="494" y="396" width="20" height="22" class="win"/>
+                  <rect x="526" y="396" width="20" height="22" fill="rgba(58,49,37,.35)"/>
+                  <rect x="514" y="414" width="14" height="28" fill="rgba(58,49,37,.4)"/>
+                  <path d="M540,330 C548,310 536,300 544,284" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-linecap="round"/>
+                </g>
+              </g>
+              <!-- near hill -->
+              <g class="layer shadow" data-depth="14">
+                <path class="near" d="M0,452 C130,408 250,416 370,448 C500,482 640,408 770,432 C830,444 870,452 900,460 L900,560 L0,560Z"/>
+                <path class="paperEdge" d="M0,452 C130,408 250,416 370,448 C500,482 640,408 770,432 C830,444 870,452 900,460"/>
+              </g>
+              <!-- foreground -->
+              <g class="layer shadow" data-depth="20">
+                <path class="fg" d="M0,508 C160,470 330,486 470,506 C620,528 760,478 900,500 L900,560 L0,560Z"/>
+                <path d="M470,560 C460,536 420,524 396,520 C430,522 470,530 500,548 C510,554 506,560 500,560Z" fill="rgba(244,232,208,.45)"/>
+                <g class="tree" opacity=".95">
+                  <path d="M818,500 L842,426 L866,500Z"/><path d="M826,470 L842,414 L858,470Z"/>
+                </g>
+              </g>
+            </svg>
+            <div class="fireflies" aria-hidden="true"><i style="left:18%;top:58%"></i><i></i><i></i><i></i><i></i></div>
+            <div class="bird" id="bird" aria-hidden="true">
+              <svg viewBox="0 0 40 26"><path d="M2 16 Q12 4 20 14 Q28 4 38 16 Q30 12 22 18 Q12 12 2 16Z" fill="#3a3125"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="frameLabel mono">
+          <span class="brass"><i aria-hidden="true"></i> Frame 02 — card &amp; brass</span>
+          <span>Field notes: <b id="stateLabel">daylight, 14:20</b></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Paper Field / a fictional diorama</span>
+    <span>Five layers · one tiny window · no glue required</span>
+    <span>© 2026 · made on a kitchen table</span>
+  </footer>
+</div>
+
+<script>
+  const frame = document.getElementById('frame');
+  const scene = document.getElementById('scene');
+  const light = document.getElementById('light');
+  const timeLabel = document.getElementById('timeLabel');
+  const stateLabel = document.getElementById('stateLabel');
+  const bird = document.getElementById('bird');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let night = false;
+
+  light.addEventListener('click', () => {
+    night = !night;
+    document.body.classList.toggle('night', night);
+    timeLabel.textContent = night ? '23:10' : '14:20';
+    stateLabel.textContent = night ? 'lamplight, 23:10' : 'daylight, 14:20';
+    light.setAttribute('aria-pressed', String(night));
+  });
+
+  document.getElementById('birdBtn').addEventListener('click', () => {
+    bird.classList.remove('fly');
+    void bird.offsetWidth;
+    bird.classList.add('fly');
+    setTimeout(() => bird.classList.remove('fly'), 7200);
+  });
+
+  if (!reduce){
+    const layers = Array.from(document.querySelectorAll('.layer'));
+    frame.addEventListener('pointermove', e => {
+      const r = frame.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      layers.forEach(l => {
+        const d = Number(l.dataset.depth);
+        l.style.transform = 'translate(' + (x * d).toFixed(2) + 'px,' + (y * d * .5).toFixed(2) + 'px)';
+      });
+    });
+    frame.addEventListener('pointerleave', () => {
+      layers.forEach(l => { l.style.transform = 'translate(0,0)'; });
+    });
+  }
+</script>
+</body>
+</html>

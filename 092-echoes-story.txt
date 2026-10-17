@@ -1,0 +1,21 @@
+TITLE
+Echoes — A House in Five Rooms
+
+PROMPT
+Create a long-form scroll story called "Echoes". A full-screen cover reads "A house remembers in five rooms."; five full-viewport chapters follow — Hall, Kitchen, Stair, Attic, Garden — each with its own deep palette, an enormous outlined chapter number, a serif title, a short poetic paragraph and a small marginal note hidden behind a "marginalia" control. A fixed header holds the title and a live room index, a thin top progress bar fills with scroll, and a dot navigation on the right jumps between rooms. Type is large, quiet and editorial with generous white space. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A story you read by moving through it. Each room should feel like a different temperature and time of day: warm hall, green kitchen, blue stair, plum attic, moss garden. The type carries everything; decoration stays abstract — a window of light, a rule, a number. The marginalia rewards curiosity without interrupting the reading.
+
+VISUAL TECHNIQUES
+- Full-viewport chapters with individual colour fields and gradients.
+- Oversized outlined numerals and high-contrast serif display type.
+- Scroll progress bar, IntersectionObserver room detection, active dot states.
+- Reveal-on-enter typography with translate and opacity.
+- Abstract architectural motifs: window light, stair rules, attic beams, garden horizon.
+- Marginalia buttons that expand a short second text.
+- Grain overlay and fixed header that adapts its colour.
+- Reduced-motion disables reveal transitions and smooth scrolling.
+
+INTERACTION MODEL
+Scrolling moves through the cover and five rooms; the progress bar and room index update, and the right-hand dots jump directly to a room. Each room has a "Marginalia" button that expands a hidden note; the button's aria-expanded state tracks it. Keyboard users can tab to all dots and marginalia controls. Reduced-motion removes the reveals and instant jumps.

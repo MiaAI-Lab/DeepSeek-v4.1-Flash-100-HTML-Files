@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Nocturne — a generative constellation of old light, drawn star by star.">
+<title>Nocturne — We Are Made of Old Light</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#04060d; --navy:#080d1b; --star:#e4ebff; --cyan:#8cd8ff; --amber:#ffc978; --dim:rgba(228,235,255,.5);
+    --line:rgba(228,235,255,.12);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--void);color:var(--star);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;height:100svh}
+  ::selection{background:var(--cyan);color:#04060d}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--cyan);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.7}
+  .sky{position:fixed;inset:0;z-index:0;
+    background:radial-gradient(900px 600px at 72% 28%,rgba(42,72,130,.3),transparent 64%),
+    radial-gradient(700px 500px at 18% 72%,rgba(80,52,110,.22),transparent 68%),
+    radial-gradient(1200px 500px at 50% 110%,rgba(20,46,80,.35),transparent 70%),var(--void)}
+  #stars{position:fixed;inset:0;z-index:1;display:block;width:100%;height:100%;cursor:crosshair}
+  .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 46%,transparent 32%,rgba(4,6,13,.5) 82%,rgba(4,6,13,.9) 100%)}
+  .grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.2;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+
+  .ui{position:relative;z-index:4;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.4vw,42px);pointer-events:none}
+  .ui a,.ui button{pointer-events:auto}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:10px;font-size:.76rem;letter-spacing:.34em;text-transform:uppercase}
+  .brand i{font-style:normal;color:var(--amber);font-size:.9rem}
+  .brand small{font-family:var(--mono);font-size:.44rem;letter-spacing:.16em;color:var(--dim)}
+  .top .mid{display:flex;gap:26px;color:var(--dim)}
+  .top .mid a{transition:color .25s}
+  .top .mid a:hover{color:var(--star)}
+  .top .coords{color:var(--dim);text-align:right}
+  .top .coords b{color:var(--star);font-weight:400}
+
+  .midArea{flex:1;position:relative;min-height:0}
+  .title{position:absolute;left:0;bottom:clamp(44px,9vh,110px);max-width:640px}
+  .title .kicker{color:var(--cyan);display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .title .kicker::before{content:"";width:22px;height:1px;background:var(--cyan)}
+  .title h1{font-family:var(--serif);font-size:clamp(2.5rem,5.4vw,5.2rem);line-height:.98;letter-spacing:-.04em;font-weight:400}
+  .title h1 em{font-style:italic;color:var(--amber)}
+  .title p{margin-top:16px;max-width:34ch;color:var(--dim);font-size:.76rem;line-height:1.8}
+  .controls{position:absolute;right:0;bottom:clamp(44px,9vh,110px);display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right}
+  .controls .readout{color:var(--dim);line-height:1.9}
+  .controls .readout b{color:var(--star);font-weight:400}
+  .buttons{display:flex;gap:8px;margin-top:8px}
+  .btn{border:1px solid var(--line);padding:8px 11px;font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);
+    transition:border-color .25s,color .25s,background .25s}
+  .btn:hover{border-color:rgba(228,235,255,.4);color:var(--star)}
+  .btn[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan);background:rgba(140,216,255,.06)}
+  .bottom{display:flex;justify-content:space-between;gap:16px;padding:13px 0 18px;border-top:1px solid var(--line);color:var(--dim)}
+  .bottom .sig{display:flex;align-items:center;gap:8px}
+  .bottom .sig i{width:4px;height:4px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber);animation:pulse 3s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .hint{color:rgba(228,235,255,.32)}
+
+  @media(max-width:860px){
+    .top .mid{display:none}
+    .title{position:absolute;left:0;right:0;bottom:74px;max-width:none}
+    .title h1{font-size:clamp(2.5rem,9vw,4.4rem)}
+    .title p{max-width:38ch}
+    .controls{position:absolute;right:0;top:-6px;bottom:auto;align-items:flex-end}
+    .controls .readout{display:none}
+    .bottom .hint{display:none}
+  }
+  @media(max-width:560px){
+    .title .kicker{font-size:.48rem}
+    .title h1{font-size:10.8vw}
+    .title p{font-size:.68rem;max-width:30ch}
+    .buttons{gap:5px}
+    .btn{padding:7px 8px;font-size:.44rem}
+    .coords{display:none}
+    .top{padding:13px 0}
+    .bottom{font-size:.46rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<canvas id="stars" aria-label="Generative star field forming the word Nocturne"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="ui">
+  <header class="top">
+    <a class="brand" href="#"><i aria-hidden="true">✦</i> Nocturne <small>Field 07 / northern sky</small></a>
+    <nav class="mid mono" aria-label="Primary"><a href="#">Index</a><a href="#">Observations</a><a href="#">Archive</a></nav>
+    <span class="coords mono">RA 05h 35m / DEC −05° 23′<br><b>Visible tonight</b></span>
+  </header>
+
+  <div class="midArea">
+    <div class="title">
+      <p class="kicker mono">A field of old light, drawn by hand</p>
+      <h1>We are made<br>of <em>old light.</em></h1>
+      <p>Every point above you left its source before you existed. Move through the field — the stars will make room, then remember where they were.</p>
+    </div>
+    <div class="controls">
+      <div class="readout mono">
+        <span>Stars plotted <b id="starCount">—</b></span><br>
+        <span>Constellation <b id="wordState">NOCTURNE</b></span><br>
+        <span>Ambient <b>−18.4°</b></span>
+      </div>
+      <div class="buttons">
+        <button class="btn" id="trace" aria-pressed="false">Trace lines</button>
+        <button class="btn" id="scatter">Scatter</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bottom mono">
+    <span class="sig"><i aria-hidden="true"></i> Live sky / no data connection required</span>
+    <span class="hint">Move to disturb · click to ripple</span>
+    <span>© 2026 Nocturne Observatory</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const countEl = document.getElementById('starCount');
+  const wordEl = document.getElementById('wordState');
+  const traceBtn = document.getElementById('trace');
+  let w = 0, h = 0, dpr = 1;
+  let stars = [], ambient = [], traceOn = false;
+  let mouse = { x: -9999, y: -9999 };
+  let ripple = { x: 0, y: 0, t: -999 };
+  let t0 = performance.now();
+
+  function buildTargets(){
+    const off = document.createElement('canvas');
+    const ow = 1100, oh = 300;
+    off.width = ow; off.height = oh;
+    const octx = off.getContext('2d');
+    octx.fillStyle = '#000'; octx.fillRect(0, 0, ow, oh);
+    octx.fillStyle = '#fff';
+    octx.font = '600 168px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    octx.textAlign = 'center'; octx.textBaseline = 'middle';
+    octx.letterSpacing = '10px';
+    octx.fillText('NOCTURNE', ow / 2, oh / 2 + 8);
+    const data = octx.getImageData(0, 0, ow, oh).data;
+    const pts = [];
+    const step = 6;
+    for (let y = 0; y < oh; y += step){
+      for (let x = 0; x < ow; x += step){
+        const a = data[(y * ow + x) * 4 + 3];
+        if (a > 128 && Math.random() > .18){
+          pts.push({ u: x / ow, v: y / oh, r: Math.random() });
+        }
+      }
+    }
+    return pts;
+  }
+
+  function layout(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const targets = buildTargets();
+    const areaW = Math.min(w * .84, 1150);
+    const areaH = areaW * (300 / 1100);
+    const originX = (w - areaW) / 2;
+    const originY = h * .42 - areaH / 2;
+
+    stars = targets.map((p, i) => ({
+      x: originX + p.u * areaW + (Math.random() - .5) * 30,
+      y: originY + p.v * areaH + (Math.random() - .5) * 30,
+      tx: originX + p.u * areaW,
+      ty: originY + p.v * areaH,
+      r: .6 + Math.random() * 1.5,
+      a: .3 + Math.random() * .7,
+      tw: Math.random() * Math.PI * 2,
+      amber: Math.random() > .965
+    }));
+    ambient = Array.from({ length: Math.round(Math.min(340, w * h / 5000)) }, () => ({
+      x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.1,
+      a: .06 + Math.random() * .32, tw: Math.random() * Math.PI * 2
+    }));
+    countEl.textContent = String(stars.length + ambient.length);
+  }
+
+  function draw(now){
+    const t = (now - t0) / 1000;
+    ctx.clearRect(0, 0, w, h);
+
+    ambient.forEach(s => {
+      const tw = reduce ? 1 : .65 + Math.sin(t * .5 + s.tw) * .35;
+      ctx.globalAlpha = s.a * tw;
+      ctx.fillStyle = '#cfdcff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+    });
+
+    const spread = Math.max(0, 1 - (now - ripple.t) / 1800);
+    stars.forEach(s => {
+      if (!reduce){
+        let dx = s.x - mouse.x, dy = s.y - mouse.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < 9000 && d2 > 0.01){
+          const f = (1 - d2 / 9000) * 26;
+          const d = Math.sqrt(d2);
+          s.x += dx / d * f * .16;
+          s.y += dy / d * f * .16;
+        }
+        if (spread > 0){
+          const rx = s.x - ripple.x, ry = s.y - ripple.y;
+          const rd = Math.sqrt(rx * rx + ry * ry) || 1;
+          s.x += rx / rd * spread * 22;
+          s.y += ry / rd * spread * 22;
+        }
+        s.x += (s.tx - s.x) * .035;
+        s.y += (s.ty - s.y) * .035;
+        s.x += Math.sin(t * .3 + s.tw) * .06;
+        s.y += Math.cos(t * .26 + s.tw) * .05;
+      }
+      const tw = reduce ? 1 : .72 + Math.sin(t * 1.2 + s.tw) * .28;
+      ctx.globalAlpha = s.a * tw;
+      ctx.fillStyle = s.amber ? '#ffc978' : '#e4ebff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * (s.amber ? 1.5 : 1), 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (traceOn){
+      ctx.strokeStyle = 'rgba(140,216,255,.16)';
+      ctx.lineWidth = .7;
+      const sample = stars.filter((s, i) => i % 3 === 0).slice(0, 120);
+      sample.forEach((s, i) => {
+        for (let j = i + 1; j < sample.length; j++){
+          const o = sample[j];
+          const d = Math.hypot(s.x - o.x, s.y - o.y);
+          if (d < 62){
+            ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(o.x, o.y); ctx.stroke();
+          }
+        }
+      });
+    }
+
+    if (!reduce) requestAnimationFrame(draw);
+  }
+
+  function scatterField(){
+    stars.forEach(s => {
+      s.x += (Math.random() - .5) * 200;
+      s.y += (Math.random() - .5) * 160;
+    });
+    wordEl.textContent = 'REFORMING…';
+    setTimeout(() => { wordEl.textContent = 'NOCTURNE'; }, 1500);
+  }
+
+  canvas.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  canvas.addEventListener('pointerleave', () => { mouse.x = -9999; mouse.y = -9999; });
+  canvas.addEventListener('click', e => {
+    ripple = { x: e.clientX, y: e.clientY, t: performance.now() };
+    wordEl.textContent = 'PERTURBED';
+    setTimeout(() => { wordEl.textContent = 'NOCTURNE'; }, 1200);
+  });
+
+  traceBtn.addEventListener('click', () => {
+    traceOn = !traceOn;
+    traceBtn.setAttribute('aria-pressed', String(traceOn));
+    if (reduce) draw(performance.now());
+  });
+  document.getElementById('scatter').addEventListener('click', scatterField);
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (reduce) draw(performance.now()); }, 160); });
+
+  layout();
+  requestAnimationFrame(draw);
+</script>
+</body>
+</html>

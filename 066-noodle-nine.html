@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="NOODLE//9 — a neon ramen bar that never closes. Slurp after midnight.">
+<title>NOODLE//9 — Slurp After Midnight</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#0b0610; --panel:#140a1b; --pink:#ff3d9a; --cyan:#45f0ff; --egg:#ffd36b; --cream:#fff1e4; --dim:rgba(255,241,228,.5); --line:rgba(255,61,154,.25);
+    --broth1:#ff9a4d; --broth2:#c94a1d; --steam:.5;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--void);color:var(--cream);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(800px 600px at 50% 20%,rgba(255,61,154,.2),transparent 62%),radial-gradient(700px 500px at 90% 90%,rgba(69,240,255,.12),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;
+    background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.55) 2px 3px)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--pink);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--cyan);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:-.04em;font-size:1.15rem;color:#fff;text-shadow:0 0 8px var(--pink),0 0 22px rgba(255,61,154,.6)}
+  .brand span{font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);font-weight:400;text-shadow:none}
+  .open{border:1px solid var(--cyan);padding:4px 8px;border-radius:100px;font-family:var(--mono);font-size:.36rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);box-shadow:0 0 12px rgba(69,240,255,.3);display:flex;align-items:center;gap:6px}
+  .open i{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);display:block;animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.2}}
+  .headRight{display:flex;gap:14px;align-items:center;color:var(--dim)}
+  .headRight b{color:var(--cream);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.82fr 1.06fr .72fr;gap:clamp(14px,2.4vw,28px);align-items:center;padding:clamp(16px,3vw,30px) 0;min-height:0}
+  .intro{align-self:center}
+  .kicker{display:flex;align-items:center;gap:8px;color:var(--cyan);margin-bottom:14px}
+  .kicker::before{content:"";width:20px;height:1px;background:var(--cyan)}
+  h1{font-size:clamp(2.6rem,5.2vw,4.7rem);line-height:.9;letter-spacing:-.065em;font-weight:800;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.2px var(--pink);text-shadow:0 0 30px rgba(255,61,154,.35)}
+  h1 em{font-style:normal;color:var(--cream);-webkit-text-stroke:0;text-shadow:0 0 16px rgba(255,241,228,.25)}
+  .intro p{margin-top:14px;max-width:30ch;font-size:.7rem;line-height:1.8;color:var(--dim)}
+  .spice{margin-top:18px}
+  .spice .lbl{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:6px}
+  .spice .lbl b{color:var(--egg);font-weight:400}
+  .spiceBtns{display:flex;gap:5px}
+  .spiceBtn{border:1px solid var(--line);padding:6px 9px;font-family:var(--mono);font-size:.38rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .spiceBtn:hover{color:var(--cream);border-color:var(--pink)}
+  .spiceBtn[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:var(--void)}
+  .orderRow{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .order{background:var(--pink);color:var(--void);padding:9px 14px;font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 0 22px rgba(255,61,154,.35);transition:background .2s,box-shadow .2s}
+  .order:hover{background:var(--cyan);box-shadow:0 0 26px rgba(69,240,255,.4)}
+  .ticket{color:var(--dim);font-family:var(--mono);font-size:.38rem;letter-spacing:.06em;text-transform:uppercase;line-height:1.6}
+  .ticket b{display:block;color:var(--cream);font-family:var(--serif);font-size:1.15rem;font-weight:400}
+
+  .bowlWrap{position:relative;display:grid;place-items:center;min-height:clamp(300px,46vh,460px)}
+  .glow{position:absolute;width:80%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,154,77,.22),transparent 66%);filter:blur(16px)}
+  .steam{position:absolute;top:4%;left:50%;transform:translateX(-50%);width:46%;height:44%;pointer-events:none;z-index:3;opacity:var(--steam);transition:opacity .5s}
+  .steam i{position:absolute;bottom:0;width:2px;height:70%;background:linear-gradient(180deg,transparent,rgba(255,241,228,.45),transparent);border-radius:50%;filter:blur(2px);animation:steam 4s ease-in-out infinite}
+  .steam i:nth-child(1){left:12%;animation-delay:-1s}.steam i:nth-child(2){left:34%;animation-delay:-2.4s;height:90%}
+  .steam i:nth-child(3){left:56%;animation-delay:-.4s;height:60%}.steam i:nth-child(4){left:78%;animation-delay:-3.1s}
+  @keyframes steam{0%{transform:translateY(20%) scaleX(1);opacity:0}30%{opacity:.7}70%{opacity:.4}100%{transform:translateY(-40%) scaleX(2);opacity:0}}
+  #bowl{width:min(100%,420px);height:auto;display:block;position:relative;z-index:2;filter:drop-shadow(0 24px 30px rgba(0,0,0,.55))}
+  .reflection{position:absolute;left:10%;right:10%;bottom:2%;height:8%;background:radial-gradient(ellipse,rgba(255,61,154,.16),transparent 70%);filter:blur(6px)}
+  .bowlTag{position:absolute;right:0;bottom:0;color:var(--dim);text-align:right;line-height:1.7;font-family:var(--mono);font-size:.34rem;letter-spacing:.07em;text-transform:uppercase}
+
+  .sign{position:relative;justify-self:center;height:min(64vh,470px);width:74px;border:1px solid rgba(69,240,255,.4);border-radius:8px;background:rgba(69,240,255,.03);box-shadow:0 0 30px rgba(69,240,255,.12),inset 0 0 24px rgba(69,240,255,.06);display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:12px 0;z-index:1;margin-left:auto}
+  .sign span{writing-mode:vertical-rl;text-orientation:mixed;font-family:var(--serif);font-size:1.4rem;letter-spacing:.28em;color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 24px rgba(69,240,255,.5)}
+  .sign span.pink{color:var(--pink);text-shadow:0 0 8px var(--pink),0 0 20px rgba(255,61,154,.5);font-family:var(--mono);font-size:.54rem;letter-spacing:.35em}
+  .sign::after{content:"";position:absolute;inset:6px;border:1px solid rgba(69,240,255,.12);border-radius:4px}
+  .flicker{animation:flick 7s infinite}
+  @keyframes flick{0%,94%,100%{opacity:1}94.5%{opacity:.3}95%{opacity:1}95.5%{opacity:.5}96%{opacity:1}}
+
+  .menu{border-left:1px solid var(--line);padding-left:clamp(14px,2vw,22px)}
+  .menuHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:9px}
+  .menuHead b{color:var(--pink);font-weight:400}
+  .item{width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:10px;text-align:left;padding:8px 0;border-bottom:1px solid rgba(255,241,228,.08);transition:color .2s,padding-left .2s}
+  .item:hover,.item:focus-visible{padding-left:6px}
+  .item .nm{font-family:var(--serif);font-size:.96rem}
+  .item .ing{display:block;font-family:var(--mono);font-size:.32rem;letter-spacing:.05em;color:var(--dim);text-transform:uppercase;margin-top:2px;max-height:0;overflow:hidden;transition:max-height .25s,opacity .25s;opacity:0}
+  .item:hover .ing,.item:focus-visible .ing{max-height:20px;opacity:1}
+  .item .price{font-family:var(--mono);font-size:.52rem;color:var(--egg);white-space:nowrap}
+  .item[aria-pressed="true"]{color:var(--pink)}
+  .item[aria-pressed="true"] .price{color:var(--pink)}
+  .menuFoot{margin-top:12px;color:var(--dim);line-height:1.8;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase}
+  .menuFoot b{color:var(--cream);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 15px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:1000px){
+    .main{grid-template-columns:1fr 1fr;grid-template-areas:'intro bowl' 'menu menu'}
+    .intro{grid-area:intro;align-self:start}
+    .bowlWrap{grid-area:bowl}
+    .menu{grid-area:menu;border-left:0;border-top:1px solid var(--line);padding:12px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+    .menuHead,.menuFoot{grid-column:1/-1}
+    .sign{display:none}
+    .bowlTag{display:none}
+  }
+  @media(max-width:620px){
+    .main{grid-template-columns:1fr;grid-template-areas:'intro' 'bowl' 'menu';gap:12px}
+    h1{font-size:13vw}
+    .intro p{max-width:100%}
+    .bowlWrap{min-height:250px}
+    #bowl{width:min(88%,320px)}
+    .menu{grid-template-columns:1fr}
+    .menuHead,.menuFoot{grid-column:auto}
+    .headRight .mono{display:none}
+    .brand{font-size:.92rem}
+    footer span:nth-child(2){display:none}
+    .item .ing{max-height:20px;opacity:.6}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">NOODLE<span>//9 — ramen &amp; neon</span></a>
+    <div class="open mono"><i aria-hidden="true"></i>Open 24 h</div>
+    <div class="headRight mono"><span>Kitchen <b>always on</b></span><span>Seats <b>07</b></span></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">Post-midnight kitchen / level 9</p>
+      <h1>Slurp<br><em>after</em><br>midnight.</h1>
+      <p>Broth simmered since yesterday, noodles cut this evening. The sign is pink because the good places always are.</p>
+      <div class="spice">
+        <div class="lbl mono"><span>Spice level</span><b id="spiceName">Mild</b></div>
+        <div class="spiceBtns" role="group" aria-label="Spice level">
+          <button class="spiceBtn" data-s="0" data-name="Mild" aria-pressed="true">01 mild</button>
+          <button class="spiceBtn" data-s="1" data-name="Warm" aria-pressed="false">02 warm</button>
+          <button class="spiceBtn" data-s="2" data-name="Hot" aria-pressed="false">03 hot</button>
+        </div>
+      </div>
+      <div class="orderRow"><button class="order" id="order">Add to order</button><span class="ticket mono">Ticket<b id="ticketNo">000</b></span></div>
+    </div>
+
+    <div class="bowlWrap">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="steam" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <svg id="bowl" viewBox="0 0 420 330" role="img" aria-label="A bowl of ramen with egg, chashu, scallions and chopsticks">
+        <defs>
+          <linearGradient id="brothG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--broth1)"/><stop offset="1" stop-color="var(--broth2)"/></linearGradient>
+          <linearGradient id="bowlG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1a2e"/><stop offset=".5" stop-color="#1a0d20"/><stop offset="1" stop-color="#0d0712"/></linearGradient>
+          <radialGradient id="eggG" cx="40%" cy="36%"><stop offset="0" stop-color="#fff4c9"/><stop offset=".7" stop-color="#ffd36b"/><stop offset="1" stop-color="#d99c2c"/></radialGradient>
+        </defs>
+        <ellipse cx="210" cy="170" rx="176" ry="42" fill="url(#brothG)"/>
+        <ellipse cx="210" cy="168" rx="158" ry="34" fill="rgba(255,220,160,.18)"/>
+        <g stroke="#ffd899" stroke-width="4" fill="none" opacity=".8" stroke-linecap="round">
+          <path d="M88,162 C130,150 160,176 200,162 C240,148 270,174 318,158"/>
+          <path d="M100,174 C140,162 170,188 214,174 C258,160 286,184 330,170"/>
+          <path d="M116,152 C150,144 180,160 214,152 C246,144 278,160 306,152"/>
+        </g>
+        <ellipse cx="148" cy="152" rx="32" ry="22" fill="#f4e7d0" stroke="#d9c5a4"/>
+        <ellipse cx="148" cy="152" rx="18" ry="13" fill="url(#eggG)"/>
+        <g fill="#c96b49" stroke="#8c3e28" stroke-width="2"><ellipse cx="266" cy="156" rx="40" ry="18"/><ellipse cx="260" cy="150" rx="33" ry="14" fill="#e08a63"/></g>
+        <g fill="#7fbf6a"><circle cx="108" cy="166" r="6"/><circle cx="122" cy="172" r="5"/><circle cx="188" cy="154" r="4"/><circle cx="296" cy="164" r="5"/><circle cx="306" cy="170" r="4"/></g>
+        <g stroke="#efe2c4" stroke-width="3" stroke-linecap="round"><path d="M330,60 L252,154"/><path d="M352,66 L270,160"/></g>
+        <path d="M34,182 C48,268 128,306 210,306 C292,306 372,268 386,182 Z" fill="url(#bowlG)" stroke="rgba(255,61,154,.55)" stroke-width="2"/>
+        <path d="M66,206 C102,232 142,244 210,244 C278,244 318,232 354,206" fill="none" stroke="rgba(69,240,255,.25)" stroke-width="1.4"/>
+        <ellipse cx="210" cy="306" rx="120" ry="9" fill="rgba(0,0,0,.45)"/>
+      </svg>
+      <div class="reflection" aria-hidden="true"></div>
+      <div class="bowlTag">Bowl 01<br>tonkotsu · 18 h</div>
+    </div>
+
+    <aside class="menu" aria-label="Menu">
+      <div class="menuHead mono"><span>Tonight's bowls</span><b>¥</b></div>
+      <button class="item" data-item="Neon Tonkotsu" aria-pressed="true"><span><span class="nm">Neon Tonkotsu</span><span class="ing">pork broth · egg · chashu · scallion</span></span><span class="price">¥1,200</span></button>
+      <button class="item" data-item="Midnight Miso" aria-pressed="false"><span><span class="nm">Midnight Miso</span><span class="ing">red miso · corn · butter · chili oil</span></span><span class="price">¥1,150</span></button>
+      <button class="item" data-item="Cyan Shio" aria-pressed="false"><span><span class="nm">Cyan Shio</span><span class="ing">clear broth · yuzu · clam · leek</span></span><span class="price">¥1,050</span></button>
+      <button class="item" data-item="Ghost Veg" aria-pressed="false"><span><span class="nm">Ghost Veg</span><span class="ing">sesame broth · mushroom · tofu · ginger</span></span><span class="price">¥980</span></button>
+      <div class="menuFoot">Add-ons <b>egg ¥150</b> · <b>chashu ¥300</b><br>Cash only after midnight<br><b>Last bowl 05:40</b></div>
+    </aside>
+  </main>
+
+  <footer class="mono">
+    <span>NOODLE//9 — a fictional ramen bar</span>
+    <span>Open late · closed later · one file</span>
+    <span>© 2026 · mind the steam</span>
+  </footer>
+</div>
+
+<script>
+  const spiceBtns = document.querySelectorAll('.spiceBtn');
+  const tickets = document.getElementById('ticketNo');
+  let ticket = 0;
+  let selected = 'Neon Tonkotsu';
+  const broths = [['#ffcf9e','#f0a34a'],['#ff9a4d','#d2581f'],['#ff5a3c','#8c1f17']];
+  spiceBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      const s = Number(b.dataset.s);
+      document.documentElement.style.setProperty('--broth1', broths[s][0]);
+      document.documentElement.style.setProperty('--broth2', broths[s][1]);
+      document.documentElement.style.setProperty('--steam', String(.3 + s * .35));
+      document.getElementById('spiceName').textContent = b.dataset.name;
+      spiceBtns.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  document.querySelectorAll('.item').forEach(item => {
+    item.addEventListener('click', () => {
+      selected = item.dataset.item;
+      document.querySelectorAll('.item').forEach(x => x.setAttribute('aria-pressed', String(x === item)));
+    });
+  });
+  document.getElementById('order').addEventListener('click', function(){
+    ticket++;
+    tickets.textContent = String(ticket).padStart(3, '0');
+    this.textContent = selected + ' ordered ✓';
+    setTimeout(() => { this.textContent = 'Add to order'; }, 1800);
+  });
+</script>
+</body>
+</html>

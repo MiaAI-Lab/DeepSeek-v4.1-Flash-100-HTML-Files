@@ -1,0 +1,20 @@
+TITLE
+Type Zoo — A Bestiary of the Alphabet
+
+PROMPT
+Create a playful typographic bestiary called "Type Zoo". A cream editorial page presents twelve letters, each paired with a creature: A for Axolotl, B for Bear, C for Crane and so on. The letters are huge serif characters given small animal features — eyes, ears, a beak, a fin — and each card shows the species, Latin name and class. Filters (All, Mammals, Birds, Water, Reptiles) and a search field narrow the grid. Clicking a card opens a detail dialog with an enlarged letter, habitat, diet, voice and a short field note, plus previous/next navigation. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A children's natural-history book for adults who like type. The letters should feel like characters rather than specimens: a little wonky, with eyes in the wrong place and ears that do not quite fit. Colour is coded by class, but the page stays papery and printed, with rules, folios and catalogue numbers.
+
+VISUAL TECHNIQUES
+- Large serif letters with CSS animal features: eyes, mammal ears, bird beak, fish fin, jellyfish tendrils.
+- Class-coded accent colours and small taxonomic labels.
+- Filter chips with pressed states and a live search field.
+- Card grid with hover lift, letter tilt and catalogue numbers.
+- Accessible dialog with backdrop, focus on open, Escape to close and previous/next navigation.
+- Paper texture, hairline rules, editorial masthead and folios.
+- Responsive two-column then single-column grid; reduced-motion removes lifts and dialog fade.
+
+INTERACTION MODEL
+Filter chips and the search field narrow the twelve cards; the result count updates and an empty state appears if nothing matches. Clicking a card opens its dossier with a larger letter and field notes; previous/next cycles through the filtered set, Escape or the close button dismisses it, and focus returns to the card. Everything is keyboard operable.

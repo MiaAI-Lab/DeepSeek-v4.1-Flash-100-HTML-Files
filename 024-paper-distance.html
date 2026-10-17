@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Paper & Distance — a small travel studio folded from one sheet of paper.">
+<title>Paper &amp; Distance — A Simpler Way</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f2ede2; --paper2:#e9e2d3; --ink:#1c2540; --indigo:#34468f; --terra:#d95b43; --dim:rgba(28,37,64,.55);
+    --line:rgba(28,37,64,.2); --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:linear-gradient(135deg,rgba(28,37,64,.028) 25%,transparent 25%,transparent 50%,rgba(28,37,64,.028) 50%,rgba(28,37,64,.028) 75%,transparent 75%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.26;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--terra);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1.5px solid var(--terra);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3.4vw,42px)}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 0;border-bottom:1px solid var(--ink)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.1rem}
+  .brand .mark{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid var(--terra);transform:rotate(90deg)}
+  .brand span{display:block;font-family:var(--mono);font-size:.4rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+  nav{display:flex;gap:26px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;position:relative;padding-bottom:2px}
+  nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--terra);transition:width .25s}
+  nav a:hover{color:var(--ink)} nav a:hover::after{width:100%}
+  .stamp{border:1px solid var(--terra);color:var(--terra);padding:5px 8px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;transform:rotate(-3deg)}
+
+  .hero{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(22px,4vw,52px);align-items:center;padding:clamp(30px,5vw,56px) 0 clamp(28px,4vw,48px);position:relative}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--terra);margin-bottom:18px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--terra)}
+  h1{font-family:var(--serif);font-size:clamp(3rem,7vw,6.1rem);line-height:.93;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--indigo)}
+  .intro p{margin-top:20px;max-width:38ch;font-size:.84rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--ink);padding:11px 16px;font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;transition:background .25s,color .25s}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.solid{background:var(--indigo);border-color:var(--indigo);color:var(--paper)}
+  .btn.solid:hover{background:var(--terra);border-color:var(--terra)}
+  .status{margin-top:16px;color:var(--dim);min-height:1.4em}
+  .status b{color:var(--terra);font-weight:400}
+
+  .flightStage{position:relative;height:clamp(330px,46vh,430px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .flightStage::before{content:"";position:absolute;inset:6% 2%;border:1px solid rgba(28,37,64,.12);border-radius:2px;transform:rotate(-1deg)}
+  .flightStage::after{content:"HAND-FOLDED / NO BATTERIES";position:absolute;right:10px;bottom:7px;font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;color:var(--dim)}
+  .routeLine{position:absolute;inset:0;width:100%;height:100%}
+  .routeLine path{fill:none;stroke:rgba(28,37,64,.34);stroke-width:1.4;stroke-dasharray:3 7;animation:dash 24s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-400}}
+  .planeWrap{position:relative;z-index:2;width:clamp(140px,22vw,220px);transform:rotate(-6deg);animation:float 7s ease-in-out infinite}
+  @keyframes float{50%{transform:rotate(-3deg) translateY(-12px)}}
+  .planeWrap.fly{animation:fly 2.8s cubic-bezier(.3,.1,.4,1) forwards}
+  @keyframes fly{0%{transform:rotate(-6deg) translate(0,0) scale(1)}25%{transform:rotate(-16deg) translate(18vw,-16vh) scale(.92)}60%{transform:rotate(-2deg) translate(32vw,-9vh) scale(.72)}100%{transform:rotate(24deg) translate(46vw,22vh) scale(.4);opacity:0}}
+  .planeWrap svg{width:100%;height:auto;display:block;filter:drop-shadow(10px 16px 12px rgba(28,37,64,.18))}
+  .stampMark{position:absolute;left:6%;top:14%;width:66px;height:66px;border:1px solid rgba(217,91,67,.5);border-radius:50%;display:grid;place-items:center;color:rgba(217,91,67,.75);
+    font-family:var(--mono);font-size:.36rem;letter-spacing:.06em;text-align:center;text-transform:uppercase;transform:rotate(-12deg);z-index:1;opacity:.8}
+  .coord{position:absolute;left:6%;bottom:10%;color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;line-height:1.8}
+
+  .foldSection{border-top:1px solid var(--ink);padding:clamp(28px,4.4vw,48px) 0 30px}
+  .foldHead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:20px}
+  .foldHead h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.3rem);font-weight:400;letter-spacing:-.03em}
+  .foldHead h2 em{color:var(--indigo)}
+  .foldHead p{color:var(--dim);max-width:28ch;text-align:right}
+  .folds{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .fold{position:relative;text-align:left;border:1px solid var(--ink);background:linear-gradient(160deg,#f8f4ea,#eee7d8);padding:20px 18px;min-height:200px;
+    display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;isolation:isolate;transition:transform .35s,box-shadow .35s}
+  .fold::before{content:"";position:absolute;right:0;top:0;width:44px;height:44px;background:linear-gradient(225deg,var(--paper) 49%,#d5cbb8 50%,#bfb39d 51%,#e3dbca 100%);
+    border-left:1px solid rgba(28,37,64,.2);border-bottom:1px solid rgba(28,37,64,.2);transition:width .35s,height .35s;z-index:2}
+  .fold::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 48%,rgba(28,37,64,.06) 49%,rgba(255,255,255,.35) 50%,transparent 52%);pointer-events:none}
+  .fold:hover{transform:translateY(-4px) rotate(-.5deg);box-shadow:7px 8px 0 rgba(28,37,64,.12)}
+  .fold[aria-expanded="true"]::before{width:0;height:0;border:0}
+  .fold .no{color:var(--terra);margin-bottom:16px}
+  .fold h3{font-family:var(--serif);font-size:1.35rem;font-weight:400;line-height:1.05;letter-spacing:-.02em}
+  .fold .short{color:var(--dim);font-size:.7rem;line-height:1.7;margin-top:8px}
+  .fold .more{max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .3s;opacity:0;color:var(--indigo);font-family:var(--serif);font-style:italic;font-size:.82rem;line-height:1.6}
+  .fold[aria-expanded="true"] .more{max-height:100px;opacity:1;margin-top:12px}
+  .fold .plus{position:absolute;left:18px;bottom:14px;font-family:var(--mono);font-size:.5rem;color:var(--dim);transition:transform .3s}
+  .fold[aria-expanded="true"] .plus{transform:rotate(45deg);color:var(--terra)}
+
+  .route{border-top:1px solid var(--ink);padding:clamp(26px,4.4vw,44px) 0 34px}
+  .routeTop{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:22px}
+  .routeTop h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.3rem,2.4vw,1.9rem);letter-spacing:-.02em}
+  .routeTop .mono{color:var(--dim)}
+  .routeMap{position:relative;height:150px;border-top:1px dashed rgba(28,37,64,.28);border-bottom:1px dashed rgba(28,37,64,.28)}
+  .routeMap svg{position:absolute;inset:0;width:100%;height:100%}
+  .stops{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:flex-end;padding:18px 2% 14px}
+  .stop{display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--dim);position:relative;z-index:2}
+  .stop i{width:9px;height:9px;border:1px solid var(--ink);border-radius:50%;background:var(--paper);transition:background .2s}
+  .stop:hover i{background:var(--terra);border-color:var(--terra)}
+  .stop b{font-family:var(--mono);font-size:.44rem;letter-spacing:.08em;font-weight:400;text-transform:uppercase}
+  .stop span{font-family:var(--serif);font-style:italic;font-size:.84rem;color:var(--ink)}
+  .routeNote{margin-top:14px;color:var(--dim);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 0 28px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr;gap:16px}
+    .flightStage{height:330px;order:2}
+    .intro{order:1}
+    .folds{grid-template-columns:1fr 1fr}
+    .fold:nth-child(3){grid-column:1/-1;min-height:160px}
+    .foldHead{flex-direction:column;align-items:flex-start;gap:6px}
+    .foldHead p{text-align:left}
+    .stampMark{left:auto;right:6%;top:8%}
+  }
+  @media(max-width:600px){
+    nav{display:none}
+    .stamp{display:none}
+    h1{font-size:13vw}
+    .flightStage{height:280px}
+    .folds{grid-template-columns:1fr}
+    .fold{min-height:150px}
+    .fold:nth-child(3){min-height:150px}
+    .stops{padding:12px 0}
+    .stop span{font-size:.7rem}
+    .stop b{font-size:.38rem}
+    .routeMap{height:130px}
+    .coord{display:none}
+    .actions{gap:12px}
+    .status{font-size:.46rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span><span>Paper &amp; Distance<small>A travel studio / folded 2026</small></span></a>
+    <nav aria-label="Primary"><a href="#folds">Method</a><a href="#route">Route</a><a href="#route">Farewell</a></nav>
+    <span class="stamp">Made by hand</span>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">A simpler way to go</p>
+        <h1>A simpler way<br><em>to get there.</em></h1>
+        <p>No seats, no terminals, no small plastic trays. Just one sheet, a good idea of where you are going, and <b>enough time to enjoy the getting there.</b></p>
+        <div class="actions">
+          <button class="btn solid" id="launch">Launch the plane <span aria-hidden="true">✈</span></button>
+          <a class="btn" href="#folds">Read the method</a>
+        </div>
+        <p class="status mono" id="status" aria-live="polite">Ready on the table — 0 km, no hurry.</p>
+      </div>
+
+      <div class="flightStage" aria-label="A paper plane on a dotted route">
+        <svg class="routeLine" viewBox="0 0 520 420" aria-hidden="true" preserveAspectRatio="none">
+          <path d="M20 340 C140 300 200 90 380 120 S500 300 470 360"/>
+          <circle cx="20" cy="340" r="3" fill="#d95b43"/><circle cx="470" cy="360" r="3" fill="#d95b43"/>
+        </svg>
+        <div class="stampMark" aria-hidden="true">First<br>class<br>paper</div>
+        <div class="planeWrap" id="planeWrap">
+          <svg viewBox="0 0 260 180" role="img" aria-label="A folded paper plane">
+            <polygon points="18,96 236,18 126,120" fill="#faf6ec" stroke="#d8cfbc" stroke-width="1"/>
+            <polygon points="18,96 126,120 108,158" fill="#e8e0cf" stroke="#d8cfbc" stroke-width="1"/>
+            <polygon points="126,120 236,18 196,112" fill="#d9d0be" stroke="#cfc5b0" stroke-width="1"/>
+            <polygon points="126,120 196,112 188,150 108,158" fill="#c6bca7" stroke="#bfb39d" stroke-width="1"/>
+            <line x1="126" y1="120" x2="236" y2="18" stroke="rgba(28,37,64,.18)"/>
+            <circle cx="126" cy="120" r="2" fill="#d95b43"/>
+          </svg>
+        </div>
+        <div class="coord mono">51° 30′ N / 00° 07′ W<br>sheet 01 — 160 gsm<br>fold: the classic dart</div>
+      </div>
+    </section>
+
+    <section class="foldSection" id="folds">
+      <div class="foldHead">
+        <h2>Three folds, <em>no more.</em></h2>
+        <p class="mono">A method for travelling that fits on one page.</p>
+      </div>
+      <div class="folds">
+        <button class="fold" aria-expanded="false">
+          <div class="no mono">Fold 01 — Weight</div>
+          <div><h3>Pack light.</h3><p class="short">If you cannot carry it up three flights of stairs, it is not coming.</p><p class="more">The best journeys begin with a smaller bag and a larger attention span.</p></div>
+          <span class="plus" aria-hidden="true">＋</span>
+        </button>
+        <button class="fold" aria-expanded="false">
+          <div class="no mono">Fold 02 — Speed</div>
+          <div><h3>Go slowly.</h3><p class="short">Take the long way. Miss one train on purpose. Eat where the menu is handwritten.</p><p class="more">Arrival is a rumour. The route is the actual holiday.</p></div>
+          <span class="plus" aria-hidden="true">＋</span>
+        </button>
+        <button class="fold" aria-expanded="false">
+          <div class="no mono">Fold 03 — Memory</div>
+          <div><h3>Write it down.</h3><p class="short">A receipt, a ticket, a sentence on a napkin. The paper remembers what the phone forgets.</p><p class="more">Three lines a day is enough. Make the small things permanent.</p></div>
+          <span class="plus" aria-hidden="true">＋</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="route" id="route">
+      <div class="routeTop"><h2>The scenic route</h2><span class="mono">Departure — arrival / 3,482 km</span></div>
+      <div class="routeMap">
+        <svg viewBox="0 0 1000 140" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M20 100 C160 20 300 120 440 62 S700 18 820 74 980 104 980 44" fill="none" stroke="rgba(28,37,64,.35)" stroke-width="1.4" stroke-dasharray="4 7"/>
+        </svg>
+        <div class="stops">
+          <div class="stop"><i aria-hidden="true"></i><span>Home</span><b>00° 07′ W</b></div>
+          <div class="stop"><i aria-hidden="true"></i><span>Slow coast</span><b>07:12</b></div>
+          <div class="stop"><i aria-hidden="true"></i><span>Long lunch</span><b>13:40</b></div>
+          <div class="stop"><i aria-hidden="true"></i><span>Somewhere</span><b>18.4° / 42°</b></div>
+        </div>
+      </div>
+      <div class="routeNote mono"><span>Folded by hand · no frequent-flyer programme</span><span>The round trip is optional. The returning is not.</span></div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Paper &amp; Distance — a fictional travel studio</span>
+    <span>One sheet · two creases · one good idea</span>
+    <span>© 2026 · fold gently</span>
+  </footer>
+</div>
+
+<script>
+  const launch = document.getElementById('launch');
+  const plane = document.getElementById('planeWrap');
+  const status = document.getElementById('status');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  launch.addEventListener('click', () => {
+    if (plane.classList.contains('fly')) return;
+    plane.classList.add('fly');
+    status.innerHTML = 'In the air — <b>fold, wind, trust.</b>';
+    if (reduce){
+      status.innerHTML = 'Arrived — <b>3,482 km, lighter.</b>';
+      plane.classList.remove('fly');
+      plane.style.opacity = '.15';
+      return;
+    }
+    setTimeout(() => {
+      status.innerHTML = 'Arrived — <b>3,482 km, lighter.</b>';
+    }, 2800);
+    setTimeout(() => {
+      plane.classList.remove('fly');
+      plane.style.opacity = '';
+      status.innerHTML = 'Back on the table — <b>ready for the next fold.</b>';
+    }, 5200);
+  });
+
+  document.querySelectorAll('.fold').forEach(card => {
+    card.addEventListener('click', () => {
+      const open = card.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.fold').forEach(c => c.setAttribute('aria-expanded', 'false'));
+      card.setAttribute('aria-expanded', String(!open));
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Abyss — a hydrographic atlas of the unseen seafloor, drawn in contours and old light.">
+<title>Abyss — Hydrographic Atlas 04</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --deep:#041619; --panel:#06252a; --panel2:#072c32; --foam:#cfe9e3; --teal:#5ad1c1; --coral:#ff8a5c;
+    --dim:rgba(207,233,227,.5); --line:rgba(90,209,193,.18);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--deep);color:var(--foam);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 80% 0%,rgba(26,92,94,.35),transparent 60%),radial-gradient(700px 500px at 0% 80%,rgba(18,58,70,.4),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--teal);color:#041619}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--coral);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px)}
+  header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:9px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;font-size:.78rem}
+  .brand i{width:7px;height:7px;background:var(--teal);display:inline-block;border-radius:50%;box-shadow:0 0 12px var(--teal);align-self:center}
+  .brand span{font-family:var(--mono);font-size:.44rem;letter-spacing:.14em;color:var(--dim);font-weight:400}
+  nav{display:flex;gap:26px;color:var(--dim)}
+  nav a:hover{color:var(--foam)}
+  .station{display:flex;gap:16px;color:var(--dim);text-align:right}
+  .station b{display:block;color:var(--coral);font-weight:400;font-family:var(--mono);font-size:.5rem;letter-spacing:.08em}
+
+  .hero{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(28px,4.4vw,62px);align-items:center;padding:clamp(30px,4.6vw,54px) 0 clamp(30px,4vw,46px)}
+  .eyebrow{display:flex;align-items:center;gap:10px;color:var(--teal);margin-bottom:22px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--teal)}
+  h1{font-size:clamp(2.8rem,5.4vw,5.4rem);line-height:.94;letter-spacing:-.055em;font-weight:300}
+  h1 em{font-family:var(--serif);font-style:italic;color:var(--teal);font-weight:400;letter-spacing:-.03em}
+  .lede{margin-top:22px;max-width:38ch;font-size:.82rem;line-height:1.85;color:var(--dim);font-weight:300}
+  .lede b{color:var(--foam);font-weight:400}
+  .depthRead{display:flex;align-items:flex-end;gap:10px;margin-top:30px;padding-top:16px;border-top:1px solid var(--line)}
+  .depthRead .num{font-size:clamp(2.8rem,5vw,4.2rem);line-height:.85;font-weight:300;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+  .depthRead .unit{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;color:var(--dim);padding-bottom:8px}
+  .depthRead .zone{margin-left:auto;text-align:right;padding-bottom:4px}
+  .depthRead .zone span{display:block;color:var(--coral);font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase}
+  .depthRead .zone b{display:block;margin-top:5px;font-family:var(--serif);font-size:.92rem;font-weight:400}
+  .controls{margin-top:20px}
+  .sliderRow{display:flex;align-items:center;gap:12px}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:18px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:linear-gradient(90deg,var(--teal),rgba(207,233,227,.2))}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--coral);border:1px solid var(--deep);margin-top:-5px;box-shadow:0 0 10px rgba(255,138,92,.6)}
+  input[type=range]::-moz-range-track{height:1px;background:var(--teal)}
+  input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--coral);border:1px solid var(--deep)}
+  .sliderLabels{display:flex;justify-content:space-between;color:var(--dim);margin-top:2px}
+  .dive{display:inline-flex;align-items:center;gap:9px;margin-top:16px;border:1px solid var(--teal);color:var(--teal);padding:10px 15px;
+    font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;transition:background .25s,color .25s}
+  .dive:hover{background:var(--teal);color:var(--deep)}
+  .dive i{display:block;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid currentColor}
+
+  .chartPanel{position:relative;border:1px solid var(--line);background:linear-gradient(160deg,rgba(9,46,51,.8),rgba(3,19,22,.9));overflow:hidden;min-height:clamp(400px,56vh,560px)}
+  .chartPanel::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.14) 3px 4px);opacity:.35}
+  .chartHead{position:absolute;left:14px;right:14px;top:12px;z-index:3;display:flex;justify-content:space-between;color:var(--dim);pointer-events:none}
+  .chartHead b{color:var(--foam);font-weight:400}
+  #map{display:block;width:100%;height:clamp(400px,56vh,560px);overflow:visible}
+  .waterline{position:absolute;left:0;right:0;top:18%;z-index:2;pointer-events:none;height:34px;transform:translateY(-50%);
+    background:linear-gradient(180deg,rgba(90,209,193,.16),rgba(90,209,193,.02));border-bottom:1px solid rgba(90,209,193,.55);
+    transition:top .18s linear}
+  .waterline::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(90,209,193,.24)}
+  .subMarker{position:absolute;left:calc(72% - 9px);top:18%;z-index:4;width:18px;height:18px;border:1px solid var(--coral);border-radius:50%;
+    transform:translateY(-50%);background:rgba(255,138,92,.12);box-shadow:0 0 18px rgba(255,138,92,.45);transition:top .18s linear}
+  .subMarker::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--coral)}
+  .subLabel{position:absolute;left:calc(72% + 16px);z-index:4;color:var(--coral);font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;transform:translateY(-50%);white-space:nowrap;transition:top .18s linear}
+  .mapTip{position:absolute;z-index:6;pointer-events:none;opacity:0;background:rgba(3,22,25,.96);border:1px solid var(--line);padding:7px 9px;
+    font-family:var(--mono);font-size:.47rem;letter-spacing:.05em;line-height:1.6;color:var(--foam);transition:opacity .2s}
+  .mapTip b{color:var(--teal);font-weight:400}
+  .chartFoot{position:absolute;left:14px;right:14px;bottom:10px;z-index:3;display:flex;justify-content:space-between;color:var(--dim);pointer-events:none}
+  .scalebar{display:flex;align-items:center;gap:6px}
+  .scalebar i{display:block;width:42px;height:3px;border:1px solid var(--dim);border-top:0}
+
+  .zones{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:26px}
+  .zoneCol{padding:18px clamp(12px,2vw,22px);border-right:1px solid var(--line);position:relative;transition:background .4s}
+  .zoneCol:last-child{border-right:0}
+  .zoneCol:first-child{padding-left:0}
+  .zoneCol .depth{font-family:var(--mono);font-size:.47rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+  .zoneCol h2{font-family:var(--serif);font-size:1.15rem;font-weight:400;margin:7px 0 5px}
+  .zoneCol p{font-size:.66rem;line-height:1.6;color:var(--dim);max-width:22ch}
+  .zoneCol .temp{display:block;margin-top:9px;font-family:var(--mono);font-size:.46rem;letter-spacing:.09em;color:var(--teal);text-transform:uppercase}
+  .zoneCol.active{background:rgba(90,209,193,.06)}
+  .zoneCol.active::before{content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:var(--coral)}
+  .zoneCol.active h2{color:var(--coral)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:15px 0 26px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:980px){
+    .hero{grid-template-columns:1fr;padding-top:26px}
+    nav{display:none}
+    .chartPanel{min-height:380px}
+    #map{height:380px}
+    .zones{grid-template-columns:1fr 1fr}
+    .zoneCol:nth-child(2){border-right:0}
+    .zoneCol:nth-child(3){border-top:1px solid var(--line);padding-left:0}
+    .zoneCol:nth-child(4){border-top:1px solid var(--line)}
+  }
+  @media(max-width:560px){
+    h1{font-size:11.4vw}
+    .station{display:none}
+    .depthRead .zone{display:none}
+    #map{height:330px}
+    .chartPanel{min-height:330px}
+    .subLabel{display:none}
+    .zones{grid-template-columns:1fr}
+    .zoneCol{border-right:0;border-bottom:1px solid var(--line);padding:14px 0!important}
+    .zoneCol:last-child{border-bottom:0}
+    .chartFoot{font-size:.45rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><i aria-hidden="true"></i>Abyss <span>/ hydrographic atlas 04</span></a>
+    <nav class="mono" aria-label="Primary"><a href="#mapWrap">Chart</a><a href="#zones">Water column</a><a href="#zones">Archive</a></nav>
+    <div class="station mono">Station 04 / 41° 12′ N<br><b id="liveDepth">2,860 m</b></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow mono">Bathymetry / the unseen</p>
+        <h1>The map<br>beneath<br><em>the map.</em></h1>
+        <p class="lede">Below the last measurable light, the seafloor is still a landscape: ridges, plains, a trench that could swallow a mountain range. We chart it with <b>sound, patience and a very small submersible.</b></p>
+        <div class="depthRead">
+          <span class="num" id="depthBig">2,860</span><span class="unit">metres<br>below sea level</span>
+          <div class="zone"><span>Water column</span><b id="zoneName">Midnight</b></div>
+        </div>
+        <div class="controls">
+          <div class="sliderRow"><label class="mono" for="depth" style="color:var(--dim);white-space:nowrap">Depth</label>
+            <input id="depth" type="range" min="0" max="4200" step="10" value="2860" aria-label="Depth in metres">
+          </div>
+          <div class="sliderLabels mono"><span>0 m / surface</span><span>4,200 m / abyss</span></div>
+        </div>
+        <button class="dive" id="dive"><i aria-hidden="true"></i> Begin the descent</button>
+      </div>
+
+      <div class="chartPanel" id="mapWrap">
+        <div class="chartHead mono"><span>Sheet 04 — <b>Rainier Seamount &amp; the Trench</b></span><span>Scale 1:240,000</span></div>
+        <svg id="map" viewBox="0 0 720 540" role="img" aria-label="Bathymetric contour map of the seafloor">
+          <defs>
+            <radialGradient id="mapGlow" cx="38%" cy="42%">
+              <stop offset="0" stop-color="rgba(90,209,193,.16)"/><stop offset="1" stop-color="rgba(90,209,193,0)"/>
+            </radialGradient>
+          </defs>
+          <rect width="720" height="540" fill="url(#mapGlow)"/>
+          <g id="graticule" stroke="rgba(207,233,227,.07)" stroke-width="1"></g>
+          <g id="contours" fill="none" stroke="#5ad1c1"></g>
+          <g id="soundings" fill="rgba(207,233,227,.45)" font-family="ui-monospace, monospace" font-size="7"></g>
+          <g id="stations"></g>
+          <g font-family="ui-monospace, monospace" font-size="7" fill="rgba(207,233,227,.38)" letter-spacing="1">
+            <text x="30" y="26">41° 20′ N</text>
+            <text x="30" y="522">41° 04′ N</text>
+            <text x="636" y="522">05° 02′ E</text>
+            <text x="34" y="300">RAINIER SEAMOUNT</text>
+            <text x="420" y="150">THE TRENCH</text>
+          </g>
+        </svg>
+        <div class="waterline" id="waterline" aria-hidden="true"></div>
+        <div class="subMarker" id="subMarker" aria-hidden="true"></div>
+        <div class="subLabel mono" id="subLabel">DSV-04 / 2,860 m</div>
+        <div class="mapTip" id="mapTip" role="status"></div>
+        <div class="chartFoot mono"><span class="scalebar"><i></i> 10 km</span><span>Contours at 250 m · last survey 09.2026</span></div>
+      </div>
+    </section>
+
+    <section class="zones" id="zones" aria-label="Depth zones">
+      <article class="zoneCol" data-zone="0">
+        <span class="depth">0 — 200 m</span><h2>Sunlight</h2><p>Enough light for photosynthesis. Reefs, kelp, the busy bright edge of everything.</p><span class="temp">18 — 24°C</span>
+      </article>
+      <article class="zoneCol" data-zone="1">
+        <span class="depth">200 — 1,000 m</span><h2>Twilight</h2><p>Lanternfish rise each night. The last blue, and a great many shadows.</p><span class="temp">6 — 12°C</span>
+      </article>
+      <article class="zoneCol active" data-zone="2">
+        <span class="depth">1,000 — 4,000 m</span><h2>Midnight</h2><p>No sunlight at all. Anglerfish, gulper eels, and light made by the inhabitants.</p><span class="temp">2 — 4°C</span>
+      </article>
+      <article class="zoneCol" data-zone="3">
+        <span class="depth">4,000 — 6,000 m</span><h2>Abyss</h2><p>Cold, quiet plains of sediment. Sea cucumbers and the slowest possible time.</p><span class="temp">1 — 2°C</span>
+      </article>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Abyss / a fictional hydrographic survey</span>
+    <span>Contours drawn by hand, then by arithmetic</span>
+    <span>© 2026 · respect the pressure</span>
+  </footer>
+</div>
+
+<script>
+  const map = document.getElementById('map');
+  const graticule = document.getElementById('graticule');
+  const contours = document.getElementById('contours');
+  const soundings = document.getElementById('soundings');
+  const stations = document.getElementById('stations');
+  const depthInput = document.getElementById('depth');
+  const depthBig = document.getElementById('depthBig');
+  const liveDepth = document.getElementById('liveDepth');
+  const zoneName = document.getElementById('zoneName');
+  const waterline = document.getElementById('waterline');
+  const subMarker = document.getElementById('subMarker');
+  const subLabel = document.getElementById('subLabel');
+  const mapTip = document.getElementById('mapTip');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svgNS = 'http://www.w3.org/2000/svg';
+
+  for (let x = 60; x < 720; x += 90){
+    const l = document.createElementNS(svgNS, 'line'); l.setAttribute('x1', x); l.setAttribute('y1', 0); l.setAttribute('x2', x); l.setAttribute('y2', 540); graticule.appendChild(l);
+  }
+  for (let y = 40; y < 540; y += 80){
+    const l = document.createElementNS(svgNS, 'line'); l.setAttribute('x1', 0); l.setAttribute('y1', y); l.setAttribute('x2', 720); l.setAttribute('y2', y); graticule.appendChild(l);
+  }
+
+  function blob(cx, cy, rx, ry, seed, points){
+    const n = points || 46;
+    const pts = [];
+    for (let i = 0; i < n; i++){
+      const a = i / n * Math.PI * 2;
+      const wob = 1 + Math.sin(a * 3 + seed) * .11 + Math.sin(a * 5 - seed * 2.3) * .06 + Math.cos(a * 2 + seed * 4) * .05;
+      pts.push([cx + Math.cos(a) * rx * wob, cy + Math.sin(a) * ry * wob]);
+    }
+    let d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+    for (let i = 0; i < n; i++){
+      const p0 = pts[i], p1 = pts[(i + 1) % n];
+      const mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2;
+      d += ' Q' + p0[0].toFixed(1) + ',' + p0[1].toFixed(1) + ' ' + mx.toFixed(1) + ',' + my.toFixed(1);
+    }
+    return d + ' Z';
+  }
+
+  const mounts = [
+    { cx: 260, cy: 250, rx: 150, ry: 100, seed: 1.4, levels: 9 },
+    { cx: 512, cy: 366, rx: 110, ry: 68, seed: 4.2, levels: 6 },
+    { cx: 130, cy: 430, rx: 76, ry: 50, seed: 2.7, levels: 4 }
+  ];
+  mounts.forEach(m => {
+    for (let i = 0; i < m.levels; i++){
+      const f = 1 - i / (m.levels + 1);
+      const p = document.createElementNS(svgNS, 'path');
+      p.setAttribute('d', blob(m.cx, m.cy, m.rx * f, m.ry * f, m.seed + i * .7));
+      p.setAttribute('stroke-opacity', (0.18 + i * 0.055).toFixed(2));
+      p.setAttribute('stroke-width', i === 0 ? '.8' : '1');
+      p.setAttribute('vector-effect', 'non-scaling-stroke');
+      contours.appendChild(p);
+    }
+  });
+  const trench = document.createElementNS(svgNS, 'path');
+  trench.setAttribute('d', blob(560, 210, 130, 44, 7.7, 54));
+  trench.setAttribute('stroke', 'rgba(207,233,227,.16)');
+  trench.setAttribute('stroke-width', '1');
+  trench.setAttribute('stroke-dasharray', '3 4');
+  contours.appendChild(trench);
+
+  const marks = [[252,238,'4,120 m'],[290,272,'3,860 m'],[218,300,'3,240 m'],[500,354,'2,910 m'],[142,422,'1,780 m'],[560,212,'5,240 m'],[620,400,'4,680 m'],[400,460,'4,020 m']];
+  marks.forEach(m => {
+    const t = document.createElementNS(svgNS, 'text');
+    t.setAttribute('x', m[0]); t.setAttribute('y', m[1]); t.textContent = m[2];
+    soundings.appendChild(t);
+  });
+
+  const stationData = [
+    { x: 190, y: 192, name: 'Sentinel A', depth: '3,940 m' },
+    { x: 342, y: 320, name: 'Core sample 07', depth: '4,260 m' },
+    { x: 598, y: 260, name: 'Trench mooring', depth: '5,180 m' }
+  ];
+  stationData.forEach(s => {
+    const g = document.createElementNS(svgNS, 'g');
+    g.setAttribute('class', 'stationMark');
+    g.style.cursor = 'pointer';
+    const c = document.createElementNS(svgNS, 'circle');
+    c.setAttribute('cx', s.x); c.setAttribute('cy', s.y); c.setAttribute('r', 5);
+    c.setAttribute('fill', 'none'); c.setAttribute('stroke', '#ff8a5c'); c.setAttribute('stroke-width', '1.2');
+    const d = document.createElementNS(svgNS, 'circle');
+    d.setAttribute('cx', s.x); d.setAttribute('cy', s.y); d.setAttribute('r', 1.6); d.setAttribute('fill', '#ff8a5c');
+    g.appendChild(c); g.appendChild(d);
+    g.addEventListener('pointerenter', e => {
+      const r = map.getBoundingClientRect();
+      mapTip.innerHTML = s.name + '<br><b>' + s.depth + '</b>';
+      mapTip.style.left = (s.x / 720 * r.width + 10) + 'px';
+      mapTip.style.top = (s.y / 540 * r.height - 10) + 'px';
+      mapTip.style.opacity = '1';
+    });
+    g.addEventListener('pointerleave', () => { mapTip.style.opacity = '0'; });
+    stations.appendChild(g);
+  });
+
+  function zoneFor(d){
+    if (d < 200) return 0;
+    if (d < 1000) return 1;
+    if (d < 4000) return 2;
+    return 3;
+  }
+  const names = ['Sunlight','Twilight','Midnight','Abyss'];
+
+  function setDepth(d, animate){
+    d = Math.max(0, Math.min(4200, Number(d)));
+    depthInput.value = d;
+    depthBig.textContent = Math.round(d).toLocaleString('en-US');
+    liveDepth.textContent = Math.round(d).toLocaleString('en-US') + ' m';
+    const z = zoneFor(d);
+    zoneName.textContent = names[z];
+    document.querySelectorAll('.zoneCol').forEach(col => col.classList.toggle('active', Number(col.dataset.zone) === z));
+    const pct = 7 + d / 4200 * 86;
+    waterline.style.top = pct + '%';
+    subMarker.style.top = pct + '%';
+    subLabel.style.top = pct + '%';
+    subLabel.textContent = 'DSV-04 / ' + Math.round(d).toLocaleString('en-US') + ' m';
+    map.style.setProperty('--depth', d);
+    if (animate && !reduce) {
+      waterline.style.transition = 'top .5s cubic-bezier(.2,.8,.2,1)';
+      subMarker.style.transition = 'top .5s cubic-bezier(.2,.8,.2,1)';
+      subLabel.style.transition = 'top .5s cubic-bezier(.2,.8,.2,1)';
+    }
+  }
+
+  depthInput.addEventListener('input', function(){ setDepth(this.value, false); });
+
+  document.getElementById('dive').addEventListener('click', function(){
+    if (reduce){ setDepth(depthInput.value, false); return; }
+    const target = 2860;
+    const start = 0;
+    const t0 = performance.now();
+    setDepth(0, false);
+    function step(t){
+      const p = Math.min(1, (t - t0) / 2200);
+      const ease = 1 - Math.pow(1 - p, 3);
+      setDepth(start + (target - start) * ease, false);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+
+  setDepth(2860, false);
+</script>
+</body>
+</html>

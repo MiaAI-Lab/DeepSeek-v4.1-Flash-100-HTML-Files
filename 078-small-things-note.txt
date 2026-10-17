@@ -1,0 +1,20 @@
+TITLE
+The Mint of Small Things — Specimen Note
+
+PROMPT
+Create a beautiful fictional banknote specimen page called "The Mint of Small Things". A dark wooden desk, a single large note centred with a soft shadow, and a small control panel. The note is built in SVG and CSS with intricate guilloche rosettes, engraved portrait linework, microtext bands, a serial number, denomination, signatures, a security thread and a watermark area. Three palettes (Sage, Indigo, Rose) can be generated; "New note" changes denomination, serial, portrait pattern and rosette seed; "Hold to the light" darkens the note and reveals a glowing security thread, hidden pattern and watermark. Include a header, specimen stamp, facts panel and footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+Security printing as an art form. The note should reward a close look: overlapping wave patterns, hairline rules, a portrait drawn only in engraved lines, tiny repeated text. It is clearly a specimen, never counterfeit currency: serials read SPECIMEN and a red diagonal stamp sits across the corner. The desk and shadow make it feel physically present.
+
+VISUAL TECHNIQUES
+- Procedural SVG guilloche rosettes: dozens of rotated ellipses in layered opacities.
+- Engraved portrait drawn with concentric hatched paths and a line-shaded collar.
+- Microtext bands made from repeated characters, security thread, serial numbers and signatures.
+- Three colour palettes applied as CSS variables; specimen watermark and red stamp.
+- UV/light state that darkens the paper and makes hidden thread elements glow.
+- Soft desk shadow, paper grain and a slight perspective.
+- Responsive scaling of the whole note with stacked facts.
+
+INTERACTION MODEL
+"New note" generates a new denomination, serial, portrait seed and rosette pattern. Palette buttons recolour the note instantly. "Hold to the light" toggles the security view, revealing a glowing thread, a hidden rosette and the watermark. "Print specimen" shows a small confirmation toast. All controls are keyboard accessible; reduced-motion removes the toggling transitions.

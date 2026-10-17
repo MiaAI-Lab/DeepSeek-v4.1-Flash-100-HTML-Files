@@ -1,0 +1,21 @@
+TITLE
+Northstar — A Bento Operating System
+
+PROMPT
+Design a light, premium bento-grid dashboard for a fictional design studio called Northstar. Off-white canvas, ink-black type, hairline borders and four soft accent washes — lime, lavender, peach and mint. The header greets the user by name with a large serif line and a date. The grid mixes one large revenue card with an inline SVG area sparkline and a 7d / 30d / 90d switcher, a circular project-pulse card, a checklist card with three real toggles, a weekly bar chart, a team card with initials avatars, and a small studio note. Rounded 18px cards, restrained shadows, generous padding, monospaced labels and one vivid lime highlight. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets or fonts.
+
+DESIGN INTENT
+A calm, expensive control room that feels human. Bento is used for hierarchy, not decoration: the revenue card is the anchor, the pulse ring is the heartbeat, tasks and people are the texture. The palette keeps the interface warm and editorial rather than corporate blue. Data is crisp and legible, with just enough motion to feel alive.
+
+VISUAL TECHNIQUES
+- CSS grid bento layout with varied card spans and a strict 12-column base.
+- Inline SVG area chart with gradient fill, smoothed path and animated redraw when the range changes.
+- Conic-gradient progress ring with a soft inner shadow and a large tabular number.
+- Vertical bar chart with hover states and day labels.
+- Custom checkbox toggles with strike-through completed states and a live progress count.
+- Initials avatars with pastel backgrounds; tiny status dots.
+- Hairline borders, 18px radii, soft ambient shadows and a faint paper grain.
+- Responsive reflow from bento to two columns to a single stack.
+
+INTERACTION MODEL
+The 7d / 30d / 90d switcher updates the revenue total, delta and sparkline with a short redraw animation. Checklist items can be toggled and update the "2 of 3" progress line. Bars highlight and show their value on hover/focus. Cards lift subtly on hover. All controls are real buttons or checkboxes with pressed states; reduced-motion removes transitions and chart animation.

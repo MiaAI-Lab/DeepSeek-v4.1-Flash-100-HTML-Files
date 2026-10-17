@@ -1,0 +1,20 @@
+TITLE
+Isoline — A City, One Block at a Time
+
+PROMPT
+Create an interactive isometric city called "Isoline". A warm peach-to-cream sky, soft clouds and birds, and a detailed isometric city drawn in SVG: eight-by-eight blocks, pastel buildings with three visible faces, tiny windows, trees, shadows and paved lots. Visitors can click any lot to add or raise a building; "New city" regenerates the whole town with a new palette and skyline; a Day / Night toggle lights the windows and deepens the sky. A large editorial headline "A city, one block at a time." sits over the top left, with a small control bar and building count bottom right. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A toy city with architectural discipline. The isometric projection is exact, the palette is restrained (cream, peach, sage, sky, lilac), and the buildings vary enough to feel authored rather than random. The scene is framed like a poster, with type and controls floating above it and the city filling the lower two-thirds of the frame.
+
+VISUAL TECHNIQUES
+- True isometric projection computed in JavaScript with three-shaded building faces and diamond roofs.
+- Pastel palette per generation, seeded heights and lot distribution, trees and shadows.
+- Tiny window grids with day/night lighting states.
+- Clickable SVG lots with elevation animation; new city regeneration.
+- Layered sky gradient, blurred CSS clouds, birds and a soft horizon glow.
+- Poster-style serif headline, monospaced counters and pill controls.
+- Responsive viewBox scaling; reduced-motion removes rise animations and drifting clouds.
+
+INTERACTION MODEL
+Clicking a lot raises the building on it (or builds one) by one storey and updates the count. "New city" generates a fresh layout with a new palette and fades the old one out. "Night" toggles window lights and the sky. Hovering a building shows its lot number in a small tooltip. All controls are keyboard accessible; reduced-motion keeps states but removes animation.

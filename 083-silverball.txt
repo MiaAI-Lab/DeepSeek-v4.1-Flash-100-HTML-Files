@@ -1,0 +1,20 @@
+TITLE
+Silverball — Neon Pinball, Table 03
+
+PROMPT
+Create a playable neon pinball machine called "Silverball, table 03". A dark arcade room with a tall glass table, glowing pegs, three bumpers, two flippers and a chrome ball. The page includes a marquee, score display, ball count, a start overlay, and instructions. Physics are simple but convincing: gravity, wall bounces, circular peg collisions, bumper boosts and flipper hits. Left and right arrows (or clicking the left/right side) flip the paddles; the ball launches from the right lane and drains at the bottom. Include a game-over state, a high score and glowing particles on impact. Fully responsive, one standalone HTML file with inline CSS/JS, no external libraries, images or fonts.
+
+DESIGN INTENT
+A small, beautiful machine rather than a full arcade sim. The table is designed like a neon diagram: thin rails, concentric bumpers, a constellation of pegs, and two confident flippers. The surrounding cabinet is mostly dark so the table glows. Interaction should feel immediate and slightly forgiving.
+
+VISUAL TECHNIQUES
+- Canvas pinball table with neon rails, glowing pegs, bumpers, plunger lane and a chrome ball with trail.
+- Circle and line-segment collision handling with damping and score events.
+- Flippers animated between rest and active angles with keyboard/pointer controls.
+- Marquee typography, LED score panels and a glass reflection overlay.
+- Impact particles and a brief table flash on bumper hits.
+- Responsive scaling of the cabinet; touch controls on the left and right halves.
+- Reduced-motion removes ball trails and impact particles while keeping play.
+
+INTERACTION MODEL
+Press Space or Start to launch a ball. Arrow keys flip the left and right flippers; touching or clicking the left/right half of the table does the same. The ball scores 10 on pegs, 50 on bumpers and 100 on the top spinner; three balls per game. When all balls are lost, a game-over overlay shows the score and a replay button. P pauses.

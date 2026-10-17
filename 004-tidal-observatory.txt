@@ -1,0 +1,20 @@
+TITLE
+Tidal 07 — North Sea Observatory
+
+PROMPT
+Build a dark, instrument-grade tide observatory dashboard for a fictional North Sea station called TIDAL 07. The palette is deep ocean navy (#07131f), panel ink (#0d1f2d), bioluminescent aqua (#7ee8d5) and sand (#f2b880), with crisp off-white type. It should feel like a scientific buoy console redesigned by a luxury studio: hairline grids, tiny monospaced labels, one enormous editorial headline ("North Sea, translated."), a live UTC clock, station coordinates, and a large interactive tide-height chart. Add a 24H / 7D / 30D range switcher that redraws the curve with a stroke-draw animation, a hover crosshair with a floating tooltip, a pulsing live marker, a circular tide clock, and three telemetry cards with sparklines. The composition must stay legible and beautiful on mobile. Single self-contained file, inline CSS/JS/SVG, no external libraries, fonts or images.
+
+DESIGN INTENT
+A premium data instrument rather than a generic admin dashboard. The page reads left-to-right like a well-printed nautical chart: quiet masthead, oversized serif/sans headline, then one dominant chart with generous breathing room and small, precise telemetry around it. Aqua is used as signal light — the curve, the live pulse, the tide clock — while sand marks the next event. Everything is on a strict baseline grid and animates slowly, like water.
+
+VISUAL TECHNIQUES
+- Responsive inline SVG chart with gradient area fill, smoothed Catmull-Rom-to-Bezier path, glowing stroke and dashed grid rules.
+- Stroke-dash draw-on animation when switching between 24H, 7D and 30D datasets.
+- Pulse-animated live point, crosshair tracking and a floating glass tooltip.
+- Circular tide clock using a conic-gradient progress ring and layered inner dial.
+- Telemetry cards with tiny hand-authored sparkline SVGs and delta indicators.
+- Deep navy layered radial gradients, faint dot grid, hairline borders and monospaced microcopy.
+- Fluid grid that collapses from a 12-column instrument layout to a single reading column.
+
+INTERACTION MODEL
+Moving the pointer across the chart reveals the nearest sample with a vertical crosshair, luminous point and tooltip; leaving hides it. The 24H / 7D / 30D tabs rebuild the series, redraw the curve, update the axis labels, high/low readouts and animate the stroke. The live UTC clock and tide dial update every second. Cards lift slightly on hover. All controls are real buttons with pressed states, and reduced-motion disables the draw-on and pulse animations while keeping every readout available.

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="River — a current of words you can add to.">
+<title>River — A Current of Words</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f1e9d8; --ink:#181712; --dim:rgba(24,23,18,.5); --line:rgba(24,23,18,.18); --blue:#2749c9; --red:#b6422c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;height:100svh;-webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.24;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--blue);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--blue);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{height:100svh;display:flex;flex-direction:column;padding:0 clamp(14px,2.8vw,36px);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid var(--line);flex:none}
+  .brand{display:flex;align-items:baseline;gap:9px;font-weight:700;font-size:1rem;letter-spacing:-.04em}
+  .brand span{font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);font-weight:400;text-transform:uppercase}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{display:flex;gap:7px;align-items:center}
+  .pill{border:1px solid var(--line);border-radius:100px;padding:5px 9px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .pill:hover{color:var(--ink);border-color:var(--ink)}
+  .pill[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .speed{display:flex;align-items:center;gap:6px;color:var(--dim)}
+  input[type=range]{width:74px;-webkit-appearance:none;appearance:none;height:14px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(24,23,18,.35)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:9px;height:9px;border-radius:50%;background:var(--blue);margin-top:-4px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(24,23,18,.35)}
+  input[type=range]::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:var(--blue)}
+
+  .hero{flex:none;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:clamp(10px,2vh,20px) 0 clamp(6px,1vh,10px);flex-wrap:wrap}
+  .hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.8rem,3.4vw,2.9rem);line-height:1;letter-spacing:-.04em}
+  .hero h1 em{font-style:italic;color:var(--blue)}
+  .hero p{max-width:30ch;color:var(--dim);font-size:.66rem;line-height:1.7;text-align:right}
+
+  .river{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;gap:clamp(2px,.4vh,6px);overflow:hidden;min-height:0;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  .lane{position:relative;overflow:hidden;padding:2px 0}
+  .track{display:flex;width:max-content;align-items:baseline;animation:flow var(--dur,40s) linear infinite;will-change:transform}
+  .lane:hover .track{animation-play-state:paused}
+  .paused .track{animation-play-state:paused}
+  .l1 .track{--dur:34s}
+  .l2 .track{--dur:52s;animation-direction:reverse}
+  .l3 .track{--dur:44s}
+  .l4 .track{--dur:66s;animation-direction:reverse}
+  .l5 .track{--dur:38s}
+  @keyframes flow{to{transform:translateX(-50%)}}
+  .chunk{display:flex;align-items:baseline;gap:clamp(14px,2vw,30px);padding-right:clamp(14px,2vw,30px);white-space:nowrap}
+  .w{font-size:clamp(1.5rem,4.4vw,4.2rem);line-height:.95;letter-spacing:-.05em;font-weight:600}
+  .l2 .w{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--dim);font-size:clamp(1.3rem,3.3vw,3.1rem)}
+  .l3 .w{font-family:var(--mono);font-weight:400;font-size:clamp(.8rem,1.8vw,1.55rem);letter-spacing:.12em;text-transform:uppercase}
+  .l4 .w{font-family:var(--serif);font-size:clamp(1.8rem,5.2vw,5rem);font-weight:400;color:transparent;-webkit-text-stroke:1px rgba(24,23,18,.55)}
+  .l5 .w{font-size:clamp(1.1rem,2.2vw,2rem);font-weight:400;color:var(--dim)}
+  .w em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--blue)}
+  .w.hot{color:var(--red)}
+  .w.added{color:var(--blue);position:relative;animation:arrive .6s cubic-bezier(.2,.8,.2,1)}
+  @keyframes arrive{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+  .w.added::after{content:"";position:absolute;left:0;right:0;bottom:-.08em;height:.05em;background:var(--blue)}
+  .dot{width:.35em;height:.35em;border-radius:50%;background:var(--red);display:inline-block;margin:0 .3em;align-self:center;flex:none}
+
+  .dock{flex:none;border-top:1px solid var(--line);padding:10px 0 14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .dockLeft{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  form{display:flex;align-items:center;gap:0;border-bottom:1.5px solid var(--ink);padding-bottom:3px;min-width:min(300px,60vw)}
+  form input{flex:1;background:transparent;border:0;outline:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;color:var(--ink);padding:3px 0}
+  form input::placeholder{color:rgba(24,23,18,.35)}
+  form button{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
+  .dockRight{display:flex;align-items:center;gap:16px;color:var(--dim)}
+  .dockRight b{color:var(--ink);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 0 10px;color:rgba(24,23,18,.4);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .hero p{display:none}
+    .hero h1{font-size:clamp(1.6rem,5vw,2.2rem)}
+    .river{gap:0}
+  }
+  @media(max-width:600px){
+    .brand{font-size:.85rem}
+    .brand span{display:none}
+    .headRight .speed{display:none}
+    .hero{padding:8px 0 2px}
+    .hero h1{font-size:1.35rem}
+    .w{font-size:clamp(1.3rem,7vw,2.4rem)}
+    .l4 .w{font-size:clamp(1.8rem,9vw,3.2rem)}
+    .l2 .w{font-size:clamp(1.1rem,5vw,1.9rem)}
+    .dock{gap:8px;padding-bottom:8px}
+    form{min-width:200px;flex:1}
+    .dockRight span:last-child{display:none}
+    footer{font-size:.34rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .track{animation:none}
+    .river{overflow-x:auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">River <span>/ a current of words</span></a>
+    <div class="headMid mono"><span>Lanes <b>05</b></span><span>Words <b id="countTop">—</b></span><span>Current <b id="speedLabel">steady</b></span></div>
+    <div class="headRight">
+      <div class="speed mono"><label for="speed">Speed</label><input id="speed" type="range" min="20" max="120" value="60" aria-label="River speed"></div>
+      <button class="pill" id="pause" aria-pressed="false">Pause</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>A river of words. <em>Add one.</em></h1>
+    <p>Nothing here is permanent, but everything is in motion. Your word will drift with the others.</p>
+  </div>
+
+  <div class="river" id="river" aria-label="A flowing river of words"></div>
+
+  <div class="dock">
+    <div class="dockLeft">
+      <form id="form"><input id="wordInput" type="text" maxlength="24" placeholder="type a word…" aria-label="Add a word to the river"><button type="submit">Set it adrift →</button></form>
+      <span class="mono" style="color:var(--dim)">Enter to add</span>
+    </div>
+    <div class="dockRight mono"><span>Words in river <b id="count">00</b></span><span>No word is lost</span></div>
+  </div>
+
+  <footer>
+    <span>River / a fictional current</span>
+    <span>Type, drift, repeat</span>
+    <span>© 2026 · the river does not read</span>
+  </footer>
+</div>
+
+<script>
+  const pool = [
+    ['afternoon','salt','quiet','ajar','almost','plum'],
+    ['the tide came in','a small weather','on the long way home','the window left open'],
+    ['POSTPONED','MAYBE','AGAIN','LATER','STILL HERE'],
+    ['blue','little','hush','foam','delay'],
+    ['envelope','weather','permission','a borrowed afternoon']
+  ];
+  const river = document.getElementById('river');
+  const laneClasses = ['l1','l2','l3','l4','l5'];
+  const totalWords = pool.flat().reduce((a, arr) => a + arr.length, 0);
+  let addedWords = 0;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function buildLane(items, idx){
+    const lane = document.createElement('div');
+    lane.className = 'lane ' + laneClasses[idx];
+    const track = document.createElement('div');
+    track.className = 'track';
+    const chunk = document.createElement('div');
+    chunk.className = 'chunk';
+    items.forEach((w, i) => {
+      const span = document.createElement('span');
+      span.className = 'w' + (i % 7 === 3 ? ' hot' : '');
+      if (idx === 0 && i === 1) span.innerHTML = '<em>' + w + '</em>';
+      else span.textContent = w;
+      chunk.appendChild(span);
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      chunk.appendChild(dot);
+    });
+    track.appendChild(chunk);
+    track.appendChild(chunk.cloneNode(true));
+    lane.appendChild(track);
+    river.appendChild(lane);
+    return track;
+  }
+  pool.forEach((items, i) => buildLane(items, i));
+
+  function updateCount(){
+    document.getElementById('count').textContent = String(totalWords + addedWords).padStart(2, '0');
+    document.getElementById('countTop').textContent = String(totalWords + addedWords);
+  }
+  updateCount();
+
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = document.getElementById('wordInput');
+    const val = input.value.trim();
+    if (!val) return;
+    const track = river.querySelector('.l1 .track');
+    const chunk = track.querySelector('.chunk');
+    const span = document.createElement('span');
+    span.className = 'w added';
+    span.textContent = val;
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    chunk.insertBefore(span, chunk.children[1] || null);
+    chunk.insertBefore(dot, span.nextSibling);
+    input.value = '';
+    addedWords++;
+    updateCount();
+    document.getElementById('count').animate
+      ? document.getElementById('count').animate([{ transform:'scale(1.4)', color:'#2749c9' }, { transform:'scale(1)', color:'#181712' }], { duration: 420 })
+      : null;
+  });
+
+  const pause = document.getElementById('pause');
+  pause.addEventListener('click', () => {
+    const on = pause.getAttribute('aria-pressed') !== 'true';
+    pause.setAttribute('aria-pressed', String(on));
+    pause.textContent = on ? 'Resume' : 'Pause';
+    river.classList.toggle('paused', on);
+  });
+  document.getElementById('speed').addEventListener('input', function(){
+    const v = Number(this.value);
+    const factor = 60 / v;
+    document.querySelectorAll('.lane .track').forEach((t, i) => {
+      const base = [34, 52, 44, 66, 38][i];
+      t.style.animationDuration = (base * factor) + 's';
+    });
+    document.getElementById('speedLabel').textContent = v < 40 ? 'slow' : v > 85 ? 'quick' : 'steady';
+  });
+
+  if (reduce){
+    pause.setAttribute('aria-pressed', 'true');
+    pause.textContent = 'Resume';
+    river.classList.add('paused');
+  }
+</script>
+</body>
+</html>

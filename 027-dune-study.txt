@@ -1,0 +1,20 @@
+TITLE
+Dune Study 03 — The Quiet Is a Place
+
+PROMPT
+Create an atmospheric full-screen desert study called "Dune Study 03". Five layered dunes, a low sun, a dust haze and a single line of type: "The quiet is a place." The palette shifts between three hours — Day (pale sand, bleached blue sky), Dusk (burnt orange, rose and violet) and Night (indigo, silver sand and a small moon) — via one button. Dunes respond to pointer movement with gentle depth parallax and have soft grain and a dry heat shimmer. Typography: an oversized editorial serif statement in the lower left, a small location label, and a scientific monospaced caption. Include a compact header, a footer strip with coordinates and temperature, and no other interface clutter. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A landscape you can stand in. The page is almost entirely image — but the image is made of gradients and layered vector dunes. The interface is reduced to a single control so the visitor can only do one thing: change the hour and watch the desert reply. The type sits low and small in the frame, like a caption on a large print.
+
+VISUAL TECHNIQUES
+- Five SVG dune silhouettes with distinct gradients, ridge highlights and atmospheric haze between layers.
+- Continuous colour interpolation via CSS custom properties for day / dusk / night states.
+- Pointer parallax with per-layer depth, plus a slow ambient drift.
+- Sun / moon disc with a soft corona, changing position and colour with the hour.
+- Heat-shimmer effect using a subtle repeating gradient and animation.
+- Film grain, vignette and a wide horizon composition.
+- Reduced-motion turns off parallax, drift and shimmer while keeping the hour switch.
+
+INTERACTION MODEL
+Clicking "Change the hour" cycles Day → Dusk → Night, cross-fading all colours, the sun/moon position and the readout text. Moving the pointer shifts each dune layer at a different depth. The caption and coordinates update with the selected hour. Everything is keyboard accessible, and reduced-motion visitors get a still, fully composed landscape.

@@ -1,0 +1,20 @@
+TITLE
+Helio — The Sun Keeps Better Time
+
+PROMPT
+Create a warm, sunlit interactive sundial study titled "Helio". The page should feel like a Mediterranean astronomy atelier: sand-coloured paper (#f3e7d0), deep umber ink, ochre and burnt orange, with an oversized serif headline "The sun keeps better time." The layout pairs editorial copy and a solar-time readout on the left with a large interactive sundial on the right. The sundial is an SVG instrument: concentric circles, Roman hour numerals, tick marks, a triangular gnomon and a long shadow line that rotates as the visitor drags around the dial or moves a time slider. A small sun travels along the day arc; a readout shows the hour, solar elevation and the equation of time. Include a trio of field notes, coordinates, and a "return to now" control. Fully responsive, one standalone HTML file with inline CSS and JS, no external fonts or images.
+
+DESIGN INTENT
+An instrument you want to touch. The palette is drawn from terracotta, raw linen and late-afternoon light; nothing is pure white or pure black. The dial is the visual anchor and is treated like an engraved brass plate redrawn in SVG, while the typography is quiet enough to let it be the hero. Warm gradients suggest sunlight raking across paper, and the shadow line gives the whole composition a direction.
+
+VISUAL TECHNIQUES
+- Interactive SVG sundial with generated hour ticks, Roman numerals, concentric engraved rings and a rotating gnomon shadow.
+- Pointer-angle calculation so dragging anywhere on the dial sets solar time; keyboard slider semantics for accessibility.
+- A sun marker traversing a semicircular day arc, with a warm radial glow.
+- Live readouts for civil time, solar elevation and the equation of time.
+- Fluid serif display type with italic ochre accents, letterpress-style rules and monospaced marginalia.
+- Sun-warmed radial gradients, paper grain and soft vignette.
+- Responsive stack that puts the dial first on narrow screens.
+
+INTERACTION MODEL
+Drag around the dial or use the range slider to move through the day; the shadow, sun position, time and solar elevation update together. Arrow keys nudge the time when the dial is focused. "Return to now" snaps to the current solar hour with a brief settle animation. Everything remains legible and usable with reduced motion, where transitions become instant.

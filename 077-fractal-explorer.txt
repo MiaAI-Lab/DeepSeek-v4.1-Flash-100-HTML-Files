@@ -1,0 +1,20 @@
+TITLE
+Mandelbrot Field — The Edge of Everything
+
+PROMPT
+Create an interactive Mandelbrot fractal explorer called "Mandelbrot Field". Deep black page with a large square canvas and a narrow scientific control column. The hero statement reads "The edge of everything." in an elegant serif; controls include iteration depth, a palette selector (Ember, Deep, Mono, Rose), zoom-out and reset buttons, a live coordinate readout and a scale display. Clicking the fractal zooms in at that point; shift-click zooms out; the render is recoloured instantly when the palette changes and re-computed when iterations change. Include a small explanation of the set and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A scientific instrument pointed at a beautiful impossibility. The fractal is the only image; the interface is precise, dark and typographic. The palette should be sophisticated rather than psychedelic — ember, deep ocean, graphite and a restrained rose. The page should reward the first click and then keep rewarding it.
+
+VISUAL TECHNIQUES
+- Canvas Mandelbrot rendering with escape-time iteration and smooth colouring.
+- Cached iteration data so palette changes recolour without re-rendering.
+- Click-to-zoom centred on the pointer, shift-click zoom-out, reset to the classic view.
+- Four curated palettes interpolated across the iteration bands.
+- Live coordinate and zoom scale readouts in monospaced type.
+- Serif editorial statement, hairline controls and a faint star-like grain.
+- Responsive square canvas; reduced-motion removes the brief fade between renders.
+
+INTERACTION MODEL
+Click anywhere on the canvas to zoom in around that point; shift-click or use "Zoom out" to step back. The iteration slider changes the maximum escape depth and re-renders after a short debounce. Palette buttons recolour immediately from the cached data. "Reset" returns to the classic full-set view. All controls and the canvas are keyboard accessible, with + and − keys for zoom.

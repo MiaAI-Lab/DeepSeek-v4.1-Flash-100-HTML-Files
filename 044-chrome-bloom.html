@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BLOOM™ — an eight-petal chrome flower from the digital age.">
+<title>BLOOM™ — Chrome Botanicals</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --lilac:#e9e0ff; --lilac2:#d9c9ff; --pink:#ffd7ea; --text:#2a2433; --dim:rgba(42,36,51,.55); --line:rgba(42,36,51,.16);
+    --chrome1:#ffffff; --chrome2:#c9cede; --chrome3:#6d7288; --chrome4:#eef1f8;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--lilac);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(800px 700px at 70% 20%,#fff2fa,transparent 60%),radial-gradient(900px 800px at 20% 90%,#d4c6ff,transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(90deg,rgba(42,36,51,.05) 1px,transparent 1px),linear-gradient(rgba(42,36,51,.05) 1px,transparent 1px);background-size:72px 72px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 78%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.18;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--pink);color:var(--text)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--text);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1340px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:-.04em;font-size:1rem}
+  .brand sup{font-size:.42em;font-weight:500;letter-spacing:0;color:var(--dim);transform:translateY(-3px)}
+  .brand .dot{width:6px;height:6px;border-radius:50%;background:#b39cff;box-shadow:0 0 10px #b39cff;display:block}
+  nav{display:flex;gap:24px;color:var(--dim)}
+  nav a{font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--text)}
+  .headRight{display:flex;align-items:center;gap:14px;color:var(--dim)}
+  .bag{border:1px solid var(--line);padding:6px 10px;border-radius:100px;font-family:var(--mono);font-size:.42rem;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,color .2s}
+  .bag:hover{background:var(--text);color:var(--lilac)}
+
+  .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:clamp(20px,4vh,48px) 0 20px;text-align:center;min-height:0}
+  .hero::before{content:"";position:absolute;width:min(56vw,620px);aspect-ratio:1;border-radius:50%;left:50%;top:45%;transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 38% 32%, rgba(255,255,255,.85), rgba(255,214,236,.6) 34%, rgba(179,156,255,.32) 62%, transparent 72%);filter:blur(8px)}
+  .eyebrow{position:relative;z-index:2;display:flex;align-items:center;gap:9px;color:var(--dim);margin-bottom:4px}
+  .eyebrow::before,.eyebrow::after{content:"";width:20px;height:1px;background:var(--line)}
+  h1{position:relative;z-index:2;font-size:clamp(4rem,12vw,11rem);line-height:.78;letter-spacing:-.055em;font-weight:800;text-transform:uppercase;
+    background:linear-gradient(180deg,#ffffff 0%,#f4f6ff 18%,#a9aec2 42%,#595e73 52%,#eef1f8 63%,#8b90a3 78%,#ffffff 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 rgba(42,36,51,.18))}
+  h1 sup{font-size:.16em;vertical-align:top;letter-spacing:0;color:var(--dim);-webkit-text-fill-color:var(--dim);margin-left:.04em}
+  .sub{position:relative;z-index:2;margin-top:2px;font-family:var(--serif);font-style:italic;font-size:clamp(1rem,1.8vw,1.35rem);color:var(--dim)}
+  .stage{position:relative;z-index:2;width:min(100%,560px);height:clamp(300px,42vh,440px);display:grid;place-items:center;margin-top:clamp(4px,1.6vh,16px);perspective:900px}
+  .flowerWrap{position:relative;width:min(74vw,380px);aspect-ratio:1;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .flower{position:absolute;inset:0;animation:spin 28s linear infinite;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .flower.paused{animation-play-state:paused}
+  .petal{position:absolute;left:50%;top:50%;width:clamp(52px,9vw,82px);height:clamp(120px,20vw,178px);margin-left:calc(clamp(52px,9vw,82px) / -2);margin-top:calc(clamp(120px,20vw,178px) * -1 + 14px);
+    border-radius:52% 52% 46% 46% / 68% 68% 32% 32%;transform-origin:50% 100%;transform:rotate(var(--a)) translateY(-10px);
+    background:linear-gradient(100deg,var(--chrome1) 0%,var(--chrome2) 22%,var(--chrome3) 44%,var(--chrome4) 55%,#ffffff 66%,#868b9f 82%,var(--chrome1) 100%);
+    border:1px solid rgba(255,255,255,.7);box-shadow:inset 0 2px 6px rgba(255,255,255,.9),inset 0 -12px 20px rgba(60,65,85,.35),0 12px 22px rgba(80,70,110,.22);
+    transition:opacity .35s,transform .5s;will-change:transform}
+  .petal::before{content:"";position:absolute;left:18%;top:8%;width:22%;height:56%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,0));filter:blur(.4px)}
+  .petal::after{content:"";position:absolute;right:14%;bottom:12%;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.8);box-shadow:0 0 8px rgba(255,255,255,.8)}
+  .petal.hide{opacity:0;transform:rotate(var(--a)) translateY(-10px) scale(.6)}
+  .core{position:absolute;left:50%;top:50%;width:clamp(66px,10vw,96px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,#ffffff,#dfe3ee 20%,#8f95a9 48%,#4f5468 62%,#f4f6fb 80%,#a4a9bb 100%);
+    box-shadow:inset 0 2px 8px rgba(255,255,255,.9),inset 0 -10px 18px rgba(40,44,60,.5),0 10px 24px rgba(80,70,110,.3);z-index:3}
+  .core::before{content:"";position:absolute;left:24%;top:20%;width:26%;height:20%;border-radius:50%;background:rgba(255,255,255,.9);filter:blur(1px)}
+  .core::after{content:"";position:absolute;left:50%;top:50%;width:38%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#c4c9d8,#6f7488);opacity:.55}
+  .petal:nth-child(1){--a:0deg}.petal:nth-child(2){--a:45deg}.petal:nth-child(3){--a:90deg}.petal:nth-child(4){--a:135deg}
+  .petal:nth-child(5){--a:180deg}.petal:nth-child(6){--a:225deg}.petal:nth-child(7){--a:270deg}.petal:nth-child(8){--a:315deg}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .plinth{position:absolute;bottom:2%;left:50%;transform:translateX(-50%);width:56%;height:26px;border-radius:50%;
+    background:radial-gradient(ellipse,rgba(90,80,120,.28),transparent 68%);filter:blur(7px)}
+  .stageNote{position:absolute;left:0;bottom:8%;text-align:left;color:var(--dim);line-height:1.8}
+  .stageNote b{color:var(--text);font-weight:400}
+  .stageRight{position:absolute;right:0;bottom:8%;text-align:right;color:var(--dim);line-height:1.8}
+
+  .controls{position:relative;z-index:3;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;margin-top:4px}
+  .ctrl{display:flex;align-items:center;gap:8px;color:var(--dim)}
+  input[type=range]{width:110px;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(42,36,51,.4)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--text);margin-top:-5px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(42,36,51,.4)}
+  input[type=range]::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--text)}
+  .btn{border:1px solid var(--line);padding:8px 12px;border-radius:100px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,color .2s}
+  .btn:hover{background:var(--text);color:var(--lilac)}
+  .btn[aria-pressed="true"]{background:var(--text);color:var(--lilac)}
+  .buyRow{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap;position:relative;z-index:3}
+  .price{font-family:var(--serif);font-size:1.15rem}
+  .price small{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .buy{background:var(--text);color:var(--lilac);padding:11px 18px;border-radius:100px;font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;transition:transform .2s,background .2s}
+  .buy:hover{transform:translateY(-2px);background:#4b3e63}
+  .sparkle{position:absolute;width:7px;height:7px;z-index:5;pointer-events:none;background:linear-gradient(45deg,#fff,#9aa0b8);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:spark 1s ease-out forwards}
+  @keyframes spark{from{opacity:1;transform:translate(0,0) scale(1) rotate(0)}to{opacity:0;transform:translate(var(--x),var(--y)) scale(.2) rotate(180deg)}}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 18px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    nav{display:none}
+    .stageNote{display:none}.stageRight{display:none}
+    .hero{justify-content:flex-start}
+    .stage{height:360px;margin-top:0}
+    .flowerWrap{width:min(80vw,320px)}
+  }
+  @media(max-width:600px){
+    .headRight .mono{display:none}
+    h1{font-size:17vw}
+    .brand{font-size:.86rem}
+    .stage{height:300px}
+    .flowerWrap{width:min(78vw,260px)}
+    .stage::after{display:none}
+    .controls{gap:10px}
+    .petal{width:44px;height:112px;margin-left:-22px;margin-top:-98px}
+    .buyRow{gap:10px}
+    footer span:nth-child(2){display:none}
+    .hero{padding-top:12px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">BLOOM<sup>™</sup><span class="dot" aria-hidden="true"></span></a>
+    <nav aria-label="Primary"><a href="#top">Object</a><a href="#top">Collection</a><a href="#top">Studio</a></nav>
+    <div class="headRight mono"><span>Y2K / 2026</span><button class="bag" id="bag">Bag (0)</button></div>
+  </header>
+
+  <main class="hero" id="top">
+    <p class="eyebrow mono">Chrome botanicals — object 001</p>
+    <h1>Bloom<sup>™</sup></h1>
+    <p class="sub">a flower for the digital age</p>
+
+    <div class="stage" id="stage">
+      <div class="flowerWrap" id="flowerWrap">
+        <div class="flower" id="flower">
+          <span class="petal"></span><span class="petal"></span><span class="petal"></span><span class="petal"></span>
+          <span class="petal"></span><span class="petal"></span><span class="petal"></span><span class="petal"></span>
+          <span class="core"></span>
+        </div>
+        <span class="plinth" aria-hidden="true"></span>
+      </div>
+      <div class="stageNote mono"><b>Object 01</b><br>Eight petals / mirror finish<br>H 21 cm · W 19 cm</div>
+      <div class="stageRight mono">Edition of 200<br><b>Polished chrome</b><br>Hand-finished in one file</div>
+    </div>
+
+    <div class="controls">
+      <div class="ctrl mono"><label for="petals">Petals</label><input id="petals" type="range" min="5" max="8" value="8" aria-label="Number of visible petals"><span id="petalOut">08</span></div>
+      <button class="btn" id="spin" aria-pressed="false">Pause spin</button>
+      <button class="btn" id="unfurl">Unfurl ✧</button>
+    </div>
+
+    <div class="buyRow">
+      <div class="price">$88<small>includes certificate</small></div>
+      <button class="buy" id="buy">Add to bag</button>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>BLOOM™ / a fictional object</span>
+    <span>Chrome petals, no real flowers</span>
+    <span>© 2026 · please keep away from magnets</span>
+  </footer>
+</div>
+
+<script>
+  const flower = document.getElementById('flower');
+  const wrap = document.getElementById('flowerWrap');
+  const stage = document.getElementById('stage');
+  const petals = document.getElementById('petals');
+  const petalOut = document.getElementById('petalOut');
+  const spin = document.getElementById('spin');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const petalEls = Array.from(document.querySelectorAll('.petal'));
+  let spinning = !reduce;
+
+  function applyPetals(n){
+    petalEls.forEach((p, i) => p.classList.toggle('hide', i >= n));
+    petalOut.textContent = String(n).padStart(2, '0');
+    const scale = .82 + n * .025;
+    flower.style.transform = 'scale(' + scale + ')';
+  }
+  petals.addEventListener('input', () => applyPetals(Number(petals.value)));
+
+  spin.addEventListener('click', () => {
+    spinning = !spinning;
+    flower.classList.toggle('paused', !spinning);
+    spin.setAttribute('aria-pressed', String(!spinning));
+    spin.textContent = spinning ? 'Pause spin' : 'Resume spin';
+  });
+
+  document.getElementById('unfurl').addEventListener('click', () => {
+    if (!reduce){
+      flower.animate([
+        { transform: 'scale(.85) rotate(0deg)' },
+        { transform: 'scale(1.12) rotate(16deg)' },
+        { transform: 'scale(' + (.82 + Number(petals.value) * .025) + ') rotate(0deg)' }
+      ], { duration: 900, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      for (let i = 0; i < 18; i++){
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        s.style.left = (50 + (Math.random() - .5) * 34) + '%';
+        s.style.top = (50 + (Math.random() - .5) * 34) + '%';
+        s.style.setProperty('--x', ((Math.random() - .5) * 260) + 'px');
+        s.style.setProperty('--y', ((Math.random() - .5) * 260) + 'px');
+        stage.appendChild(s);
+        setTimeout(() => s.remove(), 1100);
+      }
+    }
+    document.getElementById('unfurl').textContent = 'Unfurled ✧';
+    setTimeout(() => { document.getElementById('unfurl').textContent = 'Unfurl ✧'; }, 1400);
+  });
+
+  let count = 0;
+  document.getElementById('buy').addEventListener('click', function(){
+    count++;
+    document.getElementById('bag').textContent = 'Bag (' + count + ')';
+    this.textContent = 'In the bag ✓';
+    setTimeout(() => { this.textContent = 'Add to bag'; }, 1800);
+  });
+
+  if (!reduce){
+    stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      wrap.style.transform = 'rotateX(' + (-y * 10).toFixed(1) + 'deg) rotateY(' + (x * 14).toFixed(1) + 'deg)';
+    });
+    stage.addEventListener('pointerleave', () => { wrap.style.transform = 'rotateX(0) rotateY(0)'; });
+  }
+
+  if (reduce){ flower.classList.add('paused'); spin.setAttribute('aria-pressed', 'true'); spin.textContent = 'Resume spin'; }
+  applyPetals(8);
+</script>
+</body>
+</html>

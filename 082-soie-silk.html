@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Soie — a study of silk in motion, light and tension.">
+<title>Soie — Softness, in Motion</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --ivory:#f3ece1; --ivory2:#e8dccb; --ink:#2b2422; --dim:rgba(43,36,34,.52); --line:rgba(43,36,34,.16);
+    --c1:#e9c7b8; --c2:#c99da3; --c3:#f4e3cf; --c4:#a9818c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.rose{--ivory:#f1e3e2;--ivory2:#e5cecd;--c1:#e6aaa6;--c2:#c47d86;--c3:#f5ded6;--c4:#9c5f6c}
+  body.sage{--ivory:#eaece0;--ivory2:#dbe0cd;--c1:#c8d2b4;--c2:#9aa98a;--c3:#eef0e2;--c4:#7c8d72}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--ivory);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;transition:background .8s}
+  body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.26;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--c2);color:var(--ivory)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  #silk{position:fixed;inset:0;z-index:0;width:100%;height:100%;display:block}
+  .shade{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(120,90,70,.08) 80%,rgba(100,70,50,.14))}
+  .ui{position:relative;z-index:3;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,42px);pointer-events:none}
+  .ui button,.ui input,.ui label{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:17px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:9px;font-family:var(--serif);font-size:1.05rem;letter-spacing:.24em;text-transform:uppercase}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim);margin-top:2px}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--ink);font-weight:400}
+
+  .middle{flex:1;display:flex;align-items:center;justify-content:space-between;gap:24px;pointer-events:none}
+  .side{max-width:220px;color:var(--dim);line-height:1.8;writing-mode:vertical-rl;transform:rotate(180deg);align-self:center;font-family:var(--mono);font-size:.4rem;letter-spacing:.15em;text-transform:uppercase}
+  .title{max-width:640px;padding-bottom:2vh}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--c4);margin-bottom:16px}
+  .kicker::before{content:"";width:24px;height:1px;background:var(--c4)}
+  h1{font-family:var(--serif);font-size:clamp(3.2rem,8vw,7.2rem);line-height:.92;letter-spacing:-.055em;font-weight:400;text-shadow:0 2px 24px rgba(255,250,240,.5)}
+  h1 em{font-style:italic;color:var(--c4)}
+  .title p{margin-top:14px;max-width:33ch;color:var(--dim);font-size:.7rem;line-height:1.8}
+  .bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding:16px 0 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .tension{display:flex;align-items:center;gap:9px;color:var(--dim)}
+  input[type=range]{width:120px;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(43,36,34,.3)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--ink);margin-top:-4.5px}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(43,36,34,.3)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:var(--ink);border:0}
+  .pals{display:flex;gap:5px}
+  .pal{border:1px solid var(--line);padding:6px 9px;font-family:var(--mono);font-size:.36rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .pal:hover{color:var(--ink);border-color:var(--ink)}
+  .pal[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ivory)}
+  .fall{border-bottom:1px solid var(--dim);padding-bottom:2px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .fall:hover{color:var(--ink);border-color:var(--ink)}
+  .bottomRight{text-align:right;color:var(--dim);line-height:1.8}
+  .bottomRight b{color:var(--ink);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 0 10px;color:rgba(43,36,34,.35);font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .side{display:none}
+    .title{max-width:100%}
+    h1{font-size:clamp(2.8rem,10vw,5rem)}
+    .bottom{align-items:flex-start}
+    .bottomRight{display:none}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.8rem;letter-spacing:.16em}
+    h1{font-size:13vw}
+    .title p{font-size:.64rem}
+    .controls{gap:10px}
+    .pals{gap:3px}
+    .pal{font-size:.3rem;padding:5px 7px}
+    footer span:nth-child(2){display:none}
+    .ui{padding:0 14px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<svg id="silk" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--ivory)"/><stop offset="1" stop-color="var(--ivory2)"/></linearGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--c3)"/><stop offset=".45" stop-color="var(--c1)"/><stop offset=".75" stop-color="var(--c2)"/><stop offset="1" stop-color="var(--c4)"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--c1)"/><stop offset=".5" stop-color="var(--c3)"/><stop offset="1" stop-color="var(--c2)"/></linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--c2)"/><stop offset=".5" stop-color="var(--c4)"/><stop offset="1" stop-color="var(--c1)"/></linearGradient>
+    <filter id="blur1"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="blur2"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <rect width="1440" height="900" fill="url(#base)"/>
+  <g id="ribbons"></g>
+  <g id="highlights"></g>
+</svg>
+<div class="shade" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top">Soie<span>/ maison de tissus</span></a>
+    <div class="headMid mono"><span>Study <b>04 — drape</b></span><span>Silk <b>19 momme</b></span><span>Atelier <b>Lyon</b></span></div>
+    <div class="headRight mono">Autumn collection<br><b>Softness, in motion</b></div>
+  </header>
+
+  <div class="middle" id="top">
+    <span class="side">A study in folds, weight and the way light moves across a surface that is already moving.</span>
+    <div class="title">
+      <p class="kicker mono">A fabric study / no. 04</p>
+      <h1>Softness,<br><em>in motion.</em></h1>
+      <p>Move across the cloth. The silk will lean toward your hand, catch the light, and settle again when you leave.</p>
+    </div>
+    <span class="side">Drag the tension. Pull the folds. Let it fall.</span>
+  </div>
+
+  <div class="bottom">
+    <div class="controls">
+      <div class="tension mono"><label for="tension">Tension</label><input id="tension" type="range" min="20" max="100" value="58" aria-label="Fabric tension"><span id="tensionOut">58</span></div>
+      <div class="pals" role="group" aria-label="Fabric palette"><button class="pal" data-pal="ivory" aria-pressed="true">Ivory</button><button class="pal" data-pal="rose" aria-pressed="false">Rose</button><button class="pal" data-pal="sage" aria-pressed="false">Sage</button></div>
+      <button class="fall" id="fall">Let it fall ↝</button>
+    </div>
+    <div class="bottomRight mono">Hand <b id="hand">centre</b><br>Fold <b id="fold">07</b></div>
+  </div>
+
+  <footer class="mono">
+    <span>Soie / a fictional atelier</span>
+    <span>Silk drawn as curves, not pixels</span>
+    <span>© 2026 · handle with cool hands</span>
+  </footer>
+</div>
+
+<script>
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const ribbonsG = document.getElementById('ribbons');
+  const highlightsG = document.getElementById('highlights');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ribbons = [], highlights = [];
+  let tension = 58, mx = 0, my = 0, tx = 0, ty = 0;
+  let phase = 0;
+  const N = 12;
+
+  for (let i = 0; i < N; i++){
+    const p = document.createElementNS(svgNS, 'path');
+    p.setAttribute('fill', i % 3 === 0 ? 'url(#g2)' : i % 3 === 1 ? 'url(#g1)' : 'url(#g3)');
+    p.setAttribute('opacity', String(.16 + (i % 4) * .09));
+    if (i % 5 === 0) p.setAttribute('filter', 'url(#blur2)');
+    if (i % 4 === 1) p.setAttribute('filter', 'url(#blur1)');
+    ribbonsG.appendChild(p);
+    ribbons.push({ el: p, offset: i });
+  }
+  for (let i = 0; i < 7; i++){
+    const p = document.createElementNS(svgNS, 'path');
+    p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', 'rgba(255,250,242,.5)');
+    p.setAttribute('stroke-width', String(1 + (i % 3) * .6));
+    p.setAttribute('opacity', '0');
+    highlightsG.appendChild(p);
+    highlights.push(p);
+  }
+
+  function ribbonPath(i, t){
+    const baseY = -80 + (i / (N - 1)) * 1000;
+    const A = 60 + tension * 1.1;
+    const segs = 5;
+    const yAt = (s) => {
+      const x = (s / segs) * 1680 - 120;
+      const wave = Math.sin(s * 1.1 + t * .3 + i * .4) * A * .5 + Math.sin(s * .5 - t * .2 + i) * A * .25;
+      const pull = Math.exp(-Math.pow((x / 1440 - tx) * 2.2, 2)) * (ty * 300);
+      return baseY + wave + pull + Math.sin(x * .004 + i) * 26;
+    };
+    let d = 'M -120 ' + baseY.toFixed(1) + ' C';
+    for (let s = 0; s < segs; s++){
+      const x0 = (s / segs) * 1680 - 120;
+      const x1 = ((s + 1) / segs) * 1680 - 120;
+      const y0 = yAt(s), y1 = yAt(s + 1);
+      const c1x = x0 + 120, c1y = y0 + Math.sin(s + t + i) * 80;
+      const c2x = x1 - 120, c2y = y1 + Math.sin(s + 1 + t + i) * 80;
+      d += ' ' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ' ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ' ' + x1.toFixed(1) + ' ' + y1.toFixed(1);
+    }
+    d += ' L 1680 1000 L -120 1000 Z';
+    return d;
+  }
+
+  function draw(){
+    phase += .01;
+    if (!reduce){
+      tx += (mx - tx) * .04;
+      ty += (my - ty) * .04;
+    }
+    ribbons.forEach((r, i) => { r.el.setAttribute('d', ribbonPath(i, phase)); });
+    highlights.forEach((h, i) => {
+      const baseY = -40 + (i / 6) * 980;
+      let d = '';
+      for (let s = 0; s <= 5; s++){
+        const x = (s / 5) * 1500;
+        const y = baseY + Math.sin(s * 1.4 + phase * .6 + i) * (40 + tension * .4);
+        d += (s ? ' L ' : 'M ') + x.toFixed(1) + ' ' + y.toFixed(1);
+      }
+      h.setAttribute('d', d);
+      h.setAttribute('opacity', String(.16 + Math.sin(phase + i) * .08));
+    });
+    if (!reduce) requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('pointermove', e => {
+    mx = (e.clientX / innerWidth - .5) * 1.6;
+    my = (e.clientY / innerHeight - .5) * 1.6;
+    document.getElementById('hand').textContent = mx < -.3 ? 'left' : mx > .3 ? 'right' : 'centre';
+  }, { passive: true });
+  document.getElementById('tension').addEventListener('input', function(){
+    tension = Number(this.value);
+    document.getElementById('tensionOut').textContent = this.value;
+    document.getElementById('fold').textContent = String(Math.round(tension / 9)).padStart(2,'0');
+    if (reduce) draw();
+  });
+  document.querySelectorAll('.pal').forEach(b => {
+    b.addEventListener('click', () => {
+      document.body.className = b.dataset.pal === 'ivory' ? '' : b.dataset.pal;
+      document.querySelectorAll('.pal').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      if (reduce) draw();
+    });
+  });
+  document.getElementById('fall').addEventListener('click', () => {
+    mx = 0; my = 0;
+    document.getElementById('hand').textContent = 'centre';
+  });
+
+  draw();
+</script>
+</body>
+</html>

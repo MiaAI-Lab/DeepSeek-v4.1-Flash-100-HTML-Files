@@ -1,0 +1,20 @@
+TITLE
+Meteor — Weather for One Day
+
+PROMPT
+Create a minimal, beautiful weather experience called "Meteor". Off-white interface, a large rounded weather window that occupies most of the page, ice-blue and warm-yellow accents, and a refined editorial layout. The window shows a full CSS weather scene — sun, drifting clouds, rain, snow or fog — that changes with the selected city. A left column holds four city tabs (Oslo, Lisbon, Kyoto, Reykjavík), a large temperature, condition line and small details (feels like, wind, humidity, sunset). A bottom strip shows eight hourly temperatures as a tiny bar forecast. A time-of-day slider moves the sun or moon across the scene and shifts the sky gradient. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Weather as a window, not an app. The scene is the hero and changes character completely between cities. Typography is restrained: a huge light temperature, a small serif city name, precise monospaced data. The colour palette stays quiet so the weather can do the talking, and motion is soft and continuous, like actual weather.
+
+VISUAL TECHNIQUES
+- CSS scene with a sky gradient driven by a time-of-day variable, sun/moon arc, layered clouds and city-specific precipitation.
+- Rain with multiple linear-gradient streaks; snow with animated dots; fog with blurred drifting bands.
+- Rounded window frame, inner shadow and a subtle glass highlight.
+- Hourly bar forecast with temperature variants and current-hour highlight.
+- City tabs with active states; a time slider controlling sun position, sky and label.
+- Large light-weight temperature typography and serif city display.
+- Reduced-motion freezes precipitation and sun drift while keeping state changes.
+
+INTERACTION MODEL
+Selecting a city updates the temperature, condition, details, scene type and hourly forecast with a crossfade. The time-of-day slider moves the sun/moon, changes the sky gradient from dawn to dusk and updates the clock label. "Play the day" animates the slider across 24 hours. All controls are keyboard accessible; reduced-motion disables the animation while preserving manual control.

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Isoline — a small isometric city you can build block by block.">
+<title>Isoline — A City, One Block at a Time</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --sky1:#f4c9a8; --sky2:#f9e8cf; --ink:#3b2a22; --dim:rgba(59,42,34,.55); --line:rgba(59,42,34,.18);
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.night{--sky1:#1b2440;--sky2:#3b3552;--ink:#f3ead8;--dim:rgba(243,234,216,.55);--line:rgba(243,234,216,.18)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:linear-gradient(180deg,var(--sky1),var(--sky2));color:var(--ink);font-family:var(--sans);overflow-x:hidden;
+    transition:background 1s,color 1s;position:relative}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line);flex:none}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase}
+  .brand .cube{width:15px;height:15px;position:relative;flex:none;transform:rotate(30deg)}
+  .brand .cube::before{content:"";position:absolute;inset:0;background:var(--ink);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+  .brand small{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.13em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{display:flex;gap:6px;align-items:center}
+  .pill{border:1px solid var(--line);border-radius:100px;padding:6px 10px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .pill:hover{color:var(--ink);border-color:var(--ink)}
+  .pill[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--sky2)}
+
+  .main{flex:1;display:flex;flex-direction:column;position:relative;min-height:0;padding-top:clamp(12px,2.6vh,24px)}
+  .title{max-width:620px;z-index:3;position:relative;pointer-events:none}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--dim);margin-bottom:12px}
+  .kicker::before{content:"";width:22px;height:1px;background:currentColor}
+  h1{font-family:var(--serif);font-size:clamp(2.4rem,5.2vw,4.8rem);line-height:.94;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:#b2603c}
+  body.night h1 em{color:#e7b17e}
+  .sub{margin-top:10px;max-width:34ch;font-size:.68rem;line-height:1.7;color:var(--dim)}
+
+  .sceneWrap{position:relative;flex:1;min-height:0;margin-top:-10px}
+  #city{display:block;width:100%;height:100%;min-height:clamp(360px,60vh,660px);overflow:visible;touch-action:manipulation}
+  .lot{cursor:pointer}
+  .lot:hover .top{filter:brightness(1.12)}
+  .building{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+  .building.rise{animation:rise .45s cubic-bezier(.2,.8,.2,1)}
+  @keyframes rise{from{opacity:.2;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .tree{transform-origin:center bottom}
+  .cloud{position:absolute;background:rgba(255,255,255,.55);border-radius:100px;filter:blur(6px);pointer-events:none;z-index:1}
+  .cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
+  .c1{width:160px;height:36px;left:8%;top:16%;animation:drift 40s linear infinite}
+  .c1::before{width:35%;height:170%;left:20%;bottom:10%}.c1::after{width:26%;height:130%;right:16%;bottom:8%}
+  .c2{width:110px;height:26px;right:14%;top:9%;opacity:.6;animation:drift 55s linear infinite reverse}
+  .c2::before{width:40%;height:160%;left:24%;bottom:6%}
+  @keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(40px)}}
+  .bird{position:absolute;width:30px;height:14px;opacity:.45;z-index:1;animation:fly 26s linear infinite}
+  .bird svg{width:100%;height:100%;stroke:var(--ink);fill:none;stroke-width:1.2}
+  .bird.b2{animation-delay:-8s;top:24%;right:28%;transform:scale(.7)}
+  .bird.b1{top:18%;left:52%}
+  @keyframes fly{from{transform:translateX(-10vw)}to{transform:translateX(35vw)}}
+
+  .controls{position:absolute;right:0;bottom:8px;z-index:4;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .count{color:var(--dim);text-align:right;line-height:1.6;margin-right:6px}
+  .count b{display:block;color:var(--ink);font-family:var(--serif);font-size:1.1rem;font-weight:400}
+  .btn{border:1px solid var(--line);padding:7px 11px;border-radius:100px;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:rgba(255,255,255,.18);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--ink);color:var(--sky2);border-color:var(--ink)}
+  .btn.primary{background:var(--ink);color:var(--sky2);border-color:var(--ink)}
+  .btn.primary:hover{background:#b2603c;border-color:#b2603c;color:#fff}
+  .tip{position:absolute;z-index:6;pointer-events:none;opacity:0;background:var(--ink);color:var(--sky2);padding:4px 7px;border-radius:4px;font-family:var(--mono);font-size:.36rem;letter-spacing:.05em;text-transform:uppercase;transition:opacity .15s;white-space:nowrap}
+  .tip.on{opacity:1}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:8px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .title{max-width:100%}
+    h1{font-size:clamp(2.2rem,7vw,3.6rem)}
+    .controls{bottom:0}
+  }
+  @media(max-width:600px){
+    .headRight .pill:first-child{display:none}
+    .brand{font-size:.56rem;letter-spacing:.18em}
+    .sceneWrap{margin-top:0}
+    #city{min-height:340px}
+    .sub{display:none}
+    .count{display:none}
+    .controls{gap:5px;bottom:4px}
+    .btn{font-size:.34rem;padding:6px 8px}
+    footer span:nth-child(2){display:none}
+    .bird{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="cube" aria-hidden="true"></span><span>Isoline<small>A small city / block 08</small></span></a>
+    <div class="headMid mono"><span>Blocks <b id="blockCount">64</b></span><span>Storeys <b id="storeyCount">—</b></span><span>Palette <b id="palName">Apricot</b></span></div>
+    <div class="headRight"><button class="pill" id="night">Night</button><button class="pill" id="regen">New city</button></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="title">
+      <p class="kicker mono">An isometric study of small architecture</p>
+      <h1>A city,<br><em>one block at a time.</em></h1>
+      <p class="sub">Click any lot to raise a building. The city has no mayor, no traffic and no opinion about height.</p>
+    </div>
+
+    <div class="sceneWrap" id="sceneWrap">
+      <div class="cloud c1" aria-hidden="true"></div><div class="cloud c2" aria-hidden="true"></div>
+      <div class="bird b1" aria-hidden="true"><svg viewBox="0 0 30 14"><path d="M1 8 Q8 2 15 8 Q22 2 29 8"/></svg></div>
+      <div class="bird b2" aria-hidden="true"><svg viewBox="0 0 30 14"><path d="M1 8 Q8 2 15 8 Q22 2 29 8"/></svg></div>
+      <div class="tip" id="tip"></div>
+      <svg id="city" viewBox="0 0 1000 660" preserveAspectRatio="xMidYMid meet" role="img" aria-label="An interactive isometric city"></svg>
+      <div class="controls">
+        <div class="count mono">Buildings<b id="count">64</b></div>
+        <button class="btn primary" id="raise">Add a storey</button>
+        <button class="btn" id="trees">Plant a tree</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Isoline / a fictional town</span>
+    <span>Isometric projection · one SVG</span>
+    <span>© 2026 · no planning permission required</span>
+  </footer>
+</div>
+
+<script>
+  const svg = document.getElementById('city');
+  const tooltip = document.getElementById('tip');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const palettes = [
+    { name:'Apricot', faces:['#fff3e4','#e8b591','#c98a67'], roof:'#f6e7d4', ground:'#e7d3ba', tree:'#7f9f79' },
+    { name:'Sage', faces:['#f4f4e8','#b9c9ae','#93a58a'], roof:'#e9ecda', ground:'#d9ddc9', tree:'#688b62' },
+    { name:'Dusk', faces:['#f3e9f5','#c1aecb','#9b86ab'], roof:'#eadff0', ground:'#d9cfe0', tree:'#7d7599' },
+    { name:'Sky', faces:['#f0f6f8','#aec8d4','#87a6b6'], roof:'#e4eff3', ground:'#d3e0e5', tree:'#6f9294' }
+  ];
+  let palette = palettes[0];
+  let lots = [];
+  let night = false;
+  let s = 34;
+
+  function project(col, row, height){
+    const cx = 500 + (col - row) * s * 1.2;
+    const cy = 300 + (col + row) * s * .6 - height;
+    return { cx, cy };
+  }
+
+  function buildCity(){
+    svg.innerHTML = '';
+    const NS = 'http://www.w3.org/2000/svg';
+    const defs = document.createElementNS(NS, 'defs');
+    defs.innerHTML = '<radialGradient id="lotGlow" cx="50%" cy="50%"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>';
+    svg.appendChild(defs);
+    const ground = document.createElementNS(NS, 'g');
+    svg.appendChild(ground);
+    const buildings = document.createElementNS(NS, 'g');
+    svg.appendChild(buildings);
+
+    const N = 8;
+    lots = [];
+    // ground plate
+    for (let r = 0; r < N; r++){
+      for (let c = 0; c < N; c++){
+        const p = project(c, r, 0);
+        const tile = document.createElementNS(NS, 'polygon');
+        tile.setAttribute('points', [p.cx, p.cy - s * .5, p.cx + s, p.cy, p.cx, p.cy + s * .5, p.cx - s, p.cy].join(' '));
+        tile.setAttribute('fill', (c + r) % 2 ? palette.ground : shade(palette.ground, 6));
+        tile.setAttribute('stroke', 'rgba(60,40,30,.08)');
+        ground.appendChild(tile);
+        lots.push({ c: c, r: r, h: Math.random() > .22 ? 18 + Math.random() * 70 : 4, color: palettes[(c + r) % palettes.length].faces, hasTree: Math.random() > .88, p: p });
+      }
+    }
+    // buildings
+    lots.forEach((lot, i) => {
+      const g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'building');
+      g.setAttribute('data-i', i);
+      const p = project(lot.c, lot.r, lot.h);
+      const top = [p.cx, p.cy - s * .5, p.cx + s, p.cy, p.cx, p.cy + s * .5, p.cx - s, p.cy].join(' ');
+      const left = [p.cx - s, p.cy, p.cx, p.cy + s * .5, p.cx, p.cy + lot.h + s * .5, p.cx - s, p.cy + lot.h].join(' ');
+      const right = [p.cx, p.cy + s * .5, p.cx + s, p.cy, p.cx + s, p.cy + lot.h, p.cx, p.cy + lot.h + s * .5].join(' ');
+      if (lot.h > 5){
+        const shadow = document.createElementNS(NS, 'polygon');
+        shadow.setAttribute('points', [p.cx - s * 1.1, p.cy + lot.h * .35, p.cx + s * .9, p.cy + lot.h * .35 + 12, p.cx + s * 1.6, p.cy + lot.h * .35 + 4, p.cx - s * .5, p.cy + lot.h * .35 - 8].join(' '));
+        shadow.setAttribute('fill', 'rgba(70,45,30,.12)');
+        g.appendChild(shadow);
+        const leftP = document.createElementNS(NS, 'polygon');
+        leftP.setAttribute('points', left); leftP.setAttribute('fill', lot.color[2]);
+        const rightP = document.createElementNS(NS, 'polygon');
+        rightP.setAttribute('points', right); rightP.setAttribute('fill', lot.color[1]);
+        const topP = document.createElementNS(NS, 'polygon');
+        topP.setAttribute('points', top); topP.setAttribute('fill', lot.color[0]);
+        topP.setAttribute('class', 'top');
+        g.appendChild(leftP); g.appendChild(rightP); g.appendChild(topP);
+        // windows
+        const win = document.createElementNS(NS, 'g');
+        const floors = Math.max(1, Math.floor(lot.h / 18));
+        for (let f = 0; f < floors; f++){
+          for (let w = 0; w < 2; w++){
+            const wx = p.cx - s * .62 + w * s * .42;
+            const wy = p.cy + 7 + f * 17 + lot.h;
+            const r1 = document.createElementNS(NS, 'polygon');
+            r1.setAttribute('points', [wx, wy, wx + 7, wy + 3.5, wx + 7, wy + 9, wx, wy + 5.5].join(' '));
+            r1.setAttribute('fill', night ? '#ffd98a' : 'rgba(70,60,55,.18)');
+            r1.setAttribute('opacity', night ? '.9' : '.55');
+            win.appendChild(r1);
+          }
+        }
+        g.appendChild(win);
+      }
+      if (lot.hasTree){
+        const t = document.createElementNS(NS, 'g');
+        t.setAttribute('class', 'tree');
+        const tx = p.cx + s * .2, ty = p.cy + 2;
+        t.innerHTML = '<ellipse cx="' + tx + '" cy="' + (ty + 4) + '" rx="6" ry="2.4" fill="rgba(60,40,30,.15)"/><rect x="' + (tx - 1) + '" y="' + (ty - 10) + '" width="2" height="12" fill="#7a5a3e"/><circle cx="' + tx + '" cy="' + (ty - 14) + '" r="8" fill="' + palette.tree + '"/><circle cx="' + (tx - 5) + '" cy="' + (ty - 10) + '" r="5" fill="' + palette.tree + '" opacity=".8"/>';
+        g.appendChild(t);
+      }
+      buildings.appendChild(g);
+    });
+    // lot hit areas on top (transparent)
+    const hits = document.createElementNS(NS, 'g');
+    lots.forEach((lot, i) => {
+      const p = project(lot.c, lot.r, lot.h);
+      const hit = document.createElementNS(NS, 'polygon');
+      hit.setAttribute('class', 'lot');
+      hit.setAttribute('data-i', i);
+      hit.setAttribute('points', [p.cx, p.cy - s * .5, p.cx + s, p.cy, p.cx, p.cy + s * .5, p.cx - s, p.cy].join(' '));
+      hit.setAttribute('fill', 'transparent');
+      hit.setAttribute('tabindex', '0');
+      hit.setAttribute('role', 'button');
+      hit.setAttribute('aria-label', 'Lot ' + (i + 1));
+      const hoverIn = e => {
+        tooltip.textContent = 'Lot ' + String(i + 1).padStart(2, '0') + ' / storeys ' + Math.round(lot.h / 18);
+        const rect = document.getElementById('sceneWrap').getBoundingClientRect();
+        let x = p.cx / 1000 * rect.width - rect.left;
+        tooltip.style.left = Math.max(10, Math.min(rect.width - 100, (p.cx / 1000) * rect.width)) + 'px';
+        tooltip.style.top = ((p.cy + lot.h) / 660) * rect.height + 'px';
+        tooltip.classList.add('on');
+      };
+      hit.addEventListener('pointerenter', hoverIn);
+      hit.addEventListener('pointermove', hoverIn);
+      hit.addEventListener('pointerleave', () => tooltip.classList.remove('on'));
+      hit.addEventListener('click', () => raiseLot(i));
+      hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ raiseLot(i); e.preventDefault(); } });
+      hits.appendChild(hit);
+    });
+    svg.appendChild(hits);
+    updateCounts();
+  }
+
+  function raiseLot(i){
+    lots[i].h = Math.min(150, lots[i].h + 18);
+    buildCity();
+    const b = svg.querySelector('.building[data-i="' + i + '"]');
+    if (b) b.classList.add('rise');
+  }
+
+  function updateCounts(){
+    document.getElementById('count').textContent = String(lots.length).padStart(2, '0');
+    document.getElementById('blockCount').textContent = lots.length;
+    document.getElementById('storeyCount').textContent = lots.reduce((a, l) => a + Math.max(1, Math.round(l.h / 18)), 0);
+    document.getElementById('palName').textContent = palette.name;
+  }
+
+  function shade(hex, pct){
+    const n = parseInt(hex.slice(1), 16);
+    const r = Math.min(255, (n >> 16) + pct), g = Math.min(255, ((n >> 8) & 255) + pct), b = Math.min(255, (n & 255) + pct);
+    return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+  }
+
+  document.getElementById('regen').addEventListener('click', () => {
+    palette = palettes[Math.floor(Math.random() * palettes.length)];
+    buildCity();
+    svg.animate ? svg.animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 400, easing: 'ease-out' }) : null;
+  });
+  document.getElementById('night').addEventListener('click', function(){
+    night = !night;
+    document.body.classList.toggle('night', night);
+    this.setAttribute('aria-pressed', String(night));
+    this.textContent = night ? 'Day' : 'Night';
+    buildCity();
+  });
+  document.getElementById('raise').addEventListener('click', () => {
+    const i = Math.floor(Math.random() * lots.length);
+    raiseLot(i);
+  });
+  document.getElementById('trees').addEventListener('click', () => {
+    const open = lots.filter(l => !l.hasTree && l.h <= 5);
+    if (open.length){
+      open[0].hasTree = true;
+      buildCity();
+    }
+  });
+
+  buildCity();
+</script>
+</body>
+</html>

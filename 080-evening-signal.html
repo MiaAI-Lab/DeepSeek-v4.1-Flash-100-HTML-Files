@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Evening Signal — a fictional broadsheet front page, late edition.">
+<title>The Evening Signal — Late Edition</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --news:#eee8da; --paper:#f5f0e3; --ink:#151411; --red:#a42e24; --dim:rgba(21,20,17,.58); --line:rgba(21,20,17,.35);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#c9bfab;color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 50% 0%,#ded5c3,#b8ad98 80%);min-height:100svh;padding:20px clamp(10px,2.4vw,30px)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--red);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;line-height:1.7}
+  .paper{max-width:1180px;margin:0 auto;background:var(--paper);padding:clamp(12px,2.4vw,24px) clamp(12px,3vw,32px) 18px;
+    box-shadow:0 26px 50px rgba(50,40,25,.35);background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.12) 0 1px,transparent 1px 4px)}
+  .topStrip{display:flex;justify-content:space-between;gap:12px;padding-bottom:5px;border-bottom:1px solid var(--ink);color:var(--dim);flex-wrap:wrap}
+  .topStrip b{color:var(--ink);font-weight:400}
+  .masthead{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:8px 0 6px;border-bottom:3px solid var(--ink)}
+  .weatherBox{display:flex;gap:8px;align-items:center;color:var(--dim);line-height:1.6;font-family:var(--sans);font-size:.52rem}
+  .weatherBox .sun{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#f0c15a,#c98a2f);box-shadow:0 0 0 3px rgba(201,138,47,.15)}
+  .weatherBox b{display:block;color:var(--ink);font-weight:400}
+  .titleBlock{text-align:center}
+  .titleBlock h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.3rem,6.4vw,5rem);line-height:.8;letter-spacing:-.03em;text-transform:uppercase}
+  .titleBlock .sub{font-family:var(--sans);font-size:.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+  .priceBlock{text-align:right;color:var(--dim);line-height:1.6;font-family:var(--sans);font-size:.5rem}
+  .priceBlock b{display:block;color:var(--ink);font-weight:400;font-family:var(--serif);font-size:1.1rem}
+  .dateLine{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--dim);flex-wrap:wrap}
+  .dateLine b{color:var(--red);font-weight:400}
+
+  .leadGrid{display:grid;grid-template-columns:1fr 260px;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .leadTop{display:grid;grid-template-columns:1fr 300px;gap:16px;margin-bottom:10px}
+  .leadText h2{font-family:var(--serif);font-size:clamp(2rem,4.4vw,3.4rem);line-height:.93;letter-spacing:-.03em;font-weight:700;cursor:pointer}
+  .leadText h2:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+  .leadDeck{font-family:var(--serif);font-style:italic;font-size:clamp(.82rem,1.3vw,1rem);line-height:1.45;color:rgba(21,20,17,.75);margin-top:7px;max-width:52ch}
+  .byline{font-family:var(--sans);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:7px;border-top:1px solid var(--line);padding-top:4px}
+  .photo{position:relative;background:#d6cfc0;overflow:hidden;min-height:180px}
+  .photo .scene{position:absolute;inset:0;background:linear-gradient(160deg,#3b3f43,#9a9791 42%,#c7c1b5 72%,#5c5852)}
+  .photo .scene::before{content:"";position:absolute;left:8%;right:8%;bottom:0;height:62%;background:linear-gradient(90deg,#30343a 0 18%,transparent 18% 26%,#474c51 26% 46%,transparent 46% 54%,#383d42 54% 78%,transparent 78% 84%,#2c3035 84% 100%)}
+  .photo .scene::after{content:"";position:absolute;left:20%;top:18%;width:12%;height:18%;background:rgba(245,235,200,.55);box-shadow:14vw 4vh 0 rgba(245,235,200,.3),7vw 8vh 0 rgba(245,235,200,.45)}
+  .photo .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(20,20,18,.5) .6px,transparent .8px);background-size:3px 3px;mix-blend-mode:multiply;opacity:.7}
+  .photo .caption{position:absolute;left:0;right:0;bottom:0;background:rgba(21,20,17,.7);color:var(--paper);padding:3px 5px;font-family:var(--sans);font-size:.4rem;letter-spacing:.04em}
+  .bodyCols{column-count:3;column-gap:16px;column-rule:1px solid var(--line);font-family:var(--serif);font-size:.68rem;line-height:1.62;text-align:justify;hyphens:auto;color:rgba(21,20,17,.86)}
+  .bodyCols p{margin-bottom:7px}
+  .bodyCols p:first-of-type::first-letter{float:left;font-size:3.1rem;line-height:.75;padding:3px 5px 0 0;font-weight:700;color:var(--red)}
+  .bodyCols .more{font-family:var(--sans);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);border-bottom:1px solid var(--red);padding-bottom:1px;display:inline-block;margin-top:4px;cursor:pointer}
+  .rail{border-left:1px solid var(--line);padding-left:14px}
+  .rail section{margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+  .rail section:last-child{border-bottom:0}
+  .rail h3{font-family:var(--sans);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;margin-bottom:5px}
+  .rail p,.rail li{font-family:var(--serif);font-size:.64rem;line-height:1.55;color:rgba(21,20,17,.78)}
+  .rail ul{list-style:none}
+  .rail li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px dotted rgba(21,20,17,.18)}
+  .rail li b{font-family:var(--mono);font-size:.4rem;font-weight:400;color:var(--dim);white-space:nowrap}
+  .quote{font-family:var(--serif);font-style:italic;font-size:.9rem;line-height:1.35;border-top:2px solid var(--ink);border-bottom:1px solid var(--line);padding:6px 0;margin:8px 0}
+  .quote small{display:block;font-family:var(--sans);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-style:normal;margin-top:4px}
+
+  .lower{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .lower article{border-right:1px solid var(--line);padding-right:12px}
+  .lower article:last-child{border-right:0;padding-right:0}
+  .lower h3{font-family:var(--serif);font-size:1rem;line-height:1.05;font-weight:700;margin-bottom:4px}
+  .lower p{font-family:var(--serif);font-size:.62rem;line-height:1.55;text-align:justify;hyphens:auto;color:rgba(21,20,17,.78)}
+  .lower .kicker{font-family:var(--sans);font-size:.4rem;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+  .classified{display:flex;justify-content:space-between;gap:14px;padding:7px 0;font-family:var(--sans);font-size:.46rem;letter-spacing:.03em;color:var(--dim);flex-wrap:wrap}
+  .classified b{color:var(--ink);font-weight:500}
+
+  .paperFoot{display:flex;justify-content:space-between;gap:12px;padding-top:7px;border-top:3px solid var(--ink);color:var(--dim);flex-wrap:wrap;margin-top:8px}
+  .paperFoot b{color:var(--ink);font-weight:400}
+  .editionBtns{display:flex;gap:4px;align-items:center}
+  .edBtn{border:1px solid var(--line);padding:4px 7px;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .edBtn:hover{color:var(--ink);border-color:var(--ink)}
+  .edBtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .fade{opacity:.25;transition:opacity .25s}
+
+  .overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(20,17,13,.7);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .3s}
+  .overlay.on{opacity:1;pointer-events:auto}
+  .clipping{position:relative;width:min(620px,100%);max-height:86vh;overflow:auto;background:var(--paper);padding:clamp(18px,3vw,34px);
+    box-shadow:0 30px 60px rgba(0,0,0,.5);transform:rotate(-.5deg)}
+  .clipping::before{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:linear-gradient(180deg,rgba(0,0,0,.12),transparent)}
+  .clipping h2{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);line-height:.98;letter-spacing:-.03em;margin-bottom:4px}
+  .clipping .dek{font-family:var(--serif);font-style:italic;color:var(--dim);font-size:.9rem;line-height:1.4;margin-bottom:8px}
+  .clipping .byline{margin-top:4px}
+  .clipping p{font-family:var(--serif);font-size:.8rem;line-height:1.7;text-align:justify;margin-top:9px;color:rgba(21,20,17,.86)}
+  .clipping p:first-of-type::first-letter{float:left;font-size:3rem;line-height:.8;padding:3px 5px 0 0;font-weight:700;color:var(--red)}
+  .close{position:absolute;right:12px;top:10px;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:.7rem;color:var(--dim)}
+  .close:hover{color:var(--ink);border-color:var(--ink)}
+  footer{max-width:1180px;margin:8px auto 0;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:rgba(40,35,28,.45);font-family:var(--mono);font-size:.4rem;letter-spacing:.07em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .masthead{grid-template-columns:1fr;gap:4px;text-align:center}
+    .weatherBox{justify-content:center}.priceBlock{display:none}
+    .leadGrid{grid-template-columns:1fr}
+    .rail{border-left:0;border-top:1px solid var(--line);padding:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+    .rail section{margin-bottom:8px}
+    .leadTop{grid-template-columns:1fr}
+    .photo{min-height:150px}
+  }
+  @media(max-width:600px){
+    body{padding:8px 6px}
+    .paper{padding:10px 10px 14px}
+    .bodyCols{column-count:1}
+    .lower{grid-template-columns:1fr}
+    .lower article{border-right:0;border-bottom:1px solid var(--line);padding:0 0 8px}
+    .lower article:last-child{border-bottom:0;padding-bottom:0}
+    .topStrip span:nth-child(2){display:none}
+    .dateLine span:nth-child(2){display:none}
+    .rail{grid-template-columns:1fr}
+    .titleBlock h1{font-size:10vw}
+    .leadText h2{font-size:1.7rem}
+    .paperFoot .editionBtns{order:3}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="paper">
+  <div class="topStrip mono"><span>Vol. CXVII · No. 42</span><span>Founded 1909 · printed in one file</span><span>Late edition · <b>price 90p</b></span></div>
+  <div class="masthead">
+    <div class="weatherBox"><span class="sun" aria-hidden="true"></span><span>Fair, then cloud<br><b>H 14° / L 8°</b></span></div>
+    <div class="titleBlock"><h1>The Evening Signal</h1><div class="sub">A newspaper for the hours after work</div></div>
+    <div class="priceBlock">Friday<br><b>17 October 2026</b>Late edition</div>
+  </div>
+  <div class="dateLine mono"><span>Weather: <b id="wx">fair, light wind</b></span><span>Sunset 18:42 · Moon waning</span><span>Edition <b id="editionMark">LATE</b></span><div class="editionBtns"><button class="edBtn" data-ed="early" aria-pressed="false">Morning</button><button class="edBtn" data-ed="late" aria-pressed="true">Late</button></div></div>
+
+  <div class="leadGrid">
+    <div>
+      <div class="leadTop">
+        <div class="leadText">
+          <div class="kicker mono" style="color:var(--red);margin-bottom:4px" id="leadKicker">THE CITY · A QUIET REVOLUTION</div>
+          <h2 id="leadTitle">The city learns to listen.</h2>
+          <p class="leadDeck" id="leadDeck">After years of noise, a new programme asks residents to sit still for ten minutes and report what they heard. The results are unexpectedly moving.</p>
+          <div class="byline">By Mara Bell · <span id="leadDate">Friday, 17 October</span></div>
+        </div>
+        <div class="photo"><div class="scene" aria-hidden="true"></div><div class="dots" aria-hidden="true"></div><span class="caption" id="photoCap">The east side at dusk, where the listening began. Photograph: The Signal.</span></div>
+      </div>
+      <div class="bodyCols" id="leadBody">
+        <p>The first session took place in a bus shelter on the east side of the city. Twelve people arrived, sat down, and were asked not to speak for ten minutes. At the end, they wrote down what they had heard.</p>
+        <p>“A radiator in a flat I have never been inside,” wrote one participant. “A river under the road,” wrote another. The notes were collected, typed and filed. Within a week there were hundreds.</p>
+        <p>The project was intended as a small civic experiment. It has become something closer to a portrait of the city — not the one on the postcards, but the one that hums and drips and sighs around us.</p>
+        <span class="more" id="more">Continue reading →</span>
+      </div>
+    </div>
+    <aside class="rail">
+      <section><h3>Inside today</h3><ul><li><span>The listening city</span><b>p. 1</b></li><li><span>A short history of hush</span><b>p. 4</b></li><li><span>Weather, for the week</span><b>p. 7</b></li><li><span>Classifieds</span><b>p. 11</b></li></ul></section>
+      <section><div class="quote">“The city is not too loud. We have simply forgotten which sounds belong to us.”<small>— a participant, bus shelter 3</small></div></section>
+      <section><h3>Tonight</h3><p>Clear intervals, a moderate breeze from the west, and a moon two days past full. A good night to leave a window open.</p></section>
+      <section><h3>Notice</h3><p class="mono" style="color:var(--dim);font-size:.4rem">The Evening Signal is a fictional newspaper. Any resemblance to actual cities is a matter of atmosphere.</p></section>
+    </aside>
+  </div>
+
+  <div class="lower">
+    <article><div class="kicker">Culture</div><h3>An orchestra tunes to the room.</h3><p>The concert hall reopened on Thursday with a programme built around a single sustained note. Critics called it indulgent; the audience stayed for the silence after.</p></article>
+    <article><div class="kicker">City</div><h3>The last telephone box.</h3><p>It no longer makes calls. It has been adopted by the library, fitted with a small shelf of poems, and is open all night. The light inside still works.</p></article>
+    <article><div class="kicker">Weather</div><h3>A week of small weather.</h3><p>Mist on Monday, a bright Tuesday, rain by Thursday. The forecast office asks us to remember that “small weather” is still weather, and should be dressed for.</p></article>
+  </div>
+
+  <div class="classified mono"><span><b>For sale:</b> one brass key, no door. £4.</span><span><b>Lost:</b> a quiet afternoon, last seen near the river.</span><span><b>Notice:</b> the listening sessions continue, Thursdays, 18:30.</span><span>To place a notice, visit the office before noon.</span></div>
+  <div class="paperFoot mono"><span>The Evening Signal · <b>one file</b> · printed locally</span><span>Editor <b>E. Voss</b></span><span>© 2026 · all rights, gently reserved</span></div>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Article clipping">
+  <div class="clipping">
+    <button class="close" id="close" aria-label="Close article">×</button>
+    <div class="kicker mono" style="color:var(--red);margin-bottom:4px">THE CITY · A QUIET REVOLUTION</div>
+    <h2 id="clipTitle">The city learns to listen.</h2>
+    <p class="dek" id="clipDeck">After years of noise, a new programme asks residents to sit still for ten minutes and report what they heard.</p>
+    <div class="byline">By Mara Bell · Friday, 17 October 2026</div>
+    <p>The first session took place in a bus shelter on the east side of the city. Twelve people arrived, sat down, and were asked not to speak for ten minutes. At the end, they wrote down what they had heard.</p>
+    <p>“A radiator in a flat I have never been inside,” wrote one participant. “A river under the road,” wrote another. “Someone practising the same four bars of a song, badly, and then getting them right.”</p>
+    <p>The notes were collected, typed and filed in a room above the library. Within a week there were hundreds. Within a month, the city council had received a request to make the experiment permanent.</p>
+    <p>“We expected complaints about noise,” said the organiser. “Instead, people kept telling us what they missed. The low hum of the old refrigerators. The bell on the bicycle. The particular sound of a street before it wakes up.”</p>
+    <p>The sessions now run every Thursday at 18:30. Bring nothing. Leave your phone in your pocket. Sit for ten minutes. Write down what you heard.</p>
+  </div>
+</div>
+
+<footer class="mono"><span>The Evening Signal — a fictional newspaper</span><span>Printed in one file · no news was harmed</span><span>© 2026 · late edition</span></footer>
+
+<script>
+  const editions = {
+    late: {
+      kicker:'THE CITY · A QUIET REVOLUTION',
+      title:'The city learns to listen.',
+      deck:'After years of noise, a new programme asks residents to sit still for ten minutes and report what they heard. The results are unexpectedly moving.',
+      date:'Friday, 17 October', mark:'LATE', wx:'fair, light wind', photo:'The east side at dusk, where the listening began. Photograph: The Signal.'
+    },
+    early: {
+      kicker:'THE CITY · MORNING REPORT',
+      title:'A city wakes up slowly.',
+      deck:'Commuters, bakers and one very early orchestra: a walk through the streets at the hour before the traffic arrives.',
+      date:'Friday, 17 October', mark:'MORNING', wx:'mist, clearing by nine', photo:'Six in the morning on the east side. Photograph: The Signal.'
+    }
+  };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let edition = 'late';
+
+  function setEdition(key){
+    edition = key;
+    const e = editions[key];
+    const lead = document.querySelector('.leadTop');
+    if (!reduce){ lead.classList.add('fade'); setTimeout(apply, 220); } else apply();
+    function apply(){
+      document.getElementById('leadKicker').textContent = e.kicker;
+      document.getElementById('leadTitle').textContent = e.title;
+      document.getElementById('leadDeck').textContent = e.deck;
+      document.getElementById('leadDate').textContent = e.date;
+      document.getElementById('editionMark').textContent = e.mark;
+      document.getElementById('wx').textContent = e.wx;
+      document.getElementById('photoCap').textContent = e.photo;
+      document.getElementById('clipTitle').textContent = e.title;
+      document.getElementById('clipDeck').textContent = e.deck;
+      document.querySelectorAll('.edBtn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ed === key)));
+      lead.classList.remove('fade');
+    }
+  }
+  document.querySelectorAll('.edBtn').forEach(b => b.addEventListener('click', () => setEdition(b.dataset.ed)));
+
+  const overlay = document.getElementById('overlay');
+  function openClip(){ overlay.classList.add('on'); document.getElementById('close').focus(); }
+  function closeClip(){ overlay.classList.remove('on'); }
+  document.getElementById('leadTitle').addEventListener('click', openClip);
+  document.getElementById('more').addEventListener('click', openClip);
+  document.getElementById('close').addEventListener('click', closeClip);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeClip(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeClip(); });
+</script>
+</body>
+</html>

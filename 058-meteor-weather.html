@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Meteor — a weather window for Oslo, Lisbon, Kyoto and Reykjavík.">
+<title>Meteor — Weather for One Day</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f1f2ee; --ink:#1e2528; --dim:rgba(30,37,40,.52); --line:rgba(30,37,40,.16);
+    --sky1:#a9d4e8; --sky2:#e8f3f2; --sun:#ffd98a; --cloud:#fdfcf8; --accent:#5b8ea8;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.night{--sky1:#1c2d4a;--sky2:#4a5d78;--sun:#e9eef8;--cloud:#9ca9ba;--accent:#9fb8cc}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100svh;
+    background-image:radial-gradient(1000px 700px at 80% 0%,#fbfbf7,transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:#fff}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase}
+  .brand .orb{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 36% 32%,#fff8dc,var(--sun) 55%,#d9a34e);box-shadow:0 0 12px rgba(255,217,138,.6);flex:none}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--ink);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:360px 1fr;gap:clamp(22px,4vw,48px);align-items:stretch;padding:clamp(18px,3vw,30px) 0 20px}
+  .info{display:flex;flex-direction:column}
+  .cities{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
+  .city{border:1px solid var(--line);border-radius:100px;padding:6px 10px;font-family:var(--mono);font-size:.38rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .city:hover{border-color:var(--ink);color:var(--ink)}
+  .city[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .cityName{font-family:var(--serif);font-size:clamp(1.7rem,3vw,2.4rem);line-height:1;font-weight:400;letter-spacing:-.03em}
+  .cityName span{display:block;font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-top:5px}
+  .temp{font-size:clamp(5rem,10vw,8rem);font-weight:200;letter-spacing:-.08em;line-height:.82;margin:16px 0 4px}
+  .temp sup{font-size:.22em;vertical-align:top;letter-spacing:0;color:var(--dim);margin-left:2px}
+  .cond{font-family:var(--serif);font-style:italic;font-size:1.1rem;color:var(--dim)}
+  .details{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:20px;border:1px solid var(--line)}
+  .details div{background:var(--paper);padding:8px 10px}
+  .details span{display:block;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase}
+  .details b{display:block;font-family:var(--serif);font-size:.9rem;font-weight:400;margin-top:2px}
+  .timePanel{margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+  .timeHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:7px}
+  .timeHead b{color:var(--ink);font-weight:400}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:18px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(30,37,40,.3)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);margin-top:-5.5px;border:2px solid var(--paper);box-shadow:0 0 0 1px rgba(30,37,40,.3)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(30,37,40,.3)}
+  input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--accent);border:2px solid var(--paper)}
+  .playRow{display:flex;gap:8px;margin-top:9px}
+  .playBtn{border:1px solid var(--line);padding:6px 10px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s}
+  .playBtn:hover{background:var(--ink);color:var(--paper)}
+
+  .window{position:relative;border-radius:24px;overflow:hidden;min-height:clamp(380px,62vh,600px);border:1px solid rgba(30,37,40,.16);
+    box-shadow:0 26px 60px rgba(50,60,60,.16);background:linear-gradient(180deg,var(--sky1),var(--sky2));transition:background 1s}
+  .window::after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;background:linear-gradient(130deg,rgba(255,255,255,.35),transparent 32%);mix-blend-mode:screen}
+  .sun{position:absolute;width:clamp(70px,10vw,120px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fffbe8,var(--sun) 58%,#e8b25f);box-shadow:0 0 60px 18px rgba(255,217,138,.35);
+    left:var(--sunX,68%);top:var(--sunY,18%);transition:left .7s,top .7s,background .7s;z-index:2}
+  .cloud{position:absolute;background:var(--cloud);border-radius:100px;opacity:.92;filter:blur(.2px);box-shadow:0 14px 30px rgba(60,80,90,.12);z-index:3}
+  .cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
+  .c1{width:34%;height:9%;left:8%;top:24%;animation:drift 30s linear infinite}
+  .c1::before{width:42%;height:160%;left:14%;bottom:18%}.c1::after{width:32%;height:130%;right:12%;bottom:8%}
+  .c2{width:26%;height:7%;right:8%;top:38%;opacity:.62;animation:drift 46s linear infinite reverse}
+  .c2::before{width:46%;height:150%;left:18%;bottom:12%}
+  .c3{width:18%;height:5%;left:30%;top:12%;opacity:.4;animation:drift 38s linear infinite}
+  @keyframes drift{from{transform:translateX(-8%)}to{transform:translateX(18%)}}
+  .ground{position:absolute;left:0;right:0;bottom:0;height:18%;z-index:4;background:linear-gradient(180deg,rgba(30,50,55,.06),rgba(30,50,55,.22))}
+  .rain{position:absolute;inset:0;z-index:5;opacity:0;transition:opacity .6s;background-image:repeating-linear-gradient(102deg,transparent 0 12px,rgba(200,230,240,.5) 12px 13px,transparent 13px 26px);background-size:80px 120px;animation:rainFall .8s linear infinite}
+  .rain.on{opacity:.55}
+  @keyframes rainFall{to{background-position:0 120px}}
+  .snow{position:absolute;inset:0;z-index:5;opacity:0;transition:opacity .6s;background-image:radial-gradient(#fff 1.4px,transparent 1.8px);background-size:55px 55px;animation:snowFall 8s linear infinite}
+  .snow.on{opacity:.8}
+  @keyframes snowFall{to{background-position:20px 220px}}
+  .fog{position:absolute;inset:0;z-index:5;opacity:0;transition:opacity .8s;background:linear-gradient(180deg,transparent 22%,rgba(230,238,240,.5) 42%,rgba(230,238,238,.35) 55%,transparent 72%);filter:blur(6px);animation:fogMove 16s ease-in-out infinite alternate}
+  .fog.on{opacity:1}
+  @keyframes fogMove{to{transform:translateX(6%) scaleY(1.04)}}
+  .windowLabels{position:absolute;left:18px;right:18px;bottom:14px;z-index:7;display:flex;justify-content:space-between;align-items:flex-end;color:rgba(30,37,40,.6);mix-blend-mode:multiply}
+  .windowLabels .big{font-family:var(--serif);font-style:italic;font-size:1.1rem;color:rgba(30,37,40,.8)}
+  .hourly{position:absolute;left:18px;right:18px;top:14px;z-index:7;display:flex;justify-content:space-between;gap:4px;color:rgba(30,37,40,.55)}
+  .hour{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--mono);font-size:.32rem;letter-spacing:.04em;min-width:0}
+  .hour b{font-weight:400;font-size:.36rem}
+  .hour .bar{width:3px;height:24px;background:rgba(30,37,40,.16);border-radius:2px;position:relative;display:flex;align-items:flex-end}
+  .hour .bar i{display:block;width:100%;border-radius:2px;background:rgba(30,37,40,.42)}
+  .hour.now .bar i{background:var(--accent)}
+  .hour.now b{color:var(--ink)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 18px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:980px){
+    .main{grid-template-columns:1fr}
+    .window{order:2;min-height:360px}
+    .info{order:1}
+    .details{margin-top:14px}
+    .timePanel{margin-top:16px}
+    .headMid{display:none}
+    .temp{font-size:4.6rem}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .window{min-height:300px;border-radius:18px}
+    .windowLabels .big{font-size:.9rem}
+    .hourly{gap:2px}
+    .hour .bar{height:18px}
+    .brand{font-size:.58rem;letter-spacing:.16em}
+    .cities{gap:4px}
+    .city{padding:5px 8px;font-size:.34rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="orb" aria-hidden="true"></span>Meteor</a>
+    <div class="headMid mono"><span>Forecast <b>one day</b></span><span>Updated <b>just now</b></span><span>Unit <b>°C</b></span></div>
+    <div class="headRight mono">Local time <b id="clock">14:20</b><br>Sunset <b id="sunsetTop">18:42</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="info">
+      <div class="cities" role="group" aria-label="City">
+        <button class="city" data-city="oslo" aria-pressed="true">Oslo</button>
+        <button class="city" data-city="lisbon" aria-pressed="false">Lisbon</button>
+        <button class="city" data-city="kyoto" aria-pressed="false">Kyoto</button>
+        <button class="city" data-city="reykjavik" aria-pressed="false">Reykjavík</button>
+      </div>
+      <h1 class="cityName" id="cityName">Oslo<span>59° 54′ N / 10° 45′ E</span></h1>
+      <div class="temp"><span id="temp">12</span><sup>°C</sup></div>
+      <div class="cond" id="cond">Soft rain, mostly light</div>
+      <div class="details">
+        <div><span>Feels like</span><b id="feels">10°</b></div>
+        <div><span>Wind</span><b id="wind">NW 14 km/h</b></div>
+        <div><span>Humidity</span><b id="humidity">78%</b></div>
+        <div><span>Sunset</span><b id="sunset">18:42</b></div>
+      </div>
+      <div class="timePanel">
+        <div class="timeHead mono"><span>Time of day</span><b id="timeLabel">14:20</b></div>
+        <input id="time" type="range" min="0" max="1440" value="860" step="5" aria-label="Time of day">
+        <div class="playRow"><button class="playBtn" id="play">Play the day ▶</button><span class="mono" style="color:var(--dim);align-self:center">One day, in one window</span></div>
+      </div>
+    </div>
+
+    <div class="window" id="window">
+      <div class="sun" aria-hidden="true"></div>
+      <div class="cloud c1" aria-hidden="true"></div><div class="cloud c2" aria-hidden="true"></div><div class="cloud c3" aria-hidden="true"></div>
+      <div class="ground" aria-hidden="true"></div>
+      <div class="rain on" id="rain" aria-hidden="true"></div>
+      <div class="snow" id="snow" aria-hidden="true"></div>
+      <div class="fog" id="fog" aria-hidden="true"></div>
+      <div class="hourly" id="hourly"></div>
+      <div class="windowLabels"><span class="big" id="windowCity">Oslo, mostly rain</span><span class="mono" id="windowTime">14:20 local</span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Meteor / a fictional forecast</span>
+    <span>Weather drawn, not downloaded</span>
+    <span>© 2026 · take an umbrella anyway</span>
+  </footer>
+</div>
+
+<script>
+  const cities = {
+    oslo: { name:'Oslo', co:'59° 54′ N / 10° 45′ E', temp:12, cond:'Soft rain, mostly light', feels:'10°', wind:'NW 14 km/h', hum:'78%', sunset:'18:42', scene:'rain', hours:[9,9,10,11,12,12,11,10] },
+    lisbon:{ name:'Lisbon', co:'38° 43′ N / 09° 08′ W', temp:22, cond:'Clear, with a long afternoon', feels:'23°', wind:'SW 08 km/h', hum:'54%', sunset:'19:08', scene:'sun', hours:[16,18,20,22,24,23,21,19] },
+    kyoto: { name:'Kyoto', co:'35° 00′ N / 135° 46′ E', temp:16, cond:'Cloudy, a chance of rain', feels:'15°', wind:'E 06 km/h', hum:'68%', sunset:'17:24', scene:'cloud', hours:[12,13,15,16,17,16,15,14] },
+    reykjavik:{ name:'Reykjavík', co:'64° 08′ N / 21° 56′ W', temp:3, cond:'Snow, quiet and slow', feels:'−1°', wind:'NE 22 km/h', hum:'86%', sunset:'16:58', scene:'snow', hours:[1,1,2,3,4,3,2,1] }
+  };
+  const cityButtons = Array.from(document.querySelectorAll('.city'));
+  const tempEl = document.getElementById('temp');
+  const rain = document.getElementById('rain');
+  const snow = document.getElementById('snow');
+  const fog = document.getElementById('fog');
+  const timeInput = document.getElementById('time');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 'oslo';
+  let playing = false;
+  let playTimer = null;
+
+  function setCity(key){
+    current = key;
+    const c = cities[key];
+    cityButtons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.city === key)));
+    document.getElementById('cityName').innerHTML = c.name + '<span>' + c.co + '</span>';
+    tempEl.textContent = c.temp;
+    document.getElementById('cond').textContent = c.cond;
+    document.getElementById('feels').textContent = c.feels;
+    document.getElementById('wind').textContent = c.wind;
+    document.getElementById('humidity').textContent = c.hum;
+    document.getElementById('sunset').textContent = c.sunset;
+    document.getElementById('sunsetTop').textContent = c.sunset;
+    document.getElementById('windowCity').textContent = c.name + ', ' + c.cond.toLowerCase();
+    rain.classList.toggle('on', c.scene === 'rain');
+    snow.classList.toggle('on', c.scene === 'snow');
+    fog.classList.toggle('on', c.scene === 'cloud' || c.scene === 'snow');
+    document.querySelectorAll('.hour').forEach((h, i) => {
+      h.querySelector('b').textContent = c.hours[i] + '°';
+      h.querySelector('.bar i').style.height = (20 + Math.abs(c.hours[i]) * 2.4) + '%';
+    });
+    applyTime();
+  }
+
+  function applyTime(){
+    const mins = Number(timeInput.value);
+    const h = Math.floor(mins / 60), m = mins % 60;
+    const label = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+    document.getElementById('timeLabel').textContent = label;
+    document.getElementById('windowTime').textContent = label + ' local';
+    document.getElementById('clock').textContent = label;
+    // sun arc from 06:00 to 20:00
+    const t = Math.max(0, Math.min(1, (mins - 360) / 840));
+    const x = 10 + t * 80;
+    const y = 58 - Math.sin(t * Math.PI) * 46;
+    const win = document.getElementById('window');
+    win.style.setProperty('--sunX', x + '%');
+    win.style.setProperty('--sunY', y + '%');
+    document.body.classList.toggle('night', mins < 330 || mins > 1200);
+  }
+  timeInput.addEventListener('input', applyTime);
+  cityButtons.forEach(b => b.addEventListener('click', () => setCity(b.dataset.city)));
+
+  document.getElementById('play').addEventListener('click', function(){
+    playing = !playing;
+    this.textContent = playing ? 'Pause the day ❚❚' : 'Play the day ▶';
+    if (playing){
+      playTimer = setInterval(() => {
+        let v = Number(timeInput.value) + 15;
+        if (v > 1440) v = 0;
+        timeInput.value = v;
+        applyTime();
+      }, 80);
+    } else clearInterval(playTimer);
+  });
+
+  const hours = ['06','07','08','09','10','11','12','13'];
+  const hourly = document.getElementById('hourly');
+  hours.forEach((h, i) => {
+    const d = document.createElement('div');
+    d.className = 'hour' + (i === 4 ? ' now' : '');
+    d.innerHTML = '<b>—°</b><span class="bar"><i></i></span><span>' + h + '</span>';
+    hourly.appendChild(d);
+  });
+
+  setCity('oslo');
+  applyTime();
+</script>
+</body>
+</html>

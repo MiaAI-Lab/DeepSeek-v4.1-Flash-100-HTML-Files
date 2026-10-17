@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A Year in Petals — twelve months of weather, charted as generative blooms.">
+<title>A Year in Petals — Twelve Data Blooms</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --forest:#0b1d16; --panel:#102a20; --cream:#f0e9d8; --dim:rgba(240,233,216,.5); --line:rgba(240,233,216,.16);
+    --lime:#c9e86a; --coral:#ff8c6b; --sky:#84d4ca; --gold:#e5c16c;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--forest);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 78% 0%,rgba(50,90,70,.35),transparent 60%),radial-gradient(700px 500px at 5% 90%,rgba(35,65,55,.3),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--lime);color:var(--forest)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--lime);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase}
+  .brand .bloomdot{width:15px;height:15px;border-radius:50%;background:conic-gradient(var(--lime),var(--sky),var(--coral),var(--lime));flex:none;position:relative}
+  .brand .bloomdot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--forest)}
+  .brand span{font-family:var(--mono);font-size:.36rem;letter-spacing:.13em;color:var(--dim)}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{display:flex;gap:8px;align-items:center}
+  .mode{border:1px solid var(--line);padding:5px 9px;font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .mode:hover{color:var(--cream);border-color:var(--cream)}
+  .mode[aria-pressed="true"]{background:var(--lime);color:var(--forest);border-color:var(--lime)}
+
+  .main{flex:1;display:grid;grid-template-columns:320px 1fr;gap:clamp(24px,4vw,54px);padding:clamp(20px,3.4vw,36px) 0 24px;align-items:start}
+  .intro .kicker{display:flex;align-items:center;gap:9px;color:var(--lime);margin-bottom:16px}
+  .intro .kicker::before{content:"";width:22px;height:1px;background:var(--lime)}
+  h1{font-family:var(--serif);font-size:clamp(2.5rem,4.6vw,4rem);line-height:.96;letter-spacing:-.045em;font-weight:400}
+  h1 em{font-style:italic;color:var(--lime)}
+  .intro > p{margin-top:16px;max-width:34ch;font-size:.72rem;line-height:1.8;color:var(--dim)}
+  .legend{display:flex;gap:16px;margin-top:16px;color:var(--dim);flex-wrap:wrap}
+  .legend span{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.38rem;letter-spacing:.05em;text-transform:uppercase}
+  .legend i{width:7px;height:7px;border-radius:50%;display:block}
+
+  .detail{margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
+  .detail .monthName{font-family:var(--serif);font-size:1.5rem;font-style:italic;color:var(--gold)}
+  .detail .season{color:var(--dim);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+  .detail .statGrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:12px;border:1px solid var(--line)}
+  .detail .statGrid div{background:var(--forest);padding:7px 8px}
+  .statGrid span{display:block;color:var(--dim);font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase}
+  .statGrid b{display:block;font-family:var(--serif);font-size:.92rem;font-weight:400;margin-top:3px}
+  .detail .note{margin-top:11px;color:var(--dim);font-size:.66rem;line-height:1.7;min-height:4.4em}
+  .detail .note b{color:var(--cream);font-weight:400}
+
+  .field{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .bloomCard{position:relative;border:1px solid var(--line);background:rgba(255,255,255,.015);padding:8px 8px 6px;text-align:left;transition:transform .25s,border-color .25s,background .25s;overflow:hidden}
+  .bloomCard:hover{transform:translateY(-3px) scale(1.02);border-color:rgba(240,233,216,.35);background:rgba(255,255,255,.04)}
+  .bloomCard[aria-pressed="true"]{border-color:var(--lime);background:rgba(201,232,106,.06);box-shadow:inset 0 0 0 1px rgba(201,232,106,.3)}
+  .bloomCard svg{display:block;width:100%;height:auto;overflow:visible}
+  .bloomCard .mLabel{display:flex;justify-content:space-between;align-items:baseline;gap:6px;padding:2px 2px 0;color:var(--dim)}
+  .bloomCard .mLabel b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:.85rem;color:var(--cream)}
+  .bloomCard .mLabel span{font-family:var(--mono);font-size:.36rem;letter-spacing:.05em}
+  .petalShape{transform-origin:100px 100px;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes grow{from{transform:scale(.1) rotate(var(--r));opacity:0}to{transform:scale(1) rotate(var(--r));opacity:1}}
+  .bloomCard:hover .petalShape{animation:none}
+  .footnote{grid-column:1/-1;color:var(--dim);font-size:.64rem;line-height:1.7;border-top:1px solid var(--line);padding-top:9px;margin-top:2px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .footnote b{color:var(--cream);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 20px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:1080px){
+    .main{grid-template-columns:1fr}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;align-items:start}
+    .intro .kicker,.intro h1{grid-column:1}
+    .intro > p{grid-column:1}
+    .legend{grid-column:1}
+    .detail{grid-column:2;grid-row:1/span 4;margin-top:0;border-top:0;padding-top:0;align-self:end}
+    .field{grid-template-columns:repeat(4,1fr)}
+    .headMid{display:none}
+  }
+  @media(max-width:760px){
+    .field{grid-template-columns:repeat(3,1fr)}
+    .intro{grid-template-columns:1fr}
+    .detail{grid-column:1;grid-row:auto;border-top:1px solid var(--line);padding-top:12px;margin-top:16px}
+  }
+  @media(max-width:520px){
+    .field{grid-template-columns:repeat(2,1fr);gap:7px}
+    h1{font-size:11vw}
+    .brand{font-size:.56rem;letter-spacing:.16em}
+    .brand span{display:none}
+    .headRight .mode{padding:4px 6px;font-size:.36rem}
+    .bloomCard .mLabel b{font-size:.76rem}
+    footer span:nth-child(2){display:none}
+    .detail .monthName{font-size:1.25rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="bloomdot" aria-hidden="true"></span>Field Notes <span>/ a year in petals</span></a>
+    <div class="headMid mono"><span>Twelve months</span><span>One garden</span><span>Data <b>illustrative</b></span></div>
+    <div class="headRight"><button class="mode" data-mode="sun" aria-pressed="true">Sunshine</button><button class="mode" data-mode="rain" aria-pressed="false">Rainfall</button></div>
+  </header>
+
+  <main id="top" class="main">
+    <div class="intro">
+      <p class="kicker mono">An annual report, grown rather than printed</p>
+      <h1>A year,<br>in <em>petals.</em></h1>
+      <p>Twelve flowers for twelve months. Each petal is a week; length is sunshine, colour is rainfall. Hover to look closer; choose a month to read its weather.</p>
+      <div class="legend"><span><i style="background:var(--lime)"></i>Bright</span><span><i style="background:var(--sky)"></i>Wet</span><span><i style="background:var(--coral)"></i>Warm</span></div>
+      <div class="detail">
+        <div class="monthName" id="monthName">June</div>
+        <div class="season" id="season">Late spring — the long light returns</div>
+        <div class="statGrid">
+          <div><span>Sunshine</span><b id="statSun">248 h</b></div>
+          <div><span>Rainfall</span><b id="statRain">52 mm</b></div>
+          <div><span>Mean temp</span><b id="statTemp">16.4°C</b></div>
+          <div><span>Bright days</span><b id="statDays">19</b></div>
+        </div>
+        <p class="note" id="note"><b>The garden is loud.</b> Everything is growing at once, and the evenings refuse to end. A month for leaving the window open.</p>
+      </div>
+    </div>
+
+    <div class="field" id="field" aria-label="Twelve monthly data blooms"></div>
+  </main>
+
+  <footer class="mono">
+    <span>A Year in Petals / a fictional almanac</span>
+    <span>Petals: 12 weeks · values illustrative</span>
+    <span>© 2026 · data grows</span>
+  </footer>
+</div>
+
+<script>
+  const months = [
+    { m:'January', abbr:'JAN', sun:42, rain:86, temp:1.2, note:'A month of low light and long nights. The garden is asleep, but the soil is already listening.' },
+    { m:'February', abbr:'FEB', sun:71, rain:64, temp:2.0, note:'The first green tips appear. Nothing is promised yet, which is part of the pleasure.' },
+    { m:'March', abbr:'MAR', sun:112, rain:52, temp:4.8, note:'Wind, then suddenly a Tuesday that smells like possibility. The beds are still mostly mud.' },
+    { m:'April', abbr:'APR', sun:168, rain:44, temp:8.6, note:'A month of fast weather. Tulips do not wait for a better forecast, and neither should you.' },
+    { m:'May', abbr:'MAY', sun:214, rain:38, temp:12.9, note:'The garden becomes a verb. Everything leans toward the light and gets away with it.' },
+    { m:'June', abbr:'JUN', sun:248, rain:52, temp:16.4, note:'The garden is loud. Everything is growing at once, and the evenings refuse to end. A month for leaving the window open.' },
+    { m:'July', abbr:'JUL', sun:236, rain:61, temp:18.1, note:'High summer. The hose is a permanent object; the roses are briefly perfect and know it.' },
+    { m:'August', abbr:'AUG', sun:198, rain:74, temp:17.6, note:'Warm rain and long grass. The garden gives more than you can eat and asks for nothing.' },
+    { m:'September', abbr:'SEP', sun:146, rain:69, temp:13.8, note:'The light turns amber. Seed heads become the most interesting thing in the border.' },
+    { m:'October', abbr:'OCT', sun:92, rain:82, temp:9.4, note:'A month of leaves and low sun. The garden starts to put itself away, slowly and without drama.' },
+    { m:'November', abbr:'NOV', sun:51, rain:94, temp:5.1, note:'Bare branches and excellent shadows. The last flowers are braver than they look.' },
+    { m:'December', abbr:'DEC', sun:31, rain:88, temp:2.2, note:'A garden drawn in negative space. The structure is visible now, and it is enough.' }
+  ];
+  const field = document.getElementById('field');
+  const state = { mode: 'sun', selected: 5 };
+  const NS = 'http://www.w3.org/2000/svg';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function petalValues(month, i){
+    const base = state.mode === 'sun' ? month.sun : month.rain;
+    const norm = state.mode === 'sun' ? base / 260 : base / 100;
+    const wobble = Math.sin(i * 1.7 + month.temp) * .18 + Math.cos(i * .9 + month.sun * .1) * .1;
+    return Math.max(.28, Math.min(1.15, norm * (.72 + wobble)));
+  }
+
+  function bloomSVG(month, index){
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 200 200');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', month.m + ' data bloom');
+    const hue = 160 - (month.rain - 30) * .9;
+    for (let i = 0; i < 12; i++){
+      const len = petalValues(month, i);
+      const petal = document.createElementNS(NS, 'ellipse');
+      petal.setAttribute('cx', 100);
+      petal.setAttribute('cy', 100 - len * 44);
+      petal.setAttribute('rx', 9 + len * 3.2);
+      petal.setAttribute('ry', 12 + len * 24);
+      petal.setAttribute('fill', 'hsl(' + hue + ' 52% ' + (48 + len * 18) + '%)');
+      petal.setAttribute('fill-opacity', '.85');
+      petal.setAttribute('stroke', 'rgba(240,233,216,.3)');
+      petal.setAttribute('stroke-width', '.7');
+      petal.classList.add('petalShape');
+      petal.style.setProperty('--r', (i * 30 + index * 3) + 'deg');
+      petal.style.animationDelay = reduce ? '0s' : (index * 30 + i * 8) + 'ms';
+      svg.appendChild(petal);
+    }
+    const centre = document.createElementNS(NS, 'circle');
+    centre.setAttribute('cx', 100); centre.setAttribute('cy', 100); centre.setAttribute('r', 17);
+    centre.setAttribute('fill', '#0b1d16'); centre.setAttribute('stroke', 'rgba(240,233,216,.55)');
+    svg.appendChild(centre);
+    const label = document.createElementNS(NS, 'text');
+    label.setAttribute('x', 100); label.setAttribute('y', 104); label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('font-family', 'ui-monospace, monospace'); label.setAttribute('font-size', '9');
+    label.setAttribute('fill', 'rgba(240,233,216,.75)'); label.setAttribute('letter-spacing', '1');
+    label.textContent = month.abbr;
+    svg.appendChild(label);
+    return svg;
+  }
+
+  function render(){
+    field.innerHTML = '';
+    months.forEach((month, i) => {
+      const card = document.createElement('button');
+      card.className = 'bloomCard';
+      card.setAttribute('aria-pressed', String(i === state.selected));
+      card.setAttribute('aria-label', month.m + ' bloom');
+      card.appendChild(bloomSVG(month, i));
+      const label = document.createElement('div');
+      label.className = 'mLabel';
+      label.innerHTML = '<b>' + month.abbr + '</b><span>' + (state.mode === 'sun' ? month.sun + ' h' : month.rain + ' mm') + '</span>';
+      card.appendChild(label);
+      card.addEventListener('click', () => { state.selected = i; render(); selectMonth(i); });
+      card.addEventListener('pointerenter', () => {
+        document.getElementById('monthName').textContent = month.m;
+        document.getElementById('season').textContent = 'Preview — ' + (state.mode === 'sun' ? 'sunshine ' + month.sun + ' h' : 'rainfall ' + month.rain + ' mm');
+      });
+      card.addEventListener('pointerleave', () => selectMonth(state.selected));
+      field.appendChild(card);
+    });
+    const foot = document.createElement('div');
+    foot.className = 'footnote mono';
+    foot.innerHTML = '<span>Each bloom: <b>12 petals / 12 weeks</b></span><span>' + (state.mode === 'sun' ? 'Petal length = sunshine hours' : 'Petal length = rainfall') + ' · colour = rainfall</span>';
+    field.appendChild(foot);
+  }
+
+  function selectMonth(i){
+    const m = months[i];
+    state.selected = i;
+    document.getElementById('monthName').textContent = m.m;
+    document.getElementById('season').textContent = i < 2 ? 'Deep winter — the garden is listening' : i < 5 ? 'Spring — the light is returning' : i < 8 ? 'Summer — everything is open' : i < 11 ? 'Autumn — the garden is putting itself away' : 'Winter — structure, quiet, rest';
+    document.getElementById('statSun').textContent = m.sun + ' h';
+    document.getElementById('statRain').textContent = m.rain + ' mm';
+    document.getElementById('statTemp').textContent = m.temp.toFixed(1) + '°C';
+    document.getElementById('statDays').textContent = Math.round(m.sun / 12);
+    document.getElementById('note').innerHTML = '<b>' + m.note.split('.')[0] + '.</b>' + m.note.split('.').slice(1).join('.');
+  }
+
+  document.querySelectorAll('.mode').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.mode = btn.dataset.mode;
+      document.querySelectorAll('.mode').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      render();
+    });
+  });
+
+  render();
+  selectMonth(state.selected);
+</script>
+</body>
+</html>

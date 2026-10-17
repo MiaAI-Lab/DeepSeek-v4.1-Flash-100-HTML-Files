@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Celestial Chart — an engraved natal wheel for a fictional birth moment.">
+<title>Celestial Chart — The Sky You Were Born Under</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --night:#efe6d1; --panel:#e6d8bc; --gold:#7d4f24; --cream:#241a13; --dim:rgba(36,26,19,.56); --line:rgba(125,79,36,.34);
+    --trine:#2f6b57; --square:#a33b33; --opp:#5b4a8a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--night);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 75% 20%,rgba(150,110,55,.16),transparent 60%),radial-gradient(700px 500px at 5% 90%,rgba(120,60,40,.12),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.3;
+    background-image:radial-gradient(rgba(60,40,20,.26) .4px,transparent .6px),radial-gradient(rgba(125,79,36,.4) .35px,transparent .55px);
+    background-size:127px 111px,193px 167px;background-position:20px 30px,80px 100px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 90%);mask-image:linear-gradient(180deg,#000,transparent 90%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--gold);color:var(--night)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1.02rem;letter-spacing:.08em}
+  .brand .star{width:15px;height:15px;position:relative;flex:none}
+  .brand .star::before,.brand .star::after{content:"";position:absolute;background:var(--gold);left:50%;top:50%;transform:translate(-50%,-50%)}
+  .brand .star::before{width:15px;height:1px}.brand .star::after{width:1px;height:15px}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--gold);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:1.24fr .76fr;gap:clamp(20px,3.4vw,44px);align-items:center;padding:clamp(16px,3vw,28px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--gold);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-size:clamp(2.3rem,4.4vw,4rem);line-height:.97;letter-spacing:-.045em;font-weight:400}
+  h1 em{font-style:italic;color:var(--gold)}
+  .birth{margin-top:14px;color:var(--dim);line-height:1.9;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0}
+  .birth b{color:var(--cream);font-weight:400}
+  .list{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:1px 14px}
+  .pl{display:flex;align-items:baseline;gap:7px;text-align:left;padding:4px 0;border-bottom:1px solid rgba(36,26,19,.08);color:var(--dim);transition:color .2s}
+  .pl:hover,.pl[aria-pressed="true"]{color:var(--cream)}
+  .pl .glyph{font-family:var(--serif);color:var(--gold);width:16px;font-size:.85rem}
+  .pl .nm{font-family:var(--serif);font-size:.78rem}
+  .pl .deg{margin-left:auto;font-family:var(--mono);font-size:.34rem;letter-spacing:.02em;color:var(--dim)}
+  .reading{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);min-height:86px}
+  .reading .name{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:1.05rem}
+  .reading p{margin-top:3px;color:var(--dim);font-size:.64rem;line-height:1.7;max-width:38ch}
+  .aspectBtn{margin-top:8px;border:1px solid var(--line);padding:5px 8px;font-family:var(--mono);font-size:.34rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .aspectBtn:hover{color:var(--cream);border-color:var(--cream)}
+  .aspectBtn[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--night)}
+
+  .chartWrap{display:flex;flex-direction:column;align-items:center;min-width:0;order:-1}
+  .chart{width:min(100%,620px);height:auto;overflow:visible;filter:drop-shadow(0 18px 34px rgba(80,55,25,.22))}
+  .chart .ring{fill:none;stroke:rgba(125,79,36,.35);stroke-width:.8}
+  .chart .signSector{stroke:rgba(125,79,36,.2);stroke-width:.6}
+  .chart .signGlyph{fill:var(--gold);font-family:Georgia,serif;font-size:16px;text-anchor:middle}
+  .chart .degree{stroke:rgba(125,79,36,.3);stroke-width:.6}
+  .chart .house{stroke:rgba(125,79,36,.18);stroke-width:.6;stroke-dasharray:2 4}
+  .chart .aspect{stroke-width:.8;opacity:.55;transition:opacity .3s}
+  .chart .planet{cursor:pointer;transition:filter .2s}
+  .chart .planet:hover{filter:drop-shadow(0 0 6px rgba(125,79,36,.9))}
+  .chart .planet text{fill:var(--cream);font-family:Georgia,serif;font-size:15px;text-anchor:middle}
+  .chart .planet circle{fill:var(--night);stroke:var(--gold);stroke-width:1}
+  .chart .planet.sel circle{fill:var(--gold);stroke:var(--cream)}
+  .chart .planet.sel text{fill:var(--night)}
+  .chart .planet .deg{font-family:ui-monospace,monospace;font-size:6px;fill:var(--dim)}
+  .aspectOff .aspect{opacity:0}
+  .chartFoot{display:flex;justify-content:space-between;width:min(100%,620px);margin-top:7px;color:var(--dim);gap:10px;flex-wrap:wrap}
+  .chartFoot b{color:var(--gold);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:9px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:960px){
+    .main{grid-template-columns:1fr;gap:16px}
+    .chartWrap{order:1}
+    .intro{order:2}
+    .headMid{display:none}
+    .list{max-width:520px}
+    .reading{max-width:520px}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.9rem}
+    h1{font-size:10.5vw}
+    .list{grid-template-columns:1fr 1fr}
+    .chartFoot{font-size:.36rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="star" aria-hidden="true"></span><span>Celestial Chart<small>Natal plate 001 / Helsinki</small></span></a>
+    <div class="headMid mono"><span>Houses <b>12 / whole sign</b></span><span>Aspects <b>major</b></span><span>Epoch <b>2026</b></span></div>
+    <div class="headRight mono">17 October 2026<br><b>14:20 EET · 60° 10′ N</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">A map, not a forecast</p>
+      <h1>The sky you<br>were <em>born under.</em></h1>
+      <div class="birth mono">17 October 2026 — 14:20<br><b>Helsinki, 60° 10′ N / 24° 56′ E</b><br><b>Placidus / tropical</b></div>
+      <div class="list" id="list" role="group" aria-label="Planets"></div>
+      <div class="reading">
+        <div class="name" id="readName">The Sun · Libra 24°</div>
+        <p id="readText">A chart is a still image of a moving sky. The Sun in Libra suggests a temperament that thinks in relationships: the self defined by the space between.</p>
+      </div>
+      <button class="aspectBtn" id="aspects" aria-pressed="true">Aspect lines: on</button>
+    </div>
+
+    <div class="chartWrap">
+      <svg class="chart" id="chart" viewBox="0 0 620 620" role="img" aria-label="Natal chart wheel with zodiac signs, houses and planets"></svg>
+      <div class="chartFoot mono"><span>Outer ring <b>zodiac</b></span><span>Inner ring <b>houses</b></span><span>Click a planet</span></div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Celestial Chart / a fictional natal plate</span>
+    <span>Stars fixed at a made-up moment</span>
+    <span>© 2026 · for looking, not predicting</span>
+  </footer>
+</div>
+
+<script>
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('chart');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cx = 310, cy = 310;
+  const signs = [
+    { g:'♈', n:'Aries' }, { g:'♉', n:'Taurus' }, { g:'♊', n:'Gemini' }, { g:'♋', n:'Cancer' },
+    { g:'♌', n:'Leo' }, { g:'♍', n:'Virgo' }, { g:'♎', n:'Libra' }, { g:'♏', n:'Scorpio' },
+    { g:'♐', n:'Sagittarius' }, { g:'♑', n:'Capricorn' }, { g:'♒', n:'Aquarius' }, { g:'♓', n:'Pisces' }
+  ];
+  const planets = [
+    { g:'☉', n:'Sun', sign:'Libra', deg:24, lon:204, house:7 },
+    { g:'☽', n:'Moon', sign:'Cancer', deg:8, lon:98, house:4 },
+    { g:'☿', n:'Mercury', sign:'Scorpio', deg:2, lon:212, house:8 },
+    { g:'♀', n:'Venus', sign:'Virgo', deg:19, lon:169, house:6 },
+    { g:'♂', n:'Mars', sign:'Leo', deg:6, lon:126, house:5 },
+    { g:'♃', n:'Jupiter', sign:'Cancer', deg:21, lon:111, house:4 },
+    { g:'♄', n:'Saturn', sign:'Aries', deg:12, lon:12, house:1 },
+    { g:'♅', n:'Uranus', sign:'Gemini', deg:27, lon:87, house:3 },
+    { g:'♆', n:'Neptune', sign:'Pisces', deg:24, lon:354, house:12 },
+    { g:'♇', n:'Pluto', sign:'Capricorn', deg:29, lon:299, house:10 }
+  ];
+  const aspects = [
+    { a:'Sun', b:'Moon', type:'square' }, { a:'Sun', b:'Jupiter', type:'trine' }, { a:'Moon', b:'Mars', type:'square' },
+    { a:'Venus', b:'Saturn', type:'opp' }, { a:'Mars', b:'Jupiter', type:'trine' }, { a:'Saturn', b:'Neptune', type:'square' },
+    { a:'Uranus', b:'Pluto', type:'trine' }, { a:'Sun', b:'Saturn', type:'opp' }, { a:'Mercury', b:'Venus', type:'trine' }
+  ];
+  const readings = {
+    Sun:'A chart is a still image of a moving sky. The Sun in Libra suggests a temperament that thinks in relationships: the self defined by the space between.',
+    Moon:'The Moon in Cancer reading: a need for a room of one’s own, and a memory that keeps its receipts. Nurture as a daily practice.',
+    Mercury:'Mercury in Scorpio: a mind that prefers the underneath of a sentence. Good at finding the thing that was not said.',
+    Venus:'Venus in Virgo: affection expressed as attention to detail. A tidy gesture can be a love letter.',
+    Mars:'Mars in Leo: energy with a sense of theatre. The work goes better when someone is watching, ideally the right someone.',
+    Jupiter:'Jupiter in Cancer: generosity that arrives as food, shelter or an unexpectedly large blanket.',
+    Saturn:'Saturn in Aries: the lesson is patience with one’s own speed. The first move matters less than the second.',
+    Uranus:'Uranus in Gemini: a restless mind with excellent antennae. Ideas arrive sideways, often mid-conversation.',
+    Neptune:'Neptune in Pisces: a soft edge where the self meets the weather. Boundaries are a creative material.',
+    Pluto:'Pluto in Capricorn: a slow, structural transformation. The kind that is only obvious in retrospect.'
+  };
+  const colorFor = { trine:'var(--trine)', square:'var(--square)', opp:'var(--opp)' };
+  let selected = 'Sun';
+  let aspectOn = true;
+
+  function xAt(deg, r){ return cx + Math.cos((deg - 90) * Math.PI / 180) * r; }
+  function yAt(deg, r){ return cy + Math.sin((deg - 90) * Math.PI / 180) * r; }
+
+  const root = document.createElementNS(NS, 'g');
+  svg.appendChild(root);
+
+  // zodiac sectors
+  for (let i = 0; i < 12; i++){
+    const a0 = i * 30 - 90, a1 = a0 + 30;
+    const p = document.createElementNS(NS, 'path');
+    const r0 = 250, r1 = 286;
+    const x0 = cx + Math.cos(a0 * Math.PI / 180) * r0, y0 = cy + Math.sin(a0 * Math.PI / 180) * r0;
+    const x1 = cx + Math.cos(a0 * Math.PI / 180) * r1, y1 = cy + Math.sin(a0 * Math.PI / 180) * r1;
+    const x2 = cx + Math.cos(a1 * Math.PI / 180) * r1, y2 = cy + Math.sin(a1 * Math.PI / 180) * r1;
+    const x3 = cx + Math.cos(a1 * Math.PI / 180) * r0, y3 = cy + Math.sin(a1 * Math.PI / 180) * r0;
+    p.setAttribute('d', 'M' + x0 + ',' + y0 + ' L' + x1 + ',' + y1 + ' A' + r1 + ',' + r1 + ' 0 0 1 ' + x2 + ',' + y2 + ' L' + x3 + ',' + y3 + ' A' + r0 + ',' + r0 + ' 0 0 0 ' + x0 + ',' + y0 + ' Z');
+    p.setAttribute('class', 'signSector');
+    p.setAttribute('fill', i % 2 ? 'rgba(125,79,36,.04)' : 'rgba(125,79,36,.015)');
+    root.appendChild(p);
+    const tg = document.createElementNS(NS, 'text');
+    tg.setAttribute('x', xAt(i * 30 + 15, 268));
+    tg.setAttribute('y', yAt(i * 30 + 15, 268) + 5);
+    tg.setAttribute('class', 'signGlyph');
+    tg.textContent = signs[i].g;
+    root.appendChild(tg);
+    const tn = document.createElementNS(NS, 'text');
+    tn.setAttribute('x', xAt(i * 30 + 15, 295));
+    tn.setAttribute('y', yAt(i * 30 + 15, 295));
+    tn.setAttribute('text-anchor', 'middle');
+    tn.setAttribute('font-family', 'ui-monospace, monospace');
+    tn.setAttribute('font-size', '5.5');
+    tn.setAttribute('letter-spacing', '.6');
+    tn.setAttribute('fill', 'rgba(36,26,19,.35)');
+    tn.textContent = signs[i].n.toUpperCase();
+    root.appendChild(tn);
+  }
+  [286, 250, 190, 110].forEach(r => {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r); c.setAttribute('class', 'ring');
+    root.appendChild(c);
+  });
+  // degree ticks
+  for (let i = 0; i < 360; i += 5){
+    const major = i % 30 === 0;
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', xAt(i, 250)); l.setAttribute('y1', yAt(i, 250));
+    l.setAttribute('x2', xAt(i, major ? 240 : 246)); l.setAttribute('y2', yAt(i, major ? 240 : 246));
+    l.setAttribute('class', 'degree'); root.appendChild(l);
+  }
+  // houses 12 equal
+  for (let i = 0; i < 12; i++){
+    const a = i * 30 + 188;
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', xAt(a, 70)); l.setAttribute('y1', yAt(a, 70));
+    l.setAttribute('x2', xAt(a, 250)); l.setAttribute('y2', yAt(a, 250));
+    l.setAttribute('class', 'house'); root.appendChild(l);
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', xAt(a + 15, 76)); t.setAttribute('y', yAt(a + 15, 76));
+    t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-family', 'ui-monospace, monospace');
+    t.setAttribute('font-size', '6'); t.setAttribute('fill', 'rgba(125,79,36,.45)');
+    t.textContent = String(i + 1);
+    root.appendChild(t);
+  }
+  // aspects
+  const aspectG = document.createElementNS(NS, 'g');
+  root.appendChild(aspectG);
+  aspects.forEach(a => {
+    const pa = planets.find(p => p.n === a.a), pb = planets.find(p => p.n === a.b);
+    if (!pa || !pb) return;
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', xAt(pa.lon, 150)); l.setAttribute('y1', yAt(pa.lon, 150));
+    l.setAttribute('x2', xAt(pb.lon, 150)); l.setAttribute('y2', yAt(pb.lon, 150));
+    l.setAttribute('class', 'aspect');
+    l.style.stroke = colorFor[a.type];
+    aspectG.appendChild(l);
+  });
+  // planet markers
+  const pG = document.createElementNS(NS, 'g');
+  root.appendChild(pG);
+  planets.forEach(p => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'planet' + (p.n === selected ? ' sel' : ''));
+    g.setAttribute('tabindex', '0');
+    g.setAttribute('role', 'button');
+    g.setAttribute('aria-label', p.n + ', ' + p.sign + ' ' + p.deg + ' degrees');
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', xAt(p.lon, 212)); c.setAttribute('cy', yAt(p.lon, 212)); c.setAttribute('r', 13);
+    g.appendChild(c);
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', xAt(p.lon, 212)); t.setAttribute('y', yAt(p.lon, 212) + 5);
+    t.textContent = p.g;
+    g.appendChild(t);
+    const d = document.createElementNS(NS, 'text');
+    d.setAttribute('x', xAt(p.lon, 232)); d.setAttribute('y', yAt(p.lon, 232) + 2);
+    d.setAttribute('class', 'deg'); d.setAttribute('text-anchor', 'middle');
+    d.textContent = p.deg + '°';
+    g.appendChild(d);
+    g.addEventListener('pointerenter', () => choose(p.n));
+    g.addEventListener('click', () => choose(p.n, true));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ choose(p.n, true); e.preventDefault(); } });
+    pG.appendChild(g);
+  });
+
+  const list = document.getElementById('list');
+  planets.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'pl';
+    b.dataset.n = p.n;
+    b.setAttribute('aria-pressed', String(p.n === selected));
+    b.innerHTML = '<span class="glyph">' + p.g + '</span><span class="nm">' + p.n + '</span><span class="deg">' + p.sign.slice(0,3) + ' ' + p.deg + '°</span>';
+    b.addEventListener('pointerenter', () => choose(p.n));
+    b.addEventListener('click', () => choose(p.n, true));
+    list.appendChild(b);
+  });
+
+  function choose(name, pin){
+    selected = name;
+    document.querySelectorAll('.planet').forEach((g, i) => g.classList.toggle('sel', planets[i].n === name));
+    document.querySelectorAll('.pl').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.n === name)));
+    const p = planets.find(x => x.n === name);
+    document.getElementById('readName').textContent = 'The ' + p.n + ' · ' + p.sign + ' ' + p.deg + '°';
+    document.getElementById('readText').textContent = readings[p.n] || '';
+  }
+  document.getElementById('aspects').addEventListener('click', function(){
+    aspectOn = !aspectOn;
+    this.setAttribute('aria-pressed', String(aspectOn));
+    this.textContent = 'Aspect lines: ' + (aspectOn ? 'on' : 'off');
+    svg.classList.toggle('aspectOff', !aspectOn);
+  });
+  choose('Sun');
+</script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Type Zoo — twelve letters, twelve creatures, one alphabet bestiary.">
+<title>Type Zoo — A Bestiary of the Alphabet</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f1ead9; --paper2:#e8dec8; --ink:#211d17; --dim:rgba(33,29,23,.55); --line:rgba(33,29,23,.2);
+    --mammal:#c45438; --bird:#3c7a9e; --water:#3f9184; --reptile:#8a943f; --invert:#8a5d9e;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 80% 0%,#f8f2e4,transparent 60%),radial-gradient(700px 600px at 0% 100%,#e3d7bf,transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ink);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(14px,3vw,38px);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-bottom:2px solid var(--ink)}
+  .brand{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-size:1.16rem;letter-spacing:-.02em}
+  .brand .paw{width:15px;height:13px;position:relative;flex:none}
+  .brand .paw::before{content:"";position:absolute;left:4px;bottom:0;width:8px;height:7px;border-radius:50% 50% 40% 40%;background:var(--ink)}
+  .brand .paw::after{content:"";position:absolute;top:0;left:0;width:5px;height:5px;border-radius:50%;background:var(--ink);box-shadow:6px 0 0 var(--ink)}
+  .brand span{display:block;font-family:var(--mono);font-size:.33rem;letter-spacing:.12em;color:var(--dim);margin-top:1px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--mammal);font-weight:400}
+
+  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:end;padding:clamp(18px,3.5vw,34px) 0 clamp(12px,2vw,20px);border-bottom:1px solid var(--line)}
+  .hero .eyebrow{display:flex;align-items:center;gap:9px;color:var(--dim);margin-bottom:12px}
+  .hero .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink)}
+  h1{font-family:var(--serif);font-size:clamp(2.8rem,6.8vw,6.6rem);line-height:.88;letter-spacing:-.06em;font-weight:400}
+  h1 em{font-style:italic;color:var(--mammal)}
+  .intro{max-width:34ch;justify-self:end;color:var(--dim);font-size:.74rem;line-height:1.8}
+  .intro b{color:var(--ink);font-weight:500}
+  .alphabet{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px;font-family:var(--serif);font-size:.9rem;color:var(--dim)}
+  .alphabet span{width:20px;text-align:center;border-bottom:1px solid var(--line)}
+
+  .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+  .chips{display:flex;gap:3px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);padding:4px 8px;font-family:var(--mono);font-size:.35rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .chip:hover{color:var(--ink);border-color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .search{margin-left:auto;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--ink);padding:2px 0}
+  .search input{background:transparent;border:0;outline:none;font-family:var(--serif);font-size:.8rem;color:var(--ink);width:130px}
+  .search input::placeholder{color:rgba(33,29,23,.35)}
+  .count{color:var(--dim);white-space:nowrap}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:12px}
+  .card{background:var(--paper);text-align:left;padding:clamp(9px,1.4vw,15px);position:relative;min-height:clamp(150px,17vw,218px);display:flex;flex-direction:column;transition:background .2s,transform .2s;overflow:hidden}
+  .card:hover{background:#f7f1e2;z-index:2}
+  .card:hover .glyph{transform:rotate(-3deg) translateY(-2px)}
+  .card .cat{display:flex;justify-content:space-between;color:var(--dim)}
+  .card .cat .no{font-family:var(--mono);font-size:.34rem;letter-spacing:.05em}
+  .glyph{font-family:var(--serif);font-size:clamp(3.8rem,7.6vw,6.2rem);line-height:.9;position:relative;display:inline-block;margin:8px 0 2px;color:var(--class,var(--ink));transition:transform .25s;align-self:flex-start}
+  .glyph .eyes{position:absolute;left:50%;top:22%;transform:translateX(-50%);display:flex;gap:.09em;z-index:2}
+  .glyph .eyes i{display:block;width:.075em;height:.075em;min-width:2px;min-height:2px;border-radius:50%;background:var(--ink)}
+  .glyph .ears{position:absolute;left:50%;top:-.12em;transform:translateX(-50%);display:flex;gap:.18em}
+  .glyph .ears i{display:block;width:.15em;height:.18em;border-radius:50% 50% 10% 10%;background:var(--class,var(--ink));opacity:.9}
+  .glyph .beak{position:absolute;right:-.16em;top:48%;width:0;height:0;border-top:.07em solid transparent;border-bottom:.07em solid transparent;border-left:.14em solid #d8a53e}
+  .glyph .fin{position:absolute;right:-.13em;bottom:.16em;width:0;height:0;border-top:.1em solid transparent;border-bottom:.1em solid transparent;border-left:.18em solid var(--class,var(--ink));opacity:.7;transform:rotate(18deg)}
+  .glyph .tentacles{position:absolute;left:50%;bottom:-.2em;transform:translateX(-50%);display:flex;gap:.08em}
+  .glyph .tentacles i{display:block;width:1px;height:.2em;background:var(--class,var(--ink));opacity:.6}
+  .card .species{font-family:var(--serif);font-size:.92rem;line-height:1.05;margin-top:auto}
+  .card .latin{font-family:var(--serif);font-style:italic;font-size:.64rem;color:var(--dim);margin-top:2px}
+  .card .classTag{position:absolute;right:10px;bottom:9px;font-family:var(--mono);font-size:.3rem;letter-spacing:.06em;text-transform:uppercase;color:var(--class)}
+  .empty{padding:30px 10px;color:var(--dim);font-family:var(--serif);font-style:italic;text-align:center;display:none}
+
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 0 20px;margin-top:14px;border-top:1px solid var(--line);color:var(--dim)}
+
+  /* dialog */
+  .backdrop{position:fixed;inset:0;z-index:100;background:rgba(24,20,15,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}
+  .backdrop.on{display:flex;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .dialog{background:var(--paper);color:var(--ink);width:min(720px,100%);max-height:90svh;overflow:auto;border:2px solid var(--ink);box-shadow:12px 12px 0 rgba(33,29,23,.18);padding:clamp(16px,3vw,28px);position:relative}
+  .dialog .close{position:absolute;right:9px;top:7px;font-size:1.3rem;line-height:1;padding:3px 7px;color:var(--dim)}
+  .dialog .close:hover{color:var(--ink)}
+  .dialog .catRow{display:flex;justify-content:space-between;gap:12px;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:12px;padding-right:20px}
+  .dialogGrid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(14px,3vw,28px)}
+  .bigGlyph{font-family:var(--serif);font-size:clamp(6rem,18vw,10rem);line-height:.8;position:relative;color:var(--class,var(--ink));margin-top:8px;justify-self:center}
+  .bigGlyph .eyes{position:absolute;left:50%;top:22%;transform:translateX(-50%);display:flex;gap:.09em;z-index:2}
+  .bigGlyph .eyes i{display:block;width:.075em;height:.075em;min-width:4px;min-height:4px;border-radius:50%;background:var(--ink)}
+  .bigGlyph .ears{position:absolute;left:50%;top:-.12em;transform:translateX(-50%);display:flex;gap:.18em}
+  .bigGlyph .ears i{display:block;width:.15em;height:.18em;border-radius:50% 50% 10% 10%;background:var(--class,var(--ink))}
+  .bigGlyph .beak{position:absolute;right:-.16em;top:48%;width:0;height:0;border-top:.07em solid transparent;border-bottom:.07em solid transparent;border-left:.14em solid #d8a53e}
+  .bigGlyph .fin{position:absolute;right:-.13em;bottom:.16em;width:0;height:0;border-top:.1em solid transparent;border-bottom:.1em solid transparent;border-left:.18em solid var(--class,var(--ink));opacity:.7}
+  .bigGlyph .tentacles{position:absolute;left:50%;bottom:-.2em;transform:translateX(-50%);display:flex;gap:.08em}
+  .bigGlyph .tentacles i{display:block;width:1px;height:.2em;background:var(--class,var(--ink))}
+  .dialog h2{font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.4rem);line-height:1;font-weight:400;letter-spacing:-.03em}
+  .dialog .latin{font-family:var(--serif);font-style:italic;color:var(--dim);margin-top:3px}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:12px 0}
+  .facts div{background:var(--paper);padding:6px 8px}
+  .facts b{display:block;font-family:var(--mono);font-size:.3rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:1px}
+  .facts span{font-family:var(--serif);font-size:.82rem}
+  .fieldnote{font-family:var(--serif);font-style:italic;font-size:.9rem;line-height:1.7;color:rgba(33,29,23,.75);border-left:2px solid var(--class,var(--ink));padding-left:10px}
+  .dialogNav{display:flex;justify-content:space-between;gap:10px;margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+  .dialogNav button{font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding:4px 0}
+  .dialogNav button:hover{color:var(--ink)}
+
+  @media(max-width:900px){
+    .grid{grid-template-columns:repeat(3,1fr)}
+    .hero{grid-template-columns:1fr;gap:14px}
+    .intro{justify-self:start}
+    .headMid{display:none}
+  }
+  @media(max-width:620px){
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .card{min-height:150px}
+    .glyph{font-size:clamp(3.6rem,18vw,5rem)}
+    .search{margin-left:0;width:100%}
+    .search input{width:100%}
+    .headRight{display:none}
+    .dialogGrid{grid-template-columns:1fr}
+    .bigGlyph{justify-self:start;font-size:6rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="paw" aria-hidden="true"></span><span>Type Zoo<small>A bestiary of the alphabet · vol. 1</small></span></a>
+    <div class="headMid mono"><span>Letters <b>12</b></span><span>Classes <b>05</b></span><span>Habitat <b>paper</b></span></div>
+    <div class="headRight mono">Field guide<br><b>Edition 2026</b></div>
+  </header>
+
+  <section class="hero" id="top">
+    <div><p class="eyebrow mono">Twelve letters, twelve creatures</p><h1>A bestiary<br>of the <em>alphabet.</em></h1>
+      <div class="alphabet mono" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span><span>I</span><span>J</span><span>K</span><span>L</span></div>
+    </div>
+    <p class="intro">Each letter has been observed in the wild and found to resemble an animal. <b>This is not science.</b> It is a field guide to the creatures that live in a type case, catalogued with their habits, calls and preferred margins.</p>
+  </section>
+
+  <div class="filters">
+    <div class="chips" id="chips" role="group" aria-label="Filter by class">
+      <button class="chip" data-f="all" aria-pressed="true">All</button>
+      <button class="chip" data-f="mammal" aria-pressed="false">Mammals</button>
+      <button class="chip" data-f="bird" aria-pressed="false">Birds</button>
+      <button class="chip" data-f="water" aria-pressed="false">Water</button>
+      <button class="chip" data-f="reptile" aria-pressed="false">Reptiles</button>
+    </div>
+    <label class="search mono"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="find a letter…" aria-label="Search creatures"></label>
+    <span class="count mono" id="count">12 specimens</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">No creature has that letter. Try another page of the alphabet.</div>
+
+  <footer class="mono">
+    <span>Type Zoo / a fictional field guide</span>
+    <span>No animals were set in type</span>
+    <span>© 2026 · handle with clean hands</span>
+  </footer>
+</div>
+
+<div class="backdrop" id="backdrop">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dTitle" id="dialog">
+    <button class="close" id="close" aria-label="Close dossier">×</button>
+    <div class="catRow mono"><span id="dNo">Specimen 01</span><span id="dClass">Mammal</span></div>
+    <div class="dialogGrid">
+      <div class="bigGlyph" id="dGlyph" aria-hidden="true"></div>
+      <div>
+        <h2 id="dTitle">—</h2>
+        <div class="latin" id="dLatin">—</div>
+        <div class="facts">
+          <div><b>Habitat</b><span id="dHabitat">—</span></div>
+          <div><b>Diet</b><span id="dDiet">—</span></div>
+          <div><b>Voice</b><span id="dVoice">—</span></div>
+          <div><b>Range</b><span id="dRange">—</span></div>
+        </div>
+        <p class="fieldnote" id="dNote">—</p>
+        <div class="dialogNav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const animals = [
+    { l:'A', name:'Axolotl', latin:'Ambystoma mexicanum', cls:'water', habitat:'Slow canals', diet:'Small insects', voice:'A quiet gulp', range:'One lake, mostly', note:'Smiles in a way that suggests it knows the alphabet is not the only system.' },
+    { l:'B', name:'Bear', latin:'Ursus arctos', cls:'mammal', habitat:'Cold forests', diet:'Berries, fish, time', voice:'A low opinion', range:'Northern margins', note:'The only letter known to sleep through an entire chapter and wake up on the correct page.' },
+    { l:'C', name:'Crane', latin:'Grus grus', cls:'bird', habitat:'Reed beds', diet:'Roots and patience', voice:'A carrying call', range:'Wet lowlands', note:'Stands on one leg to save the other for later. Folds into a capital when alarmed.' },
+    { l:'D', name:'Dolphin', latin:'Delphinus delphis', cls:'water', habitat:'Open water', diet:'Fish, mostly', voice:'Clicks and whistles', range:'Warm seas', note:'Leaps in a curve that typesetters have been trying to reproduce for centuries.' },
+    { l:'E', name:'Eel', latin:'Anguilla anguilla', cls:'water', habitat:'Mud and rivers', diet:'Whatever drifts', voice:'Silence, emphatically', range:'Estuaries', note:'A letter with no straight lines. It moves through a sentence the way water moves through a hand.' },
+    { l:'F', name:'Fox', latin:'Vulpes vulpes', cls:'mammal', habitat:'Edges of things', diet:'Opportunity', voice:'A sharp bark', range:'Almost everywhere', note:'Prefers the margin to the page. Leaves a small comma of fur on the fence.' },
+    { l:'G', name:'Gecko', latin:'Gekko gecko', cls:'reptile', habitat:'Warm walls', diet:'Moths', voice:'A surprising chirp', range:'Warm rooms', note:'Climbs the vertical stroke without apparent effort. The tail is a descender with opinions.' },
+    { l:'H', name:'Heron', latin:'Ardea cinerea', cls:'bird', habitat:'Shallow edges', diet:'Fish, frogs', voice:'A harsh croak', range:'Riversides', note:'The crossbar is where it waits. It has waited longer than the book has existed.' },
+    { l:'I', name:'Ibis', latin:'Threskiornis aethiopicus', cls:'bird', habitat:'Wet fields', diet:'Insects', voice:'A nasal mutter', range:'Warm wetlands', note:'A single stroke, self-important. Ancient scribes gave it a beak and immediately regretted the paperwork.' },
+    { l:'J', name:'Jellyfish', latin:'Aurelia aurita', cls:'water', habitat:'Water column', diet:'Plankton', voice:'None audible', range:'All oceans', note:'The descender is not a tail but a thought that kept going after the letter ended.' },
+    { l:'K', name:'Koala', latin:'Phascolarctos cinereus', cls:'mammal', habitat:'Eucalyptus', diet:'Leaves, slowly', voice:'A grumpy snore', range:'One continent', note:'Holds the page with both arms. Sleeps through the index and wakes for the glossary.' },
+    { l:'L', name:'Lynx', latin:'Lynx lynx', cls:'mammal', habitat:'Cold woodland', diet:'Rabbits, quiet', voice:'A short yowl', range:'Northern forests', note:'All angle and no curve. The tufted ears are the only decorative element it will tolerate.' }
+  ];
+  const classNames = { mammal:'Mammal', bird:'Bird', water:'Water', reptile:'Reptile' };
+  const classColor = { mammal:'var(--mammal)', bird:'var(--bird)', water:'var(--water)', reptile:'var(--reptile)' };
+  let filter = 'all', query = '', current = 0, visible = [], lastFocus = null;
+
+  function featureMarkup(a){
+    let f = '<span class="eyes"><i></i><i></i></span>';
+    if (a.cls === 'mammal') f += '<span class="ears"><i></i><i></i></span>';
+    if (a.cls === 'bird') f += '<span class="beak"></span>';
+    if (a.cls === 'water') f += '<span class="fin"></span>';
+    if (a.cls === 'water' && a.l === 'J') f += '<span class="tentacles"><i></i><i></i><i></i><i></i></span>';
+    return f;
+  }
+  function card(a, i){
+    const b = document.createElement('button');
+    b.className = 'card';
+    b.style.setProperty('--class', classColor[a.cls]);
+    b.dataset.l = a.l;
+    b.setAttribute('aria-label', a.l + ' for ' + a.name + ', ' + classNames[a.cls]);
+    b.innerHTML = '<div class="cat mono"><span>' + String(i + 1).padStart(2,'0') + '</span><span class="no">' + a.cls.toUpperCase() + '</span></div>' +
+      '<span class="glyph">' + a.l + featureMarkup(a) + '</span>' +
+      '<div class="species">' + a.name + '</div><div class="latin">' + a.latin + '</div>' +
+      '<span class="classTag">' + classNames[a.cls] + '</span>';
+    b.addEventListener('click', e => { lastFocus = e.currentTarget; open(a.l); });
+    return b;
+  }
+  function render(){
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    visible = animals.filter(a => (filter === 'all' || a.cls === filter) && (a.l + ' ' + a.name + ' ' + a.latin).toLowerCase().includes(query));
+    visible.forEach((a, i) => grid.appendChild(card(a, animals.indexOf(a))));
+    document.getElementById('count').textContent = visible.length + (visible.length === 1 ? ' specimen' : ' specimens');
+    document.getElementById('empty').style.display = visible.length ? 'none' : 'block';
+  }
+  document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    filter = c.dataset.f;
+    document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === c)));
+    render();
+  }));
+  document.getElementById('search').addEventListener('input', function(){ query = this.value.trim().toLowerCase(); render(); });
+
+  const backdrop = document.getElementById('backdrop');
+  function open(letter){
+    const idx = animals.findIndex(a => a.l === letter);
+    if (idx < 0) return;
+    current = idx;
+    const a = animals[current];
+    document.getElementById('dialog').style.setProperty('--class', classColor[a.cls]);
+    document.getElementById('dNo').textContent = 'Specimen ' + String(current + 1).padStart(2,'0') + ' / 12';
+    document.getElementById('dClass').textContent = classNames[a.cls];
+    document.getElementById('dTitle').textContent = a.l + ' — ' + a.name;
+    document.getElementById('dLatin').textContent = a.latin;
+    document.getElementById('dHabitat').textContent = a.habitat;
+    document.getElementById('dDiet').textContent = a.diet;
+    document.getElementById('dVoice').textContent = a.voice;
+    document.getElementById('dRange').textContent = a.range;
+    document.getElementById('dNote').textContent = a.note;
+    const g = document.getElementById('dGlyph');
+    g.innerHTML = a.l + featureMarkup(a);
+    backdrop.classList.add('on');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('close').focus();
+  }
+  function close(){
+    backdrop.classList.remove('on');
+    document.body.style.overflow = '';
+    if (lastFocus) lastFocus.focus();
+  }
+  function move(d){
+    if (!visible.length) return;
+    let idx = visible.findIndex(a => a.l === animals[current].l);
+    idx = (idx + d + visible.length) % visible.length;
+    open(visible[idx].l);
+  }
+  document.getElementById('close').addEventListener('click', close);
+  document.getElementById('prev').addEventListener('click', () => move(-1));
+  document.getElementById('next').addEventListener('click', () => move(1));
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+  addEventListener('keydown', e => {
+    if (!backdrop.classList.contains('on')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight') move(1);
+    if (e.key === 'ArrowLeft') move(-1);
+  });
+
+  render();
+</script>
+</body>
+</html>

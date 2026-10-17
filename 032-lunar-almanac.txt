@@ -1,0 +1,20 @@
+TITLE
+Lunar Almanac — October 2026
+
+PROMPT
+Create an elegant lunar almanac for October 2026. Deep midnight-blue paper with a faint star field, ivory type, silver moons and a single antique-gold accent. The layout is a large seven-column calendar whose day cells contain real moon-phase drawings, paired with a detail panel showing a big rendered moon, its name, illumination percentage, moonrise and moonset, and a short note. Below, a row of four principal phases (new, first quarter, full, last quarter) with dates. The moon must be rendered from actual lunar phase maths on canvases — a shaded sphere with a terminator, not a flat icon — and clicking any day redraws the large moon and updates the data. Include a "Return to tonight" control and an almanac header with location and coordinates. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A quiet astronomical object, closer to a printed almanac than a calendar app. The moons do the talking; everything else is thin rules, generous margins and precise small caps. The blue is deep enough to feel like a night sky without becoming a novelty, and gold appears only on the selected day and the full-moon marker.
+
+VISUAL TECHNIQUES
+- Canvas-rendered lunar disc with per-pixel sphere shading, phase terminator, craters and limb darkening.
+- Thirty-one small canvas moons, one per calendar day, each drawn with the same algorithm.
+- Precision calendar grid with hairline rules, weekday caps and dimmed out-of-month cells.
+- Star field generated with layered radial gradients; soft vignette around the page.
+- Selected-day gold ring, hover states and a subtle moon-glow behind the large disc.
+- Serif display headings paired with monospaced astronomical data.
+- Fluid layout that moves the detail panel below the calendar on mobile.
+
+INTERACTION MODEL
+Clicking a day selects it, draws the large moon, and updates phase name, illumination, rise/set times and the note with a soft fade. "Return to tonight" selects today's date when in range. Principal phase cards jump to their dates. Arrow keys move selection when the calendar is focused. Reduced-motion disables the moon fade and any twinkle while keeping every value readable.

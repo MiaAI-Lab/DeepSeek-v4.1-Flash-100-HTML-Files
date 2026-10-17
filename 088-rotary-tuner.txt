@@ -1,0 +1,21 @@
+TITLE
+Marconi 8 — A Radio With Patience
+
+PROMPT
+Create a warm vintage radio page centred on a fictional valve receiver, the "Marconi 8". Dark walnut room, a radio cabinet with wood grain, cream enamel faceplate, a glass tuning dial with FM/AM scales and a red needle, a large knurled tuning knob, volume knob, band buttons and a small power lamp. A side panel lists four stations; clicking one tunes the receiver. Dragging the tuning knob or moving the slider shifts the needle and frequency, with static fading in between stations and a station name locking at the right point. Include signal readouts and a quiet footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+An object with weight and patience. The radio should look like something inherited, not bought: warm wood, cream enamel, brass details, a dial you want to turn slowly. The interface is physical, with only the station list offering a shortcut. Static is treated as a texture and a mood, not an error.
+
+VISUAL TECHNIQUES
+- Wood cabinet with layered grain gradients and rounded corners.
+- Glass dial with printed frequency scales, tick marks, a moving red needle and warm backlight.
+- Knurled knobs with radial gradients and engraved pointers.
+- Station locking with a static overlay that fades when tuned.
+- Band buttons, power lamp and speaker grille made from repeating gradients.
+- Side station list and signal-strength meter.
+- Responsive stack with the radio above the station list.
+- Reduced-motion removes needle easing and static animation while keeping all states.
+
+INTERACTION MODEL
+Dragging the tuning knob vertically or moving the tuning slider changes frequency; the needle and readout follow. Within a station's tolerance, the static fades, the name appears and the signal meter rises. Station list buttons tune directly. Band buttons switch between FM and AM with different scales. Power toggles the dial light and silence. All controls are keyboard accessible.

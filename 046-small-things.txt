@@ -1,0 +1,20 @@
+TITLE
+The Museum of Small Things — A Cabinet of Curiosities
+
+PROMPT
+Create a refined digital cabinet of curiosities called "The Museum of Small Things". Warm museum ivory, deep ink, oxblood and brass; the aesthetic of a quiet natural-history museum with beautiful labels. The layout is a large object stage on the left and a 2×4 cabinet grid on the right. Eight small objects are drawn as fine inline SVG line illustrations — a key, a feather, a shell, a pebble, a seed pod, a lens, a folded letter and a small bell. Hovering an object lifts it; clicking places a large version in the stage and updates a catalogue panel with name, date, material, provenance and a short note. Include a museum masthead, catalogue number, accession stamps and a footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+Craft and restraint. Every object is a simple line drawing with a single accent colour, presented like a specimen on paper. The page should feel like a cabinet you are allowed to open — quiet, dusty, precise, and full of small stories. Typography is a high-contrast serif with monospaced catalogue data.
+
+VISUAL TECHNIQUES
+- Eight hand-authored inline SVG line illustrations with consistent stroke weight, hatching and a single oxblood accent.
+- Large object stage with a paper card, accession number, drop shadow and a pinned label.
+- Grid of cabinet buttons with hover lift and a selected brass ring.
+- Catalogue panel with serif title, italic provenance, material table and a quote.
+- Museum ivory background, hairline rules, small caps and monospaced accession numbers.
+- Fade-and-lift transition when the selected object changes; reduced-motion shows it immediately.
+- Responsive stack with the stage above a four-column cabinet on tablet.
+
+INTERACTION MODEL
+Hovering a cabinet item lifts it and shows its name. Clicking selects it: the large stage updates with the object, its accession number, material and provenance, and the catalogue panel changes. Arrow keys move selection when the grid is focused. All objects are buttons with pressed states and descriptive labels.

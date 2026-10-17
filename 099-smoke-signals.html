@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Smoke Signals — type a message, watch it become smoke and disappear.">
+<title>Smoke Signals — Say It in Smoke</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --room:#100e0c; --room2:#1a1612; --cream:#eee5d4; --dim:rgba(238,229,212,.44); --line:rgba(238,229,212,.14);
+    --ember:#ff9a4d; --ember2:#ffc07a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--room);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  .room{position:fixed;inset:0;z-index:0;background:
+    radial-gradient(800px 500px at 50% 110%,rgba(255,140,60,.18),transparent 65%),
+    radial-gradient(700px 500px at 10% 0%,rgba(80,65,50,.16),transparent 70%),
+    linear-gradient(180deg,#14110e,#080706 80%)}
+  .room::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,transparent 40%,rgba(3,3,2,.7) 100%)}
+  #smoke{position:fixed;inset:0;z-index:1;display:block;cursor:crosshair}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.24;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ember);color:#1a0f07}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--ember);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .ui{position:relative;z-index:5;height:100svh;display:flex;flex-direction:column;padding:0 clamp(14px,3vw,38px);pointer-events:none}
+  .ui form,.ui button,.ui input,.ui a{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid rgba(238,229,212,.14)}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1rem;letter-spacing:.14em;text-transform:uppercase}
+  .brand .ember{width:6px;height:6px;border-radius:50%;background:var(--ember);box-shadow:0 0 12px 3px rgba(255,154,77,.6);flex:none}
+  .brand span{display:block;font-family:var(--mono);font-size:.33rem;letter-spacing:.12em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--ember);font-weight:400}
+
+  .main{flex:1;position:relative;pointer-events:none}
+  .statement{position:absolute;left:0;top:clamp(20px,5vh,48px);max-width:560px}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--ember);margin-bottom:12px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ember)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,5.8vw,5.2rem);line-height:.9;letter-spacing:-.055em;font-weight:400;text-shadow:0 4px 30px rgba(0,0,0,.7)}
+  h1 em{font-style:italic;color:var(--ember2)}
+  .statement p{margin-top:13px;max-width:32ch;color:var(--dim);font-size:.66rem;line-height:1.8}
+  .ghostMessage{position:absolute;right:0;top:clamp(20px,5vh,48px);text-align:right;color:rgba(238,229,212,.28);max-width:240px}
+  .ghostMessage b{display:block;font-family:var(--serif);font-style:italic;font-size:1rem;color:rgba(238,229,212,.55);font-weight:400;margin-top:3px}
+
+  .compose{pointer-events:auto;background:rgba(14,12,10,.78);border:1px solid rgba(238,229,212,.16);backdrop-filter:blur(12px);padding:9px clamp(11px,2vw,16px);display:flex;align-items:center;gap:clamp(10px,2vw,20px);flex-wrap:wrap;margin-bottom:10px}
+  .field{flex:1;min-width:200px;display:flex;align-items:center;gap:5px;border:1px solid rgba(238,229,212,.22);padding:3px 3px 3px 11px;transition:border-color .2s}
+  .field:focus-within{border-color:var(--ember)}
+  .field input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--cream);font-family:var(--serif);font-size:.85rem;padding:5px 0}
+  .field input::placeholder{color:rgba(238,229,212,.32)}
+  .burn{background:var(--ember);color:#221207;padding:8px 12px;font-family:var(--mono);font-size:.38rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
+  .burn:hover{background:var(--ember2)}
+  .ctrl{width:110px}
+  .ctrl .row{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:1px}
+  .ctrl .row b{color:var(--cream);font-weight:400}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(238,229,212,.24)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:9px;height:9px;border-radius:50%;background:var(--ember);margin-top:-4px;box-shadow:0 0 6px rgba(255,154,77,.5)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(238,229,212,.24)}
+  input[type=range]::-moz-range-thumb{width:8px;height:8px;border:0;border-radius:50%;background:var(--ember)}
+  .compose .clear{font-family:var(--mono);font-size:.34rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+  .compose .clear:hover{color:var(--cream);border-color:var(--cream)}
+  .status{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:rgba(238,229,212,.3);padding:0 2px 4px}
+  .status b{color:rgba(238,229,212,.55);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:7px 0 10px;border-top:1px solid rgba(238,229,212,.1);color:rgba(238,229,212,.24)}
+
+  @media(max-width:820px){
+    .headMid{display:none}
+    .ghostMessage{display:none}
+    .statement{max-width:82%}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    h1{font-size:clamp(2.4rem,11.5vw,3.6rem)}
+    .statement p{display:none}
+    .field{min-width:100%}
+    .burn{width:100%}
+    .ctrl{flex:1;min-width:100px}
+    .compose .clear{width:100%;text-align:right}
+    .status span:last-child{display:none}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="room" aria-hidden="true"></div>
+<canvas id="smoke"></canvas>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="ember" aria-hidden="true"></span><span>Smoke Signals<small>Messages without an archive</small></span></a>
+    <div class="headMid mono"><span>Persistence <b>none</b></span><span>Burned <b id="hCount">00</b></span><span>Air <b>still</b></span></div>
+    <div class="headRight mono">A low fire<br><b>Nothing is saved</b></div>
+  </header>
+
+  <div class="main" id="top">
+    <div class="statement">
+      <p class="eyebrow mono">Read it while it lasts</p>
+      <h1>Say it<br>in <em>smoke.</em></h1>
+      <p>Type something short. The fire will take it, hold its shape for a moment, and let the room forget. There is no history here.</p>
+    </div>
+    <div class="ghostMessage mono">Last burned<b id="lastOut">—</b><span id="lastTime">nothing yet</span></div>
+  </div>
+
+  <form class="compose" id="form">
+    <label class="field" for="msg"><input id="msg" type="text" maxlength="64" placeholder="a short message for the room…" aria-label="Message to burn"><button class="burn" type="submit">Burn →</button></label>
+    <div class="ctrl"><div class="row mono"><span>Wind</span><b id="wOut">0</b></div><input id="wind" type="range" min="-100" max="100" value="0" aria-label="Wind"></div>
+    <div class="ctrl"><div class="row mono"><span>Density</span><b id="dOut">1.0×</b></div><input id="density" type="range" min="40" max="180" value="100" aria-label="Density"></div>
+    <button class="clear" type="button" id="clear">Clear the air</button>
+  </form>
+  <div class="status mono"><span>Now burning <b id="nowOut">nothing yet</b></span><span>Nothing leaves this page</span></div>
+
+  <footer class="mono">
+    <span>Smoke Signals / a fictional room</span>
+    <span>Every message is temporary</span>
+    <span>© 2026 · mind the embers</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('smoke');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, dpr = 1;
+  let particles = [], wind = 0, density = 1, burned = 0;
+  let sprite = null;
+
+  function makeSprite(){
+    const c = document.createElement('canvas');
+    c.width = 64; c.height = 64;
+    const g = c.getContext('2d');
+    const rg = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    rg.addColorStop(0, 'rgba(235,225,210,.9)');
+    rg.addColorStop(.35, 'rgba(220,208,192,.45)');
+    rg.addColorStop(.7, 'rgba(190,175,160,.12)');
+    rg.addColorStop(1, 'rgba(180,165,150,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 64, 64);
+    return c;
+  }
+  function resize(){
+    dpr = Math.min(2, devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function sampleText(text){
+    const c = document.createElement('canvas');
+    const g = c.getContext('2d');
+    const lines = [];
+    if (text.length > 30){
+      const mid = text.lastIndexOf(' ', 30);
+      lines.push(text.slice(0, mid > 0 ? mid : 30));
+      lines.push(text.slice(mid > 0 ? mid + 1 : 30));
+    } else lines.push(text);
+    const fontSize = 78;
+    g.font = '600 ' + fontSize + 'px "Iowan Old Style", Georgia, serif';
+    let maxW = 0;
+    lines.forEach(l => { maxW = Math.max(maxW, g.measureText(l).width); });
+    c.width = Math.ceil(maxW + 80);
+    c.height = lines.length * fontSize * 1.1 + 60;
+    g.font = '600 ' + fontSize + 'px "Iowan Old Style", Georgia, serif';
+    g.fillStyle = '#fff';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    lines.forEach((l, i) => g.fillText(l, c.width / 2, 30 + fontSize * .55 + i * fontSize * 1.1));
+    const data = g.getImageData(0, 0, c.width, c.height).data;
+    const pts = [];
+    const step = reduce ? 9 : 5;
+    for (let y = 0; y < c.height; y += step){
+      for (let x = 0; x < c.width; x += step){
+        if (data[(y * c.width + x) * 4 + 3] > 120) pts.push({ x, y, w: c.width, h: c.height });
+      }
+    }
+    return pts;
+  }
+
+  function burn(text){
+    const pts = sampleText(text);
+    const scale = Math.min(1.05, (W * .78) / (pts[0]?.w || 800), (H * .34) / (pts[0]?.h || 300));
+    const ox = W / 2 - (pts[0]?.w || 800) * scale / 2;
+    const oy = H * .5 - (pts[0]?.h || 300) * scale / 2;
+    const max = Math.min(1500, Math.floor(pts.length * density));
+    for (let i = 0; i < max; i++){
+      const p = pts[i % pts.length];
+      const ember = Math.random() < .05;
+      particles.push({
+        x: ox + p.x * scale + (Math.random() - .5) * 3,
+        y: oy + p.y * scale + (Math.random() - .5) * 3,
+        vx: (Math.random() - .5) * .25,
+        vy: -.25 - Math.random() * .55,
+        life: 0,
+        max: 2.4 + Math.random() * 2.6,
+        size: (6 + Math.random() * 9) * (ember ? .7 : 1),
+        rot: Math.random() * Math.PI * 2,
+        ember,
+        seed: Math.random() * 100
+      });
+    }
+    burned++;
+    document.getElementById('hCount').textContent = String(burned).padStart(2,'0');
+    document.getElementById('nowOut').textContent = '“' + text + '”';
+    document.getElementById('lastOut').textContent = '“' + text + '”';
+    document.getElementById('lastTime').textContent = 'just now';
+    document.getElementById('msg').value = '';
+  }
+
+  function puff(x, y){
+    for (let i = 0; i < 22; i++){
+      const a = Math.random() * Math.PI * 2, sp = Math.random() * .9;
+      particles.push({ x, y, vx: Math.cos(a) * sp, vy: -.2 - Math.sin(a) * sp * .4, life: 0, max: 1.4 + Math.random() * 1.4, size: 4 + Math.random() * 7, rot: Math.random() * 6, ember: Math.random() < .16, seed: Math.random() * 99 });
+    }
+  }
+
+  function frame(now){
+    const dt = Math.min(.05, (now - (frame.last || now)) / 1000);
+    frame.last = now;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = particles.length - 1; i >= 0; i--){
+      const p = particles[i];
+      p.life += dt;
+      if (p.life > p.max){ particles.splice(i, 1); continue; }
+      const t = p.life / p.max;
+      p.x += (p.vx + wind * .5) * dt * 30 + Math.sin(now * .0004 + p.seed) * dt * 7;
+      p.y += p.vy * dt * 30;
+      p.vy -= .015 * dt * 10;
+      const alpha = (1 - t) * (p.ember ? .75 : .5);
+      const size = p.size * (1 + t * 2.2);
+      if (p.ember){
+        ctx.fillStyle = 'rgba(255,170,90,' + alpha + ')';
+        ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(.6, size * .1), 0, Math.PI * 2); ctx.fill();
+      } else {
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(sprite, p.x - size / 2, p.y - size / 2, size, size);
+        ctx.globalAlpha = 1;
+      }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(frame);
+  }
+
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = document.getElementById('msg').value.trim();
+    burn(v || 'the fire remembers');
+  });
+  document.getElementById('wind').addEventListener('input', function(){
+    wind = this.value / 100;
+    document.getElementById('wOut').textContent = wind.toFixed(1);
+  });
+  document.getElementById('density').addEventListener('input', function(){
+    density = this.value / 100;
+    document.getElementById('dOut').textContent = density.toFixed(1) + '×';
+  });
+  document.getElementById('clear').addEventListener('click', () => {
+    particles = [];
+    document.getElementById('nowOut').textContent = 'nothing yet';
+    document.getElementById('lastTime').textContent = 'cleared';
+  });
+  canvas.addEventListener('pointerdown', e => puff(e.clientX, e.clientY));
+  addEventListener('resize', resize);
+
+  sprite = makeSprite();
+  resize();
+  requestAnimationFrame(frame);
+  setTimeout(() => burn('the fire remembers'), 500);
+</script>
+</body>
+</html>

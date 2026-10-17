@@ -1,0 +1,20 @@
+TITLE
+Maison Sucré — The Sweet Course
+
+PROMPT
+Create an elegant dessert menu page for a fictional restaurant, Maison Sucré. Deep forest-green room, cream menu card, antique-gold rules and serif typography. The layout is a two-panel menu: on the left, the heading "The sweet course.", tabs for Desserts and Petits Fours, and a list of four items with descriptions, dotted leaders and prices; on the right, a detail panel showing the selected dessert as a refined SVG illustration on a plate, its name, a longer description, the recommended pairing and a "Choose this" action. Include a restaurant masthead, service hours, a gold seal and a footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+The last page of a tasting menu: rich, quiet and confident. The deep green makes cream and gold feel expensive, and the illustrations are simple enough to read as plate presentations rather than cartoons. Typography is a high-contrast serif with tiny tracked capitals, and every rule is a considered line, not a box.
+
+VISUAL TECHNIQUES
+- Split menu card with a cream paper panel and a dark presentation panel.
+- Four hand-drawn SVG desserts on plates: berry tart, chocolate sphere, soufflé and lemon tart.
+- Dotted leader lines between dessert names and prices.
+- Tab switching between desserts and petits fours with a short crossfade.
+- Gold foil seal, hairline rules and a subtle paper texture.
+- Serif display type, italic descriptions and monospaced service data.
+- Responsive stack: detail appears below the menu list on mobile.
+
+INTERACTION MODEL
+Switching tabs changes the menu list. Selecting any dessert updates the illustration, description, pairing and price in the right panel. The "Pairing" control cycles three suggested drinks; "Choose this" confirms the selection with a short line. All menu items are keyboard-accessible buttons; reduced-motion removes the crossfade only.

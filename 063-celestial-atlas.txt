@@ -1,0 +1,20 @@
+TITLE
+Celestial Atlas — The Sky, Indexed
+
+PROMPT
+Create an antique-modern star atlas called "Celestial Atlas". Deep midnight blue, ivory star marks, gold engraving and a fine circular chart. The layout pairs an editorial left column — title "The sky, indexed.", a short note, a list of six constellations and a details card — with a large circular star chart on the right. The chart has degree ticks, faint coordinate rings, a Milky Way haze, small stars and constellation lines; selecting a constellation highlights it in gold and shows its myth, brightest star and best viewing month. A sidereal-time slider rotates the whole sky; a labels toggle shows constellation names. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A plate from a contemporary celestial atlas: precise, quiet and a little romantic. The chart should feel engraved — thin gold lines, scattered stars, careful labels — while the interface is modern and readable. The dark blue is deep enough for stars to glow, and gold is reserved for the selected constellation and the instruments.
+
+VISUAL TECHNIQUES
+- Circular SVG chart with concentric degree rings, tick marks, month labels and a soft Milky Way band.
+- Deterministic star field plus six hand-placed constellations with connecting lines and names.
+- Selected state with gold lines, glowing stars and a label; hover states on the index.
+- Rotation control tied to sidereal time, with a smooth transform on the sky group.
+- Editorial panel with serif name, monospaced data and a short myth.
+- Fine grain, vignette and subtle constellation glow.
+- Responsive stacking; the chart remains square and legible.
+
+INTERACTION MODEL
+Clicking a constellation in the list (or its stars) selects it, updates the detail panel and draws it in gold. Hovering previews the selection colour. The sidereal slider rotates the chart from 0 to 360 degrees with a live readout. "Labels" toggles all constellation names. Keyboard users can tab through the list and activate with Enter; reduced-motion snaps rotation instead of easing.

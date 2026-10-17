@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Lantern River — write a wish, release a lantern, watch it join the dark.">
+<title>Lantern River — Send Something Up</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --night:#090c1a; --night2:#11162b; --water:#070b16; --gold:#ffc46b; --ember:#ff8a3c; --cream:#f4ead4; --dim:rgba(244,234,212,.48);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--night);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  .scene{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#070a17 0%,#101329 38%,#1b1a33 62%,#090d19 72%,#05070f 100%)}
+  .stars{position:absolute;inset:0 0 30% 0;opacity:.65;background-image:radial-gradient(rgba(255,255,255,.6) .6px,transparent .8px),radial-gradient(rgba(255,196,107,.35) .5px,transparent .7px);background-size:137px 121px,211px 179px}
+  .moon{position:absolute;right:14%;top:14%;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fff6df,#e8cf9a);box-shadow:0 0 40px rgba(255,246,223,.18);opacity:.7}
+  .city{position:absolute;left:0;right:0;bottom:27%;height:12%;background:
+    linear-gradient(90deg,transparent 0 2%,#0b0f1f 2% 7%,transparent 7% 9%,#0d1222 9% 15%,transparent 15% 18%,#0a0e1c 18% 25%,transparent 25% 27%,#0f1424 27% 34%,transparent 34% 37%,#0b0f1d 37% 45%,transparent 45% 47%,#0d1222 47% 55%,transparent 55% 58%,#0a0e1c 58% 66%,transparent 66% 69%,#0f1424 69% 77%,transparent 77% 80%,#0b0f1d 80% 88%,transparent 88% 91%,#0d1222 91% 97%,transparent 97%);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 25%);mask-image:linear-gradient(180deg,transparent,#000 25%)}
+  .city::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,196,107,.55) .8px,transparent 1px);background-size:27px 23px;opacity:.3;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent);mask-image:linear-gradient(180deg,#000,transparent)}
+  .water{position:absolute;left:0;right:0;bottom:0;height:29%;background:linear-gradient(180deg,#0a1020,#04070f);overflow:hidden}
+  .water::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(255,196,107,.2);box-shadow:0 0 20px 4px rgba(255,196,107,.06)}
+  .water i{position:absolute;left:10%;right:10%;height:1px;background:rgba(255,196,107,.1);border-radius:50%;animation:ripple 7s ease-in-out infinite alternate}
+  .water i:nth-child(2){top:24%;left:18%;right:28%;animation-delay:-2s}
+  .water i:nth-child(3){top:48%;left:6%;right:42%;animation-delay:-4s}
+  .water i:nth-child(4){top:70%;left:30%;right:12%;animation-delay:-1s}
+  @keyframes ripple{to{transform:translateX(14px) scaleX(1.05);opacity:.35}}
+  .fog{position:absolute;left:-10%;right:-10%;bottom:22%;height:20%;background:radial-gradient(ellipse at 50% 100%,rgba(120,130,170,.12),transparent 70%);filter:blur(14px)}
+  .vignette{position:fixed;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(3,5,12,.55) 85%,rgba(3,5,12,.9))}
+  .grain{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.2;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+
+  .lanterns{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+  .lantern{position:absolute;bottom:-90px;width:34px;height:46px;cursor:pointer;pointer-events:auto;
+    animation:rise var(--dur,26s) linear var(--delay,-4s) infinite}
+  .lantern .body{position:relative;width:100%;height:100%;border-radius:48% 48% 38% 38%;background:radial-gradient(circle at 50% 58%,#fff0bd,#ffc46b 36%,#f08c3e 65%,#b85428);
+    box-shadow:0 0 18px 4px rgba(255,170,80,.32),0 0 50px 12px rgba(255,140,60,.12);animation:sway 6s ease-in-out infinite alternate}
+  .lantern .body::before{content:"";position:absolute;left:20%;right:20%;top:16%;bottom:12%;border-radius:40%;border:1px solid rgba(120,55,20,.25);box-shadow:inset 0 0 8px rgba(255,250,220,.55)}
+  .lantern .body::after{content:"";position:absolute;left:42%;bottom:-4px;width:16%;height:6px;background:#6f3e1c;border-radius:2px}
+  .lantern .flame{position:absolute;left:50%;top:52%;width:5px;height:9px;border-radius:50% 50% 40% 40%;background:#fff8d6;box-shadow:0 0 8px #fff1b0;transform:translate(-50%,-50%)}
+  .lantern .wishDot{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:2px;height:2px;border-radius:50%;background:rgba(255,196,107,.5)}
+  @keyframes rise{0%{transform:translate3d(0,0,0) scale(.9);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translate3d(var(--drift,20px),-118vh,0) scale(1.05);opacity:0}}
+  @keyframes sway{from{transform:translateX(-6px) rotate(-2deg)}to{transform:translateX(6px) rotate(2deg)}}
+  .toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%) translateY(8px);z-index:9;max-width:min(440px,86vw);background:rgba(8,11,22,.9);border:1px solid rgba(255,196,107,.35);
+    padding:9px 13px;border-radius:100px;color:var(--cream);font-family:var(--serif);font-style:italic;font-size:.82rem;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;backdrop-filter:blur(8px)}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .ui{position:relative;z-index:7;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,42px);pointer-events:none}
+  .ui form,.ui button,.ui input,.ui a{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid rgba(244,234,212,.16)}
+  .brand{display:flex;align-items:center;gap:9px;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase}
+  .brand .lamp{width:11px;height:15px;border-radius:40% 40% 30% 30%;background:radial-gradient(circle,#fff3c8,#ffb15c 65%,#c76a32);box-shadow:0 0 12px rgba(255,177,92,.6);flex:none}
+  .brand small{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--cream);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--gold);font-weight:400}
+  .main{flex:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:clamp(16px,3vh,30px);pointer-events:none}
+  .statement{max-width:620px}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--gold);margin-bottom:13px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-size:clamp(2.7rem,6vw,5.4rem);line-height:.94;letter-spacing:-.05em;font-weight:400;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+  h1 em{font-style:italic;color:var(--gold)}
+  .statement p{margin-top:12px;max-width:36ch;color:var(--dim);font-size:.7rem;line-height:1.8}
+  .release{width:min(360px,100%);pointer-events:auto;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+  .release label{color:var(--dim);font-family:var(--mono);font-size:.36rem;letter-spacing:.1em;text-transform:uppercase}
+  .release form{display:flex;align-items:center;gap:5px;border:1px solid rgba(244,234,212,.3);border-radius:100px;padding:4px 5px 4px 14px;background:rgba(10,13,26,.5);backdrop-filter:blur(8px)}
+  .release input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--cream);font-family:var(--serif);font-size:.8rem;padding:5px 0}
+  .release input::placeholder{color:rgba(244,234,212,.35)}
+  .release button{background:var(--gold);color:#1a1208;border-radius:100px;padding:8px 13px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s}
+  .release button:hover{background:var(--cream)}
+  .count{color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.09em;text-transform:uppercase;text-align:right}
+  .count b{color:var(--gold);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:8px 0 12px;color:rgba(244,234,212,.28);font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:800px){
+    .headMid{display:none}
+    .main{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:14px}
+    .statement p{display:none}
+    h1{font-size:clamp(2.4rem,9vw,4rem)}
+    .release{width:100%}
+    .release form{width:100%}
+  }
+  @media(max-width:600px){
+    .headRight{display:none}
+    .brand{font-size:.56rem;letter-spacing:.2em}
+    h1{font-size:10.8vw}
+    .ui{padding:0 14px}
+    .toast{bottom:92px;font-size:.72rem}
+    footer span:nth-child(2){display:none}
+    .lantern{width:28px;height:38px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .lantern{animation:none;bottom:auto}
+  }
+</style>
+</head>
+<body>
+<div class="scene" aria-hidden="true">
+  <div class="stars"></div><div class="moon"></div><div class="city"></div><div class="fog"></div>
+  <div class="water"><i></i><i></i><i></i><i></i></div>
+</div>
+<div class="lanterns" id="lanterns"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="lamp" aria-hidden="true"></span><span>Lantern River<small>A river, a wish, a small light</small></span></a>
+    <div class="headMid mono"><span>Water <b>still</b></span><span>Air <b>soft</b></span><span>Lanterns <b id="hCount">—</b></span></div>
+    <div class="headRight mono">After dark<br><b>Open until the last light</b></div>
+  </header>
+
+  <div class="main" id="top">
+    <div class="statement">
+      <p class="eyebrow mono">The river accepts small messages</p>
+      <h1>Send<br>something <em>up.</em></h1>
+      <p>Write a wish, short enough to carry. Release it. Someone downstream may never read it, which is part of the bargain.</p>
+    </div>
+    <div class="release">
+      <label for="wish">Your wish</label>
+      <form id="form"><input id="wish" type="text" maxlength="90" placeholder="a small thing, sent upward…" aria-label="Write a wish"><button type="submit">Release ↑</button></form>
+      <div class="count">Lanterns released <b id="count">00</b></div>
+    </div>
+  </div>
+
+  <footer class="mono">
+    <span>Lantern River / a fictional place</span>
+    <span>Wishes are not stored after the page closes</span>
+    <span>© 2026 · look up</span>
+  </footer>
+</div>
+
+<script>
+  const lanterns = document.getElementById('lanterns');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const warnings = [
+    'a safe return', 'a quieter morning', 'enough time', 'a letter that arrives',
+    'the courage to begin', 'a good night’s sleep', 'one more summer', 'a room with a window'
+  ];
+  let count = 0;
+
+  function makeLantern(wish, initial){
+    const el = document.createElement('div');
+    el.className = 'lantern';
+    const x = 4 + Math.random() * 90;
+    el.style.left = x + '%';
+    el.style.setProperty('--dur', (20 + Math.random() * 22) + 's');
+    el.style.setProperty('--delay', initial ? (-Math.random() * 18) + 's' : '0s');
+    el.style.setProperty('--drift', ((Math.random() - .5) * 120) + 'px');
+    el.innerHTML = '<div class="body"><span class="flame"></span></div><span class="wishDot"></span>';
+    el.dataset.wish = wish;
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-label', 'A lantern carrying a wish. Activate to read it.');
+    if (initial) el.style.bottom = (8 + Math.random() * 62) + '%';
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      showWish(wish);
+    });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ showWish(wish); e.preventDefault(); } });
+    lanterns.appendChild(el);
+    if (!initial){
+      setTimeout(() => el.remove(), 44000);
+    }
+    count++;
+    document.getElementById('count').textContent = String(count).padStart(2,'0');
+    document.getElementById('hCount').textContent = String(count).padStart(2,'0');
+  }
+
+  let toastTimer = null;
+  function showWish(text){
+    const t = document.getElementById('toast');
+    t.textContent = '“' + text + '”';
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 4200);
+  }
+
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = document.getElementById('wish');
+    const v = input.value.trim();
+    if (!v) return;
+    makeLantern(v, false);
+    input.value = '';
+    showWish(v);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.lantern, form, button')) document.getElementById('toast').classList.remove('on');
+  });
+
+  ['a safe return','enough time','a quieter morning','a room with a window','one more summer'].forEach(w => {
+    makeLantern(w, true);
+  });
+  if (reduce){
+    document.querySelectorAll('.lantern').forEach(el => {
+      el.style.bottom = (10 + Math.random() * 64) + '%';
+      el.style.left = (6 + Math.random() * 86) + '%';
+    });
+  }
+</script>
+</body>
+</html>

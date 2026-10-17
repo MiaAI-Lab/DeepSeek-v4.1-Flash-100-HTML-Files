@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Wind Made Visible — a live flow field of ink on paper.">
+<title>Wind Made Visible — A Flow-Field Study</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f2ecdf; --ink:#2c2a24; --dim:rgba(44,42,36,.55); --line:rgba(44,42,36,.2); --red:#c2452f;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;height:100svh;-webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1.5px solid var(--red);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  #field{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;cursor:crosshair}
+  .grid{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.45;
+    background-image:linear-gradient(90deg,rgba(44,42,36,.07) 1px,transparent 1px),linear-gradient(rgba(44,42,36,.07) 1px,transparent 1px);
+    background-size:96px 96px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 78%);mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 78%)}
+  .ui{position:relative;z-index:3;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,42px);pointer-events:none}
+  .ui button,.ui input,.ui label{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase}
+  .brand .vane{width:16px;height:16px;border:1px solid var(--ink);border-radius:50%;position:relative;flex:none}
+  .brand .vane::after{content:"";position:absolute;left:50%;top:2px;width:1px;height:10px;background:var(--red);transform:rotate(38deg);transform-origin:bottom}
+  .brand small{display:block;font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:26px;color:var(--dim);text-align:right}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.8}
+  .headRight b{color:var(--red);font-weight:400}
+  .main{flex:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:clamp(20px,4vh,40px)}
+  .statement{max-width:640px}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--red);margin-bottom:16px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--red)}
+  h1{font-family:var(--serif);font-size:clamp(2.8rem,6.4vw,6rem);line-height:.94;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--red)}
+  .statement p{margin-top:14px;max-width:33ch;color:var(--dim);font-size:.72rem;line-height:1.8}
+  .tray{width:min(275px,100%);border:1px solid var(--line);background:rgba(242,236,223,.72);backdrop-filter:blur(10px);padding:11px;pointer-events:auto}
+  .trayHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:7px}
+  .trayHead b{color:var(--red);font-weight:400}
+  .row{display:flex;align-items:center;gap:8px;color:var(--dim)}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:16px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(44,42,36,.35)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--red);margin-top:-5px;border:1px solid var(--paper)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(44,42,36,.35)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:var(--red);border:1px solid var(--paper)}
+  .out{width:34px;text-align:right;color:var(--ink);font-family:var(--mono);font-size:.42rem}
+  .btns{display:flex;gap:5px;margin-top:8px}
+  .btn{flex:1;border:1px solid var(--line);padding:7px 5px;font-family:var(--mono);font-size:.4rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{border-color:var(--ink);color:var(--ink)}
+  .btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .btn.gust{border-color:rgba(194,69,47,.4);color:var(--red)}
+  .btn.gust:hover{background:var(--red);border-color:var(--red);color:var(--paper)}
+  .legend{display:flex;justify-content:space-between;padding-top:8px;margin-top:8px;border-top:1px solid var(--line);color:var(--dim)}
+  .legend b{color:var(--ink);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .main{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:16px}
+    .tray{width:min(100%,360px)}
+    .statement p{display:none}
+    h1{font-size:clamp(2.6rem,9vw,4rem)}
+    .headRight .mono{display:none}
+  }
+  @media(max-width:600px){
+    .brand{font-size:.54rem;letter-spacing:.2em}
+    h1{font-size:10.8vw}
+    .ui{padding:0 14px}
+    .tray{padding:9px}
+    footer span:nth-child(2){display:none}
+    .grid{background-size:64px 64px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<canvas id="field" aria-label="Animated flow field of wind lines. Move the pointer to disturb the wind."></canvas>
+<div class="grid" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="vane" aria-hidden="true"></span><span>Wind Made Visible<small>Flow field / study 08</small></span></a>
+    <div class="headMid mono"><span>Direction <b id="dir">WNW</b></span><span>Speed <b id="speed">08 m/s</b></span><span>Field <b id="count">000</b></span></div>
+    <div class="headRight mono">51° 13′ N / 04° 23′ E<br><b id="state">live</b></div>
+  </header>
+
+  <div class="main">
+    <div class="statement">
+      <p class="eyebrow mono">A drawing made by moving air</p>
+      <h1>Wind,<br><em>made visible.</em></h1>
+      <p>Move your cursor across the page and the field will bend around it. Nothing is here twice; every line is a decision the air has already left behind.</p>
+    </div>
+
+    <div class="tray" aria-label="Wind field controls">
+      <div class="trayHead mono"><span>Instrument / 08</span><span><b id="mode">drawing</b></span></div>
+      <div class="row"><label class="mono" for="density">Density</label><input id="density" type="range" min="80" max="900" step="20" value="520" aria-label="Line density"><span class="out" id="densityOut">520</span></div>
+      <div class="btns">
+        <button class="btn gust" id="gust">Gust ↝</button>
+        <button class="btn" id="still" aria-pressed="false">Still</button>
+        <button class="btn" id="newWind">New wind</button>
+      </div>
+      <div class="legend mono"><span>Particles <b id="particles">520</b></span><span>Canvas <b>live</b></span></div>
+    </div>
+  </div>
+
+  <footer class="mono">
+    <span>Wind Made Visible / a fictional field study</span>
+    <span>Ink, air and a little maths</span>
+    <span>© 2026 · drawn at 60 frames</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('field');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const density = document.getElementById('density');
+  const densityOut = document.getElementById('densityOut');
+  const countEl = document.getElementById('count');
+  const particlesEl = document.getElementById('particles');
+  const stateEl = document.getElementById('state');
+  const modeEl = document.getElementById('mode');
+  let W = 0, H = 0, dpr = 1, particles = [];
+  let phase = 0, still = reduce, gust = 0;
+  let mx = -9999, my = -9999;
+
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#f2ecdf'; ctx.fillRect(0, 0, W, H);
+    build();
+    if (reduce) staticField();
+  }
+
+  function build(){
+    const target = Number(density.value);
+    particles = Array.from({ length: target }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      px: 0, py: 0, red: Math.random() > .975,
+      life: 30 + Math.random() * 70
+    }));
+    countEl.textContent = String(target).padStart(3, '0');
+    particlesEl.textContent = target;
+  }
+
+  function fieldAngle(x, y){
+    const t = phase;
+    let a = Math.sin(x * .0018 + t * .6) * 1.5 + Math.cos(y * .0021 - t * .45) * 1.15 + Math.sin((x + y) * .0011 + t) * .6;
+    if (mx > -1000){
+      const dx = x - mx, dy = y - my;
+      const d = Math.hypot(dx, dy);
+      if (d < 220){
+        a += Math.atan2(dy, dx) * (1 - d / 220) * .9 + .5;
+      }
+    }
+    return a;
+  }
+
+  function draw(){
+    ctx.fillStyle = 'rgba(242,236,223,.055)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.lineCap = 'round';
+    const boost = gust > 0 ? 2.4 : 1;
+    particles.forEach(p => {
+      const a = fieldAngle(p.x, p.y);
+      const s = (1.25 + Math.sin(phase + p.life) * .4) * boost;
+      p.px = p.x; p.py = p.y;
+      p.x += Math.cos(a) * s;
+      p.y += Math.sin(a) * s;
+      ctx.strokeStyle = p.red ? 'rgba(194,69,47,.48)' : 'rgba(44,42,36,.24)';
+      ctx.lineWidth = p.red ? 1.1 : .7;
+      ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(p.x, p.y); ctx.stroke();
+      p.life--;
+      if (p.life <= 0 || p.x < -10 || p.x > W + 10 || p.y < -10 || p.y > H + 10){
+        p.x = Math.random() * W; p.y = Math.random() * H; p.life = 30 + Math.random() * 70;
+      }
+    });
+  }
+
+  function staticField(){
+    ctx.fillStyle = '#f2ecdf'; ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 9000; i++){
+      const x = Math.random() * W, y = Math.random() * H;
+      const a = fieldAngle(x, y);
+      const l = 3 + Math.random() * 10;
+      ctx.strokeStyle = Math.random() > .97 ? 'rgba(194,69,47,.4)' : 'rgba(44,42,36,.16)';
+      ctx.lineWidth = .7;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); ctx.stroke();
+    }
+  }
+
+  let lastTime = performance.now();
+  function loop(now){
+    const dt = Math.min(2, (now - lastTime) / 16.7);
+    lastTime = now;
+    if (!still){
+      phase += .006 * dt;
+      if (gust > 0) gust -= .012;
+      draw();
+    }
+    if (!still) requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  window.addEventListener('pointerleave', () => { mx = -9999; my = -9999; });
+  density.addEventListener('input', () => {
+    densityOut.textContent = density.value;
+    build();
+  });
+  document.getElementById('gust').addEventListener('click', () => {
+    gust = 1;
+    stateEl.textContent = 'gusting';
+    setTimeout(() => { stateEl.textContent = still ? 'still' : 'live'; }, 1800);
+  });
+  document.getElementById('still').addEventListener('click', function(){
+    still = !still;
+    this.setAttribute('aria-pressed', String(still));
+    this.textContent = still ? 'Resume' : 'Still';
+    modeEl.textContent = still ? 'still' : 'drawing';
+    stateEl.textContent = still ? 'still' : 'live';
+    if (still) { ctx.fillStyle = '#f2ecdf'; ctx.fillRect(0, 0, W, H); staticField(); }
+    else { lastTime = performance.now(); requestAnimationFrame(loop); }
+  });
+  document.getElementById('newWind').addEventListener('click', () => {
+    ctx.fillStyle = '#f2ecdf'; ctx.fillRect(0, 0, W, H);
+    build();
+    phase = Math.random() * 10;
+    if (still) staticField();
+  });
+
+  size();
+  window.addEventListener('resize', size);
+  if (!still) requestAnimationFrame(loop);
+</script>
+</body>
+</html>

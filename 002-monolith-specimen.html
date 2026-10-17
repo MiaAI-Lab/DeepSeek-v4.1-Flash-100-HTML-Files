@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MONOLITH — a neo-grotesque type specimen in six movements.">
+<title>MONOLITH — Type Specimen N° 002</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#efede4; --ink:#121212; --acid:#d8ff3e; --gray:#79766c; --rule:#121212;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body.inverted{--paper:#121212;--ink:#e9e7dd;--gray:#96938a;--rule:rgba(233,231,221,.28)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    transition:background .5s ease,color .5s ease;overflow-x:hidden}
+  ::selection{background:var(--acid);color:#121212}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--acid);outline-offset:-2px}
+  .grain{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  body.inverted .grain{mix-blend-mode:screen;opacity:.15}
+  .page{max-width:1640px;margin:0 auto;padding:0 clamp(16px,3vw,44px)}
+  .mono{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.5}
+
+  .topline{display:flex;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid var(--rule)}
+  .topline span:nth-child(2){color:var(--gray)}
+  .masthead{display:grid;grid-template-columns:1fr 1.4fr 1fr;align-items:end;gap:20px;padding:26px 0 22px;border-bottom:1px solid var(--rule)}
+  .wordmark{font-size:clamp(1.35rem,2.4vw,2rem);font-weight:800;letter-spacing:-.06em}
+  .wordmark sup{font-family:var(--mono);font-size:.5em;font-weight:400;vertical-align:top;margin-left:3px;letter-spacing:0}
+  .masthead p{text-align:center;max-width:38ch;margin:0 auto;color:var(--gray)}
+  .masthead .date{text-align:right}
+  .tag{display:inline-block;background:var(--ink);color:var(--paper);padding:2px 7px;margin-left:6px}
+  body.inverted .tag{background:var(--acid);color:#121212}
+
+  .hero{padding-top:22px;border-bottom:1px solid var(--rule)}
+  .hero-meta{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding-bottom:8px}
+  .hero-meta .right{color:var(--gray)}
+  .display-wrap{position:relative;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);overflow:hidden;
+    background-image:repeating-linear-gradient(90deg,transparent 0 calc(100%/12 - 1px),rgba(18,18,18,.07) calc(100%/12 - 1px) calc(100%/12));}
+  .display{font-size:clamp(4.3rem,16.6vw,17rem);line-height:.8;font-weight:800;letter-spacing:calc(var(--track, -.075) * 1em);
+    transform:scaleX(var(--w,1));transform-origin:left bottom;white-space:nowrap;padding:2.2vw 0 .9vw;
+    margin-left:-.06em;will-change:transform;transition:transform .28s ease,letter-spacing .28s ease}
+  .display.swap{animation:swap .34s steps(2,end)}
+  @keyframes swap{0%{opacity:0;transform:scaleX(var(--w,1)) translateY(6%)}100%{opacity:1;transform:scaleX(var(--w,1)) translateY(0)}}
+  .display em{font-style:normal;color:var(--acid);-webkit-text-stroke:1px var(--ink)}
+  .display-wrap .corner{position:absolute;right:10px;top:10px;color:var(--gray)}
+  .hero-foot{display:grid;grid-template-columns:1.15fr .95fr .9fr;gap:clamp(24px,4vw,60px);padding:30px 0 38px}
+  .hero-foot h2{font-size:clamp(1.1rem,1.7vw,1.45rem);font-weight:700;letter-spacing:-.035em;line-height:1.25;max-width:24ch}
+  .hero-foot p{margin-top:12px;font-size:.8rem;line-height:1.7;color:var(--gray);max-width:38ch}
+  .spec{padding-left:clamp(0px,2vw,26px);border-left:1px solid var(--rule)}
+  .spec dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px}
+  .spec dt{color:var(--gray);font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase}
+  .spec dd{font-size:.74rem;text-align:right}
+  .controls{border-left:1px solid var(--rule);padding-left:clamp(18px,2vw,26px)}
+  .controls .row{margin-bottom:18px}
+  .controls .rowhead{display:flex;justify-content:space-between;margin-bottom:10px;color:var(--gray)}
+  .controls output{color:var(--ink)}
+  input[type=range]{width:100%;height:20px;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--ink)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:15px;height:15px;background:var(--acid);border:1px solid var(--ink);margin-top:-7px;border-radius:0}
+  input[type=range]::-moz-range-track{height:1px;background:var(--ink)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--acid);border:1px solid var(--ink);border-radius:0}
+  .invert{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:22px;padding:12px 14px;
+    border:1px solid var(--ink);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+    transition:background .25s,color .25s}
+  .invert:hover{background:var(--ink);color:var(--paper)}
+  .invert svg{width:15px;height:15px}
+  .invert:hover svg circle{fill:var(--acid)}
+
+  .marquee{background:#121212;color:var(--acid);border-top:1px solid #121212;border-bottom:1px solid #121212;overflow:hidden;padding:12px 0}
+  .marquee-track{display:flex;width:max-content;animation:run 32s linear infinite}
+  .marquee span{display:flex;align-items:center;gap:28px;padding-right:28px;white-space:nowrap;
+    font-size:clamp(1.1rem,2.6vw,2rem);font-weight:800;letter-spacing:-.035em;text-transform:uppercase}
+  .marquee i{font-style:normal;font-size:.55em;transform:translateY(-1px)}
+  @keyframes run{to{transform:translateX(-50%)}}
+
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:34px 0 16px;border-bottom:1px solid var(--rule)}
+  .section-head h2{font-size:clamp(1.5rem,3.4vw,2.9rem);font-weight:800;letter-spacing:-.055em;line-height:.95;text-transform:uppercase}
+  .section-head .note{color:var(--gray);text-align:right;max-width:26ch}
+  .inventory{display:grid;grid-template-columns:repeat(9,1fr);border-left:1px solid var(--rule)}
+  .glyph{position:relative;aspect-ratio:1/1;display:grid;place-items:center;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    font-size:clamp(1rem,2.5vw,2.1rem);font-weight:600;letter-spacing:-.04em;transition:background .16s,color .16s}
+  .glyph:hover,.glyph:focus-visible,.glyph.active{background:var(--ink);color:var(--acid)}
+  .glyph span{position:absolute;right:5px;bottom:4px;font-family:var(--mono);font-size:6px;letter-spacing:0;opacity:.45}
+
+  .anatomy{display:grid;grid-template-columns:.95fr 1.05fr 1fr;border-bottom:1px solid var(--rule)}
+  .anatomy > div{padding:26px;border-right:1px solid var(--rule);min-height:300px}
+  .anatomy > div:last-child{border-right:0}
+  .plate{position:relative;display:grid;place-items:center;background:var(--acid);color:#121212!important}
+  .plate .big{position:relative;font-size:clamp(10rem,22vw,19rem);line-height:1;font-weight:800;letter-spacing:-.08em;
+    color:transparent;-webkit-text-stroke:1.5px #121212;margin-bottom:-.08em}
+  .plate .label{position:absolute;font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:#121212;
+    background:var(--acid);border:1px solid #121212;padding:3px 5px;z-index:2}
+  .l-a{top:18%;left:7%} .l-b{top:34%;right:6%} .l-c{bottom:26%;left:4%} .l-d{bottom:11%;right:12%}
+  .plate .hair{position:absolute;background:#121212;opacity:.6;height:1px}
+  .h-a{top:26%;left:24%;width:16%} .h-b{top:40%;right:17%;width:13%} .h-c{bottom:31%;left:20%;width:9%} .h-d{bottom:16%;right:25%;width:12%}
+  .anatomy h3{font-size:1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:14px;text-transform:uppercase}
+  .anatomy p{font-size:.74rem;line-height:1.75;color:var(--gray);max-width:34ch}
+  .anatomy p + p{margin-top:10px}
+  .anatomy .list{margin-top:22px;border-top:1px solid var(--rule)}
+  .anatomy .list div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase}
+  .anatomy .list span:last-child{color:var(--gray)}
+  .anatomy .table{margin-top:0}
+  .anatomy .table div{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:10px 0;border-top:1px solid var(--rule);font-size:.68rem}
+  .anatomy .table div:first-child{border-top:0}
+  .anatomy .table span:first-child{font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)}
+
+  footer{margin-top:46px;padding:22px 0 28px;border-top:1px solid var(--rule);display:grid;grid-template-columns:1fr 1fr auto;gap:20px;align-items:end}
+  footer p{color:var(--gray);max-width:34ch}
+  footer .big{font-size:clamp(2rem,6vw,4.6rem);font-weight:800;letter-spacing:-.07em;line-height:.8;text-transform:uppercase;grid-column:1/-1;margin-top:34px}
+  footer .big i{font-style:normal;color:var(--acid);-webkit-text-stroke:1px var(--ink)}
+
+  @media(max-width:1000px){
+    .masthead{grid-template-columns:1fr auto}
+    .masthead p{display:none}
+    .hero-foot{grid-template-columns:1fr 1fr}
+    .controls{grid-column:1/-1;border-left:0;padding-left:0;border-top:1px solid var(--rule);padding-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+    .invert{grid-column:1/-1;margin-top:4px}
+    .anatomy{grid-template-columns:1fr 1fr}
+    .anatomy > div:nth-child(2){border-right:0}
+    .anatomy > div:last-child{grid-column:1/-1;border-top:1px solid var(--rule)}
+  }
+  @media(max-width:680px){
+    .topline span:nth-child(2){display:none}
+    .inventory{grid-template-columns:repeat(6,1fr)}
+    .hero-foot{grid-template-columns:1fr}
+    .spec{border-left:0;padding-left:0;padding-top:18px;border-top:1px solid var(--rule)}
+    .display{font-size:22vw}
+    .anatomy{grid-template-columns:1fr}
+    .anatomy > div{border-right:0;border-bottom:1px solid var(--rule);min-height:auto}
+    .anatomy > div:last-child{border-top:0;border-bottom:0}
+    footer{grid-template-columns:1fr}
+    .section-head{flex-direction:column;align-items:flex-start}
+    .section-head .note{text-align:left}
+    .plate{min-height:280px}
+  }
+  @media(max-width:420px){.inventory{grid-template-columns:repeat(4,1fr)}}
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="topline mono">
+    <span>Monolith Type Foundry — Est. MMXXV</span>
+    <span>Specimen file · inline / offline</span>
+    <span>Edition 1 of 1</span>
+  </div>
+
+  <header class="masthead">
+    <div class="wordmark">MONOLITH<sup>®</sup></div>
+    <p class="mono">A neo-grotesque in six movements.<br>Drawn for mass, counters and the space between.</p>
+    <div class="date mono">MMXXVI <span class="tag">Display</span></div>
+  </header>
+
+  <section class="hero" aria-labelledby="specimen-title">
+    <div class="hero-meta mono">
+      <span>N° 002 / Neo-grotesque</span>
+      <span class="right">6 weights · 9 styles · Latin Extended</span>
+    </div>
+    <div class="display-wrap">
+      <h1 class="display" id="display" aria-live="polite" aria-label="Specimen character">GROTESK</h1>
+      <span class="corner mono" aria-hidden="true">Scale 16.6vw</span>
+    </div>
+    <div class="hero-foot">
+      <div>
+        <h2 id="specimen-title">Mass, counter,<br>and silence.</h2>
+        <p>Monolith is a typeface with no interest in being polite. A single weight occupies the page like a poured slab; the counters are cut clean so the white space can do the talking.</p>
+      </div>
+      <div class="spec">
+        <div class="mono" style="color:var(--gray);margin-bottom:14px">Specification</div>
+        <dl>
+          <dt>Classification</dt><dd>Neo-grotesque</dd>
+          <dt>Designer</dt><dd>Foundry Studio</dd>
+          <dt>Released</dt><dd>14.02.2026</dd>
+          <dt>Formats</dt><dd>HTML / One file</dd>
+          <dt>Glyphs</dt><dd>412 characters</dd>
+          <dt>Licence</dt><dd>Open specimen</dd>
+        </dl>
+      </div>
+      <div class="controls">
+        <div class="row">
+          <div class="rowhead mono"><label for="width">Width</label><output id="widthOut" for="width">100%</output></div>
+          <input id="width" type="range" min="70" max="116" value="100" step="1">
+        </div>
+        <div class="row">
+          <div class="rowhead mono"><label for="track">Tracking</label><output id="trackOut" for="track">−0.08 em</output></div>
+          <input id="track" type="range" min="-12" max="2" value="-8" step="1">
+        </div>
+        <button class="invert" id="invert" aria-pressed="false">
+          <span id="invertLabel">Invert colours</span>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor"/><path d="M8 2a6 6 0 0 1 0 12Z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Mass over manner <i>◆</i> Counter over ornament <i>◆</i> Silence over noise <i>◆</i> Twelve columns, no excuses <i>◆</i></span>
+      <span>Mass over manner <i>◆</i> Counter over ornament <i>◆</i> Silence over noise <i>◆</i> Twelve columns, no excuses <i>◆</i></span>
+    </div>
+  </div>
+
+  <section aria-labelledby="inventory-title">
+    <div class="section-head">
+      <h2 id="inventory-title">01 — The inventory</h2>
+      <p class="note mono">Select any character to set it in the display line above. It will not ask twice.</p>
+    </div>
+    <div class="inventory" id="inventory" aria-label="Glyph inventory"></div>
+  </section>
+
+  <section aria-labelledby="anatomy-title" style="margin-top:34px">
+    <div class="section-head">
+      <h2 id="anatomy-title">02 — Anatomy of a letter</h2>
+      <p class="note mono">Plate 04 · The letter R, dissected at 320pt. Hover the plate to inspect the joints.</p>
+    </div>
+    <div class="anatomy">
+      <div class="plate" aria-hidden="true">
+        <span class="big">R</span>
+        <span class="label l-a">Apex</span>
+        <span class="label l-b">Bowl</span>
+        <span class="label l-c">Junction</span>
+        <span class="label l-d">Leg</span>
+        <span class="hair h-a"></span><span class="hair h-b"></span><span class="hair h-c"></span><span class="hair h-d"></span>
+      </div>
+      <div>
+        <h3>The letter as architecture</h3>
+        <p>A grotesque is not a neutral object. Every curve here is loaded: the bowl presses against the stem, the leg kicks out just enough to hold the baseline, and the counter stays open so the form can breathe at 16vw.</p>
+        <p>Set narrow, it behaves like a headline in a newspaper printed in a hurry. Set wide, it becomes a building.</p>
+        <div class="list">
+          <div><span>Stem width</span><span>148 units</span></div>
+          <div><span>Bowl height</span><span>412 units</span></div>
+          <div><span>Contrast</span><span>0%</span></div>
+          <div><span>Optical size</span><span>Display 72pt+</span></div>
+        </div>
+      </div>
+      <div>
+        <h3>Technical sheet</h3>
+        <div class="table">
+          <div><span>UPM</span><span>1000</span></div>
+          <div><span>Cap height</span><span>720</span></div>
+          <div><span>x-height</span><span>512</span></div>
+          <div><span>Ascender</span><span>760</span></div>
+          <div><span>Descender</span><span>−240</span></div>
+          <div><span>Stem</span><span>148</span></div>
+          <div><span>Spacing</span><span>−40 / 0</span></div>
+          <div><span>Kerning pairs</span><span>2,408</span></div>
+        </div>
+        <p class="mono" style="margin-top:22px;color:var(--gray);font-size:.55rem">All metrics supplied in the specimen file. No font binaries are loaded; this plate is set in the system grotesque.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="mono">MONOLITH® is a fictional foundry project. Set entirely in system Helvetica, mono and one electric green.</p>
+    <p class="mono">Specimen N° 002 — rebuilt as a single, offline HTML file.<br>© MMXXVI. No pixels outsourced.</p>
+    <p class="mono" style="text-align:right">Back to top ↑<br><a href="#" style="border-bottom:1px solid var(--ink)">monolith.specimen</a></p>
+    <div class="big" aria-hidden="true">Grotesk<i>.</i></div>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('width').addEventListener('input', function(){
+    document.getElementById('widthOut').textContent = this.value + '%';
+    document.getElementById('display').style.setProperty('--w', this.value / 100);
+  });
+
+  document.getElementById('track').addEventListener('input', function(){
+    const v = parseInt(this.value, 10) / 100;
+    document.getElementById('trackOut').textContent = (v < 0 ? '−' : '+') + Math.abs(v).toFixed(2) + ' em';
+    document.getElementById('display').style.setProperty('--track', v);
+  });
+
+  const invertBtn = document.getElementById('invert');
+  invertBtn.addEventListener('click', function(){
+    const on = document.body.classList.toggle('inverted');
+    this.setAttribute('aria-pressed', String(on));
+    document.getElementById('invertLabel').textContent = on ? 'Return to paper' : 'Invert colours';
+  });
+
+  const inventory = document.getElementById('inventory');
+  const display = document.getElementById('display');
+  const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+  glyphs.forEach(function(ch, i){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'glyph';
+    b.setAttribute('aria-label', 'Set specimen character ' + ch);
+    b.innerHTML = ch + '<span>' + String(i + 1).padStart(2, '0') + '</span>';
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.glyph.active').forEach(function(el){ el.classList.remove('active'); });
+      b.classList.add('active');
+      display.textContent = ch;
+      display.classList.remove('swap');
+      void display.offsetWidth;
+      display.classList.add('swap');
+    });
+    inventory.appendChild(b);
+  });
+  const first = inventory.querySelector('.glyph');
+  if (first) first.classList.add('active');
+</script>
+</body>
+</html>

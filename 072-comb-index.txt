@@ -1,0 +1,20 @@
+TITLE
+COMB — An Index of Work
+
+PROMPT
+Create a honeycomb portfolio called "COMB" for a fictional design studio. Deep umber background, warm gold, honey and cream. A bold serif headline "Cells of work." sits above a honeycomb grid of nine hexagonal project cells, arranged in staggered rows, each with a number, short title, category and an abstract gradient composition. Filter buttons (All, Brand, Digital, Spaces) reflow the visible cells; clicking a cell opens a side panel with the project title, year, description and a "next cell" action. Include a slim masthead, a count of visible cells and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A structure that is also the artwork. The hexagons should feel like a honeycomb — interlocking, warm, precise — but each cell is a distinct poster fragment. Gold hairlines and dark umber create a nocturnal, gallery-like mood; cream type keeps it readable. The side panel is a quiet catalogue card, not a modal shout.
+
+VISUAL TECHNIQUES
+- CSS hexagons using clip-path with staggered rows and negative margins for a true honeycomb.
+- Nine distinct gradient compositions and typographic cells.
+- Filtering that hides non-matching hexes and updates a live count.
+- Sliding detail panel with serif title, mono metadata and a next-project action.
+- Subtle honeycomb background pattern and warm vignette.
+- Responsive layout from three columns to two and a horizontally scrollable single row.
+- Reduced-motion removes panel slide and hover scale.
+
+INTERACTION MODEL
+Filter buttons show only cells in a category and update the count. Clicking a hexagon opens the detail panel with its project information; "Next cell" advances through the visible cells and "Close" dismisses the panel. Escape closes it. All hexagons are buttons with labels; reduced-motion shows the panel instantly.

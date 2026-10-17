@@ -1,0 +1,20 @@
+TITLE
+Brick Party — A Neon Arcade Cabinet
+
+PROMPT
+Create a playable neon brick-breaker game presented as a beautiful retro arcade cabinet called "BRICK PARTY". Dark arcade room, magenta and cyan neon, a marquee with chunky pixel-inspired lettering, a glass screen with scanlines, a scoreboard, and a small control panel with instructions. The game itself is complete and playable: a paddle, a ball, five rows of coloured bricks, score, three lives, win and lose overlays, and a start/restart button. Move with the mouse, touch or arrow keys. Add glowing particles when bricks break and a subtle screen shake. Fully responsive, one standalone HTML file with inline CSS/JS, no external images, fonts or libraries.
+
+DESIGN INTENT
+The cabinet is the artwork: an object you would find in the corner of a very stylish bar, glowing after midnight. The game is simple and responsive, with tactile neon bricks, a chrome-ish paddle and an addictive loop. Nostalgia is handled with restraint — pixel type, scanlines and glow, but a refined palette and clean layout.
+
+VISUAL TECHNIQUES
+- Neon cabinet frame with marquee, screen bezel, speaker grille, joystick and button details drawn in CSS.
+- Canvas game with rounded bricks, glow, ball trail and brick-break particles.
+- Scanline, reflection and vignette overlays on the screen glass.
+- Pixel-inspired monospaced typography and a vibrant magenta/cyan/yellow palette.
+- HUD with score, high score, lives and level; overlays for start, win and game over.
+- Screen shake and flash on collision; ambient cabinet glow.
+- Responsive scaling of the entire cabinet while keeping the canvas aspect ratio.
+
+INTERACTION MODEL
+Click Start or press Space to launch the ball. Move the paddle with the pointer, touch or left/right arrow keys; the ball auto-launches after a life is lost. Clearing all bricks shows a win state with a replay button; losing three lives shows a game-over state. Score and high score update live. Pause with P. Reduced-motion removes shake and particles but keeps the game fully playable.

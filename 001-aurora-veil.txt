@@ -1,17 +1,20 @@
-TITLE: Aurora Veil — Atmospheric Light Study
+TITLE
+Aurora Veil — Atmospheric Light Studio
 
-PROMPT:
-Create a premium, self-contained interactive editorial page called "Aurora Veil," a field study of northern light. Compose a cinematic deep-teal night atmosphere with a large Georgia serif headline reading "Light remembers." where the second word is an outlined italic. Put the page in a restrained scientific-editorial frame: thin rules, tiny tracked uppercase metadata, coordinates, a live magnetosphere readout, and a vertical activity note. Behind it, paint several soft, slow aurora ribbons in acid green, ice blue and lavender on a full-screen canvas, with a subtle drifting star field and pointer-responsive movement. Add grain, a pulsing activity dot, an orbiting annotation and a responsive mobile composition. Clicking chooses a new aurora palette and updates the activity readout. No external assets, fonts, images or libraries. Must open directly in a browser, work offline, be responsive and validate as HTML5.
+PROMPT
+Design a single-page site for a fictional "atmospheric light studio" called Aurora Veil. The feeling is cold northern light trapped inside frosted glass: a near-black midnight background, enormous soft aurora ribbons of teal, violet and rose drifting behind a centered hero, and a floating glass instrument panel that reads the "current atmosphere". Use an oversized editorial sans headline ("Light, suspended.") with the final word in an elegant italic serif, tight and cinematic. Add a slim glass navigation pill, a live clock and aurora index inside the panel, three "study" cards below the fold, and a slow ticker of poetic phrases at the bottom. Everything must feel expensive, quiet and luminous — generous negative space, hairline borders, inner highlights, film grain, no clutter. Colour palette: #05070f ink, #5ef2d6 teal, #8c7bff violet, #ff7ac8 rose, #eef2ff cream. Type: system grotesque with Palatino/Georgia serif italic accents. Animations should be slow (12–24s drift), never bouncy. Fully responsive, single self-contained HTML file, inline CSS and JS, no external assets.
 
-DESCRIPTION:
-A dark, museum-grade atmospheric editorial that treats the aurora as a live scientific specimen. Oversized romantic serif typography sits against tiny instrument-like labels, while luminous canvas ribbons and grain turn the background into a continuously breathing night sky.
+DESIGN INTENT
+A premium glassmorphism hero that behaves like a piece of atmospheric instrumentation. The aurora is the only loud element; every interface surface is thin, translucent and precise, so the colour appears to be sampled from the sky rather than painted onto the page. The composition is deliberately asymmetric — a large editorial statement on the left balanced by a small, dense instrument card on the right — with the lower third opening into three quiet study cards.
 
-MAJOR VISUAL TECHNIQUES:
-- Full-screen Canvas 2D aurora ribbons with layered gradients, screen blending and pointer influence
-- Editorial grid with hairline rules, tracked micro-type and a vertical sidebar
-- Serif display typography with outlined italic accent
-- CSS radial-gradient atmosphere, animated activity indicators and inline SVG grain texture
-- Fluid clamp() typography and a deliberate mobile re-composition
+VISUAL TECHNIQUES
+- Three blurred, screen-blended gradient blobs animated on independent slow drift paths.
+- Layered radial gradients and a vignette for depth; fixed film-grain overlay generated with an inline SVG feTurbulence data URI.
+- Frosted-glass surfaces using backdrop-filter, 1px translucent borders, inset top highlights and soft layered shadows.
+- Conic-gradient orb rotating inside the instrument card, masked with a radial fade.
+- Fluid clamp() typography with a serif-italic accent and gradient text fill.
+- Hairline grid lines, micro labels in tracked uppercase, animated spectrum bars.
+- IntersectionObserver reveal transitions and a reduced-motion fallback.
 
-INTERACTION MODEL:
-Move the pointer or drag a finger to bend the aurora field toward the light. Click or tap to cycle through three curated aurora palettes; the atmospheric activity reading randomizes and the footer hint acknowledges the new "memory." Reduced-motion users receive a still, carefully composed frame.
+INTERACTION MODEL
+Moving the pointer shifts the aurora layers at different depths and moves a faint radial glow with the cursor. Hovering or tilting over the atmosphere card produces a subtle 3D tilt; the card returns softly on leave. The live clock and aurora index update every second. Study cards lift and reveal a line of copy on hover. Keyboard users get visible focus rings, and all motion is disabled under prefers-reduced-motion.

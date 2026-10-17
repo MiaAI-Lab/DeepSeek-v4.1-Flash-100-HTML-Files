@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Helios — a solar observation plate with a living, clickable sun.">
+<title>Helios — The Star Is Not Calm</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#04050b; --panel:#090b14; --ember:#ff7a3c; --gold:#ffc65c; --bone:#f3e9d6; --dim:rgba(243,233,214,.5); --line:rgba(255,198,92,.18);
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--void);color:var(--bone);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 700px at 72% 40%,rgba(255,122,60,.1),transparent 60%),radial-gradient(700px 500px at 10% 90%,rgba(60,30,15,.4),transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ember);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase}
+  .brand .orb{width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fff0c0,var(--ember) 55%,#a3340c);box-shadow:0 0 14px rgba(255,122,60,.6);flex:none}
+  .brand small{display:block;font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:26px;color:var(--dim)}
+  .headMid b{color:var(--bone);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.8}
+  .headRight b{color:var(--gold);font-weight:400}
+
+  .hero{flex:1;display:grid;grid-template-columns:.76fr 1.24fr;gap:clamp(22px,4vw,54px);align-items:center;padding:clamp(20px,3.4vw,38px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--ember);margin-bottom:16px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--ember)}
+  h1{font-family:var(--serif);font-size:clamp(2.8rem,5.4vw,5.1rem);line-height:.95;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--ember)}
+  .intro p{margin-top:18px;max-width:36ch;font-size:.78rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--bone);font-weight:400}
+  .readouts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .readouts div{background:var(--void);padding:8px 4px 9px}
+  .readouts span{display:block;color:var(--dim);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase}
+  .readouts b{display:block;margin-top:4px;font-family:var(--serif);font-weight:400;font-size:.93rem;color:var(--bone)}
+  .readouts b.hot{color:var(--gold)}
+  .controls{margin-top:18px}
+  .controlRow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .controlRow label{color:var(--dim);white-space:nowrap}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:18px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:linear-gradient(90deg,var(--ember),rgba(243,233,214,.15))}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:12px;height:12px;border-radius:50%;background:var(--gold);border:1px solid var(--void);margin-top:-6px;box-shadow:0 0 10px rgba(255,198,92,.5)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(243,233,214,.25)}
+  input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--gold);border:1px solid var(--void)}
+  .eject{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,198,92,.5);padding:9px 13px;color:var(--gold);font-family:var(--mono);font-size:.45rem;letter-spacing:.11em;text-transform:uppercase;transition:background .25s,color .25s}
+  .eject:hover{background:var(--gold);color:var(--void)}
+  .eject i{width:5px;height:5px;border-radius:50%;background:var(--ember);display:block}
+  .eject:hover i{background:var(--void)}
+
+  .sunStage{position:relative;align-self:stretch;min-height:clamp(400px,62vh,640px);border:1px solid rgba(243,233,214,.12);overflow:hidden;
+    background:radial-gradient(circle at 55% 50%,rgba(255,122,60,.09),transparent 55%),#03040a}
+  #sun{display:block;width:100%;height:100%;min-height:clamp(400px,62vh,640px);cursor:crosshair}
+  .stageMarks{position:absolute;inset:10px;pointer-events:none;border:1px solid rgba(243,233,214,.08)}
+  .stageMarks::before,.stageMarks::after{content:"";position:absolute;background:rgba(243,233,214,.14)}
+  .stageMarks::before{left:50%;top:0;bottom:0;width:1px}
+  .stageMarks::after{top:50%;left:0;right:0;height:1px}
+  .stageLabel{position:absolute;z-index:3;pointer-events:none;color:var(--dim);line-height:1.7}
+  .tl{left:16px;top:12px}.tr{right:16px;top:12px;text-align:right}.bl{left:16px;bottom:12px}.br{right:16px;bottom:12px;text-align:right}
+  .stageLabel b{color:var(--gold);font-weight:400}
+  .hotBadge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,122,60,.4);padding:3px 7px;color:var(--ember)}
+  .hotBadge i{width:4px;height:4px;border-radius:50%;background:var(--ember);animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.2}}
+  .facts{border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:16px}
+  .facts div{padding:11px clamp(12px,2.4vw,24px);border-right:1px solid var(--line);color:var(--dim);line-height:1.7}
+  .facts div:last-child{border-right:0}
+  .facts b{display:block;color:var(--bone);font-family:var(--serif);font-weight:400;font-size:.9rem;margin-bottom:2px}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 0 22px;color:var(--dim)}
+
+  @media(max-width:940px){
+    .hero{grid-template-columns:1fr;gap:18px}
+    .sunStage{order:2;min-height:380px}
+    .sunStage #sun{min-height:380px}
+    .headMid{display:none}
+    .intro{order:1;display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .kicker,.intro h1{grid-column:1}
+    .intro p{grid-column:1}
+    .readouts{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .controls{grid-column:1/-1}
+    .facts{grid-template-columns:1fr 1fr}
+    .facts div:last-child{grid-column:1/-1;border-top:1px solid var(--line)}
+  }
+  @media(max-width:620px){
+    .headRight{display:none}
+    .brand{font-size:.58rem;letter-spacing:.2em}
+    h1{font-size:12vw}
+    .intro{grid-template-columns:1fr}
+    .readouts{grid-column:1;grid-row:auto;margin-top:12px}
+    .sunStage{min-height:340px}
+    .sunStage #sun{min-height:340px}
+    .facts{grid-template-columns:1fr}
+    .facts div{border-right:0;border-bottom:1px solid var(--line)}
+    .facts div:last-child{border-top:0;border-bottom:0}
+    footer span:nth-child(2){display:none}
+    .stageLabel.tr,.stageLabel.bl{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="orb" aria-hidden="true"></span><span>Helios<small>Solar observation / plate 09</small></span></a>
+    <div class="headMid mono"><span>Filter <b>H-alpha</b></span><span>Seeing <b>1.2″</b></span><span>Active regions <b>03</b></span></div>
+    <div class="headRight mono">17 October 2026 · 20:46 UTC<br><b id="flareClass">Quiet — C1.2</b></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">A star, observed closely</p>
+        <h1>The star<br>is not <em>calm.</em></h1>
+        <p>Every second, the sun converts four million tonnes of matter into light. The surface boils, the corona streams outward, and occasionally a filament snaps. <b>We call this weather.</b></p>
+        <div class="readouts mono">
+          <div><span>X-ray flux</span><b class="hot" id="flux">C1.2</b></div>
+          <div><span>Solar wind</span><b>428 km/s</b></div>
+          <div><span>Photosphere</span><b>5,772 K</b></div>
+          <div><span>Active regions</span><b>03</b></div>
+        </div>
+        <div class="controls">
+          <div class="controlRow"><label class="mono" for="activity">Activity</label><input id="activity" type="range" min="0" max="100" value="46" aria-label="Solar activity"><span class="mono" id="actOut" style="color:var(--gold);width:30px;text-align:right">46</span></div>
+          <button class="eject" id="eject"><i aria-hidden="true"></i>Eject a flare</button>
+        </div>
+      </div>
+
+      <div class="sunStage">
+        <canvas id="sun" aria-label="A living sun with corona, particles and flares. Click to eject a flare."></canvas>
+        <div class="stageMarks" aria-hidden="true"></div>
+        <span class="stageLabel tl mono">Helios / 09<br><b>H-alpha</b> 656.28 nm</span>
+        <span class="stageLabel tr mono">Plate scale 1.2″<br>Seeing <b>good</b></span>
+        <span class="stageLabel bl mono"><span class="hotBadge"><i aria-hidden="true"></i><span id="statusText">Quiet</span></span></span>
+        <span class="stageLabel br mono">Click the sun<br>to disturb it</span>
+      </div>
+    </section>
+
+    <section class="facts">
+      <div><b>Granulation</b>The surface is a ledger of convection cells, each about the size of France and lasting eight minutes.</div>
+      <div><b>Corona</b>Hotter than the surface by a factor of three hundred. The mechanism is still politely argued about.</div>
+      <div><b>Flare class</b>C-class events are common and harmless; X-class events are not. This is a fictional instrument.</div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Helios / a fictional solar observatory</span>
+    <span>Drawn with gradients, particles and patience</span>
+    <span>© 2026 · do not stare directly at the screen</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('sun');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const activity = document.getElementById('activity');
+  const actOut = document.getElementById('actOut');
+  const flareClass = document.getElementById('flareClass');
+  const statusText = document.getElementById('statusText');
+  let W = 0, H = 0, dpr = 1;
+  let stars = [], particles = [], bursts = [];
+  let t0 = performance.now();
+  let pointer = { x: -999, y: -999 };
+  let flares = 0;
+
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    const r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    stars = Array.from({ length: 110 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.1, a: .15 + Math.random() * .5 }));
+    particles = Array.from({ length: 150 }, (_, i) => ({
+      a: Math.random() * Math.PI * 2,
+      d: .36 + Math.random() * .5,
+      speed: .0004 + Math.random() * .0012,
+      size: .6 + Math.random() * 1.8,
+      a0: .2 + Math.random() * .6
+    }));
+    if (reduce) draw(performance.now());
+  }
+
+  function sunCenter(){ return { x: W * .55, y: H * .5 }; }
+  function sunRadius(){ return Math.min(W, H) * .27; }
+
+  function flare(x, y, power){
+    const c = sunCenter();
+    const n = power > 1 ? 46 : 26;
+    for (let i = 0; i < n; i++){
+      const a = Math.atan2(y - c.y, x - c.x) + (Math.random() - .5) * .9;
+      const v = (1.5 + Math.random() * 3.6) * power;
+      bursts.push({
+        x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+        life: 1, decay: .004 + Math.random() * .008, r: 1 + Math.random() * 2.2,
+        hue: Math.random() > .5 ? '255,122,60' : '255,198,92'
+      });
+    }
+    bursts.push({ ring: true, x: c.x, y: c.y, r: sunRadius(), life: 1, decay: .012 });
+    flares++;
+    flareClass.textContent = (power > 1.2 ? 'X' : 'M') + (Math.random() * 4 + 1).toFixed(1) + ' — active';
+    statusText.textContent = 'Flare ejected';
+    setTimeout(() => { flareClass.textContent = 'Quiet — C1.2'; statusText.textContent = 'Quiet'; }, 5200);
+    document.querySelectorAll('.readouts b')[0].textContent = (power > 1.2 ? 'X' : 'M') + (Math.random() * 4 + 1).toFixed(1);
+  }
+
+  function draw(now){
+    const t = (now - t0) / 1000;
+    ctx.clearRect(0, 0, W, H);
+    // stars
+    stars.forEach(s => { ctx.fillStyle = 'rgba(243,233,214,' + s.a + ')'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill(); });
+
+    const c = sunCenter();
+    const baseR = sunRadius();
+    const glowR = baseR * (2.5 + Number(activity.value) / 90);
+
+    // corona
+    const glow = ctx.createRadialGradient(c.x, c.y, baseR * .7, c.x, c.y, glowR);
+    glow.addColorStop(0, 'rgba(255,170,80,.42)');
+    glow.addColorStop(.35, 'rgba(255,110,50,.16)');
+    glow.addColorStop(.7, 'rgba(255,80,30,.05)');
+    glow.addColorStop(1, 'rgba(255,80,30,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+    // corona rays
+    const rays = 54;
+    for (let i = 0; i < rays; i++){
+      const a = i / rays * Math.PI * 2 + (reduce ? 0 : t * .02);
+      const len = baseR * (1.18 + (Math.sin(i * 3.7 + t * .7) * .5 + .5) * .5) * (1 + Number(activity.value) / 120);
+      ctx.beginPath();
+      ctx.moveTo(c.x + Math.cos(a) * baseR * .96, c.y + Math.sin(a) * baseR * .96);
+      ctx.lineTo(c.x + Math.cos(a + .012) * len, c.y + Math.sin(a + .012) * len);
+      ctx.strokeStyle = 'rgba(255,160,90,' + (.05 + .12 * Math.abs(Math.sin(i + t * .5))) + ')';
+      ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    // prominences
+    for (let i = 0; i < 7; i++){
+      const a = i / 7 * Math.PI * 2 + t * .015;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, baseR * 1.04, a, a + .28);
+      ctx.strokeStyle = 'rgba(255,120,60,.35)';
+      ctx.lineWidth = 1.5; ctx.stroke();
+    }
+
+    // sun disc
+    const disc = ctx.createRadialGradient(c.x - baseR * .12, c.y - baseR * .12, baseR * .1, c.x, c.y, baseR);
+    disc.addColorStop(0, '#fff4cf');
+    disc.addColorStop(.35, '#ffd27a');
+    disc.addColorStop(.7, '#ff9a4a');
+    disc.addColorStop(.93, '#f26522');
+    disc.addColorStop(1, '#b4370c');
+    ctx.beginPath(); ctx.arc(c.x, c.y, baseR, 0, Math.PI * 2); ctx.fillStyle = disc; ctx.fill();
+
+    // granulation
+    for (let i = 0; i < 28; i++){
+      const a = i * 2.4 + t * .04;
+      const rr = baseR * (.15 + (i % 9) / 12);
+      const x = c.x + Math.cos(a) * rr, y = c.y + Math.sin(a) * rr;
+      ctx.beginPath(); ctx.arc(x, y, baseR * .055, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(150,50,10,.16)'; ctx.lineWidth = .9; ctx.stroke();
+    }
+    // limb darkening
+    ctx.beginPath(); ctx.arc(c.x, c.y, baseR * .985, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(150,40,5,.35)'; ctx.lineWidth = 3; ctx.stroke();
+
+    // orbiting particles
+    particles.forEach(p => {
+      if (!reduce) p.a += p.speed * (1 + Number(activity.value) / 80);
+      const d = baseR * (1.03 + p.d * .8);
+      const x = c.x + Math.cos(p.a) * d, y = c.y + Math.sin(p.a) * d * .92;
+      ctx.fillStyle = 'rgba(255,190,110,' + (p.a0 * .5) + ')';
+      ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // bursts
+    for (let i = bursts.length - 1; i >= 0; i--){
+      const b = bursts[i];
+      if (b.ring){
+        b.r += 4.2; b.life -= b.decay;
+        if (b.life <= 0){ bursts.splice(i, 1); continue; }
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,198,92,' + (b.life * .4) + ')'; ctx.lineWidth = 1.4; ctx.stroke();
+      } else {
+        b.x += b.vx; b.y += b.vy; b.vx *= .992; b.vy *= .992; b.life -= b.decay;
+        if (b.life <= 0){ bursts.splice(i, 1); continue; }
+        ctx.fillStyle = 'rgba(' + b.hue + ',' + b.life * .8 + ')';
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r * b.life, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    // pointer glow
+    if (pointer.x > -100){
+      const d = Math.hypot(pointer.x - c.x, pointer.y - c.y);
+      if (d < baseR * 2.4){
+        ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 34, 0, Math.PI * 2);
+        const pg = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 34);
+        pg.addColorStop(0, 'rgba(255,240,190,.18)'); pg.addColorStop(1, 'rgba(255,240,190,0)');
+        ctx.fillStyle = pg; ctx.fill();
+      }
+    }
+
+    if (!reduce) requestAnimationFrame(draw);
+  }
+
+  activity.addEventListener('input', () => {
+    actOut.textContent = activity.value;
+    if (reduce) draw(performance.now());
+  });
+  canvas.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect(); pointer.x = e.clientX - r.left; pointer.y = e.clientY - r.top;
+  });
+  canvas.addEventListener('pointerleave', () => { pointer.x = -999; pointer.y = -999; });
+  canvas.addEventListener('click', e => {
+    const r = canvas.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    if (Math.hypot(x - sunCenter().x, y - sunCenter().y) < sunRadius() * 1.35) flare(x, y, 1);
+  });
+  document.getElementById('eject').addEventListener('click', () => {
+    flare(sunCenter().x + sunRadius() * .6, sunCenter().y - sunRadius() * .4, 1.4);
+  });
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 180); });
+  size();
+  if (!reduce) requestAnimationFrame(draw);
+</script>
+</body>
+</html>

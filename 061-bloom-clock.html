@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Floral Time — a botanical clock where one flower opens each hour.">
+<title>Floral Time — The Hour, in Bloom</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f4efe2; --paper2:#e9e2d0; --ink:#2f3a2c; --dim:rgba(47,58,44,.55); --line:rgba(47,58,44,.2);
+    --sage:#6e8a6b; --terra:#bf6a4a; --gold:#d9b36b; --rose:#cc7f8e;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 78% 10%,#fbf7ec,transparent 60%),radial-gradient(700px 600px at 5% 90%,#e9e2d0,transparent 65%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.28;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--sage);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--terra);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.08rem;letter-spacing:.02em}
+  .brand .sprig{width:18px;height:24px;position:relative;flex:none}
+  .brand .sprig::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:1px;background:var(--ink)}
+  .brand .sprig::after{content:"";position:absolute;left:2px;top:4px;width:8px;height:13px;border:1px solid var(--ink);border-radius:0 100% 0 100%;transform:rotate(-20deg);background:rgba(110,138,107,.2)}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:26px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.7}
+  .headRight b{color:var(--ink);font-weight:400}
+
+  .hero{flex:1;display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(24px,4vw,54px);align-items:center;padding:clamp(22px,3.6vw,38px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--terra);margin-bottom:16px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--terra)}
+  h1{font-family:var(--serif);font-size:clamp(2.9rem,5.4vw,5.2rem);line-height:.95;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--sage)}
+  .intro p{margin-top:17px;max-width:36ch;font-size:.76rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .bloomCard{margin-top:22px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:12px 0}
+  .bloomCard .no{color:var(--terra);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+  .bloomCard .name{font-family:var(--serif);font-size:1.45rem;line-height:1.1}
+  .bloomCard .name span{font-style:italic;color:var(--dim);font-size:.65rem;display:block;margin-top:2px}
+  .bloomCard .meaning{margin-top:7px;font-size:.7rem;line-height:1.7;color:var(--dim);max-width:32ch}
+  .btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);padding:8px 12px;font-family:var(--mono);font-size:.4rem;letter-spacing:.09em;text-transform:uppercase;transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.primary:hover{background:var(--terra);border-color:var(--terra)}
+
+  .dialWrap{position:relative;display:grid;place-items:center;min-height:clamp(380px,58vh,620px)}
+  .dial{width:min(100%,600px);height:auto;overflow:visible;filter:drop-shadow(0 24px 40px rgba(70,50,30,.15))}
+  .flower{cursor:pointer}
+  .flower .petals{transform-box:fill-box;transform-origin:center;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+  .flower:not(.open) .petals{transform:scale(.18) rotate(-30deg)}
+  .flower.open .petals{transform:scale(1) rotate(0)}
+  .flower .stem,.flower .leaf{transition:stroke .4s}
+  .flower:hover .petals{transform:scale(.5)}
+  .flower.open:hover .petals{transform:scale(1.06)}
+  .flower.preview .petals{transform:scale(.5)}
+  .flower.preview.open .petals{transform:scale(1)}
+  .flower circle.core{transition:fill .4s}
+  .flowerLabel{font-family:var(--mono);font-size:7px;fill:rgba(47,58,44,.45);letter-spacing:.6px}
+  .handSecond{transform-origin:300px 300px;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+  .handMinute,.handHour{transform-origin:300px 300px;transition:transform .6s ease}
+  .dialFoot{display:flex;justify-content:space-between;width:100%;max-width:600px;margin-top:8px;padding-top:9px;border-top:1px solid var(--line);color:var(--dim)}
+  .dialFoot b{color:var(--ink);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 20px;color:var(--dim)}
+
+  @media(max-width:940px){
+    .hero{grid-template-columns:1fr;gap:20px}
+    .dialWrap{order:2;min-height:360px}
+    .intro{order:1;display:grid;grid-template-columns:1fr 1fr;gap:0 26px;align-items:start}
+    .kicker,.intro h1{grid-column:1}
+    .intro p{grid-column:1}
+    .bloomCard{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .btns{grid-column:1}
+    .headMid{display:none}
+  }
+  @media(max-width:600px){
+    .intro{grid-template-columns:1fr}
+    .bloomCard{grid-column:1;grid-row:auto;margin-top:12px}
+    h1{font-size:11.5vw}
+    .brand{font-size:.92rem}
+    .headRight{display:none}
+    .dialFoot{font-size:.4rem}
+    .btn{font-size:.36rem;padding:7px 9px}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="sprig" aria-hidden="true"></span><span>Floral Time<small>Horologium botanicum / no. 12</small></span></a>
+    <div class="headMid mono"><span>Twelve hours</span><span>Twelve flowers</span><span>One open at a time</span></div>
+    <div class="headRight mono">Local time <b id="clock">--:--:--</b><br><b id="date">—</b></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="hero">
+      <div class="intro">
+        <p class="kicker mono">A clock for the garden</p>
+        <h1>The hour,<br><em>in bloom.</em></h1>
+        <p>Twelve flowers keep the twelve hours. Only the current one is awake; the rest wait as buds. <b>Time here is something that opens.</b></p>
+        <div class="bloomCard">
+          <div class="no" id="flowerNo">Hour 01 / 12</div>
+          <div class="name" id="flowerName">Snowdrop <span id="flowerLatin">Galanthus nivalis</span></div>
+          <p class="meaning" id="flowerMeaning">Hope in the cold. The first thing to open when the year has not decided yet.</p>
+        </div>
+        <div class="btns"><button class="btn primary" id="advance">Advance an hour</button><button class="btn" id="now">Return to now</button></div>
+      </div>
+
+      <div class="dialWrap">
+        <svg class="dial" viewBox="0 0 600 600" role="img" aria-label="A botanical clock with twelve flowers around the dial">
+          <defs>
+            <radialGradient id="face" cx="46%" cy="42%"><stop offset="0" stop-color="#fbf7eb"/><stop offset=".7" stop-color="#efe8d7"/><stop offset="1" stop-color="#e1d7c1"/></radialGradient>
+            <radialGradient id="hub" cx="40%" cy="36%"><stop offset="0" stop-color="#f7e7c3"/><stop offset=".6" stop-color="#d9b36b"/><stop offset="1" stop-color="#a9813d"/></radialGradient>
+          </defs>
+          <circle cx="300" cy="300" r="288" fill="url(#face)" stroke="rgba(47,58,44,.5)"/>
+          <circle cx="300" cy="300" r="270" fill="none" stroke="rgba(47,58,44,.2)"/>
+          <circle cx="300" cy="300" r="150" fill="none" stroke="rgba(47,58,44,.12)"/>
+          <g id="ticks"></g>
+          <g id="flowers"></g>
+          <g class="handHour" id="hourHand"><line x1="300" y1="330" x2="300" y2="220" stroke="#3b4b38" stroke-width="4" stroke-linecap="round"/></g>
+          <g class="handMinute" id="minuteHand"><line x1="300" y1="336" x2="300" y2="150" stroke="#3b4b38" stroke-width="2.2" stroke-linecap="round"/></g>
+          <g class="handSecond" id="secondHand"><path d="M300,330 C294,315 296,302 300,290 C304,302 306,315 300,330Z" fill="#6e8a6b"/><line x1="300" y1="308" x2="300" y2="150" stroke="#bf6a4a" stroke-width="1.2"/></g>
+          <circle cx="300" cy="300" r="40" fill="url(#hub)" stroke="rgba(47,58,44,.4)"/>
+          <text x="300" y="296" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#3b4b38" id="hubHour">12</text>
+          <text x="300" y="314" text-anchor="middle" font-family="ui-monospace, monospace" font-size="6.5" letter-spacing="2" fill="rgba(47,58,44,.6)">FLORAL TIME</text>
+        </svg>
+        <div class="dialFoot mono"><span>Dial <b>XII / botanical</b></span><span>Seconds as a leaf</span><span>Local mean time</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Floral Time / a fictional clock</span>
+    <span>Drawn in one file · opens on the hour</span>
+    <span>© 2026 · the garden keeps time</span>
+  </footer>
+</div>
+
+<script>
+  const flowers = [
+    { name:'Snowdrop', latin:'Galanthus nivalis', meaning:'Hope in the cold. The first thing to open when the year has not decided yet.', c1:'#f7f4e8', c2:'#dfe4cc', c3:'#6e8a6b', petals:6 },
+    { name:'Violet', latin:'Viola odorata', meaning:'Quiet affection. A small purple opinion offered from the edge of the path.', c1:'#d8c8ee', c2:'#9f7fc6', c3:'#5e4779', petals:5 },
+    { name:'Daffodil', latin:'Narcissus poeticus', meaning:'Return. A yellow announcement that the worst of the year is over.', c1:'#ffe7a6', c2:'#f2c15a', c3:'#a98336', petals:6 },
+    { name:'Daisy', latin:'Bellis perennis', meaning:'Innocence, or a very good imitation of it. Opens with the sun and closes with the day.', c1:'#fffdf5', c2:'#f0e6cf', c3:'#d9b36b', petals:12 },
+    { name:'Lily', latin:'Lilium candidum', meaning:'Devotion. Tall, certain, and slightly too much for a small vase.', c1:'#fffdf4', c2:'#efe0c9', c3:'#bf6a4a', petals:6 },
+    { name:'Rose', latin:'Rosa gallica', meaning:'Devotion, revised. Beautiful and aware of it.', c1:'#e9a3af', c2:'#cc7f8e', c3:'#8e4d5b', petals:8 },
+    { name:'Lavender', latin:'Lavandula angustifolia', meaning:'Stillness. A scent that asks you to sit down before you answer.', c1:'#c8b8e0', c2:'#a28bc4', c3:'#6e5b8c', petals:6 },
+    { name:'Poppy', latin:'Papaver rhoeas', meaning:'Remembrance. Bright, brief, and impossible to press without losing the colour.', c1:'#e4634b', c2:'#bf6a4a', c3:'#6f3026', petals:5 },
+    { name:'Aster', latin:'Aster amellus', meaning:'Patience. A late flower that refuses to be rushed by the calendar.', c1:'#d6c6ea', c2:'#a994cc', c3:'#6a537e', petals:10 },
+    { name:'Marigold', latin:'Calendula officinalis', meaning:'Warmth. The colour of a kitchen window in the late afternoon.', c1:'#ffd98a', c2:'#e8a94b', c3:'#a86f2a', petals:12 },
+    { name:'Chrysanthemum', latin:'Chrysanthemum morifolium', meaning:'Long life. Many petals, many years, one steady centre.', c1:'#f1e2b8', c2:'#d9b36b', c3:'#9a763b', petals:14 },
+    { name:'Hellebore', latin:'Helleborus niger', meaning:'Winter bloom. A quiet refusal to wait for better weather.', c1:'#e9efe3', c2:'#c7d5bc', c3:'#6e8a6b', petals:5 }
+  ];
+  const flowersG = document.getElementById('flowers');
+  const ticksG = document.getElementById('ticks');
+  const flowersEls = [];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (let i = 0; i < 60; i++){
+    const a = i / 60 * Math.PI * 2 - Math.PI / 2;
+    const long = i % 5 === 0;
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', 300 + Math.cos(a) * (long ? 252 : 259));
+    l.setAttribute('y1', 300 + Math.sin(a) * (long ? 252 : 259));
+    l.setAttribute('x2', 300 + Math.cos(a) * 266);
+    l.setAttribute('y2', 300 + Math.sin(a) * 266);
+    l.setAttribute('stroke', long ? 'rgba(47,58,44,.5)' : 'rgba(47,58,44,.2)');
+    l.setAttribute('stroke-width', long ? 1.2 : .6);
+    ticksG.appendChild(l);
+  }
+
+  flowers.forEach((f, i) => {
+    const a = i / 12 * Math.PI * 2 - Math.PI / 2;
+    const cx = 300 + Math.cos(a) * 210;
+    const cy = 300 + Math.sin(a) * 210;
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'flower');
+    g.setAttribute('data-i', i);
+    g.setAttribute('tabindex', '0');
+    g.setAttribute('role', 'button');
+    g.setAttribute('aria-label', f.name + ', hour ' + (i === 0 ? 12 : i));
+    const stemX = 300 + Math.cos(a) * 120, stemY = 300 + Math.sin(a) * 120;
+    g.innerHTML = '<line class="stem" x1="' + cx + '" y1="' + cy + '" x2="' + stemX + '" y2="' + stemY + '" stroke="' + f.c3 + '" stroke-width="1.4"/><ellipse class="leaf" cx="' + (cx - 8) + '" cy="' + (cy + 12) + '" rx="9" ry="4" fill="' + f.c3 + '" opacity=".55" transform="rotate(-28 ' + cx + ' ' + cy + ')"/>';
+    const petalOuter = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    petalOuter.setAttribute('transform', 'translate(' + cx + ',' + cy + ')');
+    const petals = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    petals.setAttribute('class', 'petals');
+    for (let p = 0; p < f.petals; p++){
+      const e = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      const pa = p / f.petals * Math.PI * 2;
+      e.setAttribute('cx', 0); e.setAttribute('cy', -15);
+      e.setAttribute('rx', 8); e.setAttribute('ry', 16);
+      e.setAttribute('fill', p % 2 ? f.c1 : f.c2);
+      e.setAttribute('opacity', '.85');
+      e.setAttribute('transform', 'rotate(' + (pa * 180 / Math.PI) + ')');
+      petals.appendChild(e);
+    }
+    petalOuter.appendChild(petals);
+    g.appendChild(petalOuter);
+    const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    core.setAttribute('cx', cx); core.setAttribute('cy', cy); core.setAttribute('r', 6);
+    core.setAttribute('fill', f.c3); core.setAttribute('class', 'core'); core.setAttribute('stroke', f.c1); core.setAttribute('stroke-width', '1.2');
+    g.appendChild(core);
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', 300 + Math.cos(a) * 270); label.setAttribute('y', 300 + Math.sin(a) * 270 + 3);
+    label.setAttribute('text-anchor', 'middle'); label.setAttribute('class', 'flowerLabel');
+    label.textContent = i === 0 ? 'XII' : String(i).padStart(2, '0');
+    g.appendChild(label);
+    g.addEventListener('click', () => preview(i));
+    g.addEventListener('pointerenter', () => preview(i));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ preview(i); e.preventDefault(); } });
+    flowersG.appendChild(g);
+    flowersEls.push(g);
+  });
+
+  const hourHand = document.getElementById('hourHand');
+  const minuteHand = document.getElementById('minuteHand');
+  const secondHand = document.getElementById('secondHand');
+  const hourHandEl = document.getElementById('hourHand');
+  const clock = document.getElementById('clock');
+  const dateEl = document.getElementById('date');
+  let pinned = null;
+  let displayHour = new Date().getHours();
+
+  function hourIndex(h){ return (h + 11) % 12; }
+
+  function setOpen(idx){
+    flowersEls.forEach((g, i) => {
+      g.classList.toggle('open', i === idx);
+      g.classList.remove('preview');
+    });
+  }
+
+  function card(i){
+    const f = flowers[i];
+    document.getElementById('flowerNo').textContent = 'Hour ' + String(i === 0 ? 12 : i).padStart(2,'0') + ' / 12';
+    document.getElementById('flowerName').innerHTML = f.name + ' <span>' + f.latin + '</span>';
+    document.getElementById('flowerMeaning').textContent = f.meaning;
+  }
+
+  function preview(i){
+    pinned = i;
+    card(i);
+    flowersEls.forEach((g, j) => g.classList.toggle('preview', j === i));
+  }
+
+  function tick(){
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+    clock.textContent = [h, m, s].map(n => String(n).padStart(2, '0')).join(':');
+    dateEl.textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+    secondHand.style.transform = 'rotate(' + (s * 6) + 'deg)';
+    minuteHand.style.transform = 'rotate(' + ((m + s / 60) * 6) + 'deg)';
+    hourHand.style.transform = 'rotate(' + (((h % 12) + m / 60) * 30) + 'deg)';
+    document.getElementById('hubHour').textContent = String(h % 12 === 0 ? 12 : h % 12);
+    if (pinned === null){
+      displayHour = h;
+      setOpen(hourIndex(h));
+      card(hourIndex(h));
+    }
+  }
+
+  document.getElementById('now').addEventListener('click', () => {
+    pinned = null;
+    tick();
+  });
+  document.getElementById('advance').addEventListener('click', () => {
+    displayHour = (displayHour + 1) % 12;
+    pinned = (displayHour + 11) % 12;
+    setOpen(hourIndex(displayHour));
+    card(hourIndex(displayHour));
+    flowersEls.forEach((g, j) => g.classList.toggle('preview', j === pinned));
+  });
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>

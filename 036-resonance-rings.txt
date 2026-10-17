@@ -1,0 +1,20 @@
+TITLE
+Resonance — Everything Is a Wave
+
+PROMPT
+Create a full-screen generative sound sculpture called "Resonance". A near-black teal space, concentric rings of cyan, violet and magenta expanding from the pointer, a faint central waveform, and huge editorial type at the edges: "Everything is a wave." The interface is minimal — a small masthead, a bottom control tray with an "Emit" button, a frequency slider, a sound-on toggle and a live readout of hertz and amplitude. Clicking or tapping emits a visible ring and, only if sound is enabled, a soft synthesized tone. Rings drift, interfere and fade like ripples on dark water. The page should feel like an instrument for looking at sound. Fully responsive, one standalone HTML file with inline CSS/JS, no external audio or images.
+
+DESIGN INTENT
+A scientific instrument with a poetic title. The rings are precise, not psychedelic: thin, luminous, mathematically spaced, with occasional interference. The interface sits at the edges like lab equipment, leaving the centre to the phenomenon. Colour is used to encode frequency, so the sculpture changes hue as the slider moves.
+
+VISUAL TECHNIQUES
+- Canvas ring system with additive strokes, per-ring colour and fade, plus interference bands.
+- Subtle central waveform ring that follows the live frequency.
+- Pointer parallax and click-generated ripple sets.
+- Frequency-to-hue mapping; optional WebAudio sine tone with a gentle envelope.
+- Film grain, vignette and a faint radial glow.
+- Edge-anchored editorial typography and monospaced telemetry.
+- Retina-aware canvas and a reduced-motion mode that draws a static ring field.
+
+INTERACTION MODEL
+Moving the pointer attracts the ring origin gently; clicking emits three rings and a tone when sound is on. The frequency slider changes the pitch, hue and ring spacing in real time, with a numeric readout. Sound is off by default and only initializes after the toggle is pressed. "Clear the field" resets the rings. Keyboard users can operate every control; reduced-motion freezes drift and removes continuous animation while keeping the emit function.

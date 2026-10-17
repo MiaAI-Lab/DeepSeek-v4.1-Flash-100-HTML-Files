@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Haptic — a softer control surface. One material, four moods, nothing that shouts.">
+<title>Haptic — A Softer Control Surface</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --bg:#e7ebf2; --surface:#e9edf4; --text:#333a48; --muted:#6a7283;
+    --accent:#67c9a5; --accent-soft:rgba(103,201,165,.22);
+    --raise:16px 16px 34px #c7cdd9,-16px -16px 34px #ffffff;
+    --raise-sm:8px 8px 18px #cbd1dc,-8px -8px 18px #ffffff;
+    --inset:inset 5px 5px 11px #cbd1dc,inset -5px -5px 11px #ffffff;
+    --inset-deep:inset 9px 9px 20px #c5cbd7,inset -9px -9px 20px #ffffff;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .6s ease}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+  ::selection{background:var(--accent);color:#fff}
+
+  .dots{position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(#c3c9d5 1px,transparent 1.4px);background-size:26px 26px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 20%,transparent 78%);
+    mask-image:radial-gradient(ellipse at 50% 40%,#000 20%,transparent 78%);opacity:.55}
+  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .ambient i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.32;background:var(--accent);
+    transition:background .8s ease}
+  .ambient i:nth-child(1){width:34vw;height:34vw;left:-8vw;top:-10vw}
+  .ambient i:nth-child(2){width:28vw;height:28vw;right:-6vw;bottom:-8vw;opacity:.2}
+  .ambient i:nth-child(3){width:20vw;height:20vw;right:24vw;top:8vh;opacity:.14}
+
+  .page{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 clamp(18px,3.6vw,46px) 40px}
+  .mono{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 0;border-bottom:1px solid rgba(51,58,72,.1)}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:600;font-size:.92rem;letter-spacing:-.01em}
+  .brand .dot{width:26px;height:26px;border-radius:50%;background:var(--surface);box-shadow:var(--raise-sm);position:relative}
+  .brand .dot::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .brand small{color:var(--muted);font-weight:400;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;margin-left:2px}
+  .topnav{display:flex;gap:26px;color:var(--muted)}
+  .topnav a{position:relative;padding:3px 0;transition:color .25s}
+  .topnav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--accent);transition:width .3s}
+  .topnav a:hover{color:var(--text)}
+  .topnav a:hover::after{width:100%}
+  .version{color:var(--muted)}
+
+  .hero{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(30px,5vw,70px);align-items:center;padding:clamp(40px,6vw,80px) 0 30px}
+  .intro .eyebrow{margin-bottom:22px;color:var(--muted);display:flex;align-items:center;gap:10px}
+  .intro .eyebrow::before{content:"";width:26px;height:1px;background:var(--accent)}
+  h1{font-size:clamp(2.5rem,4.6vw,4.2rem);line-height:.98;letter-spacing:-.055em;font-weight:500}
+  h1 em{font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;font-weight:400;font-style:italic;color:var(--accent);transition:color .6s}
+  .intro p{margin-top:24px;max-width:34ch;font-size:.86rem;line-height:1.8;color:var(--muted);font-weight:300}
+  .intro .hint{margin-top:34px;display:flex;align-items:center;gap:12px;color:var(--muted)}
+  .intro .hint .line{width:36px;height:1px;background:rgba(51,58,72,.22)}
+  .intro .hint b{font-weight:500;color:var(--text)}
+  .specs{margin-top:46px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(51,58,72,.12);border-block:1px solid rgba(51,58,72,.12)}
+  .specs div{background:var(--bg);padding:12px 2px 13px;transition:background .6s}
+  .specs span{display:block;color:var(--muted);font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase}
+  .specs b{display:block;margin-top:7px;font-weight:400;font-size:.8rem}
+
+  .deviceWrap{position:relative;perspective:1400px}
+  .device{position:relative;background:var(--surface);border-radius:38px;padding:22px;
+    box-shadow:26px 30px 70px rgba(150,159,177,.55),-20px -20px 60px rgba(255,255,255,.9),inset 0 1px 0 #fff;
+    transition:background .6s,box-shadow .6s}
+  .device::before{content:"";position:absolute;inset:7px;border-radius:31px;border:1px solid rgba(255,255,255,.55);pointer-events:none}
+  .floor{position:absolute;left:8%;right:8%;bottom:-42px;height:56px;border-radius:50%;
+    background:radial-gradient(ellipse,rgba(120,130,150,.28),transparent 68%);filter:blur(10px);z-index:-1}
+  .deviceHead{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 18px}
+  .deviceHead .name{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+  .led{display:flex;align-items:center;gap:8px;color:var(--muted);font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase}
+  .led i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 9px var(--accent);transition:background .5s,box-shadow .5s}
+  .deviceBody{display:grid;grid-template-columns:1fr .92fr;gap:20px}
+
+  .dialPane{border-radius:26px;padding:18px;box-shadow:var(--inset-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+  .dialPlate{position:relative;width:min(100%,290px);aspect-ratio:1;border-radius:50%;box-shadow:var(--raise);display:grid;place-items:center;touch-action:none;cursor:grab}
+  .dialPlate:active{cursor:grabbing}
+  .dialPlate::before{content:"";position:absolute;inset:7%;border-radius:50%;
+    background:repeating-conic-gradient(from -135deg,rgba(51,58,72,.34) 0 .7deg,transparent .7deg 6deg);
+    -webkit-mask:radial-gradient(circle,transparent 0 78%,#000 79% 86%,transparent 87%);
+    mask:radial-gradient(circle,transparent 0 78%,#000 79% 86%,transparent 87%)}
+  .dialFace{position:relative;width:76%;aspect-ratio:1;border-radius:50%;box-shadow:var(--inset);display:grid;place-items:center}
+  .dialFace::after{content:"";position:absolute;inset:-3%;border-radius:50%;
+    background:conic-gradient(from 0deg,var(--accent),transparent 22%,transparent 78%,var(--accent));
+    opacity:.55;filter:blur(8px);z-index:-1;transition:background .5s}
+  .needle{position:absolute;inset:0;transform:rotate(var(--rot,-40deg));transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+  .needle::before{content:"";position:absolute;left:50%;top:8%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 12px var(--accent),0 0 0 4px var(--surface);transition:background .5s,box-shadow .5s}
+  .needle::after{content:"";position:absolute;left:50%;top:12%;width:1px;height:17%;background:linear-gradient(var(--accent),transparent);opacity:.6}
+  .dialInner{text-align:center;position:relative;z-index:2}
+  .dialInner .val{font-size:clamp(2.2rem,4vw,3rem);font-weight:300;letter-spacing:-.05em;line-height:1}
+  .dialInner .val small{font-size:.7rem;font-weight:400;color:var(--muted);letter-spacing:0}
+  .dialInner .lbl{margin-top:6px;font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .dialFoot{display:flex;justify-content:space-between;width:100%;padding:0 8px;color:var(--muted);font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase}
+
+  .controls{display:flex;flex-direction:column;gap:12px}
+  .readout{border-radius:20px;box-shadow:var(--inset);padding:14px 16px;display:flex;justify-content:space-between;gap:14px}
+  .readout div span{display:block;font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .readout div b{display:block;margin-top:6px;font-weight:500;font-size:.76rem}
+  .readout div:last-child{text-align:right}
+  .presets{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .preset{border-radius:16px;padding:11px 12px;box-shadow:var(--raise-sm);display:flex;align-items:center;gap:9px;
+    font-size:.68rem;color:var(--muted);transition:box-shadow .22s,color .22s,transform .22s;text-align:left}
+  .preset i{width:9px;height:9px;border-radius:50%;background:var(--sw);flex:none;box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+  .preset:hover{color:var(--text);transform:translateY(-1px)}
+  .preset[aria-pressed="true"]{box-shadow:var(--inset);color:var(--text);font-weight:500;transform:none}
+  .preset[aria-pressed="true"] i{box-shadow:0 0 9px var(--sw)}
+
+  .scopeBox{border-radius:20px;box-shadow:var(--inset);padding:10px 12px 6px;position:relative;overflow:hidden}
+  .scopeBox .scopeTop{display:flex;justify-content:space-between;color:var(--muted);font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+  #scope{display:block;width:100%;height:64px}
+
+  .switches{display:grid;gap:1px;border-radius:18px;box-shadow:var(--raise-sm);overflow:hidden}
+  .switchRow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);padding:10px 13px}
+  .switchRow span{font-size:.66rem;color:var(--muted)}
+  .switch{position:relative;width:40px;height:22px;border-radius:20px;box-shadow:var(--inset);flex:none;transition:background .3s}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--surface);
+    box-shadow:2px 2px 5px rgba(150,159,177,.6),inset 0 1px 0 #fff;transition:transform .3s cubic-bezier(.2,.8,.2,1),background .3s}
+  .switch[aria-checked="true"]{background:var(--accent-soft)}
+  .switch[aria-checked="true"]::after{transform:translateX(18px);background:var(--accent);box-shadow:0 0 8px var(--accent-soft)}
+
+  .caption{display:flex;justify-content:space-between;align-items:center;margin-top:26px;color:var(--muted);gap:18px}
+  .caption p{max-width:36ch;line-height:1.7;font-size:.64rem}
+  .caption .sig{display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .caption .sig i{width:22px;height:1px;background:rgba(51,58,72,.3)}
+  footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:26px;padding-top:18px;border-top:1px solid rgba(51,58,72,.1);color:var(--muted)}
+
+  @media(max-width:1000px){
+    .hero{grid-template-columns:1fr;padding-top:34px}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;align-items:start}
+    .intro .eyebrow,.intro h1{grid-column:1}
+    .intro p{grid-column:1;margin-top:18px}
+    .intro .hint{grid-column:1}
+    .specs{grid-column:2;grid-row:1/span 4;margin-top:0;align-self:end}
+    .deviceWrap{max-width:650px;margin:0 auto;width:100%}
+  }
+  @media(max-width:720px){
+    .deviceBody{grid-template-columns:1fr}
+    .dialPane{order:1}
+    .controls{order:2}
+    .device{border-radius:30px;padding:16px}
+    .dialPlate{max-width:240px}
+    .intro{grid-template-columns:1fr}
+    .specs{grid-column:1;grid-row:auto;margin-top:26px}
+    .topnav{display:none}
+    .hero{gap:34px}
+    .caption{flex-direction:column;align-items:flex-start}
+    .deviceHead{padding-bottom:12px}
+    .readout{padding:12px 14px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="dots" aria-hidden="true"></div>
+
+<div class="page">
+  <header class="topbar">
+    <a class="brand" href="#"><span class="dot" aria-hidden="true"></span>Haptic <small>/ soft systems</small></a>
+    <nav class="topnav mono" aria-label="Primary">
+      <a href="#device">Instrument</a>
+      <a href="#device">Notes</a>
+      <a href="#device">Manual</a>
+    </nav>
+    <span class="version mono">Model 03 — Porcelain</span>
+  </header>
+
+  <main class="hero">
+    <div class="intro">
+      <p class="eyebrow mono">Instrument 03 — calm technology</p>
+      <h1>A softer<br><em>control</em><br>surface.</h1>
+      <p>One material, four moods, and nothing that shouts. Haptic is a study in restraint: a dial you can feel with your eyes, and a small pulse to let you know it is alive.</p>
+      <div class="hint mono"><span class="line"></span> Drag the dial. <b>Nothing will buzz.</b></div>
+      <div class="specs">
+        <div><span>Material</span><b>Porcelain</b></div>
+        <div><span>Moods</span><b>Four</b></div>
+        <div><span>Sensor</span><b>Capacitive</b></div>
+        <div><span>Power</span><b>Ambient</b></div>
+      </div>
+    </div>
+
+    <div class="deviceWrap">
+      <div class="device" id="device">
+        <div class="deviceHead">
+          <span class="name">Haptic · 03</span>
+          <span class="led"><i aria-hidden="true"></i><span id="ledText">Calm / ready</span></span>
+        </div>
+        <div class="deviceBody">
+          <div class="dialPane">
+            <div class="dialPlate" id="dial" role="slider" tabindex="0" aria-label="Intensity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" aria-valuetext="62 percent">
+              <div class="dialFace">
+                <div class="needle" aria-hidden="true"></div>
+                <div class="dialInner">
+                  <div class="val"><span id="dialVal">62</span><small>%</small></div>
+                  <div class="lbl">Intensity</div>
+                </div>
+              </div>
+            </div>
+            <div class="dialFoot" aria-hidden="true"><span>0 — rest</span><span>100 — alive</span></div>
+          </div>
+
+          <div class="controls">
+            <div class="readout" aria-live="polite">
+              <div><span>State</span><b id="state">Calm</b></div>
+              <div><span>Tone</span><b id="tone">Mellow</b></div>
+              <div><span>Level</span><b id="levelVal">62</b></div>
+            </div>
+
+            <div class="presets" role="group" aria-label="Mood presets">
+              <button class="preset" data-mood="calm" style="--sw:#67c9a5" aria-pressed="true"><i aria-hidden="true"></i>Calm</button>
+              <button class="preset" data-mood="focus" style="--sw:#6f95f7" aria-pressed="false"><i aria-hidden="true"></i>Focus</button>
+              <button class="preset" data-mood="warm" style="--sw:#f08a70" aria-pressed="false"><i aria-hidden="true"></i>Warm</button>
+              <button class="preset" data-mood="night" style="--sw:#9a86e8" aria-pressed="false"><i aria-hidden="true"></i>Night</button>
+            </div>
+
+            <div class="scopeBox">
+              <div class="scopeTop"><span>Waveform</span><span>Live</span></div>
+              <canvas id="scope" aria-label="Ambient waveform" role="img"></canvas>
+            </div>
+
+            <div class="switches">
+              <div class="switchRow"><span>Haptic feedback</span><button class="switch" role="switch" aria-checked="true" aria-label="Haptic feedback"></button></div>
+              <div class="switchRow"><span>Ambient light</span><button class="switch" role="switch" aria-checked="true" aria-label="Ambient light"></button></div>
+              <div class="switchRow"><span>Auto rest</span><button class="switch" role="switch" aria-checked="false" aria-label="Auto rest"></button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="floor" aria-hidden="true"></div>
+      <div class="caption">
+        <p>Hold the dial and turn slowly. The instrument prefers small gestures — it was designed for a desk, not a dashboard.</p>
+        <span class="sig mono"><i></i> Studio note 014</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>Haptic is a fictional instrument · Built with one HTML file</span>
+    <span>Porcelain finish / 2026</span>
+    <span>Turn gently ↑</span>
+  </footer>
+</div>
+
+<script>
+  const moods = {
+    calm:  { accent:'#67c9a5', soft:'rgba(103,201,165,.22)', state:'Calm',  tone:'Mellow', freq:392, value:62 },
+    focus: { accent:'#6f95f7', soft:'rgba(111,149,247,.22)', state:'Focus', tone:'Crisp',  freq:528, value:78 },
+    warm:  { accent:'#f08a70', soft:'rgba(240,138,112,.22)', state:'Warm',  tone:'Soft',   freq:349, value:46 },
+    night: { accent:'#9a86e8', soft:'rgba(154,134,232,.22)', state:'Night', tone:'Low',    freq:294, value:30 }
+  };
+  let currentMood = 'calm';
+  let value = moods.calm.value;
+  let accent = moods.calm.accent;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const dial = document.getElementById('dial');
+  const dialVal = document.getElementById('dialVal');
+  const levelVal = document.getElementById('levelVal');
+  const stateEl = document.getElementById('state');
+  const toneEl = document.getElementById('tone');
+  const ledText = document.getElementById('ledText');
+
+  function setDial(v){
+    value = Math.max(0, Math.min(100, Math.round(v)));
+    const rot = -135 + value / 100 * 270;
+    dial.style.setProperty('--rot', rot.toFixed(2) + 'deg');
+    dial.setAttribute('aria-valuenow', String(value));
+    dial.setAttribute('aria-valuetext', value + ' percent');
+    dialVal.textContent = String(value);
+    levelVal.textContent = String(value);
+  }
+
+  function valueFromPointer(e){
+    const r = dial.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    let angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+    angle = Math.max(-135, Math.min(135, angle));
+    return (angle + 135) / 270 * 100;
+  }
+
+  let dragging = false;
+  dial.addEventListener('pointerdown', e => {
+    dragging = true;
+    if (dial.setPointerCapture) dial.setPointerCapture(e.pointerId);
+    setDial(valueFromPointer(e));
+    e.preventDefault();
+  });
+  dial.addEventListener('pointermove', e => { if (dragging) setDial(valueFromPointer(e)); });
+  dial.addEventListener('pointerup', () => { dragging = false; });
+  dial.addEventListener('pointercancel', () => { dragging = false; });
+  dial.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { setDial(value - 4); e.preventDefault(); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { setDial(value + 4); e.preventDefault(); }
+    if (e.key === 'Home') { setDial(0); e.preventDefault(); }
+    if (e.key === 'End') { setDial(100); e.preventDefault(); }
+  });
+
+  let audioCtx = null;
+  function chime(freq){
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const t = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.035, t + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(t); osc.stop(t + 0.75);
+    } catch (err) { /* audio is a courtesy, never a requirement */ }
+  }
+
+  function applyMood(name, playSound){
+    const m = moods[name];
+    if (!m) return;
+    currentMood = name;
+    accent = m.accent;
+    document.documentElement.style.setProperty('--accent', m.accent);
+    document.documentElement.style.setProperty('--accent-soft', m.soft);
+    stateEl.textContent = m.state;
+    toneEl.textContent = m.tone + ' · ' + m.freq + ' Hz';
+    ledText.textContent = m.state + ' / ready';
+    document.querySelectorAll('.preset').forEach(b => {
+      b.setAttribute('aria-pressed', String(b.dataset.mood === name));
+    });
+    setDial(m.value);
+    if (playSound) chime(m.freq);
+  }
+
+  document.querySelectorAll('.preset').forEach(btn => {
+    btn.addEventListener('click', () => applyMood(btn.dataset.mood, true));
+  });
+
+  document.querySelectorAll('.switch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      const on = sw.getAttribute('aria-checked') !== 'true';
+      sw.setAttribute('aria-checked', String(on));
+    });
+  });
+
+  const canvas = document.getElementById('scope');
+  const ctx = canvas.getContext('2d');
+  let w = 0, h = 0;
+
+  function size(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    w = rect.width; h = rect.height;
+    canvas.width = Math.max(1, Math.round(w * dpr));
+    canvas.height = Math.max(1, Math.round(h * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function draw(t){
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(51,58,72,.10)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2 + .5); ctx.lineTo(w, h / 2 + .5);
+    ctx.stroke();
+
+    const amp = 2 + value / 100 * (h * .30);
+    const speed = 0.0012 + value * 0.000004;
+    for (let layer = 0; layer < 2; layer++){
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 2){
+        const p = x / w;
+        const env = Math.sin(p * Math.PI);
+        const y = h / 2 + Math.sin(p * 9 + t * speed + layer * 1.7) * amp * env * (layer === 0 ? .9 : .42);
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = layer === 0 ? accent : 'rgba(106,114,131,.35)';
+      ctx.lineWidth = layer === 0 ? 1.6 : 1;
+      ctx.shadowBlur = layer === 0 ? 10 : 0;
+      ctx.shadowColor = accent;
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  function loop(t){
+    draw(t || 0);
+    if (!reduce) requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => { size(); draw(0); });
+  size();
+  setDial(value);
+  if (reduce) draw(0); else requestAnimationFrame(loop);
+</script>
+</body>
+</html>

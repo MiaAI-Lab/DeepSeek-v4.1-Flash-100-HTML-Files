@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Resonance — an interactive sound sculpture of rings, frequency and light.">
+<title>Resonance — Everything Is a Wave</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#02070a; --panel:#07141a; --foam:#e6f7f5; --dim:rgba(230,247,245,.5); --line:rgba(230,247,245,.16); --accent:#5ff0e0;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--void);color:var(--foam);font-family:var(--sans);overflow:hidden;height:100svh;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.7}
+  #rings{position:fixed;inset:0;z-index:0;display:block;width:100%;height:100%;cursor:crosshair}
+  .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 34%,rgba(2,7,10,.55) 82%,rgba(2,7,10,.95))}
+  .grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.2;mix-blend-mode:screen;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  .ui{position:relative;z-index:4;height:100svh;display:flex;flex-direction:column;padding:0 clamp(16px,3.2vw,42px);pointer-events:none}
+  .ui button,.ui input,.ui label{pointer-events:auto}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-size:.7rem;letter-spacing:.34em;text-transform:uppercase}
+  .brand .orb{width:16px;height:16px;border-radius:50%;border:1px solid var(--accent);box-shadow:0 0 16px rgba(95,240,224,.4);position:relative;flex:none}
+  .brand .orb::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--accent)}
+  .brand small{display:block;font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:26px;color:var(--dim)}
+  .headMid b{color:var(--foam);font-weight:400}
+  .headRight{text-align:right;color:var(--dim);line-height:1.8}
+  .headRight b{color:var(--accent);font-weight:400}
+  .mid{flex:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;pointer-events:none;padding-bottom:20px}
+  .statement{max-width:620px}
+  .eyebrow{display:flex;align-items:center;gap:9px;color:var(--accent);margin-bottom:16px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+  h1{font-family:var(--serif);font-size:clamp(2.8rem,6.4vw,6rem);line-height:.93;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--accent)}
+  .statement p{margin-top:14px;max-width:32ch;color:var(--dim);font-size:.72rem;line-height:1.8}
+  .tray{width:min(330px,100%);border:1px solid var(--line);background:rgba(6,20,26,.65);backdrop-filter:blur(12px);padding:12px;display:flex;flex-direction:column;gap:9px;pointer-events:auto}
+  .trayHead{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:1px}
+  .trayHead b{color:var(--accent);font-weight:400}
+  .emit{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(95,240,224,.45);padding:9px 11px;color:var(--accent);
+    font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;transition:background .25s,color .25s}
+  .emit:hover{background:var(--accent);color:var(--void)}
+  .emit i{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .emit:hover i{background:var(--void);box-shadow:none}
+  .freq{display:flex;align-items:center;gap:9px;color:var(--dim)}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:18px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(230,247,245,.3)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:-5px;border:1px solid var(--void);box-shadow:0 0 8px rgba(95,240,224,.6)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(230,247,245,.3)}
+  input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:var(--accent);border:1px solid var(--void)}
+  .freqOut{width:58px;text-align:right;color:var(--foam);font-family:var(--mono);font-size:.46rem;letter-spacing:.03em}
+  .rowBtns{display:flex;gap:6px}
+  .mini{flex:1;border:1px solid var(--line);padding:6px 8px;font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);transition:color .2s,border-color .2s,background .2s}
+  .mini:hover{color:var(--foam);border-color:var(--foam)}
+  .mini[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--void)}
+  .readout{display:flex;justify-content:space-between;padding-top:7px;border-top:1px solid var(--line);color:var(--dim)}
+  .readout b{color:var(--foam);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:11px 0 16px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .headMid{display:none}
+    .mid{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:20px;padding-bottom:14px}
+    .tray{width:min(100%,380px)}
+    .headRight .hide{display:none}
+    h1{font-size:clamp(2.6rem,9vw,4.4rem)}
+    .statement p{display:none}
+  }
+  @media(max-width:600px){
+    .brand{font-size:.58rem;letter-spacing:.22em}
+    .headRight{display:none}
+    h1{font-size:11.5vw}
+    .tray{padding:10px}
+    footer span:nth-child(2){display:none}
+    .ui{padding:0 14px}
+    .emit{padding:8px 10px}
+    .mid{padding-bottom:8px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<canvas id="rings" aria-label="Interactive ring sculpture. Click to emit a ring."></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="ui">
+  <header>
+    <a class="brand" href="#top"><span class="orb" aria-hidden="true"></span><span>Resonance<small>Sound made visible / 03</small></span></a>
+    <div class="headMid mono"><span>Frequency <b id="hFreq">220 Hz</b></span><span>Rings <b id="hRings">000</b></span><span>Medium <b>air</b></span></div>
+    <div class="headRight mono">A study in interference<br><b id="hAmp">amplitude 0.62</b></div>
+  </header>
+
+  <div class="mid">
+    <div class="statement">
+      <p class="eyebrow mono">Emit · listen · watch it travel</p>
+      <h1>Everything<br>is <em>a wave.</em></h1>
+      <p>Click the dark and the dark answers with a circle. Every ring is a small proof that energy does not disappear; it only becomes harder to see.</p>
+    </div>
+
+    <div class="tray" aria-label="Sound sculpture controls">
+      <div class="trayHead mono"><span>Instrument / live</span><span><b id="status">silent</b></span></div>
+      <button class="emit" id="emit"><span>Emit a ring</span><i aria-hidden="true"></i></button>
+      <div class="freq">
+        <label class="mono" for="freq">Freq</label>
+        <input id="freq" type="range" min="80" max="880" step="1" value="220" aria-label="Frequency in hertz">
+        <span class="freqOut" id="freqOut">220 Hz</span>
+      </div>
+      <div class="rowBtns">
+        <button class="mini" id="sound" aria-pressed="false">Sound: off</button>
+        <button class="mini" id="clear">Clear field</button>
+      </div>
+      <div class="readout mono"><span>Wavelength <b id="wl">1.55 m</b></span><span>Phase <b id="phase">0°</b></span></div>
+    </div>
+  </div>
+
+  <footer class="mono">
+    <span>Resonance / a fictional sound sculpture</span>
+    <span>Rings drawn, not recorded · sound is optional</span>
+    <span>© 2026 · silence is also a frequency</span>
+  </footer>
+</div>
+
+<script>
+  const canvas = document.getElementById('rings');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const freq = document.getElementById('freq');
+  const freqOut = document.getElementById('freqOut');
+  const soundBtn = document.getElementById('sound');
+  const hFreq = document.getElementById('hFreq');
+  const hRings = document.getElementById('hRings');
+  const hAmp = document.getElementById('hAmp');
+  let W = 0, H = 0, dpr = 1;
+  let rings = [];
+  let pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+  let ringCount = 0;
+  let hue = 172;
+  let soundOn = false;
+  let audioCtx = null, osc = null, gain = null;
+  let t0 = performance.now();
+
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    pointer.x = pointer.tx = W / 2; pointer.y = pointer.ty = H / 2;
+    ctx.fillStyle = '#02070a'; ctx.fillRect(0, 0, W, H);
+    if (reduce) staticField();
+  }
+
+  function makeRings(x, y, strong){
+    const f = Number(freq.value);
+    const n = strong ? 3 : 1;
+    for (let i = 0; i < n; i++){
+      rings.push({
+        x: x, y: y, r: 6 + i * 8, speed: 1.1 + (f / 880) * 1.6 + i * .18,
+        alpha: strong ? .6 : .32, hue: hue + i * 12, width: strong ? 1.5 : 1
+      });
+    }
+    ringCount += n;
+    hRings.textContent = String(ringCount).padStart(3, '0');
+    hAmp.textContent = 'amplitude ' + (.45 + Math.random() * .3).toFixed(2);
+    if (soundOn) tone(f);
+  }
+
+  function staticField(){
+    ctx.fillStyle = '#02070a'; ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 22; i++){
+      ctx.beginPath();
+      ctx.arc(W / 2, H * .46, 20 + i * 24, 0, Math.PI * 2);
+      ctx.strokeStyle = 'hsla(' + (172 + i * 3) + ',80%,70%,' + (0.25 - i * .008) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+
+  function tone(f){
+    if (!audioCtx) return;
+    const t = audioCtx.currentTime;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.08, t + .03);
+    g.gain.exponentialRampToValueAtTime(.0001, t + 1.2);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(t); o.stop(t + 1.25);
+  }
+
+  function draw(now){
+    const t = now / 1000;
+    pointer.x += (pointer.tx - pointer.x) * .08;
+    pointer.y += (pointer.ty - pointer.y) * .08;
+    if (!reduce){
+      ctx.fillStyle = 'rgba(2,7,10,.10)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+
+      // central waveform ring
+      const f = Number(freq.value);
+      ctx.beginPath();
+      const cx = pointer.x, cy = pointer.y;
+      for (let a = 0; a <= Math.PI * 2 + .02; a += .012){
+        const wob = Math.sin(a * 8 + t * 2.4) * (6 + f / 55);
+        const rr = Math.min(W, H) * .16 + wob;
+        const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
+        if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'hsla(' + hue + ',80%,72%,.36)';
+      ctx.lineWidth = 1.2; ctx.stroke();
+
+      for (let i = rings.length - 1; i >= 0; i--){
+        const r = rings[i];
+        r.r += r.speed;
+        r.alpha *= .996;
+        if (r.alpha < .008){ rings.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'hsla(' + r.hue + ',85%,70%,' + r.alpha + ')';
+        ctx.lineWidth = r.width;
+        ctx.stroke();
+        if (r.r > 90){
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.r - 16, 0, Math.PI * 2);
+          ctx.strokeStyle = 'hsla(' + (r.hue + 24) + ',80%,65%,' + (r.alpha * .35) + ')';
+          ctx.lineWidth = .6;
+          ctx.stroke();
+        }
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      const ph = Math.round((t * f / 4) % 360);
+      document.getElementById('phase').textContent = ph + '°';
+      requestAnimationFrame(draw);
+    }
+  }
+
+  function setFreq(){
+    const f = Number(freq.value);
+    freqOut.textContent = f + ' Hz';
+    hFreq.textContent = f + ' Hz';
+    document.getElementById('wl').textContent = (343 / f).toFixed(2) + ' m';
+    hue = 150 + (f - 80) / 800 * 90;
+    document.documentElement.style.setProperty('--accent', 'hsl(' + hue + ' 80% 70%)');
+    if (osc) osc.frequency.setTargetAtTime(f, audioCtx.currentTime, .05);
+  }
+  freq.addEventListener('input', setFreq);
+
+  canvas.addEventListener('pointerdown', e => {
+    pointer.tx = e.clientX; pointer.ty = e.clientY;
+    makeRings(e.clientX, e.clientY, true);
+  });
+  canvas.addEventListener('pointermove', e => {
+    pointer.tx = e.clientX; pointer.ty = e.clientY;
+    if (rings.length < 24 && Math.random() > .97) makeRings(e.clientX, e.clientY, false);
+  });
+  document.getElementById('emit').addEventListener('click', () => makeRings(pointer.x, pointer.y, true));
+  document.getElementById('clear').addEventListener('click', () => { rings = []; hRings.textContent = '000'; });
+
+  soundBtn.addEventListener('click', () => {
+    soundOn = !soundOn;
+    soundBtn.setAttribute('aria-pressed', String(soundOn));
+    soundBtn.textContent = soundOn ? 'Sound: on' : 'Sound: off';
+    document.getElementById('status').textContent = soundOn ? 'listening' : 'silent';
+    if (soundOn){
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      osc = audioCtx.createOscillator();
+      gain = audioCtx.createGain();
+      osc.type = 'sine'; osc.frequency.value = Number(freq.value);
+      gain.gain.value = .012;
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+      tone(Number(freq.value));
+    } else if (osc) {
+      osc.stop(); osc.disconnect(); osc = null;
+    }
+  });
+
+  window.addEventListener('resize', size);
+  size();
+  setFreq();
+  if (!reduce){
+    makeRings(W * .5, H * .46, true);
+    requestAnimationFrame(draw);
+  }
+</script>
+</body>
+</html>

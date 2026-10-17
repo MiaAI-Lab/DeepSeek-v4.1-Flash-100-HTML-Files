@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Obsidian — Object 01 by Obsidian Atelier. A study in mass, silence and reflected light.">
+<title>Obsidian Atelier — Object 01</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#12100d; --warm:#191611; --bone:#efe9dd; --gold:#c8a25a; --dim:rgba(239,233,221,.5);
+    --line:rgba(239,233,221,.14);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--void);color:var(--bone);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--gold);color:var(--void)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:5px}
+  .mono{font-family:var(--mono);font-size:.55rem;letter-spacing:.17em;text-transform:uppercase;line-height:1.6}
+  .grain{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  .wrap{max-width:1340px;margin:0 auto;padding:0 clamp(16px,3.4vw,44px)}
+
+  header{border-bottom:1px solid var(--line)}
+  .top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;padding:20px 0}
+  .top .left{display:flex;gap:24px;color:var(--dim)}
+  .top .left a{transition:color .25s}
+  .top .left a:hover{color:var(--bone)}
+  .brand{font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;white-space:nowrap;text-align:center}
+  .brand b{font-weight:500;color:var(--gold)}
+  .top .right{text-align:right;color:var(--dim);display:flex;justify-content:flex-end;gap:20px;align-items:center}
+  .top .right .dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}
+
+  .hero{position:relative;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(24px,4vw,60px);align-items:center;
+    padding:clamp(40px,6vw,78px) 0 clamp(40px,6vw,64px);min-height:calc(100svh - 74px)}
+  .hero::before{content:"";position:absolute;right:0;top:4%;width:60%;height:88%;pointer-events:none;
+    background:radial-gradient(ellipse at 60% 50%,rgba(200,162,90,.16),transparent 62%)}
+  .eyebrow{display:flex;align-items:center;gap:12px;color:var(--gold);margin-bottom:24px}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-size:clamp(3.1rem,6.6vw,6.4rem);line-height:.93;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--gold);font-weight:400}
+  .lede{margin-top:28px;max-width:39ch;font-size:.84rem;line-height:1.85;color:var(--dim);font-weight:300}
+  .lede b{color:var(--bone);font-weight:400}
+  .buyRow{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:34px}
+  .acquire{display:inline-flex;align-items:center;gap:14px;padding:15px 23px;border:1px solid var(--gold);color:var(--gold);
+    font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;position:relative;overflow:hidden;
+    transition:color .35s,box-shadow .35s}
+  .acquire::before{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+  .acquire span{position:relative;z-index:2}
+  .acquire:hover{color:var(--void);box-shadow:0 0 34px rgba(200,162,90,.22)}
+  .acquire:hover::before{transform:scaleX(1)}
+  .price{font-family:var(--serif);font-size:1.1rem;color:var(--bone)}
+  .price small{display:block;font-family:var(--sans);font-size:.56rem;letter-spacing:.08em;color:var(--dim);margin-top:4px;text-transform:uppercase}
+  .note{min-height:1.2em;margin-top:14px;color:var(--gold);font-family:var(--mono);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase}
+  .facts{display:flex;gap:clamp(22px,4vw,50px);margin-top:44px;padding-top:16px;border-top:1px solid var(--line)}
+  .facts span{display:block;color:var(--dim);font-family:var(--mono);font-size:.49rem;letter-spacing:.12em;text-transform:uppercase}
+  .facts b{display:block;margin-top:7px;font-weight:400;font-family:var(--serif);font-size:.95rem;letter-spacing:.01em;color:var(--bone)}
+
+  .stageWrap{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:520px}
+  .stage{position:relative;width:100%;max-width:520px;height:clamp(390px,56vh,540px);display:grid;place-items:center;perspective:1100px;touch-action:none;cursor:grab;outline-offset:8px}
+  .stage.dragging{cursor:grabbing}
+  .stage:focus-visible{outline:1px solid var(--gold)}
+  .halo{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(200,162,90,.15),rgba(200,162,90,.03) 46%,transparent 68%);filter:blur(10px)}
+  .halo::after{content:"";position:absolute;inset:12%;border-radius:50%;border:1px solid rgba(200,162,90,.15)}
+  .slab{position:relative;width:200px;height:350px;transform-style:preserve-3d;
+    transform:rotateX(-6deg) rotateY(-24deg);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+  .stage.dragging .slab{transition:none}
+  .face{position:absolute;background:linear-gradient(160deg,#26231f 0%,#080706 45%,#14110e 72%,#2d2922 100%)}
+  .front{width:200px;height:350px;transform:translateZ(36px);clip-path:polygon(0 5%,100% 0,100% 94%,0 100%);
+    box-shadow:inset 0 0 60px rgba(0,0,0,.75),inset 1px 0 0 rgba(239,233,221,.08)}
+  .front::before{content:"";position:absolute;inset:0;background:linear-gradient(112deg,transparent 18%,rgba(239,233,221,.16) 24%,transparent 32%,transparent 68%,rgba(200,162,90,.1) 76%,transparent 84%)}
+  .front::after{content:"";position:absolute;left:0;top:4%;bottom:12%;width:1px;background:linear-gradient(180deg,var(--gold),rgba(200,162,90,.1))}
+  .side{width:72px;height:350px;left:200px;transform:rotateY(90deg) translateZ(0);transform-origin:left center;
+    background:linear-gradient(90deg,#060505,#1c1915 55%,#0a0908);clip-path:polygon(0 5%,100% 0,100% 88%,0 100%)}
+  .topface{width:200px;height:72px;top:-32px;transform:rotateX(90deg) translateZ(0);transform-origin:bottom center;
+    background:linear-gradient(100deg,#3a352d,#0b0a08 45%,#242019)}
+  .edge{position:absolute;width:2px;height:330px;background:linear-gradient(180deg,var(--gold),rgba(200,162,90,.15));right:0;top:4%;box-shadow:0 0 18px rgba(200,162,90,.4)}
+  .plinth{position:absolute;bottom:7%;width:310px;height:26px;border-radius:50%;
+    background:radial-gradient(ellipse,rgba(0,0,0,.75) 0 32%,rgba(200,162,90,.16) 48%,transparent 70%);filter:blur(7px)}
+  .plinth::after{content:"";position:absolute;left:18%;right:18%;top:44%;height:1px;background:rgba(200,162,90,.38)}
+  .ring{position:absolute;bottom:9%;width:340px;height:86px;border-radius:50%;border:1px solid rgba(200,162,90,.16);transform:rotateX(68deg)}
+  .ticks{position:absolute;inset:0;pointer-events:none;color:var(--dim)}
+  .ticks span{position:absolute;font-family:var(--mono);font-size:.45rem;letter-spacing:.16em;text-transform:uppercase}
+  .t1{left:2%;top:12%}.t2{right:0;top:22%}.t3{left:1%;bottom:16%}.t4{right:3%;bottom:12%}
+  .readout{position:absolute;left:50%;bottom:-2%;transform:translateX(-50%);display:flex;gap:16px;color:var(--dim);white-space:nowrap}
+  .readout b{color:var(--gold);font-weight:400}
+  .stageCaption{display:flex;justify-content:space-between;gap:16px;width:100%;max-width:520px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);color:var(--dim)}
+  .stageCaption b{color:var(--bone);font-weight:400}
+
+  .triptych{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:clamp(34px,6vw,64px) 0}
+  .triHead{display:flex;justify-content:space-between;gap:20px;align-items:baseline;margin-bottom:32px;color:var(--dim)}
+  .triHead h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,3vw,2.4rem);color:var(--bone);letter-spacing:-.03em}
+  .triHead h2 em{color:var(--gold)}
+  .tri{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  .tri article{padding:0 clamp(16px,3vw,34px);border-right:1px solid var(--line)}
+  .tri article:first-child{padding-left:0}
+  .tri article:last-child{border-right:0;padding-right:0}
+  .tri .no{color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:8px}
+  .tri .no::after{content:"";flex:1;height:1px;background:var(--line)}
+  .tri h3{font-family:var(--serif);font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:400;letter-spacing:-.02em;margin-bottom:12px}
+  .tri p{font-size:.78rem;line-height:1.8;color:var(--dim);max-width:34ch}
+  .tri .measure{display:flex;gap:16px;margin-top:22px;color:var(--dim);font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;text-transform:uppercase}
+  .tri .measure b{color:var(--bone);font-weight:400}
+
+  .specs{padding:clamp(34px,5vw,54px) 0}
+  .specGrid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .specGrid div{padding:22px 18px;border-right:1px solid var(--line)}
+  .specGrid div:first-child{padding-left:0}
+  .specGrid div:last-child{border-right:0}
+  .specGrid span{color:var(--dim);font-family:var(--mono);font-size:.48rem;letter-spacing:.13em;text-transform:uppercase}
+  .specGrid b{display:block;margin-top:10px;font-family:var(--serif);font-weight:400;font-size:clamp(1.15rem,1.8vw,1.5rem);letter-spacing:-.01em}
+  .specGrid small{display:block;margin-top:5px;color:var(--dim);font-size:.58rem;line-height:1.5}
+  .closing{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;padding:clamp(28px,5vw,50px) 0 34px}
+  .closing .line1{font-family:var(--serif);font-size:clamp(1.6rem,3.4vw,2.8rem);line-height:1.15;letter-spacing:-.03em;max-width:24ch}
+  .closing .line1 em{color:var(--gold)}
+  .closing .meta{text-align:right;color:var(--dim);line-height:1.9}
+  footer{border-top:1px solid var(--line);padding:16px 0 28px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--dim)}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:980px){
+    .hero{grid-template-columns:1fr;min-height:0;padding-top:34px}
+    .stageWrap{order:2;min-height:440px}
+    .stage{height:420px;max-width:460px}
+    .triptych .tri{grid-template-columns:1fr}
+    .tri article{border-right:0;border-bottom:1px solid var(--line);padding:22px 0}
+    .tri article:last-child{border-bottom:0}
+    .tri article:first-child{padding-top:0}
+    .specGrid{grid-template-columns:1fr 1fr}
+    .specGrid div:nth-child(2){border-right:0}
+    .specGrid div:nth-child(3){border-top:1px solid var(--line);padding-left:0}
+    .specGrid div:nth-child(4){border-top:1px solid var(--line)}
+    .triHead{flex-direction:column;gap:8px}
+  }
+  @media(max-width:600px){
+    .top{grid-template-columns:1fr auto}
+    .top .left{display:none}
+    .brand{text-align:left;letter-spacing:.28em}
+    .top .right{gap:12px}
+    h1{font-size:15vw}
+    .slab{transform:scale(.82) rotateX(-6deg) rotateY(-24deg)}
+    .stageWrap{min-height:370px}
+    .stage{height:340px}
+    .plinth,.ring{display:none}
+    .facts{gap:20px;flex-wrap:wrap}
+    .specGrid{grid-template-columns:1fr}
+    .specGrid div{border-right:0;border-top:1px solid var(--line);padding-left:0}
+    .specGrid div:first-child{border-top:0}
+    .closing .meta{text-align:left}
+    .stageCaption .hintTxt{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    .reveal{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div class="left mono"><a href="#object">Object 01</a><a href="#details">Atelier</a><a href="#specs">Editions</a></div>
+      <a class="brand" href="#top">Obsidian <b>Atelier</b></a>
+      <div class="right mono"><span>Private list <span class="dot" aria-hidden="true"></span></span><a href="#acquire">Acquire</a></div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" id="object" aria-labelledby="obj-title">
+      <div>
+        <p class="eyebrow mono">Object 01 — Cast basalt, polished</p>
+        <h1 id="obj-title">Nothing<br><em>to prove.</em></h1>
+        <p class="lede">A single mass, cut on one plane and left otherwise alone. Obsidian is designed to catch the light you already have — a window, a desk lamp, a late afternoon — and return it <b>quietly, without spectacle.</b></p>
+        <div class="buyRow">
+          <button class="acquire" id="acquireBtn" aria-describedby="acquireNote"><span id="acquireLabel">Acquire — £1,240</span></button>
+          <div class="price">Edition of 88<small>Two remaining · 2026</small></div>
+        </div>
+        <p class="note" id="acquireNote" aria-live="polite"></p>
+        <div class="facts">
+          <div><span>Material</span><b>Basalt / 01</b></div>
+          <div><span>Mass</span><b>2.4 kg</b></div>
+          <div><span>Finish</span><b>Hand-polished</b></div>
+        </div>
+      </div>
+
+      <div class="stageWrap">
+        <div class="ticks" aria-hidden="true"><span class="t1">2.4 kg</span><span class="t2">01 / 88</span><span class="t3">Basalt</span><span class="t4">H 240 mm</span></div>
+        <div class="stage" id="stage" tabindex="0" role="application" aria-label="Rotatable 3D obsidian object. Drag or use arrow keys.">
+          <div class="halo" aria-hidden="true"></div>
+          <div class="slab" id="slab" aria-hidden="true">
+            <div class="face front"><span class="edge"></span></div>
+            <div class="face side"></div>
+            <div class="face topface"></div>
+          </div>
+          <div class="plinth" aria-hidden="true"></div>
+          <div class="ring" aria-hidden="true"></div>
+          <div class="readout mono"><span>Rotation <b id="angleOut">−24°</b></span><span>Drag to turn</span></div>
+        </div>
+        <div class="stageCaption mono"><span>Fig. 01 — <b>Obsidian, desk object</b></span><span class="hintTxt">Drag / arrow keys</span></div>
+      </div>
+    </section>
+
+    <section class="triptych" id="details" aria-labelledby="detail-title">
+      <div class="triHead"><h2 id="detail-title">Three qualities, <em>in order.</em></h2><span class="mono">Appraised by hand, each edition</span></div>
+      <div class="tri">
+        <article class="reveal">
+          <div class="no mono">01 — Weight</div>
+          <h3>It stays put.</h3>
+          <p>2.4 kilograms of dense basalt, machined flat on the underside and finished with a felt base. It does not slide when you set down a cup beside it.</p>
+          <div class="measure"><span>Mass <b>2.4 kg</b></span><span>Foot <b>90 × 60 mm</b></span></div>
+        </article>
+        <article class="reveal">
+          <div class="no mono">02 — Silence</div>
+          <h3>It keeps quiet.</h3>
+          <p>No logo, no plaque, no explanation on the object itself. The only mark is a hairline gold edge, visible only when the light happens to find it.</p>
+          <div class="measure"><span>Markings <b>One edge</b></span><span>Engraving <b>Underside</b></span></div>
+        </article>
+        <article class="reveal">
+          <div class="no mono">03 — Light</div>
+          <h3>It returns some.</h3>
+          <p>Polished to 0.4 microns on the front plane, left matte elsewhere. The result is a surface that behaves differently at 9am and 5pm, without ever asking to be looked at.</p>
+          <div class="measure"><span>Polish <b>0.4 µm</b></span><span>Finish <b>Matte sides</b></span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="specs" id="specs" aria-label="Specification">
+      <div class="specGrid">
+        <div><span>Dimensions</span><b>240 × 130 × 72 mm</b><small>Height × width × depth</small></div>
+        <div><span>Material</span><b>Basalt, cast</b><small>Quarried in the Eifel, finished in Oslo</small></div>
+        <div><span>Edition</span><b>88 numbered</b><small>Two remaining in the 2026 release</small></div>
+        <div><span>Delivery</span><b>Made to order</b><small>Six to eight weeks, insured</small></div>
+      </div>
+    </section>
+
+    <section class="closing" id="acquire">
+      <p class="line1">A small object for a <em>quiet room.</em></p>
+      <div class="meta mono">
+        <span>Obsidian Atelier — Object 01</span><br>
+        <span>Private viewings by appointment</span><br>
+        <button id="acquireBtn2" style="color:var(--gold);border-bottom:1px solid rgba(200,162,90,.4);padding-bottom:2px;margin-top:8px">Join the private list ↗</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>© 2026 Obsidian Atelier · Oslo</span>
+    <span>Object 01 / Edition of 88 / A fiction in basalt</span>
+    <span>No images — all light is CSS</span>
+  </footer>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const slab = document.getElementById('slab');
+  const angleOut = document.getElementById('angleOut');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let rotY = -24, rotX = -6;
+  let dragging = false, startX = 0, startY = 0, baseY = -24, baseX = -6;
+
+  function render(){
+    slab.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+    angleOut.textContent = (rotY < 0 ? '−' : '+') + Math.abs(Math.round(rotY)) + '°';
+  }
+
+  stage.addEventListener('pointerdown', e => {
+    dragging = true;
+    baseY = rotY; baseX = rotX;
+    startX = e.clientX; startY = e.clientY;
+    stage.classList.add('dragging');
+    if (stage.setPointerCapture) stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    rotY = Math.max(-80, Math.min(80, baseY + (e.clientX - startX) * .35));
+    rotX = Math.max(-30, Math.min(24, baseX - (e.clientY - startY) * .22));
+    render();
+  });
+  function endDrag(){ dragging = false; stage.classList.remove('dragging'); }
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
+  stage.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft'){ rotY = Math.max(-80, rotY - 5); render(); e.preventDefault(); }
+    if (e.key === 'ArrowRight'){ rotY = Math.min(80, rotY + 5); render(); e.preventDefault(); }
+    if (e.key === 'ArrowUp'){ rotX = Math.max(-30, rotX - 3); render(); e.preventDefault(); }
+    if (e.key === 'ArrowDown'){ rotX = Math.min(24, rotX + 3); render(); e.preventDefault(); }
+  });
+
+  const note = document.getElementById('acquireNote');
+  function reserve(btn, label){
+    note.textContent = 'Reserved on the private list — the atelier will write to you.';
+    if (label) label.textContent = 'On the private list ✓';
+    if (btn) btn.setAttribute('aria-pressed', 'true');
+  }
+  document.getElementById('acquireBtn').addEventListener('click', function(){
+    reserve(this, document.getElementById('acquireLabel'));
+  });
+  document.getElementById('acquireBtn2').addEventListener('click', function(e){
+    e.preventDefault();
+    reserve(null, null);
+    note.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce){
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: .2 });
+    reveals.forEach(el => io.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add('in'));
+  }
+
+  render();
+</script>
+</body>
+</html>

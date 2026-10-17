@@ -1,0 +1,20 @@
+TITLE
+Herbarium of Letters — A Specimen Book
+
+PROMPT
+Create a botanical specimen-book page titled "Herbarium of Letters" where each letter of the alphabet is presented as a pressed plant. Palette: pale sage paper (#eef0e5), deep forest ink (#22331f), terracotta (#b45f3f) and antique gold (#c9a24b). The main plate shows a huge serif capital surrounded by an SVG botanical arrangement — curved stems, alternate leaves and small five-petal flowers — generated from the letter's character code, with a hand-numbered specimen label. A second column carries the title "Letters, pressed.", a short essay, and a 26-letter index; clicking a letter re-draws the plate, changes the Latin-style specimen name and animates the leaves. A "press this specimen" action adds the letter to a small herbarium list and stamps the plate. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A quiet, tactile crossover between natural-history illustration and typography. The plate is treated as a real herbarium sheet: generous paper, double rules, tiny annotation numbers, a hand-written label. Colour is used sparingly — green stems, sage leaves, a few terracotta flowers, gold for the smallest marks. The generated botanical form is deterministic for each letter, so the collection feels catalogued rather than random.
+
+VISUAL TECHNIQUES
+- Deterministic SVG botanical generation seeded by character code: bezier stems, alternating leaves, flower clusters and annotation dots.
+- Oversized serif glyph centred in the plate, cropped slightly like a pressed specimen.
+- Letter-by-letter redraw with fade and stem draw-on transitions.
+- Alphabet index with clear active state and keyboard focus.
+- Herbarium styling: double rule, corner ticks, specimen number, Latin binomial, collection date.
+- Sage paper, grain, a single terracotta hanko-like stamp and gold plate numbering.
+- Responsive layout: plate first on mobile, index collapses to a scrollable strip.
+
+INTERACTION MODEL
+Selecting a letter from the index regenerates the botanical plate with a short grow animation and updates the specimen name, number and notes. "Press this specimen" stamps the sheet and appends the letter to the herbarium list, with a live count. Hovering the plate slightly lifts the paper. Arrow keys move through the alphabet when the index is focused. Reduced-motion shows the botanical composition immediately without growth transitions.

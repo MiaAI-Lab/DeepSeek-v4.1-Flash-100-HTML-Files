@@ -1,0 +1,20 @@
+TITLE
+Aperture — Let the Light In
+
+PROMPT
+Create a photographic exposure laboratory called "Aperture". A dark chrome-and-black interface surrounds a live simulated viewfinder: a warm dusk landscape seen through a seven-blade iris whose opening changes with the f-stop. Aperture, shutter and ISO controls update an EV readout and meter, and the scene brightens or darkens accordingly; an Auto button finds a balanced exposure, and the red shutter release flashes and adds a frame to a filmstrip. Include an editorial headline "Let the light in.", the exposure triangle explained in three short notes, and a frame counter. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+The camera as an instrument: black anodised metal, engraved chrome, one red dot. The viewfinder is the only warm thing in the interface, and its brightness is controlled by the visitor. The iris should look mechanical — overlapping blades, a clean polygon hole — not like a decorative circle.
+
+VISUAL TECHNIQUES
+- SVG seven-blade iris with a masked polygon opening that scales with f-stop.
+- Layered CSS landscape inside the viewfinder (sky, sun, hills, foreground) affected by an exposure filter.
+- EV computation from aperture, shutter and ISO; meter needle and exposure verdict.
+- Chrome bezel, screws, engraved labels and a red shutter button.
+- Flash animation and captured frames appended to a filmstrip with their settings.
+- Frame counter, film stock label and reset.
+- Responsive three-column layout collapsing to one; reduced-motion skips the flash animation.
+
+INTERACTION MODEL
+Changing the aperture, shutter or ISO sliders updates the iris, EV, meter and scene brightness instantly. Auto chooses a balanced combination. The shutter release briefly flashes the viewfinder and adds a thumbnail with the current settings to the filmstrip; Clear empties it. Sliders and buttons are keyboard accessible with visible focus.

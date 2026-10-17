@@ -1,0 +1,20 @@
+TITLE
+Chroma-4 — A Polyphonic Colour Synthesizer
+
+PROMPT
+Create a playable retro-futurist synthesizer called CHROMA-4 inside a luxurious hardware panel. Dark charcoal and brushed graphite, warm ivory labels, and twelve luminous pads in coral, amber, mint, cyan, violet and rose. The layout: a logo header with power LED, a large oscilloscope canvas, three slim hardware faders (cutoff, resonance, tempo), a 4×3 pad grid with note names and keyboard hints, a sixteen-step sequencer strip, transport controls, and small engraved serial numbers. Clicking a pad plays a real synthesized note via WebAudio, lights the pad and animates the scope; the sequencer can run patterns at variable tempo, with a moving playhead. Everything must be usable and beautiful on mobile. Fully responsive, one standalone HTML file with inline CSS/JS, no external libraries, fonts or audio files.
+
+DESIGN INTENT
+A piece of imaginary hardware you want to touch. The panel is quiet and expensive — no gradients shouting, just warm light, precise labels, tactile shadows and twelve small windows of colour. The synthesizer is real enough to reward curiosity: every pad has a voice, the faders change it, and the sequencer turns the page into a performance.
+
+VISUAL TECHNIQUES
+- Hardware-panel composition with inset surfaces, screws, engraved labels and a warm status LED.
+- Twelve glowing pads with per-pad colour, inner highlight, pressed depth and keyboard hints.
+- Canvas oscilloscope with a moving waveform, grid and phosphor glow.
+- Custom range faders with metallic tracks and bright caps.
+- Sixteen-step sequencer with active steps and a running playhead.
+- WebAudio voice engine: detuned saw oscillator, low-pass filter, resonance and short envelope.
+- Responsive reflow: pads stay four across on mobile, controls stack above them.
+
+INTERACTION MODEL
+Click or tap pads to play notes; number and letter keys are mapped to the grid. The scope responds to the most recent voice. Faders adjust filter cutoff, resonance and tempo live. Steps can be toggled; Play starts the sequencer and a playhead moves across the sixteen steps, triggering active pads. Power toggles the LED and mutes output. All controls are keyboard accessible, and audio only initializes after the first user gesture.

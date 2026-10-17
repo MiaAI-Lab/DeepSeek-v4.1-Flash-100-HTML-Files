@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BRUT® Chair 01 — cast concrete seating, made to be sat on hard.">
+<title>BRUT® — Chair 01</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --concrete:#d6d2c9; --concrete2:#c3bfb5; --ink:#111110; --dim:rgba(17,17,16,.55); --line:rgba(17,17,16,.85); --orange:#ff4d00;
+    --face1:#e4e0d7; --face2:#bcb7ab; --face3:#8f8b80;
+    --sans:"Helvetica Neue","Arial Narrow",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--concrete);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:linear-gradient(90deg,rgba(0,0,0,.03) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.03) 1px,transparent 1px);background-size:44px 44px}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--orange);color:var(--ink)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1440px;margin:0 auto;padding:0 clamp(12px,2.4vw,32px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-bottom:3px solid var(--ink)}
+  .brand{display:flex;align-items:baseline;gap:8px;font-weight:800;letter-spacing:-.05em;font-size:1.35rem}
+  .brand sup{font-size:.4em;letter-spacing:0;font-weight:500}
+  nav{display:flex;gap:22px;align-items:center}
+  nav a{font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase}
+  nav a:hover{color:var(--orange)}
+  .cart{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.44rem;letter-spacing:.08em;text-transform:uppercase}
+  .cart i{width:20px;height:20px;background:var(--ink);color:var(--concrete);border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.4rem}
+
+  .main{flex:1;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(16px,3vw,40px);padding:clamp(14px,2.6vw,26px) 0 18px}
+  .left{display:flex;flex-direction:column;min-width:0}
+  .eyebrow{display:flex;justify-content:space-between;gap:12px;color:var(--dim);padding-bottom:7px;border-bottom:1px solid var(--line)}
+  h1{font-size:clamp(4.4rem,12.6vw,12.5rem);line-height:.76;letter-spacing:-.075em;font-weight:800;margin:8px 0 6px;text-transform:uppercase}
+  h1 span{display:block}
+  h1 em{font-style:normal;color:var(--orange)}
+  .lede{max-width:42ch;font-size:.74rem;line-height:1.8;color:var(--dim);margin-top:8px}
+  .lede b{color:var(--ink);font-weight:500}
+  .variantRow{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+  .swatch{border:1px solid var(--ink);padding:6px 9px;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.4rem;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,color .2s}
+  .swatch i{width:11px;height:11px;background:var(--c);border:1px solid rgba(0,0,0,.3)}
+  .swatch:hover{background:rgba(17,17,16,.08)}
+  .swatch[aria-pressed="true"]{background:var(--ink);color:var(--concrete)}
+  .specs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:14px}
+  .specs div{background:var(--concrete);padding:7px 9px}
+  .specs span{display:block;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase}
+  .specs b{display:block;margin-top:2px;font-family:var(--serif);font-size:.84rem;font-weight:400}
+  .buyRow{display:flex;align-items:stretch;gap:0;margin-top:14px;border:2px solid var(--ink);max-width:420px}
+  .price{display:flex;flex-direction:column;justify-content:center;padding:8px 14px;border-right:2px solid var(--ink);flex:none}
+  .price b{font-family:var(--serif);font-size:1.2rem;font-weight:400}
+  .price span{font-family:var(--mono);font-size:.32rem;letter-spacing:.06em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+  .add{flex:1;background:var(--ink);color:var(--concrete);font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;padding:10px;transition:background .2s,color .2s}
+  .add:hover{background:var(--orange);color:var(--ink)}
+  .footLede{display:flex;justify-content:space-between;gap:12px;margin-top:auto;padding-top:12px;color:var(--dim);flex-wrap:wrap}
+
+  .right{display:flex;flex-direction:column;min-width:0}
+  .stageTop{display:flex;justify-content:space-between;gap:10px;padding-bottom:6px;border-bottom:1px solid var(--line);color:var(--dim)}
+  .stage{position:relative;flex:1;min-height:clamp(340px,54vh,560px);border:2px solid var(--ink);background:linear-gradient(160deg,#e3dfd5,#c9c5ba);overflow:hidden;display:grid;place-items:center}
+  .stage::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+  #chair{width:78%;height:auto;max-height:88%;overflow:visible;filter:drop-shadow(20px 26px 14px rgba(40,35,25,.28))}
+  .stage .label{position:absolute;left:10px;top:10px;z-index:2;line-height:1.7;color:var(--dim)}
+  .stage .label b{color:var(--ink);font-weight:400}
+  .stage .edition{position:absolute;right:10px;bottom:9px;z-index:2;text-align:right;line-height:1.7;color:var(--dim)}
+  .stage .edition b{color:var(--orange);font-weight:400}
+  .stage .dimLine{stroke:#ff4d00;stroke-width:1;fill:none}
+  .stage .dimText{fill:#ff4d00;font-family:ui-monospace, monospace;font-size:7px;letter-spacing:1px}
+  .dimsOff .dims{opacity:0}
+  .dims{transition:opacity .3s}
+  .stageFoot{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--dim);flex-wrap:wrap}
+  .dimBtn{border:1px solid var(--line);padding:5px 8px;font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s}
+  .dimBtn:hover{background:var(--ink);color:var(--concrete)}
+  .dimBtn[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:9px 0 14px;border-top:3px solid var(--ink);color:var(--dim)}
+  .marquee{overflow:hidden;background:var(--ink);color:var(--concrete);padding:6px 0;margin-top:8px}
+  .mtrack{display:flex;width:max-content;animation:run 24s linear infinite}
+  .mtrack span{display:flex;gap:24px;padding-right:24px;white-space:nowrap;font-family:var(--mono);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase}
+  @keyframes run{to{transform:translateX(-50%)}}
+
+  @media(max-width:900px){
+    .main{grid-template-columns:1fr;gap:14px}
+    .right{order:1}
+    .left{order:2}
+    .stage{min-height:320px}
+    h1{font-size:clamp(4rem,15vw,8rem)}
+    nav{display:none}
+    .footLede{margin-top:10px}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 10px}
+    .brand{font-size:1.1rem}
+    h1{font-size:16vw}
+    .lede{font-size:.68rem}
+    .specs{grid-template-columns:1fr 1fr}
+    .buyRow{max-width:none}
+    .stage{min-height:260px}
+    .stage .label,.stage .edition{font-size:.34rem}
+    .stageFoot span:nth-child(2){display:none}
+    footer span:nth-child(2){display:none}
+    .variantRow{gap:4px}
+    .swatch{padding:5px 7px;font-size:.34rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">BRUT<sup>®</sup></a>
+    <nav aria-label="Primary"><a href="#top">Objects</a><a href="#top">Materials</a><a href="#top">Index</a><a href="#top">Contact</a></nav>
+    <div class="cart mono">Bag <i id="cartCount">0</i></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="left">
+      <div class="eyebrow mono"><span>Object 01 — seating</span><span>Edition 2026</span></div>
+      <h1><span>Sit</span><span><em>hard.</em></span></h1>
+      <p class="lede">A chair cast from a single mix, left raw on the edges and sealed only where a hand will go. <b>Heavy enough to stay, plain enough to keep.</b> Designed to be sat on, not styled around.</p>
+      <div class="variantRow" role="group" aria-label="Finish">
+        <button class="swatch" data-f="#e4e0d7" data-s="#bcb7ab" data-t="#8f8b80" data-name="Concrete" style="--c:#d6d2c9" aria-pressed="true"><i aria-hidden="true"></i>Concrete</button>
+        <button class="swatch" data-f="#3c3b39" data-s="#242322" data-t="#151514" data-name="Black" style="--c:#2a2928" aria-pressed="false"><i aria-hidden="true"></i>Black</button>
+        <button class="swatch" data-f="#d8835b" data-s="#b25e3a" data-t="#7d3d25" data-name="Rust" style="--c:#b25e3a" aria-pressed="false"><i aria-hidden="true"></i>Rust</button>
+      </div>
+      <div class="specs">
+        <div><span>Material</span><b>Cast concrete</b></div>
+        <div><span>Finish</span><b>Raw / waxed seat</b></div>
+        <div><span>Dimensions</span><b>45 × 48 × 82 cm</b></div>
+        <div><span>Weight</span><b>18.4 kg</b></div>
+      </div>
+      <div class="buyRow">
+        <div class="price"><b>£420</b><span>incl. VAT</span></div>
+        <button class="add" id="add">Add to bag</button>
+      </div>
+      <div class="footLede mono"><span>Ships in 6 weeks</span><span>No assembly</span><span>Made to outlast the trend</span></div>
+    </div>
+
+    <div class="right">
+      <div class="stageTop mono"><span>Chair 01 / <b id="finishName">Concrete</b></span><span>View: front-left</span></div>
+      <div class="stage dimsOff" id="stage">
+        <span class="label mono"><b>Fig. 01</b><br>Seat / 45 cm</span>
+        <span class="edition mono"><b>Edition 01 / 50</b><br>Cast in one piece</span>
+        <svg id="chair" viewBox="0 0 420 520" role="img" aria-label="A raw concrete chair">
+          <g id="chairBody">
+            <polygon points="86,70 318,52 330,84 98,102" fill="var(--face1)" stroke="#111" stroke-width="2"/>
+            <polygon points="98,102 330,84 330,250 98,268" fill="var(--face1)" stroke="#111" stroke-width="2"/>
+            <polygon points="98,268 330,250 338,278 106,296" fill="var(--face2)" stroke="#111" stroke-width="2"/>
+            <polygon points="106,296 338,278 338,330 106,348" fill="var(--face2)" stroke="#111" stroke-width="2"/>
+            <polygon points="106,348 338,330 330,360 98,378" fill="var(--face3)" stroke="#111" stroke-width="2"/>
+            <polygon points="86,70 98,102 98,378 86,392" fill="var(--face3)" stroke="#111" stroke-width="2"/>
+            <polygon points="318,52 330,84 330,360 318,372" fill="var(--face3)" stroke="#111" stroke-width="2"/>
+            <polygon points="86,392 98,378 330,360 318,372" fill="var(--face3)" stroke="#111" stroke-width="2"/>
+            <polygon points="112,382 130,380 126,452 108,454" fill="var(--face2)" stroke="#111" stroke-width="2"/>
+            <polygon points="294,366 312,364 316,438 298,440" fill="var(--face2)" stroke="#111" stroke-width="2"/>
+            <polygon points="126,452 108,454 110,478 128,476" fill="var(--face3)" stroke="#111" stroke-width="2"/>
+            <polygon points="316,438 298,440 300,464 318,462" fill="var(--face3)" stroke="#111" stroke-width="2"/>
+            <line x1="98" y1="102" x2="330" y2="84" stroke="#111" stroke-width="1" opacity=".3"/>
+            <line x1="106" y1="296" x2="338" y2="278" stroke="#111" stroke-width="1" opacity=".3"/>
+          </g>
+          <g class="dims">
+            <line class="dimLine" x1="356" y1="52" x2="356" y2="386"/>
+            <line class="dimLine" x1="348" y1="52" x2="364" y2="52"/>
+            <line class="dimLine" x1="348" y1="386" x2="364" y2="386"/>
+            <text class="dimText" x="366" y="222">82 cm</text>
+            <line class="dimLine" x1="98" y1="500" x2="318" y2="500"/>
+            <line class="dimLine" x1="98" y1="492" x2="98" y2="508"/>
+            <line class="dimLine" x1="318" y1="492" x2="318" y2="508"/>
+            <text class="dimText" x="176" y="514">45 cm</text>
+            <line class="dimLine" x1="52" y1="70" x2="52" y2="392"/>
+            <text class="dimText" x="20" y="236" transform="rotate(-90 20 236)">82 cm</text>
+          </g>
+        </svg>
+      </div>
+      <div class="stageFoot mono"><span>Ships upright <b>· 2 people</b></span><button class="dimBtn" id="dims" aria-pressed="false">Dimensions</button><span>Scan for details <b>↗</b></span></div>
+    </div>
+  </main>
+
+  <div class="marquee" aria-hidden="true"><div class="mtrack"><span>Cast concrete · no soft edges · edition 01 / 50 · heavy on purpose · cast concrete · no soft edges · edition 01 / 50 · heavy on purpose ·</span><span>Cast concrete · no soft edges · edition 01 / 50 · heavy on purpose · cast concrete · no soft edges · edition 01 / 50 · heavy on purpose ·</span></div></div>
+
+  <footer class="mono">
+    <span>BRUT® — a fictional furniture house</span>
+    <span>One object, one material, one file</span>
+    <span>© 2026 · sit down properly</span>
+  </footer>
+</div>
+
+<script>
+  const add = document.getElementById('add');
+  const dims = document.getElementById('dims');
+  let cart = 0;
+  document.querySelectorAll('.swatch').forEach(b => {
+    b.addEventListener('click', () => {
+      const d = b.dataset;
+      document.documentElement.style.setProperty('--face1', d.f);
+      document.documentElement.style.setProperty('--face2', d.s);
+      document.documentElement.style.setProperty('--face3', d.t);
+      document.getElementById('finishName').textContent = d.name;
+      document.querySelectorAll('.swatch').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    });
+  });
+  add.addEventListener('click', () => {
+    cart++;
+    document.getElementById('cartCount').textContent = cart;
+    add.textContent = 'In the bag ✓';
+    setTimeout(() => { add.textContent = 'Add to bag'; }, 1600);
+  });
+  dims.addEventListener('click', () => {
+    const on = dims.getAttribute('aria-pressed') !== 'true';
+    dims.setAttribute('aria-pressed', String(on));
+    document.getElementById('stage').classList.toggle('dimsOff', !on);
+  });
+</script>
+</body>
+</html>

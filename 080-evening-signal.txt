@@ -1,0 +1,20 @@
+TITLE
+The Evening Signal — Late Edition
+
+PROMPT
+Create a beautiful broadsheet newspaper front page called "The Evening Signal". Warm newsprint, dense black ink, one red accent, hairline rules and justified serif columns. The masthead is huge and centered, with a date line, edition mark, price and a small weather box. The lead story, "The City Learns to Listen", has a deck, a three-column body with a drop cap, and an abstract halftone-style photograph made only in CSS. A right-hand rail carries an index, weather, a quote and classifieds; below, a second story and a small notice. A Morning / Late edition toggle changes the lead headline, deck, body, date line and accent. Clicking the lead story opens a clipping overlay with the full article. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+The romance of print, reproduced with care. The page should feel like a real broadsheet: narrow columns, dense typography, rules that organise rather than decorate, and a photograph that is clearly printed rather than glossy. Red is reserved for the edition mark and one or two small details.
+
+VISUAL TECHNIQUES
+- Multi-column justified text with hyphenation, drop cap, kickers and bylines.
+- Huge serif masthead with flanking weather and price blocks.
+- CSS halftone photograph: abstract architectural shapes under a dot-screen overlay.
+- Hairline column rules, section labels, an index rail and a classified strip.
+- Edition toggle that updates lead content, date line and accent with a fade.
+- Clipping overlay with a torn-paper edge and readable article text.
+- Responsive reflow from broadsheet columns to a single readable column.
+
+INTERACTION MODEL
+Morning / Late edition buttons swap the lead story, deck, body, weather and date line. Clicking the lead headline or "Read the full story" opens an article clipping overlay; clicking the backdrop or Close returns to the front page. All other headlines underline on hover. Controls are keyboard accessible; reduced-motion removes the fade and overlay transitions.

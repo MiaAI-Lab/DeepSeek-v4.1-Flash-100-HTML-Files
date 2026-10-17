@@ -1,0 +1,20 @@
+TITLE
+Chroma School — Colour Is a Conversation
+
+PROMPT
+Create an interactive colour-theory lesson called "Chroma School — lesson 05". Warm white studio background, black type and a vivid colour wheel. The left column carries the title "Colour is a conversation.", a short lesson note, a draggable HSL colour wheel, hue/saturation/lightness sliders and four harmony buttons (Complementary, Analogous, Triad, Tetrad). The right side shows a generated four-colour palette as large swatches with hex values and a preview poster that uses the palette in bold typographic blocks. Clicking a swatch makes it the new base colour; "Shuffle" picks a new harmonic hue. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A design-school worksheet with real joy. The wheel is the only saturated object; everything around it is precise, warm and legible. The palette preview is the payoff — it shows the same four colours behaving as background, text and accent, so the lesson is visual rather than explanatory.
+
+VISUAL TECHNIQUES
+- CSS conic-gradient colour wheel with a radial white saturation wash and a draggable marker.
+- HSL sliders and harmony algorithms generating four-colour palettes.
+- Large swatch cards with computed hex values; clicking one rebases the palette.
+- A preview poster that remaps the palette into background, display type, accent bar and caption.
+- Swiss layout with hairline rules, monospaced data and a high-contrast serif headline.
+- Smooth colour transitions as the wheel moves.
+- Responsive stack with the preview above the wheel on mobile.
+
+INTERACTION MODEL
+Dragging or clicking the wheel sets hue and saturation; the sliders fine-tune hue, saturation and lightness. Harmony buttons recompute the palette instantly. Clicking a swatch adopts that colour as the base. "Shuffle" chooses a random hue within the current harmony. All controls are keyboard accessible; reduced-motion removes colour transitions.

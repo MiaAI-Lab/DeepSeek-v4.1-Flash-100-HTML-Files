@@ -1,0 +1,20 @@
+TITLE
+ECHO-7 — Deep Space Relay Terminal
+
+PROMPT
+Create a fictional retro-futurist terminal experience: a CRT console for the deep-space probe ECHO-7, stranded at the edge of the solar system. A near-black room with a faint star field and a phosphor-green terminal window (with subtle glass curvature, scanlines, glow and occasional glitch). The boot sequence types itself: handshake, telemetry checks, a cryptic line from the probe. Visitors can type real commands — help, status, scan, signal, log, whoami, artifact, clear — with typed responses, a blinking block cursor and command chips for the curious. A right-hand side panel shows telemetry (distance, signal delay, power, hull) and an analog signal meter. The terminal must be genuinely interactive, not a screenshot. Fully responsive, one standalone HTML file, inline CSS/JS, no external fonts, images or libraries.
+
+DESIGN INTENT
+A room-sized piece of science fiction, reduced to one screen. The terminal is the hero and is treated like a physical object: thick bezel, glass reflection, green phosphor bloom and the slight instability of an old display. The side panel behaves like a bank of analogue instruments. Typography is entirely monospaced, with one amber accent for alerts. The mood is lonely, curious and quietly hopeful.
+
+VISUAL TECHNIQUES
+- CRT effects: scanlines, vignette, glass reflection, flicker, text glow and a subtle barrel-curvature suggestion.
+- Typewriter boot sequence and command responses with a queue, block caret and scrolling log.
+- Real command parser with aliases, help output and a handful of narrative responses.
+- Command chips that fill and submit the input for discoverability.
+- Random glitch bursts that clip and shift the terminal for a few frames.
+- Live UTC clock, signal-strength bars and telemetry readouts.
+- Responsive layout: instruments collapse, terminal becomes full width, mobile-friendly input.
+
+INTERACTION MODEL
+Type a command and press Enter. The log types the response character by character; the terminal auto-scrolls unless the visitor has scrolled up. Chips trigger the same commands. "clear" wipes the log but keeps the header. Arrow keys in the command history recall previous commands. The input is auto-focused on desktop only, and all commands are documented in the help output.

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Orizuru — a five-fold origami study ending in a paper crane.">
+<title>Orizuru — Five Folds to a Bird</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f5f0e5; --paper2:#eae2d2; --ink:#26314f; --dim:rgba(38,49,79,.55); --line:rgba(38,49,79,.18);
+    --indigo:#43527a; --terra:#c4472f;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(1000px 700px at 18% 0%,#fbf8f0,transparent 60%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--terra);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--terra);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3.2vw,42px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.08rem}
+  .brand .birdmark{width:20px;height:16px;position:relative;flex:none}
+  .brand .birdmark::before,.brand .birdmark::after{content:"";position:absolute;top:0;width:11px;height:15px;border-top:1px solid var(--ink);border-left:1px solid var(--ink)}
+  .brand .birdmark::before{left:0;transform:skewY(24deg)}.brand .birdmark::after{right:0;transform:scaleX(-1) skewY(24deg)}
+  .brand span{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMid{display:flex;gap:26px;color:var(--dim)}
+  .headMid b{color:var(--ink);font-weight:400}
+  .headRight{color:var(--dim);text-align:right;line-height:1.7}
+  .headRight b{color:var(--terra);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(24px,4.4vw,58px);align-items:center;padding:clamp(22px,3.6vw,38px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--terra);margin-bottom:16px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--terra)}
+  h1{font-family:var(--serif);font-size:clamp(2.8rem,5.2vw,4.9rem);line-height:.96;letter-spacing:-.05em;font-weight:400}
+  h1 em{font-style:italic;color:var(--indigo)}
+  .intro p{margin-top:17px;max-width:36ch;font-size:.76rem;line-height:1.85;color:var(--dim)}
+  .intro p b{color:var(--ink);font-weight:400}
+  .steps{margin-top:22px;border-top:1px solid var(--ink);padding-top:12px}
+  .stepHead{display:flex;justify-content:space-between;color:var(--dim)}
+  .stepHead b{color:var(--terra);font-weight:400}
+  .stepTitle{font-family:var(--serif);font-size:1.35rem;margin-top:7px;line-height:1.1}
+  .stepText{margin-top:6px;font-size:.7rem;line-height:1.75;color:var(--dim);min-height:4.2em;max-width:35ch}
+  .progress{height:1px;background:rgba(38,49,79,.18);margin-top:12px;position:relative}
+  .progress i{position:absolute;left:0;top:0;height:1px;background:var(--terra);transition:width .4s}
+  .controls{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);padding:8px 12px;font-family:var(--mono);font-size:.4rem;letter-spacing:.09em;text-transform:uppercase;transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.primary:hover{background:var(--terra);border-color:var(--terra)}
+  .complete{color:var(--terra);margin-top:10px;min-height:1.2em}
+
+  .stageWrap{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .stage{position:relative;width:min(100%,540px);aspect-ratio:1;background:linear-gradient(160deg,#f9f4e9,#eee6d5);border:1px solid rgba(38,49,79,.18);
+    box-shadow:14px 18px 0 rgba(38,49,79,.06),0 26px 60px rgba(70,55,35,.12);display:grid;place-items:center;overflow:hidden}
+  .stage::before{content:"";position:absolute;inset:16px;border:1px solid rgba(38,49,79,.1);pointer-events:none}
+  .stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26%;background:linear-gradient(180deg,transparent,rgba(38,49,79,.05));pointer-events:none}
+  .art{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.96) rotate(-2deg);transition:opacity .45s,transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+  .art.on{opacity:1;transform:scale(1) rotate(0)}
+  .art svg{width:76%;height:76%;overflow:visible;filter:drop-shadow(0 18px 16px rgba(60,50,35,.2))}
+  .art .crease{stroke:rgba(38,49,79,.35);stroke-width:1;stroke-dasharray:4 4;fill:none}
+  .art .paperFace{stroke:rgba(38,49,79,.25);stroke-width:1}
+  .stageLabel{position:absolute;left:18px;bottom:14px;z-index:3;color:var(--dim);line-height:1.7}
+  .stageLabel b{color:var(--ink);font-weight:400}
+  .stepNo{position:absolute;right:18px;top:14px;z-index:3;font-family:var(--serif);font-size:2.2rem;color:rgba(38,49,79,.3);line-height:1}
+  .thumbs{display:flex;gap:7px;margin-top:12px;width:100%;max-width:540px}
+  .thumb{flex:1;aspect-ratio:1;border:1px solid var(--line);background:rgba(255,255,255,.25);display:grid;place-items:center;transition:border-color .2s,background .2s;padding:4px}
+  .thumb svg{width:80%;height:80%;overflow:visible}
+  .thumb:hover{border-color:var(--ink)}
+  .thumb[aria-pressed="true"]{border-color:var(--terra);background:rgba(196,71,47,.06)}
+  .thumb span{font-family:var(--mono);font-size:.32rem;color:var(--dim)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 20px;border-top:1px solid var(--line);color:var(--dim)}
+
+  @media(max-width:900px){
+    .main{grid-template-columns:1fr;gap:20px}
+    .stageWrap{order:2}
+    .intro{order:1;display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .kicker,.intro h1,.intro p{grid-column:1}
+    .steps{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .headMid{display:none}
+    .stage{max-width:480px}
+    .thumbs{max-width:480px}
+  }
+  @media(max-width:600px){
+    .intro{grid-template-columns:1fr}
+    .steps{grid-column:1;grid-row:auto;margin-top:12px}
+    h1{font-size:11.8vw}
+    .brand{font-size:.92rem}
+    .headRight{display:none}
+    .stage{max-width:100%}
+    .thumbs{max-width:100%}
+    .thumbs .thumb:nth-child(5){display:none}
+    .stepNo{font-size:1.7rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="birdmark" aria-hidden="true"></span><span>Orizuru<small>Folding studies / one sheet</small></span></a>
+    <div class="headMid mono"><span>Paper <b>15 × 15 cm</b></span><span>Folds <b>05</b></span><span>Time <b>6 min</b></span></div>
+    <div class="headRight mono">Ending <b>a paper crane</b><br>No glue, no cuts</div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <section class="main">
+      <div class="intro">
+        <p class="kicker mono">A manual for one square</p>
+        <h1>Everything begins<br><em>as a flat sheet.</em></h1>
+        <p>Five folds are enough to turn a square into something with a neck, a tail and somewhere to go. <b>Take your time; the paper will wait.</b></p>
+        <div class="steps">
+          <div class="stepHead mono"><span>Fold <b id="stepNo">01 / 05</b></span><span id="stepName">The square</span></div>
+          <div class="stepTitle" id="stepTitle">Begin with a crease</div>
+          <p class="stepText" id="stepText">Fold corner to corner and open again. Repeat the other way. You are not making a shape yet; you are making a map.</p>
+          <div class="progress" aria-hidden="true"><i id="bar" style="width:20%"></i></div>
+          <div class="controls"><button class="btn primary" id="next">Next fold →</button><button class="btn" id="prev">← Previous</button><button class="btn" id="reset">Unfold</button></div>
+          <p class="complete mono" id="complete"></p>
+        </div>
+      </div>
+
+      <div class="stageWrap">
+        <div class="stage" id="stage" tabindex="0" role="group" aria-label="Origami fold stage">
+          <div class="art on" data-step="0">
+            <svg viewBox="0 0 300 300" aria-hidden="true">
+              <rect x="46" y="46" width="208" height="208" fill="#fbf7ed" stroke="#c9bfa9" stroke-width="1"/>
+              <path d="M46,46 L254,254 M254,46 L46,254 M150,46 L150,254 M46,150 L254,150" class="crease"/>
+              <path d="M46,46 L254,254 M254,46 L46,254" stroke="rgba(196,71,47,.3)" stroke-width="1.2" stroke-dasharray="6 5" fill="none"/>
+            </svg>
+          </div>
+          <div class="art" data-step="1">
+            <svg viewBox="0 0 300 300" aria-hidden="true">
+              <polygon points="150,52 252,254 48,254" fill="#f7f1e4" stroke="#c9bfa9"/>
+              <polygon points="150,52 252,254 150,254" fill="#ece4d4" stroke="rgba(38,49,79,.15)"/>
+              <path d="M150,52 L150,254" class="crease"/>
+              <path d="M100,150 L200,150" stroke="rgba(196,71,47,.4)" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="art" data-step="2">
+            <svg viewBox="0 0 300 300" aria-hidden="true">
+              <polygon points="150,44 246,150 150,256 54,150" fill="#f7f1e4" stroke="#c9bfa9"/>
+              <polygon points="150,44 246,150 150,150" fill="#eee6d7" stroke="rgba(38,49,79,.15)"/>
+              <polygon points="150,150 246,150 150,256" fill="#e5dccb" stroke="rgba(38,49,79,.15)"/>
+              <path d="M150,44 L150,256 M54,150 L246,150" class="crease"/>
+            </svg>
+          </div>
+          <div class="art" data-step="3">
+            <svg viewBox="0 0 300 300" aria-hidden="true">
+              <polygon points="150,32 258,150 150,268 42,150" fill="#f7f1e4" stroke="#c9bfa9"/>
+              <polygon points="150,32 150,150 42,150" fill="#eae1d1" stroke="rgba(38,49,79,.15)"/>
+              <polygon points="150,150 258,150 150,268" fill="#e2d8c6" stroke="rgba(38,49,79,.15)"/>
+              <path d="M86,86 L150,150 L214,86 M150,150 L150,268" class="crease"/>
+              <path d="M150,32 L150,150" stroke="rgba(196,71,47,.35)" stroke-width="1.2" stroke-dasharray="4 4"/>
+            </svg>
+          </div>
+          <div class="art" data-step="4">
+            <svg viewBox="0 0 300 300" aria-hidden="true">
+              <polygon points="60,206 118,148 150,152 140,204" fill="#faf6ec" stroke="#b9af9b"/>
+              <polygon points="140,204 150,152 196,168 222,214" fill="#e7dece" stroke="rgba(38,49,79,.18)"/>
+              <polygon points="146,154 108,74 62,96 118,148" fill="#f3ecdd" stroke="#b9af9b"/>
+              <polygon points="146,154 188,68 236,84 196,168" fill="#ece3d2" stroke="#b9af9b"/>
+              <polygon points="146,154 188,68 208,58 202,86 196,168" fill="#fbf7ed" stroke="#b9af9b"/>
+              <polygon points="140,204 150,152 168,114 186,106 172,148 196,168" fill="#f7f1e4" stroke="#b9af9b"/>
+              <polygon points="188,68 236,84 224,94 204,80" fill="#c4472f" opacity=".8"/>
+              <polyline points="140,204 150,152 108,74" fill="none" stroke="rgba(38,49,79,.25)"/>
+            </svg>
+          </div>
+          <span class="stepNo" id="stageNo">01</span>
+          <span class="stageLabel mono"><b>Fig. <span id="figNo">01</span></b><br>one square / 15 cm</span>
+        </div>
+        <div class="thumbs" id="thumbs" role="group" aria-label="Folding steps"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Orizuru / a fictional folding manual</span>
+    <span>Paper, memory, five folds</span>
+    <span>© 2026 · do not cut the paper</span>
+  </footer>
+</div>
+
+<script>
+  const steps = [
+    { name:'The square', title:'Begin with a crease', text:'Fold corner to corner and open again. Repeat the other way. You are not making a shape yet; you are making a map.' },
+    { name:'The triangle', title:'Halve the square', text:'Fold the square in half along the diagonal, keeping the crease on the outside. Press the edge with a thumbnail, not a fist.' },
+    { name:'The kite', title:'Bring the corners home', text:'Fold the two lower edges to the centre line. The paper becomes a kite; the point at the bottom will become the tail.' },
+    { name:'The crane base', title:'Collapse the square', text:'Lift one layer and let the sides come in. Flatten carefully. This is the generous fold — it makes space for the bird.' },
+    { name:'The crane', title:'Choose the neck', text:'Fold two narrow points up for the neck and tail. Crease the head, open the wings, and give the whole bird a breath.' }
+  ];
+  const thumbs = document.getElementById('thumbs');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
+  const miniSvgs = [
+    '<svg viewBox="0 0 40 40"><rect x="7" y="7" width="26" height="26" fill="none" stroke="currentColor"/><path d="M7 7l26 26M33 7L7 33" stroke="currentColor" stroke-dasharray="2 2" opacity=".5"/></svg>',
+    '<svg viewBox="0 0 40 40"><polygon points="20,5 36,34 4,34" fill="none" stroke="currentColor"/></svg>',
+    '<svg viewBox="0 0 40 40"><polygon points="20,4 35,20 20,36 5,20" fill="none" stroke="currentColor"/><path d="M20 4v32M5 20h30" stroke="currentColor" opacity=".4"/></svg>',
+    '<svg viewBox="0 0 40 40"><polygon points="20,4 35,20 20,36 5,20" fill="none" stroke="currentColor"/><path d="M12 12l8 8 8-8" stroke="currentColor" opacity=".5" fill="none"/></svg>',
+    '<svg viewBox="0 0 40 40"><polygon points="7,30 16,20 20,21 18,31" fill="none" stroke="currentColor"/><polygon points="20,21 26,10 34,13 23,31" fill="none" stroke="currentColor"/></svg>'
+  ];
+  steps.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'thumb';
+    b.setAttribute('aria-pressed', String(i === 0));
+    b.setAttribute('aria-label', 'Step ' + (i + 1) + ': ' + s.name);
+    b.innerHTML = miniSvgs[i];
+    b.addEventListener('click', () => go(i));
+    thumbs.appendChild(b);
+  });
+  const arts = Array.from(document.querySelectorAll('.art'));
+  const thumbEls = Array.from(document.querySelectorAll('.thumb'));
+
+  function go(i){
+    current = (i + steps.length) % steps.length;
+    arts.forEach((a, j) => a.classList.toggle('on', j === current));
+    thumbEls.forEach((b, j) => b.setAttribute('aria-pressed', String(j === current)));
+    document.getElementById('stepNo').textContent = String(current + 1).padStart(2,'0') + ' / 05';
+    document.getElementById('stepName').textContent = steps[current].name;
+    document.getElementById('stepTitle').textContent = steps[current].title;
+    document.getElementById('stepText').textContent = steps[current].text;
+    document.getElementById('bar').style.width = ((current + 1) / 5 * 100) + '%';
+    document.getElementById('stageNo').textContent = String(current + 1).padStart(2,'0');
+    document.getElementById('figNo').textContent = String(current + 1).padStart(2,'0');
+    document.getElementById('complete').textContent = current === 4 ? 'Bird complete — unfold to begin again.' : '';
+  }
+  document.getElementById('next').addEventListener('click', () => go(current + 1));
+  document.getElementById('prev').addEventListener('click', () => go(current - 1));
+  document.getElementById('reset').addEventListener('click', () => go(0));
+  document.getElementById('stage').addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight'){ go(current + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft'){ go(current - 1); e.preventDefault(); }
+  });
+  go(0);
+</script>
+</body>
+</html>

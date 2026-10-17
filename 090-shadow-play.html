@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Shadow Play — paper silhouettes, one lamp and a warm wall.">
+<title>Shadow Play — After the Lamp</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --wall:#c98a4b; --wall2:#e0aa67; --wall3:#9c5f2f; --shelf:#efe2c8; --ink:#2a180d; --paper:#f4e7ce; --orange:#b6542c; --dim:rgba(42,24,13,.55);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{height:100svh;overflow:hidden;background:var(--wall);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--ink);color:var(--shelf)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.7}
+  .app{height:100svh;display:flex;flex-direction:column;position:relative;z-index:2}
+  .wall{position:relative;flex:1;min-height:0;overflow:hidden;
+    background:radial-gradient(900px 600px at var(--lx,40%) 4%,rgba(255,231,176,.75),transparent 55%),radial-gradient(700px 500px at 80% 90%,var(--wall3),transparent 70%),linear-gradient(160deg,var(--wall2),var(--wall) 55%,#b97842)}
+  .wall::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(70,35,10,.18),transparent 25%,transparent 80%,rgba(60,30,8,.28));pointer-events:none}
+  .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 45%,rgba(55,26,6,.38) 100%)}
+  .cord{position:absolute;left:var(--lx,40%);top:0;width:1px;height:9%;background:rgba(45,24,8,.55);transform:translateX(-.5px);transition:left .15s ease-out}
+  .lamp{position:absolute;left:var(--lx,40%);top:8%;width:36px;height:30px;transform:translateX(-50%);transition:left .15s ease-out;z-index:3;pointer-events:none}
+  .lamp .shade{position:absolute;inset:0 3px 8px;border-radius:50% 50% 18% 18%;background:linear-gradient(180deg,#3a2411,#6b4221);box-shadow:0 2px 0 rgba(255,220,160,.15)}
+  .lamp .bulb{position:absolute;left:50%;bottom:-2px;width:11px;height:12px;transform:translateX(-50%);border-radius:50%;background:#fff5d0;box-shadow:0 0 18px 9px rgba(255,231,170,.75),0 0 70px 35px rgba(255,200,120,.25)}
+  .stage{position:absolute;inset:0;z-index:2}
+  .puppet{position:absolute;width:clamp(58px,8vw,96px);cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(var(--sx,8px) var(--sy,10px) var(--sb,7px) rgba(50,22,4,.42));transition:filter .12s}
+  .puppet:active{cursor:grabbing}
+  .puppet svg{display:block;width:100%;height:auto;fill:#25150b;overflow:visible}
+  .puppet .rib{opacity:.12}
+  .stageHint{position:absolute;right:clamp(12px,2.5vw,26px);top:16px;z-index:4;color:rgba(42,24,13,.55);text-align:right;text-shadow:0 1px 0 rgba(255,235,200,.25)}
+  .titleBlock{position:absolute;left:clamp(14px,3vw,34px);top:clamp(14px,3vh,28px);z-index:4;max-width:330px;pointer-events:none}
+  .titleBlock .eyebrow{display:flex;align-items:center;gap:8px;color:rgba(42,24,13,.6);margin-bottom:8px}
+  .titleBlock .eyebrow::before{content:"";width:20px;height:1px;background:rgba(42,24,13,.5)}
+  h1{font-family:var(--serif);font-size:clamp(2.3rem,5vw,4rem);line-height:.88;letter-spacing:-.05em;font-weight:400;color:#2b180c;text-shadow:0 1px 0 rgba(255,235,200,.18)}
+  h1 em{font-style:italic;color:#5c2e16}
+  .titleBlock p{margin-top:10px;max-width:27ch;font-size:.62rem;line-height:1.75;color:rgba(42,24,13,.62)}
+
+  .shelf{background:var(--shelf);border-top:2px solid rgba(42,24,13,.65);padding:clamp(10px,1.10vw,15px) clamp(14px,3vw,32px);display:flex;align-items:center;gap:clamp(14px,2.4vw,28px);flex-wrap:wrap;position:relative;z-index:10;box-shadow:0 -10px 30px rgba(60,30,8,.2)}
+  .shelfTitle{min-width:150px}
+  .shelfTitle h2{font-family:var(--serif);font-size:1.1rem;font-weight:400;letter-spacing:-.02em}
+  .shelfTitle span{color:var(--dim);display:block;margin-top:2px}
+  .instr{flex:1;min-width:150px;max-width:280px;color:var(--dim);font-size:.58rem;line-height:1.65}
+  .lightCtrl{width:200px}
+  .lightCtrl .row{display:flex;justify-content:space-between;color:var(--dim);margin-bottom:3px}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:18px;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(42,24,13,.28)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;background:var(--orange);margin-top:-6px;border:2px solid var(--shelf);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+  input[type=range]::-moz-range-track{height:2px;background:rgba(42,24,13,.28)}
+  input[type=range]::-moz-range-thumb{width:11px;height:11px;border:2px solid var(--shelf);border-radius:50%;background:var(--orange)}
+  .tray{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+  .tray button{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(42,24,13,.25);padding:4px 7px;min-width:46px;transition:background .2s,color .2s}
+  .tray button:hover{background:rgba(42,24,13,.08)}
+  .tray svg{width:19px;height:19px;fill:var(--ink)}
+  .tray span{font-family:var(--mono);font-size:.3rem;letter-spacing:.04em;text-transform:uppercase;color:var(--dim)}
+  .count{color:var(--dim);text-align:right;line-height:1.7}
+  .count b{font-family:var(--serif);font-size:1.05rem;color:var(--ink);font-weight:400;display:block}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:6px clamp(14px,3vw,32px);background:#3a2414;color:rgba(244,231,206,.45);font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:900px){
+    .instr{display:none}
+    .shelf{gap:12px}
+    .lightCtrl{width:150px;order:3}
+    .tray{order:4;width:100%}
+    .count{order:2;margin-left:auto}
+    .shelfTitle{order:1}
+  }
+  @media(max-width:600px){
+    .titleBlock{max-width:240px}
+    h1{font-size:2.5rem}
+    .titleBlock p{display:none}
+    .stageHint{display:none}
+    .shelfTitle h2{font-size:.95rem}
+    .lightCtrl{width:100%;order:4}
+    .tray{order:5;justify-content:space-between}
+    .tray button{flex:1}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="wall" id="wall">
+    <div class="cord" id="cord" aria-hidden="true"></div>
+    <div class="lamp" id="lamp" aria-hidden="true"><div class="shade"></div><div class="bulb"></div></div>
+    <div class="stage" id="stage"></div>
+    <div class="titleBlock">
+      <p class="eyebrow mono">Paper, lamp, plaster</p>
+      <h1>Shadow<br><em>play.</em></h1>
+      <p>Move the light and the shapes remember they are only paper.</p>
+    </div>
+    <div class="stageHint mono">Drag a silhouette<br>Move the lamp below</div>
+    <div class="vignette"></div>
+  </div>
+
+  <div class="shelf">
+    <div class="shelfTitle"><h2>After the lamp</h2><span class="mono">Shadow theatre / 04 pieces</span></div>
+    <p class="instr">Four cut-outs, one bulb. Slide the lamp to change the length of every shadow; drag the paper to compose a small scene.</p>
+    <div class="lightCtrl"><div class="row mono"><span>Lamp</span><span id="lampOut">40%</span></div><input id="light" type="range" min="8" max="92" value="40" aria-label="Lamp position"></div>
+    <div class="tray" role="group" aria-label="Add a silhouette">
+      <button data-add="bird" aria-label="Add bird"><svg viewBox="0 0 24 24"><path d="M3 15c2-1 4-4 7-5 2-.6 4 0 5 1l5-2-2 4 3 1-6 2c-2 3-5 4-7 3-2-1-3-3-2-4H3z"/></svg><span>Bird</span></button>
+      <button data-add="rabbit" aria-label="Add rabbit"><svg viewBox="0 0 24 24"><path d="M9 5c-1-2-1-4 1-4s2 3 2 5h1c0-2 1-4 3-3s1 3 0 5c2 1 3 3 3 6 0 4-3 7-7 7s-7-3-7-7c0-3 1-5 4-6z"/></svg><span>Rabbit</span></button>
+      <button data-add="hand" aria-label="Add hand"><svg viewBox="0 0 24 24"><path d="M7 21c-2-2-3-5-3-8V8c0-1 2-1 2 0v4-7c0-1 2-1 2 0v6-8c0-1 2-1 2 0v8-6c0-1 2-1 2 0v7-3c0-1 2-1 2 0v7c0 4-2 7-5 7H8l-1-2z"/></svg><span>Hand</span></button>
+      <button data-add="tree" aria-label="Add tree"><svg viewBox="0 0 24 24"><path d="M12 22v-6M12 16c-4 0-6-3-5-6-2-2 0-5 2-5 0-3 4-4 6-2 3-1 6 2 4 5 2 2 1 6-2 6-1 2-3 2-5 2z"/></svg><span>Tree</span></button>
+    </div>
+    <div class="count mono">On the wall<b id="count">04</b></div>
+  </div>
+
+  <footer class="mono">
+    <span>Shadow Play / after the lamp</span>
+    <span>No electricity was used, only ochre</span>
+    <span>© 2026 · move slowly</span>
+  </footer>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const wall = document.getElementById('wall');
+  const light = document.getElementById('light');
+  const lampOut = document.getElementById('lampOut');
+  let count = 0, z = 2;
+
+  const SVGS = {
+    bird:'<svg viewBox="0 0 120 100"><path d="M6 63c10-3 19-18 36-25 12-5 25-4 33 1l27-14-9 22 17 5-33 12C64 84 38 91 22 83 11 78 8 69 6 63z"/><path d="M84 39c3 2 5 4 5 7" fill="none" stroke="#f4e7ce" stroke-width="1.4" opacity=".35"/><circle cx="78" cy="35" r="2.2" fill="#f4e7ce" opacity=".5"/></svg>',
+    rabbit:'<svg viewBox="0 0 100 120"><path d="M34 33C27 18 28 4 35 3s10 14 9 27M55 30C55 15 60 2 67 3s5 16-1 29"/><path d="M67 30c9 6 14 17 13 29-1 17-10 34-27 40-15 5-30-3-34-17-4-13 2-25 9-33 6-7 13-10 20-13 6-3 12-9 19-6z"/><circle cx="58" cy="58" r="2" fill="#f4e7ce" opacity=".45"/></svg>',
+    hand:'<svg viewBox="0 0 110 130"><path d="M28 126c-9-9-12-23-11-37l2-23c1-6 9-5 9 1l1 13 2-42c0-7 9-7 9 0l1 35 2-47c0-7 9-7 9 0l1 46 3-35c1-7 9-6 9 1l-2 39 4-17c2-7 10-4 9 3l-5 29c-2 15-8 27-17 36-7 7-20 8-27 3z"/></svg>',
+    tree:'<svg viewBox="0 0 100 130"><path d="M46 128V76C30 76 18 62 24 49 13 36 25 18 41 22 45 7 67 6 74 20 90 19 98 37 89 49c8 14-3 29-18 29-2 9-9 14-17 15v35z"/></svg>'
+  };
+
+  function updateShadows(){
+    const lx = Number(light.value);
+    const ps = document.querySelectorAll('.puppet');
+    ps.forEach(p => {
+      const px = parseFloat(p.dataset.x);
+      const dx = (px - lx) * .55;
+      p.style.setProperty('--sx', (dx > 0 ? 1 : -1) * (4 + Math.abs(dx) * .35) + 'px');
+      p.style.setProperty('--sy', (8 + Math.abs(dx) * .12) + 'px');
+      p.style.setProperty('--sb', (4 + Math.abs(dx) * .1) + 'px');
+    });
+    wall.style.setProperty('--lx', lx + '%');
+    document.getElementById('lampOut').textContent = lx + '%';
+  }
+
+  function addPuppet(type, x, y){
+    const el = document.createElement('div');
+    el.className = 'puppet';
+    el.dataset.type = type;
+    el.dataset.x = x;
+    el.dataset.y = y;
+    el.style.left = x + '%';
+    el.style.top = y + '%';
+    el.style.zIndex = ++z;
+    el.innerHTML = SVGS[type];
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', 'Paper silhouette of a ' + type + '. Drag to move.');
+    el.tabIndex = 0;
+    stage.appendChild(el);
+    count++;
+    document.getElementById('count').textContent = String(count).padStart(2,'0');
+    makeDraggable(el);
+    updateShadows();
+  }
+
+  function makeDraggable(el){
+    let drag = null;
+    el.addEventListener('pointerdown', e => {
+      const r = stage.getBoundingClientRect();
+      drag = { x: e.clientX, y: e.clientY, left: parseFloat(el.style.left), top: parseFloat(el.style.top), w: r.width, h: r.height };
+      el.setPointerCapture(e.pointerId);
+      el.style.zIndex = ++z;
+      e.preventDefault();
+    });
+    el.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const nx = Math.max(0, Math.min(92, drag.left + (e.clientX - drag.x) / drag.w * 100));
+      const ny = Math.max(0, Math.min(78, drag.top + (e.clientY - drag.y) / drag.h * 100));
+      el.style.left = nx + '%'; el.style.top = ny + '%';
+      el.dataset.x = nx; el.dataset.y = ny;
+      updateShadows();
+    });
+    el.addEventListener('pointerup', () => { drag = null; });
+    el.addEventListener('keydown', e => {
+      const step = 2;
+      let x = parseFloat(el.style.left), y = parseFloat(el.style.top);
+      if (e.key === 'ArrowRight') x += step;
+      if (e.key === 'ArrowLeft') x -= step;
+      if (e.key === 'ArrowDown') y += step;
+      if (e.key === 'ArrowUp') y -= step;
+      if (['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(e.key)){
+        e.preventDefault();
+        x = Math.max(0, Math.min(92, x)); y = Math.max(0, Math.min(78, y));
+        el.style.left = x + '%'; el.style.top = y + '%';
+        el.dataset.x = x; el.dataset.y = y;
+        updateShadows();
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-add]').forEach(b => {
+    b.addEventListener('click', () => {
+      const type = b.dataset.add;
+      addPuppet(type, 24 + Math.random() * 48, 30 + Math.random() * 36);
+    });
+  });
+  light.addEventListener('input', updateShadows);
+
+  addPuppet('bird', 56, 24);
+  addPuppet('rabbit', 30, 48);
+  addPuppet('hand', 70, 52);
+  addPuppet('tree', 12, 30);
+  updateShadows();
+</script>
+</body>
+</html>

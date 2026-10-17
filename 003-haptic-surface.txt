@@ -1,0 +1,20 @@
+TITLE
+Haptic — A Softer Control Surface
+
+PROMPT
+Design a neumorphic "calm technology" control surface called Haptic, presented as a single sculpted device floating on a pale, dotted studio backdrop. The palette is cool porcelain (#e8ebf2) with warm coral, mint, sky and lilac accents; every control is extruded from the same material with paired light and dark shadows, generous radii and no hard borders. The device contains a large rotatable dial with a glowing inset ring, three tactile toggle switches, four mood presets (Calm, Focus, Warm, Night), and a soft oscilloscope canvas whose wave amplitude follows the dial. Include a small brand header, a right-hand live readout ("state / intensity / tone"), and quiet microcopy. The mood should be closer to a Dieter Rams appliance than a toy: restrained, tactile, premium. Fully responsive, one standalone HTML file, inline CSS and JS, no external assets.
+
+DESIGN INTENT
+An antidote to neon: a soft, physical interface with the visual weight of a well-made object. Neumorphism is used with discipline — one material, four accents, deep but diffuse shadows — so the page reads as industrial design rather than a CSS effect. The dial is the hero and the oscilloscope gives the object a pulse; everything else stays quiet around them.
+
+VISUAL TECHNIQUES
+- Neumorphic extrusion using paired box-shadows (light top-left, dark bottom-right) and inset variants for pressed states.
+- Porcelain surface palette with four accent tokens that recolour the dial halo, canvas stroke and status lights.
+- Large circular dial built from conic-gradient tick marks, a rotating indicator and an inset glass ring.
+- Dotted studio backdrop with a soft radial vignette and a floating floor shadow beneath the device.
+- Canvas oscilloscope with smoothed sine composition, adapted for devicePixelRatio.
+- Tactile toggle switches with extruded tracks and inset thumbs; pill preset buttons with pressed states.
+- Fluid responsive layout that stacks the dial above the controls on narrow screens.
+
+INTERACTION MODEL
+The dial can be dragged (pointer) or adjusted with arrow keys to change intensity from 0–100; its ring rotates and the oscilloscope amplitude follows. Four mood presets recolour the accent and update the readout, toggle states and dial position with a soft spring transition, accompanied by an optional quiet WebAudio chime (created only after a user gesture). Toggles press in and out with inset shadows. All controls have focus rings and ARIA roles; reduced-motion removes springs and canvas animation.

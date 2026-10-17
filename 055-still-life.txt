@@ -1,0 +1,20 @@
+TITLE
+Still / Life — An Exhibition in Three Works
+
+PROMPT
+Create a minimal white-cube gallery page for a fictional exhibition titled "Still / Life", subtitled "three studies of ordinary light". Pure warm white, black type, one pale grey-green accent, enormous negative space. A fixed museum masthead, a large serif exhibition title on the left, and a framed artwork on the right with a museum label beneath it. Three works can be viewed with quiet arrows: "A window, 6pm" (a soft gradient pane), "A glass of water" (thin ellipses and a shadow) and "A folded cloth" (diagonal tonal folds), each drawn purely in CSS. Add an "Audio guide" toggle that opens a short wall text panel, work numbers, and a footer with dates and opening hours. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Less, precisely. The page should feel like a real contemporary art museum: white walls, perfect spacing, labels set in a small sans face, one beautiful object at a time. The art is restrained abstraction made of gradients and geometry, and the interface disappears into the wall text. Silence is the main material.
+
+VISUAL TECHNIQUES
+- White-cube layout with a strict grid, hairline rules and huge margins.
+- Three CSS artworks: a window of layered light gradients, a glass of water built from ellipses and shadows, a folded cloth made with diagonal gradients.
+- Museum labels with artist, year, medium and dimensions.
+- Fade-and-lift artwork transition; arrow and dot navigation.
+- Audio-guide panel sliding in with a short curator's text.
+- Serif display title paired with a tiny grotesque and monospaced accession numbers.
+- Responsive stacking: title above artwork, label below, navigation full width.
+
+INTERACTION MODEL
+Previous/next buttons and dots change the work, updating the artwork, title, medium and wall text with a fade. Arrow keys work when the viewer is focused. "Audio guide" toggles an accessible panel with a short note on the current work. All controls are minimal buttons with clear focus and reduced-motion removes fades.

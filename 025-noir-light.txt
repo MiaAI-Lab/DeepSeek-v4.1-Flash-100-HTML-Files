@@ -1,0 +1,20 @@
+TITLE
+The Last Light — A Film Noir Title Card
+
+PROMPT
+Create a cinematic film-noir title page for a fictional 1948 film called "The Last Light". Almost monochrome: black, smoke grey, bone white and one deep blood red. A huge high-contrast serif title dominates the frame, with "LIGHT" in italic and an outlined ghost duplicate offset behind it. A single warm spotlight rakes across the page and follows the pointer; venetian-blind shadows fall diagonally over the title; film grain, gate weave, and a faint projector flicker animate the whole frame. Include a studio credit, director and cast block, a red certification stamp, a runtime/rating line, and a bottom programme strip with three screening times. A "house lights" button dims the spotlight and toggles a brighter, colder version of the scene. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A title card you could project. The composition is built like a frame: strong black margins, one shaft of light, the title placed slightly off-centre, and credits arranged like a studio contract. Texture does the period work — grain, scratches, weave, bloom — without a single image asset. Red appears only in the stamp and the smallest programme marks.
+
+VISUAL TECHNIQUES
+- CSS conic and linear gradients composited into a raking spotlight, driven by pointer position via custom properties.
+- Venetian-blind shadow overlay made from repeating linear gradients with perspective skew.
+- Duplicated outlined title, italic serif accent and cinematic letter-spacing.
+- Animated film grain, gate weave and projector flicker; occasional scratch line.
+- Registration-like corner marks, red circular certification stamp and typewriter credit block.
+- Programme strip with hairline rules and hoverable screening times.
+- Accessible house-lights toggle that changes the scene and pauses the flicker.
+
+INTERACTION MODEL
+Moving the pointer sweeps the spotlight and subtly shifts the blind shadows. "House lights" toggles between the dark projection and a brighter intermission state with a colder beam. Screening times highlight on hover. Reduced-motion stops grain, weave and flicker; all text remains fully legible.

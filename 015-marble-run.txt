@@ -1,0 +1,20 @@
+TITLE
+Marble Run — A Study in Gravity
+
+PROMPT
+Create an interactive kinetic-art page called "Marble Run": a single elegant marble track drawn in SVG, spanning a full-viewport cream stage with bold cobalt, vermilion, mustard and black accents. The track should have sweeping curves, a loop and a long final descent, rendered as a deep groove with a thin bright centre line, supported by slender posts and soft shadows. Clicking anywhere releases a coloured glass marble that accelerates along the path, leaving a faint trail; multiple marbles can run at once. Include a small editorial masthead ("A study in gravity, taking its time"), a counter of marbles released, a speed toggle and a reset. The composition should feel like a museum kinetic sculpture poster: generous space, confident geometry, joyful colour. Fully responsive, one standalone HTML file, inline CSS/JS/SVG, no external libraries, fonts or images.
+
+DESIGN INTENT
+Playful but composed. The track is treated as a drawn object — a single continuous line with real weight — and the page as the poster around it. The palette is limited to four flat colours plus paper, with the marbles as the only glossy, translucent elements. Motion is the artwork: every click produces a small, satisfying event that follows the same confident route.
+
+VISUAL TECHNIQUES
+- Hand-authored SVG path with layered strokes to create a routed groove, centre highlight and soft shadow.
+- Marbles as SVG circles moved along the path using getPointAtLength, with acceleration, trail circles and fade-out.
+- Support posts and tiny construction marks that make the track feel buildable.
+- Flat-colour geometric blocks, hairline rules and oversized poster typography.
+- Glass-marble shading with radial gradients and a single specular highlight.
+- Responsive SVG viewBox with overlaid controls; reduced-motion marbles run at constant speed.
+- Accessible buttons and a live region announcing releases.
+
+INTERACTION MODEL
+Clicking the stage releases a marble from the top of the track; clicking the "Release" button does the same from anywhere. The marble accelerates under a gentle gravity model, travels the loop and exits at the bottom. A counter records how many have run. "Fast / slow" toggles the time scale, and "Clear the run" removes all marbles and resets the counter. Marbles can be launched in quick succession to create a colourful cascade.

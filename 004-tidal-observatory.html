@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="TIDAL 07 — a North Sea observatory translating tide, swell and weather into a live instrument.">
+<title>Tidal 07 — North Sea Observatory</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --deep:#07131f; --panel:#0b1c2a; --panel-2:#0e2433; --aqua:#7ee8d5; --sand:#f2b880;
+    --text:#e9f1f5; --muted:#7e97a6; --line:rgba(126,232,213,.15); --line-soft:rgba(233,241,245,.08);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--deep);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;min-height:100vh}
+  ::selection{background:var(--aqua);color:#041018}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--aqua);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.5}
+
+  .bg{position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+    radial-gradient(1200px 700px at 72% -15%,rgba(35,110,120,.28),transparent 62%),
+    radial-gradient(900px 600px at 0% 80%,rgba(20,60,85,.35),transparent 70%),
+    radial-gradient(600px 400px at 95% 95%,rgba(242,184,128,.06),transparent 70%),var(--deep)}
+  .bg::after{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(126,232,213,.18) .7px,transparent .7px);background-size:30px 30px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 72%);
+    mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 72%);opacity:.5}
+  .grain{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+
+  .wrap{max-width:1440px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:20px 0;border-bottom:1px solid var(--line-soft)}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;font-size:.82rem}
+  .mark{width:30px;height:30px;flex:none}
+  .brand small{display:block;font-family:var(--mono);font-size:.48rem;letter-spacing:.16em;color:var(--muted);margin-top:3px}
+  nav{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:.68rem;letter-spacing:.04em}
+  nav a{transition:color .25s;position:relative}
+  nav a:hover{color:var(--text)}
+  nav a::before{content:"";position:absolute;left:-10px;top:50%;width:3px;height:3px;border-radius:50%;background:var(--aqua);opacity:0;transition:opacity .25s}
+  nav a:hover::before{opacity:1}
+  .stationMeta{display:flex;align-items:center;gap:12px;color:var(--muted);text-align:right}
+  .stationMeta b{display:block;color:var(--text);font-weight:400;font-size:.66rem;letter-spacing:.06em}
+  .liveDot{width:7px;height:7px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 0 rgba(126,232,213,.4);animation:ping 2.6s infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,232,213,.35)}70%{box-shadow:0 0 0 9px rgba(126,232,213,0)}100%{box-shadow:0 0 0 0 rgba(126,232,213,0)}}
+
+  .heroHead{display:grid;grid-template-columns:1.5fr .8fr;gap:40px;align-items:end;padding:clamp(30px,5vw,58px) 0 26px}
+  .eyebrow{display:flex;align-items:center;gap:12px;color:var(--muted);margin-bottom:20px}
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--aqua)}
+  h1{font-size:clamp(2.6rem,5.2vw,5rem);line-height:.94;letter-spacing:-.055em;font-weight:300}
+  h1 em{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:400;color:var(--aqua);letter-spacing:-.03em}
+  .heroSide{padding-bottom:6px}
+  .heroSide p{font-size:.8rem;line-height:1.75;color:var(--muted);max-width:38ch;font-weight:300}
+  .heroSide .row{display:flex;justify-content:space-between;gap:14px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line-soft);color:var(--muted)}
+  .heroSide .row b{color:var(--text);font-weight:400;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em}
+  .heroSide .row span{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase}
+
+  .dash{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;padding-bottom:26px}
+  .card{background:linear-gradient(180deg,rgba(14,36,51,.86),rgba(8,22,33,.9));border:1px solid var(--line-soft);border-radius:16px;
+    box-shadow:0 24px 60px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.045);position:relative}
+  .chartCard{grid-column:span 8;padding:18px 18px 12px;overflow:hidden}
+  .chartCard::before{content:"07";position:absolute;right:8px;top:-38px;font-size:19rem;font-weight:700;line-height:1;
+    letter-spacing:-.08em;color:rgba(126,232,213,.035);pointer-events:none;z-index:0}
+  .cardHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;position:relative;z-index:1}
+  .cardHead h2{font-size:.82rem;font-weight:400;letter-spacing:.02em;margin-bottom:5px}
+  .cardHead .sub{color:var(--muted);font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase}
+  .tabs{display:flex;gap:3px;padding:3px;border-radius:100px;background:rgba(255,255,255,.035);border:1px solid var(--line-soft)}
+  .tab{padding:7px 13px;border-radius:100px;font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;color:var(--muted);transition:background .25s,color .25s}
+  .tab:hover{color:var(--text)}
+  .tab[aria-pressed="true"]{background:var(--aqua);color:#041018;font-weight:600}
+  .chartWrap{position:relative;margin-top:16px;z-index:1}
+  #chart{display:block;width:100%;height:clamp(240px,36vh,370px);overflow:visible}
+  .axis{display:flex;justify-content:space-between;padding:7px 2px 0;color:var(--muted);font-family:var(--mono);font-size:.5rem;letter-spacing:.08em}
+  .chartFoot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:11px 2px 2px;border-top:1px solid var(--line-soft);margin-top:10px}
+  .legend{display:flex;align-items:center;gap:18px;color:var(--muted);font-family:var(--mono);font-size:.52rem;letter-spacing:.08em;text-transform:uppercase}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:14px;height:2px;background:var(--aqua);border-radius:2px}
+  .legend i.dash{width:14px;height:1px;background:repeating-linear-gradient(90deg,var(--muted) 0 3px,transparent 3px 5px)}
+  .hl{display:flex;gap:20px;font-family:var(--mono);font-size:.52rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .hl b{color:var(--text);font-weight:400}
+  .hl .up b{color:var(--aqua)} .hl .down b{color:var(--sand)}
+  .tip{position:absolute;left:0;top:0;z-index:4;pointer-events:none;opacity:0;transform:translate(-50%,-115%);
+    background:rgba(6,23,34,.94);border:1px solid rgba(126,232,213,.3);border-radius:9px;padding:8px 10px;
+    font-family:var(--mono);font-size:.52rem;letter-spacing:.06em;white-space:nowrap;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .2s}
+  .tip b{display:block;color:var(--aqua);font-size:.76rem;margin-top:3px;font-weight:400}
+  .tip.on{opacity:1}
+
+  .side{grid-column:span 4;display:flex;flex-direction:column;gap:14px}
+  .tideCard{padding:18px;display:flex;align-items:center;gap:20px;flex:1;min-height:200px}
+  .tideDial{--p:30;position:relative;width:clamp(120px,11vw,152px);aspect-ratio:1;flex:none;border-radius:50%;
+    background:conic-gradient(from -90deg,var(--aqua) 0 calc(var(--p)*1%),rgba(233,241,245,.09) 0);
+    display:grid;place-items:center;transition:background .4s linear}
+  .tideDial::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--panel);box-shadow:inset 0 0 24px rgba(0,0,0,.35)}
+  .tideDial::after{content:"";position:absolute;inset:16px;border-radius:50%;border:1px dashed rgba(126,232,213,.18)}
+  .dialCore{position:relative;z-index:2;text-align:center}
+  .dialCore b{display:block;font-size:1.4rem;font-weight:300;letter-spacing:-.03em}
+  .dialCore span{display:block;margin-top:4px;font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .tideInfo{flex:1;min-width:0}
+  .tideInfo .kicker{color:var(--sand);margin-bottom:9px}
+  .tideInfo h3{font-size:1rem;font-weight:400;letter-spacing:-.01em;line-height:1.3}
+  .tideInfo p{margin-top:7px;font-size:.7rem;line-height:1.6;color:var(--muted)}
+  .eventRows{margin-top:15px;border-top:1px solid var(--line-soft)}
+  .eventRows div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-family:var(--mono);font-size:.52rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .eventRows b{color:var(--text);font-weight:400}
+  .eventRows .hi b{color:var(--aqua)} .eventRows .lo b{color:var(--sand)}
+
+  .wxCard{padding:16px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .wxCard .temp{font-size:2rem;font-weight:300;letter-spacing:-.05em;line-height:1}
+  .wxCard .temp small{font-size:.7rem;color:var(--muted);letter-spacing:0}
+  .wxCard .lbl{color:var(--muted);margin-bottom:7px}
+  .wxIcon{width:46px;height:46px;flex:none;opacity:.9}
+
+  .telemetry{grid-column:span 12;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tCard{padding:15px 16px;transition:transform .3s,border-color .3s}
+  .tCard:hover{transform:translateY(-3px);border-color:rgba(126,232,213,.25)}
+  .tCard .top{display:flex;justify-content:space-between;align-items:center;color:var(--muted)}
+  .tCard .num{margin-top:12px;display:flex;align-items:baseline;gap:5px}
+  .tCard .num b{font-size:1.6rem;font-weight:300;letter-spacing:-.04em}
+  .tCard .num span{font-family:var(--mono);font-size:.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .tCard svg{display:block;width:100%;height:26px;margin-top:9px;overflow:visible}
+  .tCard .delta{margin-top:8px;color:var(--muted);font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;text-transform:uppercase}
+  .tCard .delta b{color:var(--aqua);font-weight:400}
+
+  footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:18px 0 28px;border-top:1px solid var(--line-soft);color:var(--muted)}
+  footer a{border-bottom:1px solid rgba(126,232,213,.3);padding-bottom:1px;transition:color .25s}
+  footer a:hover{color:var(--aqua)}
+
+  @media(max-width:1080px){
+    .chartCard{grid-column:span 12}
+    .side{grid-column:span 12;flex-direction:row}
+    .tideCard{flex:1.2}.wxCard{flex:.8}
+    .telemetry{grid-template-columns:repeat(2,1fr)}
+    nav{display:none}
+  }
+  @media(max-width:720px){
+    .heroHead{grid-template-columns:1fr;gap:20px;align-items:start}
+    .heroSide p{max-width:100%}
+    .side{flex-direction:column}
+    .stationMeta{display:none}
+    .cardHead{flex-direction:column;align-items:flex-start;gap:12px}
+    .tabs{align-self:stretch;justify-content:space-between}
+    .tab{flex:1;text-align:center;padding:8px 6px}
+    .chartFoot{gap:10px}
+    .hl{gap:14px}
+    .telemetry{grid-template-columns:1fr 1fr;gap:10px}
+    .tCard .num b{font-size:1.35rem}
+    .tideCard{padding:15px;gap:15px}
+  }
+  @media(max-width:430px){
+    .telemetry{grid-template-columns:1fr}
+    .chartCard{padding:14px 10px 10px}
+    .tideCard{flex-direction:column;text-align:center;align-items:center}
+    .tideInfo{width:100%}
+    .eventRows{text-align:left}
+    .legend{gap:10px;font-size:.46rem}
+    .hl{font-size:.46rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="wrap">
+
+  <header>
+    <a class="brand" href="#top" aria-label="Tidal 07 home">
+      <svg class="mark" viewBox="0 0 30 30" aria-hidden="true">
+        <circle cx="15" cy="15" r="14" fill="none" stroke="rgba(126,232,213,.35)"/>
+        <path d="M3 17c4 0 4-4 8-4s4 4 8 4 4-4 8-4" fill="none" stroke="#7ee8d5" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M3 21c4 0 4-4 8-4s4 4 8 4 4-4 8-4" fill="none" stroke="rgba(126,232,213,.45)" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="15" cy="8" r="1.5" fill="#f2b880"/>
+      </svg>
+      <span>Tidal <small>Station 07 · North Sea</small></span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#chart">Observatory</a>
+      <a href="#telemetry">Buoy network</a>
+      <a href="#telemetry">Archive</a>
+      <a href="#top">Field notes</a>
+    </nav>
+    <div class="stationMeta">
+      <span class="liveDot" aria-hidden="true"></span>
+      <div class="mono"><b id="utc">--:--:-- UTC</b><span id="utcDate">—</span></div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="heroHead" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow mono">60°14′ N / 2°04′ E — 118 nautical miles offshore</p>
+        <h1 id="page-title">North Sea,<br><em>translated.</em></h1>
+      </div>
+      <div class="heroSide">
+        <p>Station 07 has been listening to the water since 2014. Every twelve hours and twenty-five minutes, the sea writes the same sentence — we only draw the punctuation.</p>
+        <div class="row"><span>Last transmission</span><b>17 OCT 2026 / 20:36 UTC</b></div>
+      </div>
+    </section>
+
+    <div class="dash">
+      <section class="card chartCard" id="chart" aria-labelledby="chartTitle">
+        <div class="cardHead">
+          <div>
+            <h2 id="chartTitle">Tide height / metres above chart datum</h2>
+            <p class="sub" id="chartSub">Station 07 · sampled hourly · 24 hour window</p>
+          </div>
+          <div class="tabs" role="group" aria-label="Chart range">
+            <button class="tab" data-range="24H" aria-pressed="true">24 hours</button>
+            <button class="tab" data-range="7D" aria-pressed="false">7 days</button>
+            <button class="tab" data-range="30D" aria-pressed="false">30 days</button>
+          </div>
+        </div>
+        <div class="chartWrap">
+          <svg id="tideChart" viewBox="0 0 820 320" preserveAspectRatio="none" role="img" aria-labelledby="svgTitle svgDesc">
+            <title id="svgTitle">Tide height curve for the last 24 hours</title>
+            <desc id="svgDesc">A smoothed aqua line chart of tide height, with a live marker at the latest reading.</desc>
+            <defs>
+              <linearGradient id="tideFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#7ee8d5" stop-opacity=".34"/>
+                <stop offset=".65" stop-color="#7ee8d5" stop-opacity=".06"/>
+                <stop offset="1" stop-color="#7ee8d5" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="tideStroke" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#4fbfae"/>
+                <stop offset=".55" stop-color="#7ee8d5"/>
+                <stop offset="1" stop-color="#d9fff7"/>
+              </linearGradient>
+            </defs>
+            <g stroke="rgba(233,241,245,.09)" stroke-width="1" vector-effect="non-scaling-stroke">
+              <line x1="0" y1="34" x2="820" y2="34"/>
+              <line x1="0" y1="86" x2="820" y2="86"/>
+              <line x1="0" y1="138" x2="820" y2="138"/>
+              <line x1="0" y1="190" x2="820" y2="190"/>
+              <line x1="0" y1="242" x2="820" y2="242"/>
+              <line x1="0" y1="294" x2="820" y2="294"/>
+              <line x1="137" y1="0" x2="137" y2="320"/>
+              <line x1="274" y1="0" x2="274" y2="320"/>
+              <line x1="411" y1="0" x2="411" y2="320"/>
+              <line x1="548" y1="0" x2="548" y2="320"/>
+              <line x1="685" y1="0" x2="685" y2="320"/>
+            </g>
+            <path id="tideArea" fill="url(#tideFill)" d=""/>
+            <path id="tideLine" fill="none" stroke="url(#tideStroke)" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            <line id="crosshair" x1="0" y1="0" x2="0" y2="320" stroke="rgba(233,241,245,.35)" stroke-width="1" stroke-dasharray="2 5" vector-effect="non-scaling-stroke" opacity="0"/>
+            <circle id="liveHalo" cx="0" cy="0" r="10" fill="none" stroke="rgba(126,232,213,.5)" opacity=".8">
+              <animate attributeName="r" values="5;16;5" dur="3.2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values=".8;0;.8" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle id="liveDot" cx="0" cy="0" r="4.2" fill="#d9fff7" stroke="#7ee8d5" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            <circle id="cursor" cx="0" cy="0" r="5" fill="#7ee8d5" stroke="#07131f" stroke-width="2" opacity="0" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <div class="tip" id="tip" role="status" aria-live="polite">—</div>
+        </div>
+        <div class="axis" id="axis" aria-hidden="true"></div>
+        <div class="chartFoot">
+          <div class="legend">
+            <span><i></i> Tide height</span>
+            <span><i class="dash"></i> Chart datum</span>
+            <span>Updated <b style="color:var(--text);margin-left:3px">now</b></span>
+          </div>
+          <div class="hl">
+            <span class="up">High <b id="highVal">—</b></span>
+            <span class="down">Low <b id="lowVal">—</b></span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side" aria-label="Tide clock and weather">
+        <section class="card tideCard">
+          <div class="tideDial" id="tideDial" aria-hidden="true">
+            <div class="dialCore"><b id="tideNext">2h 14m</b><span>to high tide</span></div>
+          </div>
+          <div class="tideInfo">
+            <div class="kicker mono">Next event</div>
+            <h3>High tide · <span id="nextTime">04:12</span> UTC</h3>
+            <p>Neap approaching. A quiet window for small craft between the harbour wall and the long buoy line.</p>
+            <div class="eventRows">
+              <div class="hi"><span>High</span><b>04:12 / 2.4 m</b></div>
+              <div class="lo"><span>Low</span><b>10:26 / 0.6 m</b></div>
+            </div>
+          </div>
+        </section>
+        <section class="card wxCard">
+          <div>
+            <div class="lbl mono">Surface conditions</div>
+            <div class="temp">11.2<small>°C</small></div>
+            <div class="lbl mono" style="margin:7px 0 0">WNW 18 kn · visibility 9 nm</div>
+          </div>
+          <svg class="wxIcon" viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" fill="none" stroke="rgba(126,232,213,.2)"/>
+            <path d="M12 28h20a5 5 0 0 0 0-10 7 7 0 0 0-13-2 6 6 0 0 0-7 6" fill="none" stroke="#7ee8d5" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M17 34h9a3 3 0 0 1 0 6" fill="none" stroke="#f2b880" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="14" cy="37" r="1" fill="#7ee8d5"/>
+          </svg>
+        </section>
+      </aside>
+
+      <section class="telemetry" id="telemetry" aria-label="Telemetry">
+        <article class="card tCard">
+          <div class="top mono"><span>Swell height</span><span>Buoy 03</span></div>
+          <div class="num"><b>1.8</b><span>metres</span></div>
+          <svg viewBox="0 0 200 26" preserveAspectRatio="none" aria-hidden="true"><path d="M0 19 Q14 8 28 15 T58 13 T88 17 T118 9 T148 16 T178 11 T200 14" fill="none" stroke="#7ee8d5" stroke-width="1.3"/><path d="M0 19 Q14 8 28 15 T58 13 T88 17 T118 9 T148 16 T178 11 T200 14 L200 26 L0 26Z" fill="rgba(126,232,213,.07)"/></svg>
+          <div class="delta">Falling — <b>−0.2 m</b> in 6 h</div>
+        </article>
+        <article class="card tCard">
+          <div class="top mono"><span>Wave period</span><span>Buoy 03</span></div>
+          <div class="num"><b>8.4</b><span>seconds</span></div>
+          <svg viewBox="0 0 200 26" preserveAspectRatio="none" aria-hidden="true"><path d="M0 13 Q18 6 36 12 T72 14 T108 9 T144 15 T180 10 T200 13" fill="none" stroke="#f2b880" stroke-width="1.3"/></svg>
+          <div class="delta">Steady — <b>ground swell</b></div>
+        </article>
+        <article class="card tCard">
+          <div class="top mono"><span>Water temp</span><span>Buoy 01</span></div>
+          <div class="num"><b>11.2</b><span>°C</span></div>
+          <svg viewBox="0 0 200 26" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q20 9 40 11 T80 13 T120 15 T160 16 T200 19" fill="none" stroke="#7ee8d5" stroke-width="1.4"/></svg>
+          <div class="delta">Cooling — <b>−0.3°</b> this week</div>
+        </article>
+        <article class="card tCard">
+          <div class="top mono"><span>Wind</span><span>Mast 02</span></div>
+          <div class="num"><b>18</b><span>knots WNW</span></div>
+          <svg viewBox="0 0 200 26" preserveAspectRatio="none" aria-hidden="true"><path d="M0 17 Q16 10 30 14 T60 12 T90 20 T120 11 T150 9 T180 14 T200 12" fill="none" stroke="#f2b880" stroke-width="1.3"/></svg>
+          <div class="delta">Gusting — <b>24 kn</b> at 20:19</div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>© 2026 Tidal Observatory · Station 07 · 60°14′ N 2°04′ E</span>
+    <span>Instrument grade, one file, <a href="#top">no dependencies</a></span>
+    <span>Data is drawn, not fetched. Quietly fictional.</span>
+  </footer>
+</div>
+
+<script>
+  const W = 820, H = 320, PAD = { l: 4, r: 4, t: 22, b: 16 };
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg = document.getElementById('tideChart');
+  const line = document.getElementById('tideLine');
+  const area = document.getElementById('tideArea');
+  const liveDot = document.getElementById('liveDot');
+  const liveHalo = document.getElementById('liveHalo');
+  const crosshair = document.getElementById('crosshair');
+  const cursor = document.getElementById('cursor');
+  const tip = document.getElementById('tip');
+  const axis = document.getElementById('axis');
+  const wrap = document.querySelector('.chartWrap');
+
+  let points = [];
+  let series = [];
+  let currentRange = '24H';
+
+  function makeSeries(range){
+    const out = [];
+    if (range === '24H'){
+      for (let i = 0; i <= 24; i++){
+        out.push({ v: 1.55 + Math.sin(i / 24 * Math.PI * 3.6 - 0.7) * 0.95 + Math.sin(i * .7) * .08, label: String(i).padStart(2, '0') + ':00' });
+      }
+    } else if (range === '7D'){
+      const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+      for (let i = 0; i <= 28; i++){
+        const day = days[Math.floor(i / 4) % 7];
+        out.push({ v: 1.8 + Math.sin(i / 28 * Math.PI * 4 - .4) * 1.05 + Math.sin(i * .55) * .12, label: day + ' ' + String((i % 4) * 6).padStart(2, '0') + ':00' });
+      }
+    } else {
+      for (let i = 0; i <= 30; i++){
+        out.push({ v: 2.0 + Math.sin(i / 30 * Math.PI * 5.2) * 1.25 + Math.sin(i * .9) * .1, label: String(i + 1).padStart(2, '0') + ' OCT' });
+      }
+    }
+    return out;
+  }
+
+  function smoothPath(pts){
+    if (pts.length < 2) return '';
+    let d = 'M' + pts[0].x.toFixed(2) + ',' + pts[0].y.toFixed(2);
+    for (let i = 0; i < pts.length - 1; i++){
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1.x + (p2.x - p0.x) / 6;
+      const c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6;
+      const c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ' C' + c1x.toFixed(2) + ',' + c1y.toFixed(2) + ' ' + c2x.toFixed(2) + ',' + c2y.toFixed(2) + ' ' + p2.x.toFixed(2) + ',' + p2.y.toFixed(2);
+    }
+    return d;
+  }
+
+  function drawRange(range, animate){
+    currentRange = range;
+    series = makeSeries(range);
+    const values = series.map(p => p.v);
+    const min = Math.min.apply(null, values) - 0.35;
+    const max = Math.max.apply(null, values) + 0.35;
+    const innerW = W - PAD.l - PAD.r;
+    const innerH = H - PAD.t - PAD.b;
+
+    points = series.map((p, i) => ({
+      x: PAD.l + i * innerW / (series.length - 1),
+      y: PAD.t + (1 - (p.v - min) / (max - min)) * innerH,
+      v: p.v,
+      label: p.label
+    }));
+
+    const d = smoothPath(points);
+    const last = points[points.length - 1];
+    line.setAttribute('d', d);
+    area.setAttribute('d', d + ' L' + last.x.toFixed(2) + ',' + (H - PAD.b) + ' L' + points[0].x.toFixed(2) + ',' + (H - PAD.b) + ' Z');
+    liveDot.setAttribute('cx', last.x.toFixed(2));
+    liveDot.setAttribute('cy', last.y.toFixed(2));
+    liveHalo.setAttribute('cx', last.x.toFixed(2));
+    liveHalo.setAttribute('cy', last.y.toFixed(2));
+
+    if (animate && !reduce){
+      const len = line.getTotalLength();
+      line.style.transition = 'none';
+      line.style.strokeDasharray = len;
+      line.style.strokeDashoffset = len;
+      line.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        line.style.transition = 'stroke-dashoffset 1s cubic-bezier(.25,.7,.2,1)';
+        line.style.strokeDashoffset = '0';
+      });
+      area.style.opacity = '0';
+      requestAnimationFrame(() => {
+        area.style.transition = 'opacity 1s ease .1s';
+        area.style.opacity = '1';
+      });
+    } else {
+      line.style.strokeDasharray = 'none';
+      line.style.strokeDashoffset = '0';
+      area.style.opacity = '1';
+    }
+
+    let hi = 0, lo = 0;
+    series.forEach((p, i) => { if (p.v > series[hi].v) hi = i; if (p.v < series[lo].v) lo = i; });
+    document.getElementById('highVal').textContent = series[hi].v.toFixed(2) + ' m';
+    document.getElementById('lowVal').textContent = series[lo].v.toFixed(2) + ' m';
+
+    const labels = range === '24H' ? ['00:00', '06:00', '12:00', '18:00', '24:00']
+      : range === '7D' ? ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
+      : ['01 OCT', '08 OCT', '15 OCT', '22 OCT', '30 OCT'];
+    axis.innerHTML = labels.map(l => '<span>' + l + '</span>').join('');
+    document.getElementById('chartSub').textContent = 'Station 07 · sampled ' + (range === '24H' ? 'hourly · 24 hour window' : range === '7D' ? 'six-hourly · 7 day window' : 'daily · 30 day window');
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.range === range)));
+
+    crosshair.setAttribute('opacity', '0');
+    cursor.setAttribute('opacity', '0');
+    tip.classList.remove('on');
+  }
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => drawRange(tab.dataset.range, true));
+  });
+
+  wrap.addEventListener('pointermove', e => {
+    if (!points.length) return;
+    const r = svg.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    const idx = Math.round(ratio * (points.length - 1));
+    const p = points[idx];
+    crosshair.setAttribute('x1', p.x);
+    crosshair.setAttribute('x2', p.x);
+    crosshair.setAttribute('opacity', '1');
+    cursor.setAttribute('cx', p.x);
+    cursor.setAttribute('cy', p.y);
+    cursor.setAttribute('opacity', '1');
+    tip.innerHTML = p.label + ' UTC<b>' + p.v.toFixed(2) + ' m</b>';
+    tip.style.left = Math.max(62, Math.min(r.width - 62, p.x / W * r.width)) + 'px';
+    tip.style.top = (p.y / H * r.height) + 'px';
+    tip.classList.add('on');
+  });
+  wrap.addEventListener('pointerleave', () => {
+    crosshair.setAttribute('opacity', '0');
+    cursor.setAttribute('opacity', '0');
+    tip.classList.remove('on');
+  });
+
+  function updateClock(){
+    const now = new Date();
+    const hh = String(now.getUTCHours()).padStart(2, '0');
+    const mm = String(now.getUTCMinutes()).padStart(2, '0');
+    const ss = String(now.getUTCSeconds()).padStart(2, '0');
+    document.getElementById('utc').textContent = hh + ':' + mm + ':' + ss + ' UTC';
+    document.getElementById('utcDate').textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).toUpperCase();
+
+    const period = 12.42;
+    const elapsed = (now.getTime() / 3600000) % period;
+    const progress = elapsed / period * 100;
+    document.getElementById('tideDial').style.setProperty('--p', progress.toFixed(2));
+    const remain = period - elapsed;
+    const rh = Math.floor(remain);
+    const rm = Math.round((remain - rh) * 60);
+    document.getElementById('tideNext').textContent = rh + 'h ' + String(rm).padStart(2, '0') + 'm';
+    const next = new Date(now.getTime() + remain * 3600000);
+    document.getElementById('nextTime').textContent = String(next.getUTCHours()).padStart(2, '0') + ':' + String(next.getUTCMinutes()).padStart(2, '0');
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  drawRange('24H', false);
+</script>
+</body>
+</html>

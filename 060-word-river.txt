@@ -1,0 +1,19 @@
+TITLE
+River — A Current of Words
+
+PROMPT
+Create a full-screen typographic word river called "River". Warm cream background, ink-black type, one cobalt accent. Five horizontal lanes of drifting words move at different speeds and sizes, mixing a high-contrast serif, a tight grotesque and small monospaced phrases. A visitor can type a word into a small input at the bottom; it joins the largest lane as a highlighted word, and the word count updates. Controls pause the current and change its speed. Large editorial framing: "A river of words. / Add one." top left, a short instruction, and a quiet footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external fonts or images.
+
+DESIGN INTENT
+A kinetic type specimen that behaves like water. The lanes are currents: some fast and thin, some slow and monumental. Word choice and spacing matter as much as motion. The page is a place to leave a word, not a corporate hero — playful, literary and quietly absurd.
+
+VISUAL TECHNIQUES
+- Five CSS marquee lanes with duplicated tracks for seamless looping and different durations/sizes.
+- Mixed typography: serif italic, bold grotesque, monospaced microcopy, outlined display words.
+- Pause-on-hover per lane; global pause and a speed control changing animation duration.
+- User-submitted words inserted into the main track with a highlight and subtle entrance animation.
+- Ink/cream/cobalt palette, hairlines and generous negative space.
+- Fluid type scale and reduced-motion fallback that pauses all motion and shows the words statically.
+
+INTERACTION MODEL
+Type a word and press Enter or "Set it adrift" to add it to the river; it appears in the main lane with a cobalt underline and the count increments. "Pause" freezes all lanes; the speed slider changes their duration. Hovering a lane pauses only that current. Every control is keyboard accessible, and reduced-motion starts with the river still.

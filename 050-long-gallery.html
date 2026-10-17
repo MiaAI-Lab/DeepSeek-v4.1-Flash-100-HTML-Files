@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Long Gallery — six abstract rooms in one horizontal corridor.">
+<title>The Long Gallery — Six Rooms, One Corridor</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --wall:#e9e4d8; --ink:#1d1c18; --dim:rgba(29,28,24,.55); --line:rgba(29,28,24,.2); --accent:#a63d2c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--wall);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;height:100svh;
+    background-image:linear-gradient(180deg,#f2eee3,#e5dfd2)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.25;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--accent);color:var(--wall)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--accent);outline-offset:4px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .page{height:100svh;display:flex;flex-direction:column;padding:0 clamp(14px,2.6vw,34px)}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid var(--line);flex:none}
+  .brand{display:flex;align-items:baseline;gap:10px;font-family:var(--serif);font-size:1.05rem;letter-spacing:.02em}
+  .brand span{font-family:var(--mono);font-size:.38rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .headMeta{display:flex;align-items:center;gap:22px;color:var(--dim)}
+  .headMeta b{color:var(--ink);font-weight:400}
+  .navBtns{display:flex;gap:5px}
+  .arrow{width:28px;height:28px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:.68rem;color:var(--ink);transition:background .2s,color .2s,border-color .2s}
+  .arrow:hover{background:var(--ink);color:var(--wall);border-color:var(--ink)}
+
+  .viewport{flex:1;display:flex;align-items:center;min-height:0;padding:12px 0}
+  .gallery{display:flex;gap:clamp(12px,2vw,24px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;width:100%;height:min(76vh,720px);
+    scrollbar-width:none;padding:0 0 8px}
+  .gallery::-webkit-scrollbar{display:none}
+  .room{position:relative;flex:0 0 min(74vw,900px);height:100%;scroll-snap-align:start;overflow:hidden;border:1px solid rgba(29,28,24,.18);
+    box-shadow:0 20px 40px rgba(60,45,25,.16);isolation:isolate;background:#d9d2c2}
+  .room .art{position:absolute;inset:0;overflow:hidden}
+  .room .meta{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:clamp(12px,2vw,22px);
+    color:#fff;mix-blend-mode:difference;pointer-events:none}
+  .room .meta h2{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2.4rem);font-weight:400;letter-spacing:-.03em;line-height:1}
+  .room .meta .note{max-width:30ch;font-size:.64rem;line-height:1.6;text-align:right;color:rgba(255,255,255,.7)}
+  .room .no{position:absolute;left:clamp(12px,2vw,22px);top:clamp(12px,2vw,20px);z-index:4;font-family:var(--mono);font-size:.44rem;letter-spacing:.14em;color:#fff;mix-blend-mode:difference}
+  .room .year{position:absolute;right:clamp(12px,2vw,22px);top:clamp(12px,2vw,20px);z-index:4;font-family:var(--mono);font-size:.42rem;letter-spacing:.14em;color:rgba(255,255,255,.65);mix-blend-mode:difference}
+
+  /* 01 Dust */
+  .dust{background:linear-gradient(160deg,#e7d8bf,#cbb694 60%,#a78d6d)}
+  .dust .sun{position:absolute;right:12%;top:12%;width:38%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 38%,#fff4d8,#f1c883 45%,rgba(226,169,96,.1) 70%);filter:blur(2px)}
+  .dust .plane{position:absolute;background:rgba(255,246,226,.28);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(1px)}
+  .dust .p1{left:10%;top:24%;width:34%;height:48%;transform:rotate(-6deg)}
+  .dust .p2{left:26%;top:13%;width:24%;height:36%;transform:rotate(8deg);background:rgba(255,246,226,.18)}
+  .dust .p3{left:18%;top:44%;width:40%;height:30%;transform:rotate(3deg);background:rgba(120,90,55,.12)}
+  /* 02 Tide */
+  .tide{background:linear-gradient(180deg,#051b2e,#0a3550 60%,#0d4a68)}
+  .tide .line{position:absolute;left:-10%;right:-10%;height:26px;border-top:1px solid rgba(155,230,240,.4);border-radius:50%;filter:blur(.2px)}
+  .tide .l1{top:20%}.tide .l2{top:32%;border-color:rgba(155,230,240,.25)}.tide .l3{top:45%;border-color:rgba(155,230,240,.18)}
+  .tide .l4{top:58%;border-color:rgba(155,230,240,.12)}.tide .l5{top:71%;border-color:rgba(155,230,240,.08)}
+  .tide .moon{position:absolute;left:16%;top:12%;width:12%;aspect-ratio:1;border-radius:50%;background:#e8f7f6;box-shadow:0 0 40px rgba(190,245,245,.5)}
+  /* 03 Fold */
+  .fold{background:#f3efe5}
+  .fold .poly{position:absolute;filter:drop-shadow(0 18px 18px rgba(40,35,25,.28))}
+  .fold .a{left:8%;top:18%;width:52%;height:66%;background:#20201e;clip-path:polygon(0 0,100% 22%,76% 100%,0 82%)}
+  .fold .b{left:34%;top:10%;width:52%;height:72%;background:#c9c2b2;clip-path:polygon(0 12%,100% 0,82% 100%,8% 82%)}
+  .fold .c{left:20%;top:38%;width:40%;height:46%;background:#a83f2d;clip-path:polygon(0 8%,100% 26%,84% 100%,0 76%)}
+  .fold .d{left:14%;top:30%;width:1px;height:40%;background:rgba(30,30,28,.4);transform:rotate(8deg)}
+  /* 04 Signal */
+  .signal{background:#0a0a0c}
+  .signal .bar{position:absolute;top:-10%;bottom:-10%;width:4.5%;background:linear-gradient(180deg,var(--c),transparent);filter:blur(.4px);box-shadow:0 0 22px var(--c)}
+  .signal .bar:nth-child(1){left:12%;--c:#41e9ff}.signal .bar:nth-child(2){left:24%;--c:#ff2e88}
+  .signal .bar:nth-child(3){left:37%;--c:#ffe36b}.signal .bar:nth-child(4){left:52%;--c:#a78bff}
+  .signal .bar:nth-child(5){left:66%;--c:#41e9ff}.signal .bar:nth-child(6){left:79%;--c:#ff8a5c}
+  .signal .bar:nth-child(2n){top:-24%;bottom:6%;opacity:.65}
+  .signal .glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(65,233,255,.14),transparent 55%)}
+  /* 05 Bloom */
+  .bloomArt{background:radial-gradient(circle at 50% 48%,#ffb3c6,#b21f45 55%,#4a0b20)}
+  .bloomArt .petal{position:absolute;left:50%;top:50%;width:26%;height:52%;border-radius:50% 50% 46% 46%;transform-origin:50% 0%;
+    background:linear-gradient(180deg,rgba(255,240,238,.85),rgba(255,120,150,.35));mix-blend-mode:screen;filter:blur(.3px)}
+  .bloomArt .core{position:absolute;left:50%;top:50%;width:15%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 38% 34%,#fff6df,#ffd477 50%,#a75e27)}
+  /* 06 Return */
+  .return{background:linear-gradient(180deg,#efe9dc,#d9cfbc)}
+  .return .arch{position:absolute;left:50%;bottom:0;width:32%;height:66%;transform:translateX(-50%);border-radius:50% 50% 0 0;
+    background:linear-gradient(180deg,#fff8e8,#f1d6a3 60%,#c99a5e);box-shadow:0 0 80px 20px rgba(255,236,190,.55)}
+  .return .arch::before{content:"";position:absolute;inset:6% 6% 0;border-radius:50% 50% 0 0;background:linear-gradient(180deg,#fffdf4,#fbe9c5 60%,#e0bc86)}
+  .return .step{position:absolute;left:36%;right:36%;bottom:0;height:7%;background:#b08e63}
+  .return .floor{position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(70,55,35,.3)}
+
+  .footerRow{display:flex;align-items:center;gap:18px;padding:10px 0 14px;border-top:1px solid var(--line);flex:none;color:var(--dim)}
+  .progress{flex:1;height:1px;background:rgba(29,28,24,.2);position:relative}
+  .progress i{position:absolute;left:0;top:0;height:1px;width:16.66%;background:var(--accent);transition:transform .4s,width .4s}
+  .dots{display:flex;gap:6px}
+  .dot{width:18px;height:18px;display:grid;place-items:center;color:var(--dim);font-family:var(--mono);font-size:.36rem;border:1px solid transparent;border-radius:50%}
+  .dot.active{border-color:var(--accent);color:var(--accent)}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 0 10px;color:rgba(29,28,24,.4)}
+
+  @media(max-width:900px){
+    .room{flex-basis:86vw}
+    .headMeta .hide{display:none}
+    .room .meta .note{display:none}
+  }
+  @media(max-width:600px){
+    .page{padding:0 10px}
+    header{padding:10px 0}
+    .brand{font-size:.9rem}
+    .brand span{display:none}
+    .viewport{padding:8px 0}
+    .gallery{height:min(66vh,560px)}
+    .room{flex-basis:90vw}
+    .room .meta h2{font-size:1.35rem}
+    .footerRow{gap:10px}
+    .dots{display:none}
+    .progress i{width:16.66%}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0">The Long Gallery</h1>
+<div class="page">
+  <header>
+    <a class="brand" href="#top">The Long Gallery <span>Six rooms / one corridor</span></a>
+    <div class="headMeta mono"><span class="hide">Curated by the studio</span><span>Room <b id="counter">01 / 06</b></span><div class="navBtns"><button class="arrow" id="prev" aria-label="Previous room">←</button><button class="arrow" id="next" aria-label="Next room">→</button></div></div>
+  </header>
+
+  <main class="viewport" id="top">
+    <div class="gallery" id="gallery">
+      <section class="room dust" data-title="Dust">
+        <div class="art"><div class="sun"></div><div class="plane p1"></div><div class="plane p2"></div><div class="plane p3"></div></div>
+        <span class="no mono">01 — Dust</span><span class="year mono">2023</span>
+        <div class="meta"><h2>Dust</h2><p class="note">Light remembering a room after everyone has left it.</p></div>
+      </section>
+      <section class="room tide" data-title="Tide">
+        <div class="art"><div class="moon"></div><div class="line l1"></div><div class="line l2"></div><div class="line l3"></div><div class="line l4"></div><div class="line l5"></div></div>
+        <span class="no mono">02 — Tide</span><span class="year mono">2024</span>
+        <div class="meta"><h2>Tide</h2><p class="note">A horizon drawn with the minimum number of decisions.</p></div>
+      </section>
+      <section class="room fold" data-title="Fold">
+        <div class="art"><div class="poly a"></div><div class="poly b"></div><div class="poly c"></div><div class="d"></div></div>
+        <span class="no mono">03 — Fold</span><span class="year mono">2024</span>
+        <div class="meta"><h2>Fold</h2><p class="note">Paper as architecture; a plane that refuses to stay flat.</p></div>
+      </section>
+      <section class="room signal" data-title="Signal">
+        <div class="art"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="glow"></div></div>
+        <span class="no mono">04 — Signal</span><span class="year mono">2025</span>
+        <div class="meta"><h2>Signal</h2><p class="note">Six frequencies looking for a receiver in the same room.</p></div>
+      </section>
+      <section class="room bloomArt" data-title="Bloom">
+        <div class="art" id="petals"></div>
+        <span class="no mono">05 — Bloom</span><span class="year mono">2025</span>
+        <div class="meta"><h2>Bloom</h2><p class="note">An opening that keeps opening after you have left.</p></div>
+      </section>
+      <section class="room return" data-title="Return">
+        <div class="art"><div class="arch"></div><div class="step"></div><div class="floor"></div></div>
+        <span class="no mono">06 — Return</span><span class="year mono">2026</span>
+        <div class="meta"><h2>Return</h2><p class="note">A door drawn as a promise rather than a rectangle.</p></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="footerRow">
+    <span class="mono" id="roomName">Dust</span>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+    <div class="dots" id="dots"></div>
+    <span class="mono">01 / 06</span>
+  </div>
+  <footer class="mono">
+    <span>The Long Gallery — a fictional exhibition</span>
+    <span>Scroll sideways · or use the arrows</span>
+    <span>© 2026 · six rooms, one file</span>
+  </footer>
+</div>
+
+<script>
+  const gallery = document.getElementById('gallery');
+  const rooms = Array.from(document.querySelectorAll('.room'));
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const bar = document.getElementById('bar');
+  const roomName = document.getElementById('roomName');
+  let active = 0;
+
+  rooms.forEach((r, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' active' : '');
+    b.textContent = String(i + 1).padStart(2, '0');
+    b.setAttribute('aria-label', 'Go to room ' + (i + 1) + ': ' + r.dataset.title);
+    b.addEventListener('click', () => goTo(i));
+    dots.appendChild(b);
+  });
+
+  function goTo(i){
+    active = Math.max(0, Math.min(rooms.length - 1, i));
+    rooms[active].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', inline: 'start', block: 'nearest' });
+    update();
+  }
+  function update(){
+    counter.textContent = String(active + 1).padStart(2, '0') + ' / 06';
+    roomName.textContent = rooms[active].dataset.title;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === active));
+    bar.style.width = (100 / rooms.length) + '%';
+    bar.style.transform = 'translateX(' + (active * 100) + '%)';
+  }
+
+  document.getElementById('next').addEventListener('click', () => goTo(active + 1));
+  document.getElementById('prev').addEventListener('click', () => goTo(active - 1));
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goTo(active + 1);
+    if (e.key === 'ArrowLeft') goTo(active - 1);
+  });
+
+  gallery.addEventListener('scroll', () => {
+    const mid = gallery.scrollLeft + gallery.clientWidth * .35;
+    let best = 0, bestDist = Infinity;
+    rooms.forEach((r, i) => {
+      const d = Math.abs(r.offsetLeft - mid);
+      if (d < bestDist){ bestDist = d; best = i; }
+    });
+    if (best !== active){ active = best; update(); }
+  }, { passive: true });
+
+  // petals
+  const petals = document.getElementById('petals');
+  for (let i = 0; i < 10; i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.transform = 'translate(-50%,-50%) rotate(' + (i * 36) + 'deg) translateY(-46%)';
+    petals.appendChild(p);
+  }
+  const core = document.createElement('div');
+  core.className = 'core';
+  petals.appendChild(core);
+
+  update();
+</script>
+</body>
+</html>

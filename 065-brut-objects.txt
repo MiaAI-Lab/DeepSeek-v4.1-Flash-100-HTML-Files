@@ -1,0 +1,20 @@
+TITLE
+BRUT® — Chair 01, Sit Hard
+
+PROMPT
+Create a raw, gallery-grade e-commerce page for a fictional furniture object: BRUT® Chair 01. Concrete-grey paper, hard black rules, safety orange accents and oversized uncompromising typography. The layout is a brutalist product sheet: a giant title "SIT HARD." on the left, a short material paragraph, a specification table, price, and an add-to-bag button; on the right a large product stage with an SVG chair drawn from concrete-grey planes and black edges, dimension callouts, and a raw floor shadow. Include a top navigation with a cart count, an edition number, and a footer. Colour variants (Concrete, Black, Rust) change the chair's palette. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+Furniture presented as an object of conviction. No soft lighting, no lifestyle photography, no rounded corners: just hard geometry, weight and a price. The page should feel like a spec sheet printed on a concrete wall, with one orange mark that behaves like safety tape. Type is large, tight and unapologetic.
+
+VISUAL TECHNIQUES
+- Bold Swiss-brutalist grid with thick rules, mono specifications and poster-scale type.
+- SVG chair built from flat planes with hard black outlines, cast shadow and dimension lines.
+- Colour variant buttons that swap the chair's three tonal fills.
+- Dimension overlay that can be toggled on and off.
+- Raw concrete texture made with layered CSS gradients and grain; no rounded corners except the circular cart badge.
+- Sticky-ish add-to-bag bar with a hard offset shadow.
+- Responsive stacking with the chair above the specs on mobile.
+
+INTERACTION MODEL
+Selecting Concrete, Black or Rust changes the chair colour and the selected swatch. "Dimensions" toggles measurement lines and labels around the chair. "Add to bag" increments the cart count and briefly changes the button text. All variants are real buttons with pressed states; reduced-motion removes the button transitions only.

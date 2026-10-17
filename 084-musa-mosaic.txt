@@ -1,0 +1,20 @@
+TITLE
+MUSA — A Mosaic Atelier
+
+PROMPT
+Create a tactile mosaic studio called "MUSA". Warm stone background, a framed mosaic panel of hundreds of tiny tessera tiles, and a narrow atelier control rail with six stone colours (terracotta, ochre, sea, ivory, black, olive), three pattern buttons (Medallion, Wave, Scatter), a Clear control and a placed-tile counter. The mosaic is a 24×16 grid with visible grout, slightly irregular tiles and a classical rosette generated on load. Visitors paint by clicking or dragging across the panel; pattern buttons regenerate a symmetrical medallion or wave composition; Clear empties the grout. Include a museum plaque, a gold double frame and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+The physical pleasure of small tiles. The panel should feel heavy and old: deep grout, stone colours, a double gold frame, a plaque screwed to the bottom. The controls are workshop tools, not app widgets. The generated medallion gives an immediate "how was that made?" moment before the visitor starts painting.
+
+VISUAL TECHNIQUES
+- CSS grid mosaic with grout lines, per-tile subtle rotation and tonal variation.
+- Deterministic medallion generator using ring and angle functions from the tile's coordinates.
+- Wave and scatter generators, plus free painting by pointer drag.
+- Six stone colours with slight per-tile brightness variation.
+- Double gold frame, museum plaque and a soft cast shadow.
+- Atelier control rail with colour swatches, pattern tools and a tile counter.
+- Responsive mosaic scaling; reduced-motion removes tile transitions.
+
+INTERACTION MODEL
+Selecting a stone colour and painting across the grid places tiles instantly. Medallion, Wave and Scatter regenerate the whole composition; Clear removes every tile. The count updates live. Pattern buttons have pressed states, colour swatches are accessible buttons, and reduced-motion keeps all states without transitions.

@@ -1,0 +1,20 @@
+TITLE
+Smoke Signals — Say It in Smoke
+
+PROMPT
+Create a fleeting message page called "Smoke Signals". A near-black warm room holds a live canvas of smoke; a serif headline reads "Say it in smoke." A message field at the bottom turns typed words into drifting smoke particles shaped like the letters, which rise, bend with the wind and dissolve. Wind and Density sliders alter the behaviour, "Clear the air" empties the canvas, and a counter records how many messages have been burned. Include a note that nothing is saved. Fully responsive, one standalone HTML file with inline CSS/JS/canvas, no external images or fonts.
+
+DESIGN INTENT
+A page about impermanence, with the atmosphere of a dark room and one low fire. The smoke should be legible for a moment — you can almost read it — then gone. The interface is sparse, warm and quiet; the only bright colour is an ember orange used for the burn action and the sparks.
+
+VISUAL TECHNIQUES
+- Text sampled from an offscreen canvas, then emitted as hundreds of soft smoke particles that briefly hold the shape of the words.
+- Pre-rendered radial-gradient sprite for soft, performant particles; ember sparks mixed through.
+- Wind drift, buoyancy, turbulence and life-based alpha.
+- Warm charcoal room, low ember glow, grain and vignette.
+- Serif headline, mono labels, slim compose bar and sliders.
+- Click/tap the smoke area to release a small puff.
+- Reduced-motion emits fewer, slower particles and disables the flicker.
+
+INTERACTION MODEL
+Type a short message and press Burn (or Enter): its letters become smoke and the status line echoes the message. Wind shifts the drift left or right; Density controls how many particles are emitted. Clear the air removes every particle. The burned counter increments. All controls are keyboard accessible and the canvas is decorative, with the message also available as text.

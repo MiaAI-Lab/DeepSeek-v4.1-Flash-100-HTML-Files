@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="FLUID — an identity studio working in liquid chrome, motion and material.">
+<title>FLUID® — A Liquid Chrome Identity</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#08080b; --coal:#101015; --chrome:#dfe4ea; --steel:#8b939e; --dim:rgba(223,228,234,.46);
+    --acid:#d8ff3e; --line:rgba(223,228,234,.14);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--void);color:var(--chrome);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;min-height:100vh}
+  ::selection{background:var(--acid);color:#08080b}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--acid);outline-offset:5px}
+  .mono{font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.6}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 clamp(16px,3.4vw,44px)}
+  .grain{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:40;border-bottom:1px solid var(--line);
+    background:rgba(8,8,11,.72);backdrop-filter:blur(16px)}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:16px 0}
+  .brand{font-size:1.02rem;letter-spacing:-.04em;font-weight:600;display:flex;align-items:baseline;gap:8px}
+  .brand sup{font-size:.45em;font-family:var(--mono);letter-spacing:0;color:var(--dim);font-weight:400}
+  .brand .pip{width:5px;height:5px;background:var(--acid);border-radius:50%;align-self:center;box-shadow:0 0 10px rgba(216,255,62,.7)}
+  nav{display:flex;gap:28px;align-items:center}
+  nav a{font-family:var(--mono);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);transition:color .25s;position:relative}
+  nav a:hover{color:var(--chrome)}
+  nav a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:1px;background:var(--acid);transition:width .3s}
+  nav a:hover::after{width:100%}
+  .avail{display:flex;align-items:center;gap:8px;color:var(--dim);border:1px solid var(--line);padding:7px 11px;border-radius:100px}
+  .avail i{width:4px;height:4px;border-radius:50%;background:var(--acid);box-shadow:0 0 8px var(--acid)}
+
+  .hero{position:relative;min-height:100svh;padding-top:112px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(900px 600px at 68% 38%,rgba(160,175,195,.16),transparent 62%),
+    radial-gradient(700px 500px at 20% 80%,rgba(70,80,95,.18),transparent 68%)}
+  .gridlines{position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100%/6) 100%;
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(180deg,transparent,#000 22%,#000 78%,transparent)}
+  .heroInner{position:relative;z-index:2;display:grid;grid-template-columns:1.12fr .88fr;gap:20px;align-items:center}
+  .eyebrow{display:flex;align-items:center;gap:11px;color:var(--dim);margin-bottom:24px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--acid)}
+  .eyebrow b{color:var(--acid);font-weight:400}
+  h1{font-size:clamp(3.4rem,8.6vw,8.4rem);line-height:.84;letter-spacing:-.065em;font-weight:500;text-wrap:balance}
+  h1 .chrome{display:block;background:linear-gradient(105deg,#f9fbfd 0%,#c3cad3 18%,#6e7783 33%,#eef2f6 47%,#939ca8 61%,#f3f6f9 76%,#5f6772 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.4))}
+  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.03em;color:var(--chrome)}
+  .lede{margin-top:26px;max-width:38ch;font-size:.85rem;line-height:1.8;color:var(--dim);font-weight:300}
+  .lede b{color:var(--chrome);font-weight:400}
+  .heroFoot{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:34px}
+  .cta{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(223,228,234,.5);padding:13px 20px;
+    font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--chrome);
+    transition:background .3s,color .3s,border-color .3s}
+  .cta:hover{background:var(--chrome);color:var(--void);border-color:var(--chrome)}
+  .scrollNote{color:var(--dim);display:flex;align-items:center;gap:8px}
+  .scrollNote i{display:block;width:1px;height:22px;background:linear-gradient(var(--acid),transparent)}
+
+  .sculpture{position:relative;display:grid;place-items:center;min-height:520px}
+  .sculpture svg{width:min(100%,560px);height:auto;overflow:visible;filter:drop-shadow(0 30px 50px rgba(0,0,0,.55))}
+  .stateCard{position:absolute;right:2%;bottom:8%;border:1px solid var(--line);background:rgba(12,12,16,.62);
+    backdrop-filter:blur(10px);padding:12px 14px;min-width:172px}
+  .stateCard .row{display:flex;justify-content:space-between;gap:18px;padding:5px 0;border-bottom:1px solid rgba(223,228,234,.08);color:var(--dim)}
+  .stateCard .row:last-child{border-bottom:0}
+  .stateCard b{color:var(--chrome);font-weight:400;font-family:var(--mono);font-size:.55rem;letter-spacing:.04em}
+  .stateCard .bar{height:2px;background:rgba(223,228,234,.12);margin-top:9px;overflow:hidden}
+  .stateCard .bar i{display:block;height:100%;width:68%;background:linear-gradient(90deg,var(--steel),var(--acid));transition:width .5s}
+  .orbitLabel{position:absolute;left:1%;top:4%;width:118px;height:118px;color:var(--dim);animation:spin 26s linear infinite}
+  .orbitLabel text{font-family:var(--mono);font-size:6.4px;letter-spacing:1.8px;text-transform:uppercase;fill:currentColor}
+  .orbitLabel .pip{fill:var(--acid)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sculpture:hover .orbitLabel{animation-play-state:paused}
+  .vertical{position:absolute;right:0;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:right center;
+    color:var(--dim);letter-spacing:.4em;font-family:var(--mono);font-size:.5rem;text-transform:uppercase}
+
+  .manifesto{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:clamp(40px,7vw,80px) 0}
+  .manifesto .in{display:grid;grid-template-columns:.42fr 1fr;gap:clamp(28px,5vw,70px);align-items:start}
+  .manifesto .label{color:var(--dim);display:flex;gap:10px}
+  .manifesto .label::before{content:"";width:20px;height:1px;background:var(--acid);margin-top:9px}
+  .manifesto p{font-size:clamp(1.35rem,2.7vw,2.25rem);line-height:1.32;letter-spacing:-.035em;font-weight:300;max-width:30ch}
+  .manifesto p em{font-family:var(--serif);color:var(--steel)}
+  .manifesto p b{font-weight:400;color:var(--chrome);background:linear-gradient(100deg,#fff,#87909b,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .index{padding:clamp(36px,6vw,64px) 0 60px}
+  .indexHead{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--dim)}
+  .indexHead h2{font-size:.8rem;letter-spacing:.04em;font-weight:400;color:var(--chrome)}
+  .rowItem{position:relative;display:grid;grid-template-columns:.35fr 1.2fr 1fr auto;gap:20px;align-items:center;
+    padding:22px 8px;border-bottom:1px solid var(--line);overflow:hidden;isolation:isolate;transition:color .35s}
+  .rowItem::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,transparent 8%,rgba(223,228,234,.14) 32%,rgba(216,255,62,.12) 55%,transparent 80%);
+    transform:translateX(-110%);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+  .rowItem:hover::before{transform:translateX(0)}
+  .rowItem .no{font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;color:var(--dim)}
+  .rowItem h3{font-size:clamp(1.2rem,2.4vw,1.9rem);font-weight:400;letter-spacing:-.035em}
+  .rowItem .desc{font-size:.7rem;line-height:1.6;color:var(--dim);max-width:34ch}
+  .rowItem .arr{font-size:1rem;color:var(--dim);transition:transform .35s,color .35s}
+  .rowItem:hover .arr{transform:translate(4px,-4px);color:var(--acid)}
+  .indexFoot{display:flex;justify-content:space-between;gap:20px;padding-top:16px;color:var(--dim)}
+  .indexFoot a{border-bottom:1px solid var(--line);padding-bottom:2px;transition:color .25s,border-color .25s}
+  .indexFoot a:hover{color:var(--chrome);border-color:var(--acid)}
+
+  footer{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;padding:0 0 30px;color:var(--dim)}
+  footer .big{font-size:clamp(3rem,10vw,8rem);line-height:.75;letter-spacing:-.07em;color:transparent;-webkit-text-stroke:1px rgba(223,228,234,.18)}
+
+  @media(max-width:980px){
+    .heroInner{grid-template-columns:1fr;gap:10px}
+    .sculpture{min-height:400px;order:2}
+    .sculpture svg{width:min(100%,430px)}
+    .stateCard{bottom:0}
+    .vertical{display:none}
+    .manifesto .in{grid-template-columns:1fr;gap:22px}
+    .rowItem{grid-template-columns:.25fr 1.1fr auto}
+    .rowItem .desc{display:none}
+    header .avail{display:none}
+  }
+  @media(max-width:640px){
+    .hero{padding-top:92px}
+    nav{gap:16px}
+    nav a:nth-child(2){display:none}
+    h1{font-size:15vw}
+    .sculpture{min-height:340px}
+    .orbitLabel{width:90px;height:90px;left:-2%}
+    .stateCard{position:relative;right:auto;bottom:auto;justify-self:stretch;margin-top:-12px}
+    .manifesto p{font-size:1.35rem}
+    .rowItem{grid-template-columns:auto 1fr auto;gap:12px;padding:17px 0}
+    footer .big{font-size:19vw}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<header>
+  <div class="wrap top">
+    <a class="brand" href="#top">FLUID<sup>®</sup><span class="pip" aria-hidden="true"></span></a>
+    <nav aria-label="Primary">
+      <a href="#index">Work</a>
+      <a href="#manifesto">Studio</a>
+      <a href="#footer">Contact</a>
+    </nav>
+    <span class="avail mono"><i aria-hidden="true"></i> Booking Q1 / 2027</span>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="gridlines" aria-hidden="true"></div>
+    <div class="wrap heroInner">
+      <div>
+        <p class="eyebrow mono"><b>Identity systems</b> / material studies / 2026</p>
+        <h1>Form follows <span class="chrome">fluid.</span><em>Exactly.</em></h1>
+        <p class="lede">We make identities that cannot be pinned down. Chrome, motion, refraction and a little <b>productive instability</b> — for houses that would rather flow than stand still.</p>
+        <div class="heroFoot">
+          <a class="cta" href="#index">See the work <span aria-hidden="true">↗</span></a>
+          <span class="scrollNote mono"><i aria-hidden="true"></i> Studio no. 08 — Oslo / everywhere</span>
+        </div>
+      </div>
+
+      <div class="sculpture" id="sculpture">
+        <svg viewBox="0 0 520 520" role="img" aria-label="A living sculpture of merged chrome blobs">
+          <defs>
+            <filter id="goo" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="17" result="blur"/>
+              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo"/>
+              <feBlend in="SourceGraphic" in2="goo"/>
+            </filter>
+            <linearGradient id="chromeGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fbfdff"/>
+              <stop offset=".17" stop-color="#9fa9b5"/>
+              <stop offset=".3" stop-color="#3a414b"/>
+              <stop offset=".46" stop-color="#e9eef4"/>
+              <stop offset=".58" stop-color="#6d7681"/>
+              <stop offset=".72" stop-color="#d9e0e7"/>
+              <stop offset=".86" stop-color="#4c545e"/>
+              <stop offset="1" stop-color="#f4f7fa"/>
+            </linearGradient>
+            <radialGradient id="spec" cx="35%" cy="28%" r="55%">
+              <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
+              <stop offset=".4" stop-color="#ffffff" stop-opacity=".14"/>
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <g filter="url(#goo)">
+            <circle id="b0" cx="255" cy="262" r="118" fill="url(#chromeGrad)"/>
+            <circle id="b1" cx="172" cy="198" r="74" fill="url(#chromeGrad)"/>
+            <circle id="b2" cx="344" cy="198" r="58" fill="url(#chromeGrad)"/>
+            <circle id="b3" cx="354" cy="322" r="83" fill="url(#chromeGrad)"/>
+            <circle id="b4" cx="196" cy="337" r="62" fill="url(#chromeGrad)"/>
+            <circle cx="232" cy="228" r="52" fill="url(#spec)"/>
+          </g>
+          <ellipse cx="260" cy="448" rx="132" ry="14" fill="rgba(0,0,0,.5)" style="filter:blur(10px)"/>
+          <circle cx="212" cy="212" r="5" fill="#ffffff" opacity=".9"/>
+          <circle cx="338" cy="286" r="2.5" fill="#d8ff3e" opacity=".9"/>
+        </svg>
+
+        <svg class="orbitLabel" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><path id="circlePath" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+          <text><textPath href="#circlePath">liquid identity · state 04 · liquid identity · </textPath></text>
+          <circle class="pip" cx="50" cy="12" r="2"/>
+        </svg>
+
+        <div class="stateCard mono">
+          <div class="row"><span>State</span><b id="stateVal">Viscous</b></div>
+          <div class="row"><span>Viscosity</span><b id="viscVal">68 cSt</b></div>
+          <div class="row"><span>Surface</span><b>Mirror</b></div>
+          <div class="bar" aria-hidden="true"><i id="viscBar"></i></div>
+        </div>
+        <span class="vertical">Liquid chrome — 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="manifesto" id="manifesto">
+    <div class="wrap in">
+      <div class="manifesto label mono"><span>01 — Point of view</span></div>
+      <p>Identity is not a shape. It is a <b>behaviour</b> under pressure. We design systems that <em>pool, stretch and catch the light</em> — recognisable from any angle, impossible to hold still.</p>
+    </div>
+  </section>
+
+  <section class="index" id="index" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="indexHead mono"><h2 id="work-title">Selected work / 2024—2026</h2><span>Four entries</span></div>
+      <a class="rowItem" href="#index">
+        <span class="no">01 / 2026</span>
+        <h3>Mercury House</h3>
+        <p class="desc">A fashion identity that changes density with the collection: solid in winter, almost liquid in summer.</p>
+        <span class="arr" aria-hidden="true">↗</span>
+      </a>
+      <a class="rowItem" href="#index">
+        <span class="no">02 / 2026</span>
+        <h3>Anamorphic</h3>
+        <p class="desc">Packaging and motion for a fragrance that only resolves in the reflection of a moving surface.</p>
+        <span class="arr" aria-hidden="true">↗</span>
+      </a>
+      <a class="rowItem" href="#index">
+        <span class="no">03 / 2025</span>
+        <h3>Cold Type</h3>
+        <p class="desc">A variable identity for a gallery — one wordmark, seven melting states, zero fixed signage.</p>
+        <span class="arr" aria-hidden="true">↗</span>
+      </a>
+      <a class="rowItem" href="#index">
+        <span class="no">04 / 2024</span>
+        <h3>Foundry 08</h3>
+        <p class="desc">A material library for a furniture atelier, built around the behaviour of polished aluminium.</p>
+        <span class="arr" aria-hidden="true">↗</span>
+      </a>
+      <div class="indexFoot mono"><span>More on request — a PDF is available, but a surface is better.</span><a href="#footer">Enquire about a project ↗</a></div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;width:100%">
+      <div>
+        <p class="mono" style="color:var(--dim);margin-bottom:12px">Studio FLUID® — liquid identity, Oslo / everywhere</p>
+        <a class="cta" href="mailto:studio@fluid.example">studio@fluid.example <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="big" aria-hidden="true">FLUID</div>
+    </div>
+  </footer>
+</main>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg = document.querySelector('.sculpture svg');
+  const blobs = [0,1,2,3,4].map(i => document.getElementById('b' + i));
+  const base = blobs.map(b => ({ cx: +b.getAttribute('cx'), cy: +b.getAttribute('cy'), r: +b.getAttribute('r') }));
+  const stateVal = document.getElementById('stateVal');
+  const viscVal = document.getElementById('viscVal');
+  const viscBar = document.getElementById('viscBar');
+  let mx = 0, my = 0, tx = 0, ty = 0, impulse = 0;
+  const time = { t: 0 };
+
+  function frame(){
+    time.t += 0.012;
+    tx += (mx - tx) * 0.06;
+    ty += (my - ty) * 0.06;
+    blobs.forEach((b, i) => {
+      const drift = reduce ? 0 : Math.sin(time.t * (0.7 + i * 0.16) + i * 1.7) * (10 + i * 2.5);
+      const drift2 = reduce ? 0 : Math.cos(time.t * (0.55 + i * 0.11) + i) * (7 + i * 1.8);
+      const push = impulse * (i % 2 === 0 ? 1 : -1) * 12;
+      b.setAttribute('cx', (base[i].cx + tx * (10 + i * 5) + drift + push).toFixed(2));
+      b.setAttribute('cy', (base[i].cy + ty * (9 + i * 4) + drift2 + push * .6).toFixed(2));
+      b.setAttribute('r', (base[i].r + (reduce ? 0 : Math.sin(time.t + i) * 3)).toFixed(2));
+    });
+    impulse *= 0.93;
+    if (!reduce) requestAnimationFrame(frame);
+  }
+
+  if (!reduce) {
+    requestAnimationFrame(frame);
+    window.addEventListener('pointermove', e => {
+      mx = (e.clientX / window.innerWidth - .5) * 1.4;
+      my = (e.clientY / window.innerHeight - .5) * 1.4;
+    }, { passive: true });
+  }
+
+  document.getElementById('sculpture').addEventListener('click', () => {
+    impulse = 1;
+    const visc = 34 + Math.round(Math.random() * 46);
+    stateVal.textContent = visc > 66 ? 'Viscous' : visc > 48 ? 'Fluid' : 'Elastic';
+    viscVal.textContent = visc + ' cSt';
+    viscBar.style.width = visc + '%';
+  });
+
+  // The sculpture pauses its drift on hover only in the sense of attention; motion continues for liquid feel.
+</script>
+</body>
+</html>

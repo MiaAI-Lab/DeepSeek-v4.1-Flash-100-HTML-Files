@@ -1,0 +1,20 @@
+TITLE
+Obsidian Atelier — Object 01, A Study in Mass
+
+PROMPT
+Create a luxury product page for a fictional desk sculpture called "Obsidian", Object 01 from the Obsidian Atelier. It should feel like a collectible design catalogue: warm near-black (#14120f), bone white (#efe9dd), and brushed gold (#c8a25a), with an oversized Didone-style serif headline "Nothing to prove." and restrained grotesque microcopy. The hero features a CSS-built 3D obsidian slab — polished, faceted, with a hairline gold edge and a soft reflected shadow — that the visitor can drag to rotate, with keyboard arrows and a live angle readout. Add edition details, a weight/silence/light triptych, a specification band, a quiet "Acquire" interaction that acknowledges the reservation with an inline note, and a slow reveal on scroll. No external images: the object must be made entirely from CSS gradients, transforms and pseudo-elements. Fully responsive, one standalone HTML file, inline CSS and JS.
+
+DESIGN INTENT
+A digital plinth. The page is mostly darkness and air, lit by one warm gold line and the sheen on the object. Typography does the luxury work: a high-contrast serif at display scale, wide-set small caps, and numbers treated like catalogue entries. The object is deliberately enigmatic — you rotate it to understand it, but it never becomes a familiar product shot. Every detail should suggest weight, scarcity and restraint.
+
+VISUAL TECHNIQUES
+- CSS-only monolith assembled from gradient-filled faces, clipped facets, a brushed-gold edge and an elliptical floor shadow.
+- Pointer-drag 3D rotation with easing, clamped tilt, arrow-key support and live angle readout.
+- Oversized serif headline with an italic gold phrase; hairline rules and wide-tracked catalogue labels.
+- Warm radial spotlight behind the object, plus film grain and a soft vignette.
+- Numbered triptych with generous margins and scroll-reveal transitions.
+- Spec band using a four-column grid that folds to two on mobile.
+- Inline reservation acknowledgement with an accessible live region.
+
+INTERACTION MODEL
+Drag the sculpture to rotate it; release leaves it resting at the last angle. Arrow keys adjust the angle when the stage is focused. An "Acquire" button adds the object to a fictional private list and replaces the button label with a confirmation note announced to screen readers. Sections fade and rise into view on scroll. Reduced-motion disables inertia, scroll reveal and auto transitions while preserving all content and the rotation controls.

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Marble Run — an interactive kinetic sculpture in four colours and one long line.">
+<title>Marble Run — A Study in Gravity</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f1e8d7; --ink:#17140f; --blue:#1f4fd8; --red:#e8412c; --yellow:#f5c84b; --dim:rgba(23,20,15,.58);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--blue);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.54rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.6}
+  .wrap{max-width:1440px;margin:0 auto;padding:0 clamp(14px,3vw,38px)}
+
+  header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:16px 0;border-bottom:2px solid var(--ink)}
+  .brand{display:flex;align-items:baseline;gap:9px;font-weight:800;letter-spacing:-.04em;font-size:1rem;text-transform:uppercase}
+  .brand span{font-family:var(--mono);font-size:.42rem;letter-spacing:.14em;color:var(--dim);font-weight:400}
+  .headTitle{font-family:var(--serif);font-style:italic;font-size:.84rem;text-align:center;color:var(--dim)}
+  .headRight{display:flex;justify-content:flex-end;gap:14px;align-items:center;color:var(--dim)}
+  .headRight .count{color:var(--ink);font-family:var(--mono);font-size:.6rem}
+  .headRight .count b{color:var(--red);font-weight:400}
+
+  .intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:clamp(18px,3vw,32px) 0 10px}
+  h1{font-size:clamp(2.1rem,4.6vw,4rem);line-height:.9;letter-spacing:-.055em;font-weight:800;text-transform:uppercase}
+  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;color:var(--blue);letter-spacing:-.03em}
+  .intro p{max-width:34ch;font-size:.75rem;line-height:1.75;color:var(--dim);text-align:right}
+
+  .stage{position:relative;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);overflow:hidden}
+  .stage::before{content:"";position:absolute;left:0;top:0;bottom:0;width:23%;background:var(--blue);opacity:.98;z-index:0}
+  .stage::after{content:"";position:absolute;right:0;bottom:0;width:18%;height:42%;background:var(--yellow);z-index:0}
+  .stageInner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 3fr;min-height:clamp(430px,60vh,640px)}
+  .sideNote{position:relative;z-index:2;padding:clamp(18px,3vw,32px);color:var(--paper);display:flex;flex-direction:column;justify-content:space-between;max-width:280px}
+  .sideNote .top{font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.9;opacity:.8}
+  .sideNote .big{font-size:clamp(3rem,5vw,4.6rem);line-height:.8;font-weight:800;letter-spacing:-.06em;margin:8px 0}
+  .sideNote .big span{display:block;color:var(--yellow)}
+  .sideNote p{font-family:var(--serif);font-style:italic;font-size:.95rem;line-height:1.45;margin-top:12px}
+  .sideNote .foot{font-family:var(--mono);font-size:.45rem;letter-spacing:.12em;text-transform:uppercase;opacity:.75;line-height:1.8}
+  .runArea{position:relative;min-width:0}
+  .stage:fullscreen .runArea{background:var(--paper)}
+  #track{display:block;width:100%;height:100%;min-height:clamp(430px,60vh,640px);cursor:crosshair;touch-action:manipulation}
+  .vignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px rgba(23,20,15,.08)}
+  .badge{position:absolute;right:14px;top:12px;z-index:3;border:1px solid var(--ink);width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--mono);font-size:.42rem;line-height:1.3;text-align:center;text-transform:uppercase;background:var(--paper);transform:rotate(8deg)}
+  .badge b{display:block;font-family:var(--sans);font-size:.9rem;letter-spacing:-.03em}
+
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 0 10px}
+  .ctrlGroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--ink);padding:8px 12px;font-family:var(--mono);font-size:.48rem;letter-spacing:.11em;text-transform:uppercase;transition:background .2s,color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.primary{background:var(--red);color:var(--paper);border-color:var(--red)}
+  .btn.primary:hover{background:var(--ink);border-color:var(--ink)}
+  .btn[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--paper)}
+  .legend{display:flex;align-items:center;gap:14px;color:var(--dim);flex-wrap:wrap}
+  .legend span{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.45rem;letter-spacing:.08em;text-transform:uppercase}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .dot.r{background:var(--red)}.dot.b{background:var(--blue)}.dot.y{background:var(--yellow)}.dot.k{background:var(--ink)}
+
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:12px 0 24px;color:var(--dim)}
+
+  @media(max-width:900px){
+    .stage::before{width:100%;height:118px}
+    .stageInner{grid-template-columns:1fr}
+    .sideNote{max-width:none;flex-direction:row;align-items:flex-start;gap:18px;color:var(--paper);padding:14px 18px;justify-content:space-between}
+    .sideNote .big{font-size:2.2rem;margin:0}
+    .sideNote p{display:none}
+    .sideNote .foot{display:none}
+    .sideNote .top{max-width:20ch}
+    #track{min-height:400px}
+    .intro{flex-direction:column;align-items:flex-start;gap:8px}
+    .intro p{text-align:left}
+    .headTitle{display:none}
+  }
+  @media(max-width:600px){
+    header{grid-template-columns:1fr auto}
+    .headRight .hide{display:none}
+    .stage::before{height:92px}
+    .sideNote{padding:10px 14px}
+    .sideNote .big{font-size:1.8rem}
+    .sideNote .top{font-size:.4rem}
+    .controls{gap:10px}
+    .legend{display:none}
+    h1{font-size:10.5vw}
+    .badge{width:42px;height:42px;font-size:.34rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">Marble Run <span>/ kinetic study 01</span></a>
+    <span class="headTitle">A small sculpture for a large afternoon</span>
+    <div class="headRight mono"><span class="hide">Released</span><span class="count"><b id="count">0</b> / marbles</span></div>
+  </header>
+
+  <main id="top">
+    <div class="intro">
+      <h1>A study in gravity,<br><em>taking its time.</em></h1>
+      <p>One line, four colours, no destination. Click the stage to release a marble and let it find its own way down.</p>
+    </div>
+
+    <section class="stage" id="stage" aria-label="Interactive marble run">
+      <div class="stageInner">
+        <aside class="sideNote">
+          <div>
+            <div class="top">Plate 01 —<br>Continuous line, 1:1</div>
+            <div class="big">Let it<span>fall.</span></div>
+            <p>Gravity is the only engine. The rest is a long, well-drawn excuse.</p>
+          </div>
+          <div class="foot">Wood, brass, glass<br>Study no. 01 / 2026</div>
+        </aside>
+        <div class="runArea">
+          <svg id="track" viewBox="0 0 1040 660" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A drawn marble run track with a loop and a long descent">
+            <defs>
+              <radialGradient id="marbleR" cx="35%" cy="30%"><stop offset="0" stop-color="#ffd9d2"/><stop offset=".42" stop-color="#e8412c"/><stop offset="1" stop-color="#7d1a10"/></radialGradient>
+              <radialGradient id="marbleB" cx="35%" cy="30%"><stop offset="0" stop-color="#d7e2ff"/><stop offset=".42" stop-color="#1f4fd8"/><stop offset="1" stop-color="#0c236e"/></radialGradient>
+              <radialGradient id="marbleY" cx="35%" cy="30%"><stop offset="0" stop-color="#fff6d8"/><stop offset=".42" stop-color="#f5c84b"/><stop offset="1" stop-color="#9b7313"/></radialGradient>
+              <filter id="mShadow"><feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#17140f" flood-opacity=".28"/></filter>
+            </defs>
+            <g opacity=".16" font-family="ui-monospace, monospace" font-size="7" fill="#17140f" letter-spacing="1.4">
+              <text x="34" y="54">START / 0.00 m</text><text x="862" y="620">EXIT / 4.80 m</text>
+              <text x="690" y="80">LOOP 01</text><text x="66" y="620">GRAVITY = 9.81</text>
+            </g>
+            <path id="path" d="M92,108 C196,54 342,76 420,152 C500,230 438,318 356,314 C274,310 268,216 352,196 C452,172 560,214 610,298 C660,382 566,466 476,436 C398,410 402,340 474,326 C590,304 744,372 812,468 C874,556 812,612 736,596"
+              fill="none" stroke="#17140f" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+            <use href="#path" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="9" stroke-linecap="round"/>
+            <use href="#path" fill="none" stroke="#f1e8d7" stroke-width="2.4" stroke-dasharray="1 9" stroke-linecap="round"/>
+            <g stroke="#17140f" stroke-width="1" opacity=".35">
+              <line x1="92" y1="108" x2="92" y2="146"/><line x1="356" y1="314" x2="328" y2="344"/>
+              <line x1="610" y1="298" x2="646" y2="274"/><line x1="812" y1="468" x2="850" y2="478"/>
+              <line x1="736" y1="596" x2="736" y2="636"/>
+            </g>
+            <g fill="#17140f" opacity=".7">
+              <circle cx="92" cy="108" r="2.2"/><circle cx="356" cy="314" r="2.2"/><circle cx="610" cy="298" r="2.2"/>
+              <circle cx="812" cy="468" r="2.2"/><circle cx="736" cy="596" r="2.2"/>
+            </g>
+            <g id="marbles"></g>
+            <g aria-hidden="true">
+              <circle cx="92" cy="108" r="5" fill="none" stroke="#17140f" stroke-width="1" stroke-dasharray="2 3"/>
+              <text x="76" y="96" font-family="ui-monospace, monospace" font-size="7" fill="#17140f" letter-spacing="1">DROP</text>
+            </g>
+          </svg>
+          <div class="badge" aria-hidden="true"><span><b>4.8</b>metres of<br>patient line</span></div>
+          <div class="vignette" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <div class="ctrlGroup">
+        <button class="btn primary" id="release">Release a marble ↴</button>
+        <button class="btn" id="speed" aria-pressed="false">Fast run</button>
+        <button class="btn" id="clear">Clear the run</button>
+      </div>
+      <div class="legend">
+        <span><i class="dot r" aria-hidden="true"></i>Vermilion</span>
+        <span><i class="dot b" aria-hidden="true"></i>Cobalt</span>
+        <span><i class="dot y" aria-hidden="true"></i>Mustard</span>
+        <span><i class="dot k" aria-hidden="true"></i>Ink</span>
+      </div>
+    </div>
+    <p class="mono" id="live" aria-live="polite" style="min-height:1.4em;color:var(--dim);padding-bottom:12px">Ready when you are.</p>
+  </main>
+
+  <footer class="mono">
+    <span>Marble Run / a fictional kinetic study</span>
+    <span>Click anywhere on the track · one line, no dependencies</span>
+    <span>© 2026 · gravity is free</span>
+  </footer>
+</div>
+
+<script>
+  const track = document.getElementById('track');
+  const path = document.getElementById('path');
+  const layer = document.getElementById('marbles');
+  const countEl = document.getElementById('count');
+  const live = document.getElementById('live');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const length = path.getTotalLength();
+  const gradients = ['marbleR', 'marbleB', 'marbleY'];
+  let marbles = [];
+  let count = 0;
+  let fast = false;
+  let running = false;
+
+  function release(){
+    const i = count % 3;
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', '9');
+    c.setAttribute('fill', 'url(#' + gradients[i] + ')');
+    c.setAttribute('filter', 'url(#mShadow)');
+    c.setAttribute('stroke', 'rgba(23,20,15,.35)');
+    c.setAttribute('stroke-width', '.7');
+    layer.appendChild(c);
+    const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    halo.setAttribute('r', '15');
+    halo.setAttribute('fill', 'none');
+    halo.setAttribute('stroke', 'rgba(23,20,15,.10)');
+    layer.insertBefore(halo, c);
+    marbles.push({ node: c, halo: halo, pos: 0, speed: 0, born: performance.now() });
+    count++;
+    countEl.textContent = String(count);
+    live.textContent = 'Marble ' + count + ' released — gravity engaged.';
+    if (!running) { running = true; requestAnimationFrame(step); }
+  }
+
+  function step(now){
+    for (let i = marbles.length - 1; i >= 0; i--){
+      const m = marbles[i];
+      m.speed = Math.min(fast ? .013 : .0075, m.speed + (fast ? .00032 : .00016));
+      m.pos += m.speed;
+      if (m.pos >= 1){
+        m.node.remove(); m.halo.remove(); marbles.splice(i, 1); continue;
+      }
+      const p = path.getPointAtLength(m.pos * length);
+      m.node.setAttribute('cx', p.x);
+      m.node.setAttribute('cy', p.y);
+      const h = path.getPointAtLength(Math.max(0, m.pos * length - 16));
+      m.halo.setAttribute('cx', h.x);
+      m.halo.setAttribute('cy', h.y);
+      m.halo.setAttribute('opacity', String(0.4 * (1 - m.pos)));
+    }
+    if (marbles.length){ requestAnimationFrame(step); }
+    else { running = false; live.textContent = 'All clear. The line is waiting.'; }
+  }
+
+  document.getElementById('release').addEventListener('click', release);
+  document.getElementById('stage').addEventListener('click', e => {
+    if (e.target.closest('button')) return;
+    release();
+  });
+  track.addEventListener('click', e => { e.stopPropagation(); release(); });
+  document.getElementById('speed').addEventListener('click', function(){
+    fast = !fast;
+    this.setAttribute('aria-pressed', String(fast));
+    this.textContent = fast ? 'Slow run' : 'Fast run';
+  });
+  document.getElementById('clear').addEventListener('click', function(){
+    marbles.forEach(m => { m.node.remove(); m.halo.remove(); });
+    marbles = [];
+    count = 0;
+    countEl.textContent = '0';
+    live.textContent = 'Run cleared. The line is still here.';
+  });
+</script>
+</body>
+</html>

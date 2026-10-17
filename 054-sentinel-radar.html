@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Sentinel — a passive radar array with contacts, bearings and a rotating sweep.">
+<title>Sentinel — Passive Array 04</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#020a08; --panel:#04140f; --green:#7dffb0; --cyan:#63e7ff; --amber:#ffc46b; --dim:rgba(125,255,176,.5); --line:rgba(125,255,176,.18);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--void);color:var(--green);font-family:var(--sans);overflow-x:hidden;
+    background-image:radial-gradient(800px 600px at 70% 30%,rgba(20,80,50,.28),transparent 60%),radial-gradient(700px 500px at 10% 90%,rgba(10,50,50,.25),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(125,255,176,.3) .5px,transparent .7px);background-size:90px 80px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 90%);mask-image:linear-gradient(180deg,#000,transparent 90%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--green);color:var(--void)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1px solid var(--cyan);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(14px,2.8vw,36px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase}
+  .brand .dish{width:16px;height:16px;border:1px solid var(--green);border-radius:50% 50% 10% 50%;transform:rotate(45deg);position:relative;flex:none}
+  .brand .dish::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .brand small{display:block;font-family:var(--mono);font-size:.36rem;letter-spacing:.12em;color:var(--dim);margin-top:2px}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headMid b{color:var(--green);font-weight:400}
+  .headRight{display:flex;gap:14px;color:var(--dim);align-items:center;text-align:right}
+  .headRight b{color:var(--green);font-weight:400}
+
+  .main{flex:1;display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(22px,4vw,54px);align-items:center;padding:clamp(16px,3vw,30px) 0}
+  .kicker{display:flex;align-items:center;gap:9px;color:var(--cyan);margin-bottom:14px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--cyan)}
+  h1{font-family:var(--serif);font-size:clamp(2.3rem,4.6vw,4.2rem);line-height:.98;letter-spacing:-.04em;font-weight:400;color:#d8ffe7}
+  h1 em{font-style:italic;color:var(--green)}
+  .intro p{margin-top:14px;max-width:36ch;font-size:.7rem;line-height:1.8;color:var(--dim)}
+  .intro p b{color:var(--green);font-weight:400}
+  .readout{margin-top:18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:11px 0}
+  .readout .desig{font-family:var(--mono);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:4px}
+  .readout .name{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:#d8ffe7;margin-bottom:7px}
+  .dataRow{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .dataRow div{background:var(--void);padding:6px 8px}
+  .dataRow span{display:block;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.08em;text-transform:uppercase}
+  .dataRow b{display:block;margin-top:2px;font-family:var(--mono);font-size:.56rem;font-weight:400;color:var(--green)}
+  .controls{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;align-items:center}
+  .range{display:flex;border:1px solid var(--line)}
+  .range button{padding:6px 8px;font-family:var(--mono);font-size:.38rem;letter-spacing:.05em;color:var(--dim);border-right:1px solid var(--line);text-transform:uppercase}
+  .range button:last-child{border-right:0}
+  .range button[aria-pressed="true"]{background:rgba(125,255,176,.14);color:var(--green)}
+  .scan{border:1px solid rgba(125,255,176,.45);padding:7px 11px;font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);transition:background .2s,color .2s}
+  .scan:hover{background:var(--green);color:var(--void)}
+  .log{margin-top:12px;color:var(--dim);line-height:1.8;font-family:var(--mono);font-size:.4rem;letter-spacing:.03em;text-transform:uppercase}
+  .log b{color:var(--cyan);font-weight:400}
+
+  .radarWrap{position:relative;display:grid;place-items:center;min-height:clamp(340px,58vh,600px)}
+  .radar{position:relative;width:min(86%,560px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(125,255,176,.5);
+    background:radial-gradient(circle,rgba(125,255,176,.06),transparent 62%),#03100b;
+    box-shadow:0 0 0 6px rgba(125,255,176,.04),0 0 60px rgba(125,255,176,.08),inset 0 0 60px rgba(0,0,0,.6);overflow:hidden;touch-action:manipulation}
+  .radar::before{content:"";position:absolute;inset:0;border-radius:50%;
+    background:repeating-radial-gradient(circle at 50% 50%,transparent 0 19.6%,rgba(125,255,176,.16) 19.8% 20%,transparent 20.2% 100%);
+    pointer-events:none}
+  .radar::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(0deg,transparent 49.85%,rgba(125,255,176,.22) 50%,transparent 50.15%),linear-gradient(90deg,transparent 49.85%,rgba(125,255,176,.22) 50%,transparent 50.15%)}
+  .sweep{position:absolute;inset:0;border-radius:50%;z-index:1;
+    background:conic-gradient(from 0deg,rgba(125,255,176,0) 0deg,rgba(125,255,176,0) 290deg,rgba(125,255,176,.08) 320deg,rgba(125,255,176,.32) 356deg,rgba(125,255,176,.75) 360deg);
+    animation:sweep 7s linear infinite}
+  @keyframes sweep{to{transform:rotate(360deg)}}
+  .bearing{position:absolute;font-family:var(--mono);font-size:.34rem;letter-spacing:.06em;color:var(--dim);z-index:3}
+  .b0{top:6px;left:50%;transform:translateX(-50%)}.b90{right:7px;top:50%;transform:translateY(-50%)}
+  .b180{bottom:6px;left:50%;transform:translateX(-50%)}.b270{left:7px;top:50%;transform:translateY(-50%)}
+  .blip{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--green);z-index:4;cursor:pointer;box-shadow:0 0 10px var(--green)}
+  .blip::after{content:"";position:absolute;inset:-6px;border:1px solid rgba(125,255,176,.6);border-radius:50%;animation:ping 2.6s ease-out infinite}
+  .blip.hot{background:var(--amber);box-shadow:0 0 12px var(--amber)}
+  .blip.hot::after{border-color:rgba(255,196,107,.6)}
+  .blip:hover,.blip:focus-visible{background:var(--cyan);box-shadow:0 0 14px var(--cyan);z-index:6}
+  @keyframes ping{from{transform:scale(.4);opacity:.8}to{transform:scale(2.4);opacity:0}}
+  .blipLabel{position:absolute;left:12px;top:-4px;font-family:var(--mono);font-size:.34rem;letter-spacing:.05em;color:rgba(125,255,176,.7);white-space:nowrap;pointer-events:none}
+  .blip.hot .blipLabel{color:rgba(255,196,107,.85)}
+  .radarCenter{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);z-index:5}
+  .radarCenter::after{content:"";position:absolute;inset:-13px;border:1px solid rgba(125,255,176,.3);border-radius:50%}
+  .crosshair{position:absolute;inset:0;pointer-events:none;z-index:2}
+  .cornerTick{position:absolute;width:12px;height:12px;border-color:var(--dim)}
+  .t1{left:12px;top:12px;border-left:1px solid;border-top:1px solid}.t2{right:12px;top:12px;border-right:1px solid;border-top:1px solid}
+  .t3{left:12px;bottom:12px;border-left:1px solid;border-bottom:1px solid}.t4{right:12px;bottom:12px;border-right:1px solid;border-bottom:1px solid}
+  .statusBar{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:14px}
+  .statusBar div{padding:8px 12px;border-right:1px solid var(--line)}
+  .statusBar div:last-child{border-right:0}
+  .statusBar span{display:block;color:var(--dim);font-family:var(--mono);font-size:.34rem;letter-spacing:.09em;text-transform:uppercase}
+  .statusBar b{display:block;margin-top:3px;font-family:var(--serif);font-size:.85rem;font-weight:400;color:#d8ffe7}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 0 16px;color:var(--dim)}
+
+  @media(max-width:960px){
+    .main{grid-template-columns:1fr;gap:18px}
+    .intro{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+    .kicker,.intro h1{grid-column:1}
+    .intro p{grid-column:1}
+    .readout{grid-column:2;grid-row:1/span 3;margin-top:0;align-self:end}
+    .controls{grid-column:1}
+    .log{grid-column:1}
+    .radarWrap{min-height:360px}
+    .headMid{display:none}
+  }
+  @media(max-width:600px){
+    .intro{grid-template-columns:1fr}
+    .readout{grid-column:1;grid-row:auto;margin-top:10px}
+    h1{font-size:9.6vw}
+    .brand{font-size:.54rem;letter-spacing:.18em}
+    .headRight{display:none}
+    .radarWrap{min-height:310px}
+    .statusBar{grid-template-columns:1fr 1fr}
+    .statusBar div:nth-child(2){border-right:0}
+    .statusBar div:nth-child(3),.statusBar div:nth-child(4){border-top:1px solid var(--line)}
+    footer span:nth-child(2){display:none}
+    .blipLabel{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="dish" aria-hidden="true"></span><span>Sentinel<small>Passive array / sector 7G</small></span></a>
+    <div class="headMid mono"><span>Array <b>04</b></span><span>Mode <b>passive</b></span><span>Contacts <b id="hCount">06</b></span></div>
+    <div class="headRight mono">UTC <b id="clock">--:--:--</b><br>Array health <b>nominal</b></div>
+  </header>
+
+  <main class="main" id="top">
+    <div class="intro">
+      <p class="kicker mono">A listening instrument / no transmissions</p>
+      <h1>Nothing<br>is empty<br><em>space.</em></h1>
+      <p>Six contacts inside the near field. Some are debris, some are weather balloons, one is moving against the wind. <b>The array does not speculate; it only listens.</b></p>
+      <div class="readout">
+        <div class="desig" id="contactDesig">Contact K-04</div>
+        <div class="name" id="contactName">Unregistered transponder</div>
+        <div class="dataRow">
+          <div><span>Bearing</span><b id="contactBearing">212°</b></div>
+          <div><span>Range</span><b id="contactRange">14.6 km</b></div>
+          <div><span>Signal</span><b id="contactSignal">−88 dBm</b></div>
+          <div><span>Course</span><b id="contactCourse">243° / 12 kn</b></div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="range" role="group" aria-label="Range filter"><button data-range="10" aria-pressed="false">10 km</button><button data-range="25" aria-pressed="true">25 km</button><button data-range="50" aria-pressed="false">50 km</button></div>
+        <button class="scan" id="scan">Scan again ↻</button>
+      </div>
+      <p class="log" id="log">Log 04:12 — contact K-04 held at <b>212°</b><br>Log 04:19 — sweep complete, 6 returns<br>Log 04:26 — no new transmissions</p>
+    </div>
+
+    <div class="radarWrap">
+      <div class="radar" id="radar" aria-label="Radar display. Click to add a contact.">
+        <div class="sweep" aria-hidden="true"></div>
+        <div class="bearing b0">000</div><div class="bearing b90">090</div><div class="bearing b180">180</div><div class="bearing b270">270</div>
+        <div class="radarCenter" aria-hidden="true"></div>
+        <div id="blips"></div>
+        <span class="cornerTick t1" aria-hidden="true"></span><span class="cornerTick t2" aria-hidden="true"></span><span class="cornerTick t3" aria-hidden="true"></span><span class="cornerTick t4" aria-hidden="true"></span>
+      </div>
+    </div>
+  </main>
+
+  <section class="statusBar" aria-label="Array status">
+    <div><span>Last sweep</span><b>04:26:18 UTC</b></div>
+    <div><span>Noise floor</span><b>−118 dBm</b></div>
+    <div><span>Range</span><b id="rangeLabel">25.0 km</b></div>
+    <div><span>Contacts</span><b id="countLabel">06 active</b></div>
+  </section>
+
+  <footer class="mono">
+    <span>Sentinel / a fictional passive array</span>
+    <span>Receive only · no transmissions leave this page</span>
+    <span>© 2026 · the sky is crowded</span>
+  </footer>
+</div>
+
+<script>
+  const radar = document.getElementById('radar');
+  const blipsEl = document.getElementById('blips');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const names = ['Weather balloon','Debris field','Unregistered transponder','Coastal beacon','High-altitude glider','Unknown return','Survey drone','Ionospheric echo','Fishing vessel','Navigation buoy'];
+  let contacts = [];
+  let range = 25;
+  let selected = null;
+
+  function makeContacts(n){
+    contacts = Array.from({ length: n }, (_, i) => {
+      const a = Math.random() * Math.PI * 2;
+      const d = .12 + Math.random() * .8;
+      return {
+        id: 'K-' + String(i + 1).padStart(2, '0'),
+        a: a,
+        d: d,
+        r: d * range,
+        bearing: Math.round((a * 180 / Math.PI + 90 + 360) % 360),
+        signal: -(60 + Math.floor(Math.random() * 50)),
+        course: Math.floor(Math.random() * 360),
+        speed: Math.floor(Math.random() * 20),
+        name: names[Math.floor(Math.random() * names.length)],
+        hot: Math.random() > .75
+      };
+    });
+    render();
+  }
+
+  function render(){
+    blipsEl.innerHTML = '';
+    const visible = contacts.filter(c => c.r <= range);
+    visible.forEach(c => {
+      const x = 50 + Math.sin(c.a) * c.d * 44;
+      const y = 50 - Math.cos(c.a) * c.d * 44;
+      const b = document.createElement('button');
+      b.className = 'blip' + (c.hot ? ' hot' : '');
+      b.style.left = x + '%'; b.style.top = y + '%';
+      b.setAttribute('aria-label', c.id + ', ' + c.name);
+      b.innerHTML = '<span class="blipLabel">' + c.id + '</span>';
+      b.addEventListener('pointerenter', () => show(c));
+      b.addEventListener('focus', () => show(c));
+      b.addEventListener('click', e => { e.stopPropagation(); selected = c; show(c); });
+      blipsEl.appendChild(b);
+    });
+    const count = visible.length;
+    document.getElementById('hCount').textContent = String(count).padStart(2, '0');
+    document.getElementById('countLabel').textContent = String(count).padStart(2, '0') + ' active';
+    document.getElementById('rangeLabel').textContent = range.toFixed(1) + ' km';
+  }
+
+  function show(c){
+    document.getElementById('contactDesig').textContent = 'Contact ' + c.id;
+    document.getElementById('contactName').textContent = c.name;
+    document.getElementById('contactBearing').textContent = String(c.bearing).padStart(3, '0') + '°';
+    document.getElementById('contactRange').textContent = c.r.toFixed(1) + ' km';
+    document.getElementById('contactSignal').textContent = c.signal + ' dBm';
+    document.getElementById('contactCourse').textContent = String(c.course).padStart(3, '0') + '° / ' + c.speed + ' kn';
+    document.getElementById('log').innerHTML = 'Log 04:12 — contact <b>' + c.id + '</b> held at <b>' + String(c.bearing).padStart(3,'0') + '°</b><br>Log 04:19 — sweep complete, ' + contacts.filter(x => x.r <= range).length + ' returns<br>Log 04:26 — ' + (c.hot ? '<b>unusual course</b> — flag for review' : 'no new transmissions');
+  }
+
+  document.querySelectorAll('.range button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      range = Number(btn.dataset.range);
+      document.querySelectorAll('.range button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      render();
+    });
+  });
+  document.getElementById('scan').addEventListener('click', () => {
+    makeContacts(4 + Math.floor(Math.random() * 5));
+    selected = contacts[0];
+    show(selected);
+  });
+  radar.addEventListener('click', e => {
+    if (e.target.closest('.blip')) return;
+    const r = radar.getBoundingClientRect();
+    let x = (e.clientX - r.left) / r.width * 2 - 1;
+    let y = (e.clientY - r.top) / r.height * 2 - 1;
+    const dist = Math.min(1, Math.hypot(x, y));
+    const ang = Math.atan2(x, -y);
+    contacts.push({ id: 'K-' + String(contacts.length + 1).padStart(2, '0'), a: ang, d: dist, r: dist * range, bearing: Math.round((ang * 180 / Math.PI + 360) % 360), signal: -(60 + Math.floor(Math.random() * 50)), course: Math.floor(Math.random() * 360), speed: Math.floor(Math.random() * 20), name: names[Math.floor(Math.random() * names.length)], hot: true });
+    render();
+    show(contacts[contacts.length - 1]);
+  });
+
+  function clock(){
+    const d = new Date();
+    document.getElementById('clock').textContent = [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map(n => String(n).padStart(2,'0')).join(':');
+  }
+  clock(); setInterval(clock, 1000);
+
+  makeContacts(6);
+  show(contacts[3]);
+</script>
+</body>
+</html>

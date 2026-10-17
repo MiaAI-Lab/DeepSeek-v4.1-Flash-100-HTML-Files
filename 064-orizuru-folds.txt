@@ -1,0 +1,20 @@
+TITLE
+Orizuru — Five Folds to a Bird
+
+PROMPT
+Create a quiet origami study called "Orizuru — five folds to a bird". Warm paper cream, indigo, vermilion and soft grey. The page is a folding manual: a left column with the title "Everything begins as a flat sheet.", a step counter, the current fold instruction and Previous/Next controls; a large stage on the right showing one square of paper through five stages — flat sheet with creases, triangle, kite, crane base and finished crane. The crane illustration is made from clean polygon facets with shadows and a vermilion accent. A row of five step thumbnails sits below the stage. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+Craft, patience and paper. The page should feel like a beautifully printed instruction card from a craft museum: numbered steps, precise diagrams, generous margins. The finished crane is the reward, drawn as a refined geometric object rather than a cartoon. Indigo carries the linework, vermilion marks the one detail you should not miss.
+
+VISUAL TECHNIQUES
+- Five inline SVG states of a single sheet: square with crease pattern, folded triangle, kite base, crane base and a finished faceted crane.
+- Crossfade and slight rotate transition between stages; numbered step thumbnails.
+- Paper texture, drop shadows and delicate crease lines.
+- Serif display type, monospaced step data and a thin progress rule.
+- Faceted crane built from polygons with three paper tones and a vermilion wingtip.
+- Responsive stacking: copy above stage, thumbnails below, controls full width.
+- Reduced-motion shows stages instantly.
+
+INTERACTION MODEL
+"Next fold" and "Previous fold" move through the five stages, updating the instruction, step counter and progress rule. Clicking a step thumbnail jumps to that stage. Arrow keys move between stages when the stage is focused. The final step shows a small "bird complete" note and the option to unfold back to a flat sheet. Reduced-motion removes the transition while keeping all states available.

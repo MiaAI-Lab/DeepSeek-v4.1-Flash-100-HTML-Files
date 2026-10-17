@@ -1,0 +1,20 @@
+TITLE
+Paper Field — A Diorama in Five Layers
+
+PROMPT
+Create a charming layered paper-cut diorama called "Paper Field". A framed miniature landscape sits on a warm paper background: a pale sky with cut-paper clouds, distant mountains, rolling hills, tiny firs, a cottage with a curl of smoke, and a foreground meadow — each layer a solid paper colour with a soft cut shadow. The left column carries the title "A small world, cut from paper.", a short note and two controls: "Fold the light" (day/night) and "Send a bird". At night the sky deepens, windows glow, stars and fireflies appear, and the scene becomes a lantern. Moving the pointer shifts the layers at different depths. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+Handcraft over spectacle. The scene should feel assembled on a kitchen table from coloured card: imperfect edges, layered shadows, a little too much charm. The palette is muted and natural by day, deep blue-green and amber by night. Typography is a friendly serif with small monospaced captions, like a label on the back of a diorama.
+
+VISUAL TECHNIQUES
+- Five layered SVG groups with solid paper fills, light edge strokes and drop shadows.
+- CSS custom properties for a complete day/night palette shift across sky, hills, trees and cottage.
+- Pointer parallax with per-layer depth; soft cloud drift.
+- Cut-paper clouds, fir trees, cottage, winding path and a smoke curl drawn as simple vector shapes.
+- Night fireflies, stars and glowing windows revealed by a body class.
+- A cardboard frame with a debossed label and a small brass screw detail.
+- Reduced-motion removes parallax and drifting smoke, keeping both lighting states.
+
+INTERACTION MODEL
+"Fold the light" toggles day and night with a slow cross-fade, revealing stars, fireflies and lit windows. "Send a bird" launches a small paper bird across the scene on a curved path. Moving the pointer over the diorama shifts the layers for a gentle depth effect. Every control is a button with a pressed state; reduced-motion keeps the light switch and bird trigger but removes continuous motion.

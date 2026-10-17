@@ -1,0 +1,20 @@
+TITLE
+Terrarium No. 4 — A World Under Glass
+
+PROMPT
+Create a serene product-style page for a fictional glass terrarium, "Terrarium No. 4". Warm cream background, forest greens, moss, sand and stone, with one soft spotlight. The hero is a large glass vessel drawn in CSS and SVG: transparent dome with highlight arcs, condensation, layered sand and soil, pebbles, ferns, moss and a tiny mushroom. The left column carries the title "A world under glass.", a short note, a conditions panel (humidity, light, temperature) and two controls: "Mist" and "Open lid". Misting animates droplets and raises the humidity readout; opening the lid releases a small paper butterfly and changes the status. Include a care card and a footer. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A quiet object portrait. The terrarium should feel like something you would keep on a desk and look at instead of a screen: glass with weight, condensation, a miniature ecosystem that is doing fine without you. The interface around it is small, precise and botanical, like a care label.
+
+VISUAL TECHNIQUES
+- CSS glass vessel with layered gradients, inner reflections and edge highlights.
+- SVG substrate layers: sand, soil, pebbles, moss mounds, ferns, a mushroom and a tiny snail.
+- Condensation droplets generated and animated on mist; humidity readout updates.
+- Lid opening animation with a butterfly that flutters out along a CSS path.
+- Ambient light variations and a soft elliptical shadow.
+- Botanical typography with a serif display, monospaced care data and a small illustrated label.
+- Responsive stacking; reduced-motion stops droplet and butterfly animations.
+
+INTERACTION MODEL
+"Mist" sprays the glass: droplets appear, the humidity value rises briefly and the label changes to "misted". "Open lid" lifts the glass lid, releases a butterfly and switches the status to "breathing"; clicking again closes it. A Day / Low light toggle changes the spotlight warmth. All controls are buttons with pressed states; reduced-motion keeps the state changes but removes the animation.

@@ -1,0 +1,20 @@
+TITLE
+Paper & Distance — A Study in Getting There
+
+PROMPT
+Design a quiet, tactile landing page for a fictional travel studio called "Paper & Distance". The aesthetic is folded paper: warm off-white and cream stock, indigo ink, a single vermilion accent, and soft shadows at every crease. The hero says "A simpler way to get there." in a large editorial serif with an italic indigo phrase, beside a hand-folded paper plane drawn in SVG, floating above a dotted flight path. Clicking "Launch the plane" sends it along a gentle arc; the message updates when it lands. Below, three folded-paper cards (Pack light / Go slowly / Write it down) can be unfolded to reveal a sentence; a route diagram with dashed lines and stamped stops closes the page. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external assets.
+
+DESIGN INTENT
+Travel as an act of attention, not consumption. The page looks like something folded on a kitchen table: creases, paper edges, a stamp, a route drawn by hand. Indigo is the ink; vermilion is the one thing you would circle twice. There are no photographs — the imagination is asked to do the work.
+
+VISUAL TECHNIQUES
+- SVG paper plane built from four folded facets with distinct paper tones and a soft projected shadow.
+- CSS folded-paper cards with clipped corners, crease gradients and a 3D unfold interaction.
+- Dotted flight path in SVG with an animated dash offset and stamped stop labels.
+- Large serif display type with indigo italic accents and tracked monospaced wayfinding labels.
+- Paper texture, faint fold lines across the page, and realistic offset shadows.
+- Plane launch animation using keyframed transforms, plus a status line that announces arrival.
+- Responsive stacking, with cards becoming a vertical stack and the plane scaling down.
+
+INTERACTION MODEL
+Clicking "Launch the plane" animates the plane along an arcing flight and changes the status line from "Ready on the table" to "Arrived — 3,482 km, lighter." Each folded card is a button; clicking unfolds it to reveal a short note, and clicking again folds it back. Route stops can be hovered to show their names. All interactions are keyboard accessible, and reduced-motion makes the plane appear at its destination without the journey.

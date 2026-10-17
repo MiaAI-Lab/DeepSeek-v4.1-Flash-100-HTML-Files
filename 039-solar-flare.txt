@@ -1,0 +1,20 @@
+TITLE
+Helios — The Star Is Not Calm
+
+PROMPT
+Create a dramatic solar observation page called "Helios". On a deep near-black field, a living sun burns: a bright core, orange limb, flickering granulation, arcs of plasma and a corona of fine rays, with particles orbiting and occasionally escaping. The left column carries an editorial statement "The star is not calm." in a high-contrast serif, a short text about solar weather, four live readouts (X-ray class, solar wind, temperature, active regions), an "Activity" slider and an "Eject a flare" button. Clicking the sun triggers a coronal ejection with a shockwave ring and bright particles. The palette is black, ember orange, gold and bone; typography mixes serif display with precise monospaced telemetry. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Awe with instrumentation. The sun is not a flat circle but a volatile surface seen through a filter: granulation, limb darkening, prominences, a restless corona. The page frames it like an observatory plate, with measurement marks and calm type holding the chaos in place. Heat is the whole colour story.
+
+VISUAL TECHNIQUES
+- Canvas sun with layered radial gradients, limb darkening and animated granulation strokes.
+- Corona rays and prominence arcs with additive blending and time-based flicker.
+- Orbiting particles plus flare bursts with velocity, gravity and fading trails.
+- Shockwave rings on ejection; pointer proximity brightens the core.
+- Activity slider controlling particle density, corona length and flare brightness.
+- Observatory framing marks, monospaced telemetry and a serif editorial statement.
+- Reduced-motion renders a high-quality still sun with no orbiting particles.
+
+INTERACTION MODEL
+Clicking anywhere in the sun stage ejects a flare at that point and raises the flare class in the readout. The "Eject a flare" button triggers a larger event with a shockwave. The activity slider changes the corona's energy, particle count and glow in real time. Readouts update continuously; all controls are keyboard accessible and the stage has a descriptive label.

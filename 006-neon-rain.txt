@@ -1,0 +1,20 @@
+TITLE
+Neon Rain — Sector 09 Night Market
+
+PROMPT
+Build a cinematic cyberpunk night-market landing page called "Neon Rain", set in a fictional Sector 09. The mood is rain-soaked Tokyo alley at 2am: near-black purple sky, hot magenta, electric cyan and a single acid-yellow accent, wet asphalt reflections, layered building silhouettes, and a large vertical neon sign. The hero carries an oversized glitch headline "NEON RAIN", a small uppercase transmission line, a glowing "Enter the market" button, and HUD-style corner metadata. Rain must fall on a full-screen canvas with wind and depth; clicking anywhere triggers a lightning flash and swaps the transmission text. Add a scanline/flicker overlay, a slow marquee of market announcements, and a below-the-fold directory of three neon stalls. Fully responsive, one standalone HTML file, inline CSS/JS/SVG only, no external fonts, images or libraries.
+
+DESIGN INTENT
+A piece of interactive atmosphere rather than a conventional product page. The design is built from depth layers: rain in front, neon signage in the middle, building silhouettes and street reflections behind, and a thin HUD above everything. Magenta and cyan are used as actual light sources — they bloom, reflect and flicker — while acid yellow appears only in the smallest labels. The composition should feel like standing in the rain with your collar up, deciding whether to go in.
+
+VISUAL TECHNIQUES
+- Full-viewport canvas rain with three depth tiers, wind drift, varied speeds and additive coloured streaks.
+- CSS skyline assembled from layered gradients, building blocks and tiny lit windows; wet-street reflection produced with blurred gradients.
+- Neon typography using layered text-shadows and a cyan/magenta chromatic glitch animation.
+- Vertical neon sign with flickering tube effect and a Japanese-inspired stacked wordmark.
+- Click-triggered lightning flash plus a rotating transmission line.
+- Scanlines, vignette, film grain and a subtle CRT flicker overlay.
+- Neon-bordered market directory cards that glow on hover; all content remains readable without effects.
+
+INTERACTION MODEL
+Pointer movement subtly parallaxes the skyline and neon sign. Clicking or tapping the scene fires a lightning flash, jolts the rain, and cycles a set of late-night transmissions. The "Enter the market" button smooth-scrolls to the stall directory. Hovering cards intensifies their neon border. Motion is disabled for prefers-reduced-motion, leaving a still, readable rainy scene.

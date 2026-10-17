@@ -1,0 +1,20 @@
+TITLE
+Contour No. 6 — Read the Ground
+
+PROMPT
+Create a cartographic instrument called "Contour No. 6". A large paper-toned map canvas draws real contour lines from a procedural elevation field, with index contours heavier, a fine survey grid and a warm terracotta accent. Overlay a serif title "Read the ground.", a legend of elevation bands, and a live coordinate and elevation readout. Below, a survey control bar holds three sliders (Relief, Detail, Contours), preset buttons (Island, Ridge, Valley), a re-seed button and a grid toggle. Clicking the map drops a survey marker. Fully responsive, one standalone HTML file with inline CSS/JS/canvas, no external images or fonts.
+
+DESIGN INTENT
+A map you would find folded in a field notebook: warm paper, hairline contours, index lines in rust, tiny coordinates. The tool should feel analog and precise rather than like a dashboard. Every slider changes the terrain immediately, and the same seed always produces the same landscape.
+
+VISUAL TECHNIQUES
+- Marching-squares contour generation from a seeded multi-octave elevation field.
+- Gaussian hill presets combined with value noise; normalisation to a consistent range.
+- Index contours every fourth level, thinner intermediate contours, survey grid and edge ticks.
+- Live elevation and coordinate readout on pointer move; click-to-place survey marker.
+- Paper texture, letterpress-like labels and terracotta accent.
+- Responsive canvas with device-pixel-ratio scaling.
+- Reduced-motion removes the short redraw fade.
+
+INTERACTION MODEL
+Moving the pointer reads the elevation at that point and draws a crosshair. Clicking places or moves a survey marker with its coordinates. Relief, Detail and Contours sliders redraw the terrain; Island, Ridge and Valley presets change its basic form; Re-seed changes the noise; Grid toggles the survey grid. All controls are labelled and keyboard accessible.

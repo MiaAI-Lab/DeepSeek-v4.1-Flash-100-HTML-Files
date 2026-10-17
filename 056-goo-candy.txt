@@ -1,0 +1,20 @@
+TITLE
+GOO — A Softer Kind of Sweet
+
+PROMPT
+Create a playful premium candy brand page called "GOO", for translucent gummy bears. Bubblegum pink and butter-cream gradient background, soft blobs, scattered candy dots, a large single gummy bear drawn in SVG with glossy translucent gradients and a sugar highlight, and chunky friendly typography. The left column carries the headline "A softer kind of sweet.", a short note, a flavour selector (Raspberry, Mango, Lime, Grape), a price and an Add to bag button. Selecting a flavour changes the gummy colour, background wash and flavour label with a soft transition; clicking the bear makes it wobble and releases small gummies. Include a bag counter, a strip of three brand promises and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Joy with a product-design brain. The gummy is the hero object: believable translucency, a sugar bloom, a highlight, a shadow. The palette is sweet but controlled, typography is chunky but well set, and the page has enough white space to feel like a boutique rather than a candy aisle. Every interaction should feel squishy but tasteful.
+
+VISUAL TECHNIQUES
+- SVG gummy bear with layered gradients, inner shadow, specular highlights and a translucent rim light.
+- Flavour-driven CSS custom properties changing gummy fill, background blobs and accent text.
+- Wobble animation using a multi-step scale/skew keyframe; burst of mini gummies on click.
+- Floating candy dots, soft blurred blobs and a rounded product card.
+- Chunky display type with italic serif accents, pill buttons and a bag counter.
+- Sticky header, responsive stacking and a three-promise strip.
+- Reduced-motion removes wobble and floating pieces while keeping all selection states.
+
+INTERACTION MODEL
+Clicking a flavour swatch changes the gummy colour, the flavour name and the ambient wash. Clicking the bear plays a wobble and spawns a few floating mini bears. "Add to bag" increments the counter, changes its label briefly and updates the bag pill in the header. All controls are buttons with pressed states; reduced-motion keeps colour changes instant.

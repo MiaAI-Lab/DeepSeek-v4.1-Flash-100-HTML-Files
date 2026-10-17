@@ -1,0 +1,19 @@
+TITLE
+Swarm Type — A Word Is a Crowd
+
+PROMPT
+Create an interactive particle-typography toy called "Swarm Type". Near-black ground, chalk-white and acid-green particles with occasional ember-orange ones, and a huge canvas where thousands of small dots gather into a word. The default word is "FLUX"; an input at the bottom lets visitors set any word or short phrase, and the swarm reforms instantly. Moving the pointer pushes particles aside; "Scatter" explodes them and "Reform" brings them home. The interface is minimal: a small masthead, a statement "A word is a crowd.", particle count, palette buttons and a round input bar. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+Typography as a living material. The word should feel like it is being held in place by collective attention, not printed. On the dark ground the particles read as lit dust or a murmuration; the single ember particles are like sparks in a print run. The UI is small and print-like so the swarm owns the page.
+
+VISUAL TECHNIQUES
+- Offscreen canvas text sampling to generate particle targets from any typed word.
+- Spring-to-target particle simulation with mouse repulsion, velocity damping and wrap-free bounds.
+- Three particle palettes (Chalk, Acid, Ember) with ember accent particles.
+- Live particle count, scatter/reform states and a soft entrance animation.
+- Film grain, rule guides and a large ghosted word behind the swarm.
+- Retina-aware canvas, capped particle count for performance, reduced-motion static render.
+
+INTERACTION MODEL
+Type a word and press Enter or "Swarm it" to rebuild the particle targets. Moving the pointer repels nearby particles; "Scatter" gives them random velocity and gravity; "Reform" returns them to the word. Palette buttons recolour the swarm. Clicking the canvas creates a small local disturbance. All controls are keyboard accessible; reduced-motion draws the word once without continuous animation.

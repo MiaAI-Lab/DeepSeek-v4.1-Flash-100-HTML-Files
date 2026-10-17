@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A lunar almanac for October 2026, with real moon phases drawn in canvas.">
+<title>Lunar Almanac — October 2026</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --night:#070d1b; --panel:#0c1427; --panel2:#101a31; --ivory:#ece7d9; --silver:#b9c4d6; --gold:#c9a86a; --dim:rgba(236,231,217,.5);
+    --line:rgba(185,196,214,.15);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--night);color:var(--ivory);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 600px at 82% 0%,rgba(47,64,110,.4),transparent 60%),radial-gradient(700px 500px at 5% 70%,rgba(35,50,90,.3),transparent 65%)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(255,255,255,.5) .6px,transparent .8px),radial-gradient(rgba(201,168,106,.4) .5px,transparent .7px);
+    background-size:143px 127px,211px 187px;background-position:13px 21px,70px 90px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);mask-image:linear-gradient(180deg,#000,transparent 85%)}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--gold);color:var(--night)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3.2vw,40px);position:relative;z-index:2}
+
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding:20px 0 14px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .moonmark{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 34% 32%,#f6f1e4,#b9c4d6 55%,#586480);box-shadow:0 0 16px rgba(236,231,217,.25);position:relative;flex:none}
+  .brand .moonmark::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--night);transform:translateX(6px)}
+  .brand b{font-family:var(--serif);font-weight:400;font-size:1.18rem;letter-spacing:.12em;text-transform:uppercase;display:block}
+  .brand span{display:block;font-family:var(--mono);font-size:.4rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+  .headMeta{display:flex;gap:28px;color:var(--dim);text-align:right}
+  .headMeta b{color:var(--ivory);font-weight:400}
+  .gold{color:var(--gold)!important}
+
+  .intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:clamp(18px,3vw,28px) 0 16px;flex-wrap:wrap}
+  .intro h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,4.4vw,3.5rem);letter-spacing:-.04em;line-height:1}
+  .intro h1 em{font-style:italic;color:var(--silver)}
+  .intro p{max-width:34ch;color:var(--dim);font-size:.7rem;line-height:1.75;text-align:right}
+  .todayBtn{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(201,168,106,.45);padding:7px 11px;border-radius:100px;
+    font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);transition:background .25s,color .25s;margin-top:8px}
+  .todayBtn:hover{background:var(--gold);color:var(--night)}
+
+  .almanac{display:grid;grid-template-columns:1.34fr .66fr;gap:clamp(18px,3vw,34px);align-items:start;padding-bottom:24px}
+  .calCard{border:1px solid var(--line);background:rgba(12,20,39,.55);backdrop-filter:blur(6px)}
+  .calTop{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 14px;border-bottom:1px solid var(--line);color:var(--dim)}
+  .calTop b{color:var(--ivory);font-weight:400;font-family:var(--serif);font-size:1rem;letter-spacing:.04em}
+  .weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line)}
+  .weekdays span{padding:7px 4px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;border-right:1px solid rgba(185,196,214,.07)}
+  .weekdays span:last-child{border-right:0}
+  .days{display:grid;grid-template-columns:repeat(7,1fr)}
+  .day{position:relative;min-height:clamp(62px,8.2vw,88px);padding:7px 6px;border-right:1px solid rgba(185,196,214,.07);border-bottom:1px solid rgba(185,196,214,.07);
+    display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;transition:background .2s;color:var(--ivory)}
+  .day:nth-child(7n){border-right:0}
+  .day.empty{cursor:default;opacity:.25}
+  .day:hover{background:rgba(185,196,214,.05)}
+  .day canvas{width:28px;height:28px;display:block;margin-top:2px}
+  .day .num{font-family:var(--mono);font-size:.5rem;letter-spacing:.04em;color:var(--dim)}
+  .day.full .num,.day.selected .num{color:var(--gold)}
+  .day.selected{background:rgba(201,168,106,.08);box-shadow:inset 0 0 0 1px rgba(201,168,106,.5)}
+  .day.full::after{content:"";position:absolute;right:6px;bottom:6px;width:4px;height:4px;border-radius:50%;background:var(--gold)}
+  .legend{display:flex;justify-content:space-between;gap:14px;padding:9px 14px;border-top:1px solid var(--line);color:var(--dim);flex-wrap:wrap}
+
+  .detail{border:1px solid var(--line);background:linear-gradient(160deg,rgba(16,26,49,.75),rgba(8,14,28,.8));padding:16px;position:relative;overflow:hidden}
+  .detail::before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,106,.12),transparent 65%)}
+  .moonStage{display:grid;place-items:center;position:relative;padding:6px 0 10px}
+  .moonGlow{position:absolute;width:76%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(236,231,217,.16),transparent 66%);filter:blur(12px)}
+  #moonCanvas{width:min(100%,250px);height:auto;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 22px rgba(236,231,217,.14));transition:opacity .35s}
+  #moonCanvas.fade{opacity:0}
+  .detail .phaseName{font-family:var(--serif);font-size:clamp(1.2rem,2.2vw,1.6rem);font-weight:400;letter-spacing:-.02em;margin-top:2px}
+  .detail .phaseDate{color:var(--dim);margin-top:3px}
+  .illum{display:flex;align-items:baseline;gap:7px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+  .illum b{font-family:var(--serif);font-size:2.3rem;font-weight:300;letter-spacing:-.04em;line-height:1}
+  .illum span{color:var(--dim);font-family:var(--mono);font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;line-height:1.5}
+  .dataGrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:12px;border:1px solid var(--line)}
+  .dataGrid div{background:#0a1223;padding:8px 9px}
+  .dataGrid span{display:block;color:var(--dim);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase}
+  .dataGrid b{display:block;margin-top:4px;font-family:var(--serif);font-size:.92rem;font-weight:400;letter-spacing:.01em}
+  .note{margin-top:12px;color:var(--dim);font-size:.68rem;line-height:1.7}
+  .note b{color:var(--ivory);font-weight:400}
+
+  .phases{border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:20px}
+  .phase{padding:13px clamp(10px,2vw,20px);border-right:1px solid var(--line);display:flex;align-items:center;gap:10px;text-align:left;transition:background .2s}
+  .phase:last-child{border-right:0}
+  .phase:hover{background:rgba(185,196,214,.04)}
+  .phase canvas{width:30px;height:30px;flex:none}
+  .phase span{display:block;color:var(--dim);font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;text-transform:uppercase}
+  .phase b{display:block;font-family:var(--serif);font-size:.85rem;font-weight:400;margin-top:3px}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 0 26px;color:var(--dim)}
+
+  @media(max-width:980px){
+    .almanac{grid-template-columns:1fr}
+    .detail{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center}
+    .moonStage{padding:0}
+    .detail .phaseName{margin-top:0}
+    .dataGrid{margin-top:8px}
+    .note{margin-top:8px;grid-column:1/-1}
+    .illum{margin-top:8px}
+  }
+  @media(max-width:640px){
+    .headMeta{display:none}
+    .brand b{font-size:.95rem}
+    .intro{flex-direction:column;align-items:flex-start;gap:6px}
+    .intro p{text-align:left;max-width:100%}
+    .day{min-height:58px;padding:5px 4px}
+    .day canvas{width:22px;height:22px}
+    .weekdays span{font-size:.36rem;padding:6px 0}
+    .calTop{font-size:.42rem;padding:9px 10px}
+    .legend{font-size:.4rem;padding:7px 10px}
+    .detail{grid-template-columns:1fr;text-align:left}
+    .moonStage{justify-items:start}
+    #moonCanvas{width:180px}
+    .phases{grid-template-columns:1fr 1fr}
+    .phase:nth-child(2){border-right:0}
+    .phase:nth-child(3),.phase:nth-child(4){border-top:1px solid var(--line)}
+    .phase:nth-child(3){border-right:1px solid var(--line)}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="moonmark" aria-hidden="true"></span><span><b>Lunar Almanac</b><span>Volume iv / October 2026</span></span></a>
+    <div class="headMeta mono"><span>Helsinki, 60° 10′ N<br><b>23° 33′ E</b></span><span>Times in <b>EET</b><br><b>UTC +2</b></span></div>
+  </header>
+
+  <main id="top">
+    <section class="intro">
+      <div>
+        <h1>The moon, <em>night by night.</em></h1>
+        <p>A quiet almanac of October's light. Choose a date; the moon will be drawn exactly as it appears above the harbour.</p>
+      </div>
+      <button class="todayBtn" id="tonight"><span aria-hidden="true">↺</span> Return to tonight</button>
+    </section>
+
+    <section class="almanac" aria-label="October 2026 moon calendar">
+      <div class="calCard">
+        <div class="calTop mono"><span>October <b class="gold">2026</b></span><span>31 nights · 29.53-day lunation</span></div>
+        <div class="weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        <div class="days" id="days"></div>
+        <div class="legend mono"><span>● Full moon</span><span>Gold ring — selected</span><span>Click any night</span></div>
+      </div>
+
+      <aside class="detail" aria-live="polite">
+        <div class="moonStage"><div class="moonGlow" aria-hidden="true"></div><canvas id="moonCanvas" width="500" height="500" aria-label="The selected moon phase"></canvas></div>
+        <div>
+          <p class="phaseDate mono" id="selDate">Monday, 26 October 2026</p>
+          <h2 class="phaseName" id="phaseName">Full Moon</h2>
+          <div class="illum"><b id="illumVal">100</b><span>% illuminated<br><span id="trend">Waxing</span></span></div>
+          <div class="dataGrid">
+            <div><span>Moonrise</span><b id="rise">17:42</b></div>
+            <div><span>Moonset</span><b id="set">06:58</b></div>
+            <div><span>Age</span><b id="age">14.7 d</b></div>
+            <div><span>Distance</span><b id="dist">387,412 km</b></div>
+          </div>
+          <p class="note" id="note"><b>The Hunter's Moon.</b> The first full moon after the harvest, named for the light that let hunters see across bare fields. It rises just after sunset and stays up almost the whole night.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="phases" aria-label="Principal phases">
+      <button class="phase" data-day="10"><canvas width="60" height="60" data-phase="0"></canvas><span>New moon<b>10 Oct</b></span></button>
+      <button class="phase" data-day="18"><canvas width="60" height="60" data-phase=".25"></canvas><span>First quarter<b>18 Oct</b></span></button>
+      <button class="phase" data-day="26"><canvas width="60" height="60" data-phase=".5"></canvas><span>Full moon<b>26 Oct</b></span></button>
+      <button class="phase" data-day="2"><canvas width="60" height="60" data-phase=".75"></canvas><span>Last quarter<b>02 Oct</b></span></button>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>Lunar Almanac / a fictional publication</span>
+    <span>Phase maths · synodic month 29.530588 days</span>
+    <span>© 2026 · for looking up</span>
+  </footer>
+</div>
+
+<script>
+  const SYNODIC = 29.530588853;
+  const NEW_MOON_EPOCH = Date.UTC(2000, 0, 6, 18, 14);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const daysEl = document.getElementById('days');
+  const moonCanvas = document.getElementById('moonCanvas');
+  const mctx = moonCanvas.getContext('2d');
+  let selected = 26;
+
+  function phaseOf(date){
+    const days = (date.getTime() - NEW_MOON_EPOCH) / 86400000;
+    return ((days / SYNODIC) % 1 + 1) % 1;
+  }
+
+  function phaseNameOf(p){
+    if (p < .02 || p > .98) return 'New Moon';
+    if (p < .22) return 'Waxing Crescent';
+    if (p < .28) return 'First Quarter';
+    if (p < .47) return 'Waxing Gibbous';
+    if (p < .53) return 'Full Moon';
+    if (p < .72) return 'Waning Gibbous';
+    if (p < .78) return 'Last Quarter';
+    return 'Waning Crescent';
+  }
+
+  const notes = {
+    'New Moon': 'The moon is between the Earth and the sun, lost in the glare. A good night for beginnings and for seeing stars.',
+    'Waxing Crescent': 'A thin curve of light in the west after sunset. The old moon is still in the new moon’s arms.',
+    'First Quarter': 'Half lit, high at sunset. The terminator cuts the disc cleanly in two, and the craters throw long shadows.',
+    'Waxing Gibbous': 'More than half, less than full. The moon is bright enough to cast a shadow and late enough to keep you up.',
+    'Full Moon': 'The Hunter’s Moon. The first full moon after the harvest, named for the light that let hunters see across bare fields.',
+    'Waning Gibbous': 'The moon rises later each night, still generous. A good week for walking home without a torch.',
+    'Last Quarter': 'Half lit again, but in the morning sky. The moon is leaving the evening to the stars.',
+    'Waning Crescent': 'A last thin crescent before dawn. The lunation closes quietly, and begins again somewhere behind the sun.'
+  };
+
+  function renderMoon(canvas, phase, size){
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const R = Math.min(w, h) * .46;
+    const cx = w / 2, cy = h / 2;
+    ctx.clearRect(0, 0, w, h);
+    const img = ctx.createImageData(w, h);
+    const data = img.data;
+    const theta = phase * Math.PI * 2;
+    const sinT = Math.sin(theta), cosT = Math.cos(theta);
+    const base = [36, 42, 58];
+    const light = [246, 241, 228];
+    for (let y = 0; y < h; y++){
+      for (let x = 0; x < w; x++){
+        const nx = (x - cx) / R;
+        const ny = (y - cy) / R;
+        const rr = nx * nx + ny * ny;
+        const i = (y * w + x) * 4;
+        if (rr > 1){ data[i + 3] = 0; continue; }
+        const nz = Math.sqrt(Math.max(0, 1 - rr));
+        const lit = Math.max(0, nx * sinT - nz * cosT);
+        const limb = .55 + .45 * nz;
+        const crater = 1 + Math.sin(nx * 23 + ny * 17) * .035 + Math.sin(nx * 9 - ny * 13) * .025;
+        const shade = Math.pow(lit, .75) * limb * crater;
+        data[i] = base[0] + (light[0] - base[0]) * shade;
+        data[i+1] = base[1] + (light[1] - base[1]) * shade;
+        data[i+2] = base[2] + (light[2] - base[2]) * shade;
+        data[i+3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function dateOf(day){ return new Date(Date.UTC(2026, 9, day, 21, 0)); }
+
+  function select(day){
+    selected = day;
+    const d = dateOf(day);
+    const p = phaseOf(d);
+    const illum = Math.round((1 - Math.cos(p * Math.PI * 2)) / 2 * 100);
+    const name = phaseNameOf(p);
+    moonCanvas.classList.add('fade');
+    setTimeout(() => {
+      renderMoon(moonCanvas, p, 500);
+      moonCanvas.classList.remove('fade');
+    }, reduce ? 0 : 180);
+
+    document.getElementById('selDate').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    document.getElementById('phaseName').textContent = name;
+    document.getElementById('illumVal').textContent = illum;
+    document.getElementById('trend').textContent = p < .5 ? 'Waxing · growing' : 'Waning · releasing';
+    const rise = (6 + p * 24) % 24;
+    const rh = Math.floor(rise), rm = Math.round((rise - rh) * 60);
+    const set = (rise + 12.4) % 24;
+    const sh = Math.floor(set), sm = Math.round((set - sh) * 60);
+    document.getElementById('rise').textContent = String(rh).padStart(2,'0') + ':' + String(rm).padStart(2,'0');
+    document.getElementById('set').textContent = String(sh).padStart(2,'0') + ':' + String(sm).padStart(2,'0');
+    document.getElementById('age').textContent = (p * SYNODIC).toFixed(1) + ' d';
+    document.getElementById('dist').textContent = Math.round(384400 + Math.sin(p * Math.PI * 2) * 21000).toLocaleString('en-US') + ' km';
+    document.getElementById('note').innerHTML = '<b>' + name + '.</b> ' + (notes[name] || '');
+
+    document.querySelectorAll('.day[data-day]').forEach(el => el.classList.toggle('selected', Number(el.dataset.day) === day));
+  }
+
+  // Build calendar
+  const firstWeekday = (new Date(Date.UTC(2026, 9, 1)).getUTCDay() + 6) % 7;
+  for (let i = 0; i < firstWeekday; i++){
+    const e = document.createElement('div'); e.className = 'day empty'; daysEl.appendChild(e);
+  }
+  for (let day = 1; day <= 31; day++){
+    const p = phaseOf(dateOf(day));
+    const btn = document.createElement('button');
+    btn.className = 'day';
+    btn.dataset.day = day;
+    btn.setAttribute('aria-label', 'October ' + day + ', ' + phaseNameOf(p));
+    const num = document.createElement('span'); num.className = 'num'; num.textContent = String(day).padStart(2, '0');
+    const c = document.createElement('canvas'); c.width = 56; c.height = 56; c.setAttribute('aria-hidden', 'true');
+    renderMoon(c, p, 56);
+    btn.appendChild(num); btn.appendChild(c);
+    if (Math.abs(p - .5) < .02) btn.classList.add('full');
+    btn.addEventListener('click', () => select(day));
+    daysEl.appendChild(btn);
+  }
+
+  document.querySelectorAll('.phase').forEach(btn => {
+    btn.addEventListener('click', () => select(Number(btn.dataset.day)));
+  });
+  document.querySelectorAll('.phase canvas').forEach(c => {
+    renderMoon(c, Number(c.dataset.phase), 60);
+  });
+
+  document.getElementById('tonight').addEventListener('click', () => {
+    const now = new Date();
+    const day = now.getUTCMonth() === 9 && now.getUTCFullYear() === 2026 ? now.getUTCDate() : 26;
+    select(day);
+    const selectedEl = document.querySelector('.day[data-day="' + day + '"]');
+    if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
+  });
+
+  select(26);
+</script>
+</body>
+</html>

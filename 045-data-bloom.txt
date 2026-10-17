@@ -1,0 +1,20 @@
+TITLE
+A Year in Petals — Twelve Data Blooms
+
+PROMPT
+Create an editorial data-art page called "A Year in Petals" that charts a fictional year of weather as twelve radial flower diagrams. Deep ink-green background, warm cream text, chartreuse, coral and pale sky-blue. A left column holds the title "A year, in petals.", a short explanation and a selected-month panel with rainfall, sunshine, mean temperature and a one-line seasonal note. The right side is a 4×3 grid of flowers, one per month; each flower has twelve petals whose lengths encode weekly sunshine and whose colours shift with rainfall. A Sunshine / Rainfall toggle remaps the petal lengths, hovering enlarges a flower, and clicking selects it and updates the panel. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external libraries or fonts.
+
+DESIGN INTENT
+Data with a pulse. The flowers are legitimate little charts — twelve petals for twelve weeks — not decoration, and the seasonal note gives each month a voice. The composition is a wall of blooms seen from above, like a botanical field guide crossed with an annual report. The dark green ground makes chartreuse and coral feel alive.
+
+VISUAL TECHNIQUES
+- Generated SVG blooms with twelve rotated petals, radial centre, fine outlines and per-petal length/colour.
+- Two data modes mapping sunshine or rainfall to petal geometry, with a smooth re-render.
+- Hover scale and selected ring; month labels in serif italic and mono.
+- Seasonal colour palette interpolated per bloom from rainfall.
+- Editorial split layout with a sticky detail panel, hairline rules and tabular stats.
+- Motion on load: blooms grow from zero with staggered timing; reduced-motion shows them immediately.
+- Responsive grid from four to three to two columns.
+
+INTERACTION MODEL
+Hovering a bloom lifts and scales it, showing its month and primary value. Clicking a bloom selects it, outlines it and updates the detail panel with all stats and a seasonal sentence. The Sunshine / Rainfall toggle re-renders every petal with a short grow animation and updates the legend. Keyboard users can tab to each bloom and activate it with Enter or Space. Reduced-motion removes the staggered growth.

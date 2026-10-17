@@ -1,0 +1,20 @@
+TITLE
+Small Weather — A Poem in Six Movements
+
+PROMPT
+Create a scroll-driven kinetic typography experience for an original poem titled "Small Weather — a poem in six movements." The design is Swiss-editorial meets contemporary art book: warm cream paper, near-black ink, vermilion red and deep petrol blue, with enormous grotesque lines (up to 8vw), italic serif accents, hairline rules and a fixed vertical index of the six movements. Each movement occupies a full viewport, uses a different alignment and a single abstract shape — a red disc, a blue horizon bar, an outlined circle, a rain of thin rules — and its lines rise into place as it enters view. Include an opening title spread, a scroll progress rule at the very top, active-movement tracking in the rail, and a closing colophon. Fully responsive, one standalone HTML file with inline CSS and JS, no external fonts, images or libraries.
+
+DESIGN INTENT
+A poem should be staged, not decorated. This page treats each movement like a poster in a series: one idea, lots of air, a single geometric event, and type large enough to be read from across a room. The cream ground keeps it human; vermilion marks the emotional stresses; petrol blue is the cool counterweight. Motion is slow and vertical, timed to reading rather than scrolling, so the words arrive just before the eye needs them.
+
+VISUAL TECHNIQUES
+- Full-viewport stanzas with oversized fluid type, tight negative tracking and alternating alignment.
+- Line-by-line masked reveal using overflow-hidden spans and staggered translate transitions.
+- Fixed vertical movement index with active states driven by IntersectionObserver.
+- Scroll-progress hairline using a transform-scaled fixed bar.
+- Abstract CSS geometry per movement: discs, horizon bars, concentric outlines and field rules.
+- Serif italics embedded inside grotesque lines; measured mono captions and folio numbers.
+- Fully responsive type scale; reduced-motion shows the poem immediately with no transforms.
+
+INTERACTION MODEL
+Scrolling advances the poem; each movement marks itself active in the vertical index and a thin progress line fills across the top. Clicking a number in the index smooth-scrolls to that movement. Hovering a stressed word lifts it and turns it vermilion. All six movements are readable without JavaScript, and reduced-motion visitors see the complete text without reveal animations.

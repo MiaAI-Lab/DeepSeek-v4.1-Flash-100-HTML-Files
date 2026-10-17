@@ -1,0 +1,20 @@
+TITLE
+Prism — White Is a Crowd
+
+PROMPT
+Create an optics study called "Prism". A dark studio page shows a glass triangular prism on an SVG stage, a white beam entering from the left and a fan of seven spectral rays leaving to the right. Visitors drag the prism to move it and use Tilt and Dispersion sliders to bend the spectrum; wavelength chips (400–700 nm) highlight individual rays and show their names. Include a serif headline "White is a crowd.", a short explanation, a readout of the apex angle and a reset control. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A quiet physics demonstration with the atmosphere of a darkened lecture theatre. The prism should read as glass: pale edge highlights, translucent faces, a faint inner reflection. The spectrum is the only saturated colour on the page, so it must feel earned. Nothing moves unless the visitor moves it.
+
+VISUAL TECHNIQUES
+- SVG prism with translucent facets, edge highlights and inner refracted lines.
+- White incoming beam, computed spectral fan with seven coloured rays and additive glow.
+- Drag interaction on the stage; Tilt and Dispersion sliders update ray geometry.
+- Wavelength chips with hover and selection states; selected ray thickens and its label appears.
+- Serif display type, mono readouts and a dark vignette.
+- Responsive SVG scaling with controls stacked on mobile.
+- Reduced-motion disables beam easing and the prism's subtle float.
+
+INTERACTION MODEL
+Drag the prism anywhere in the stage. Tilt changes the incoming beam angle; Dispersion widens or tightens the fan. Clicking a wavelength chip highlights that ray and shows its colour name and nanometres. Reset returns prism, tilt and dispersion to their starting values. All sliders and chips are keyboard accessible.

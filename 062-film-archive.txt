@@ -1,0 +1,19 @@
+TITLE
+Cinémathèque 07 — A Reel of Imaginary Films
+
+PROMPT
+Create a cinematic film archive called "Cinémathèque 07" for six imaginary short films. Dark projection room, warm amber light, dust motes and a 35mm filmstrip. A large screen shows the selected film's "still" — an abstract CSS composition rather than an image — with the title overlaid in an elegant serif. Beside or below it, a details panel lists year, duration, director and a one-line note. Beneath the screen runs a horizontal filmstrip with six numbered frames, sprocket holes top and bottom, and the selected frame marked in amber. Buttons step through the reel; "Play the reel" auto-advances every few seconds. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+The romance of a small repertory cinema. The interface is almost entirely darkness and one warm rectangle of light; the filmstrip is a physical object with perforations and slight sheen. Each "still" is a graphic abstraction — colour, geometry, grain — that suggests a film without showing one. The typography is festival-catalogue: a high serif, tiny credits, precise metadata.
+
+VISUAL TECHNIQUES
+- Six CSS-only stills: crimson room, blue nocturne, green orchard, monochrome static, horizontal long take, black end credits.
+- Filmstrip with repeated sprocket holes, frame numbers and a moving amber selected state.
+- Projector glow, light cone, dust motes and film grain overlays.
+- Serif film titles with overlaid index and year; monospaced credits.
+- Fade transitions between stills; auto-advance reel with a progress line.
+- Responsive: details stack, filmstrip becomes horizontally scrollable.
+
+INTERACTION MODEL
+Clicking a frame selects it, fades the screen to the new still and updates the details. Previous/Next step through the reel. "Play the reel" auto-advances every 3.5 seconds, shows a progress line and can be paused. Arrow keys move through frames when the strip is focused. Reduced-motion switches stills instantly and disables auto-advance.

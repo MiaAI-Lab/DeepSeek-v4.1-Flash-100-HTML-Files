@@ -1,0 +1,20 @@
+TITLE
+Latent — A Model That Dreams in Coordinates
+
+PROMPT
+Create a research-preview landing page called "Latent". Near-black canvas, electric blue and acid-lime accents, a huge grotesque headline "A model that dreams in coordinates.", a prompt field with suggestion chips and a live generative preview card. The preview draws a unique abstract composition on a canvas from a hash of the prompt, with a scanner line, seed, palette and generation time. Behind everything, a slow neural mesh of nodes and connecting lines reacts to the pointer. Below the hero, three numbered capability notes and a small benchmark strip. Fully responsive, one standalone HTML file with inline CSS/JS/canvas, no external images or fonts.
+
+DESIGN INTENT
+A confident research product page that explains nothing it cannot show. The preview is the proof: type a phrase, get a composition that could not have existed before, with its seed visible. The mesh background gives the page a nervous, living quality without becoming a gimmick. Dark, precise, slightly cold, with lime used only for live data.
+
+VISUAL TECHNIQUES
+- Canvas neural mesh with distance-based links, drift and pointer influence.
+- Deterministic generative art canvas seeded by a hash of the prompt: gradient fields, arcs, particles and scan lines.
+- Prompt input, example chips, generation state and metadata (seed, palette, ms).
+- Large display typography, mono micro-labels and thin rules.
+- Live mesh, scanner animation and subtle glow; reduced-motion freezes the mesh and removes the scanner.
+- Responsive layout with preview above copy on mobile.
+- Accessible controls, aria-live status and keyboard support.
+
+INTERACTION MODEL
+Typing a prompt and pressing Generate (or Enter) produces a new seeded composition after a short generating state. Example chips fill the prompt and generate. The seed and palette update; the same prompt always yields the same image. The mesh follows the pointer. All controls are keyboard accessible, and reduced-motion shows the final state without animated scanning.

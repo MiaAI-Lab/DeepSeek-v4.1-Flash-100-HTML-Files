@@ -1,0 +1,20 @@
+TITLE
+The Orbital Almanac — Issue 17, The Long Way Around
+
+PROMPT
+Design an editorial print-magazine spread about orbital mechanics, titled "The Orbital Almanac". It should look like a beautifully printed quarterly: warm cream paper (#f2ede1), dense black serif text (#1c1b17), rust orange (#ae4b2a) and ink blue (#26485c), double rules, drop caps, justified columns, tiny tracked sans-serif captions, and an oversized serif headline "The long way around." with an italic rust accent. The spread includes a masthead, contents bar, a lead essay in three justified columns, a pull quote, an "Almanac for October" table of celestial events, a small moon-phase plate, and an interactive SVG orrery with four planets travelling along elliptical paths. The orrery must feel like an antique scientific plate redrawn by a contemporary art director: hairline ellipses, a glowing rust sun, small numbered planets and a caption that changes when a planet is hovered. Include a "hold the orbits" control that pauses the motion. Fully responsive, one standalone HTML file, inline CSS/JS/SVG, no external fonts, images or libraries.
+
+DESIGN INTENT
+A love letter to print: the page is composed on a strict editorial grid with rules that behave like typographic furniture, not decoration. The orrery is the single piece of theatre, set against quiet columns of justified serif text and precise microcopy. Rust marks the sun, the drop cap and the italic in the headline; blue is reserved for the pull quote and data. The pacing is deliberately slow and readable, like a spread you would tear out and keep.
+
+VISUAL TECHNIQUES
+- Three-column justified serif setting with automatic hyphenation and a rust drop cap.
+- Double-rule masthead, hairline column rules and folio marks borrowed from letterpress printing.
+- Inline SVG orrery with elliptical orbit paths, dashed strokes, radial-gradient sun and SMIL animateMotion planets.
+- Hover/focus-reactive specimen caption with planet name, distance and orbital period.
+- Pull quote in ink blue between heavy rules; almanac table with monospaced dates.
+- CSS moon plate built from layered radial gradients and an inset shadow.
+- Paper grain from an inline SVG feTurbulence data URI; no shadows except the moon and sun glow.
+
+INTERACTION MODEL
+Hovering or keyboard-focusing a planet highlights it and updates the orrery caption with its name, mean distance and period. A "Hold the orbits" button pauses and resumes all planetary motion via SVG pauseAnimations, with a clear pressed state. The page is fully readable without motion; reduced-motion visitors start with the orbits paused. Links in the contents bar scroll to their sections, and every interactive element has a visible focus style.

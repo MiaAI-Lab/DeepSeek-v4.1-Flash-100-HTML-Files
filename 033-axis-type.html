@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AXIS — a variable type playground. Adjust weight, width, tracking, slant and size in real time.">
+<title>AXIS — Variable Type Playground</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --void:#0c0c0d; --panel:#141415; --cream:#eee9dc; --dim:rgba(238,233,220,.45); --red:#ff3b24; --line:rgba(238,233,220,.15);
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--void);color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:var(--cream)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:1px solid var(--red);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.7}
+  .wrap{max-width:1420px;margin:0 auto;padding:0 clamp(14px,2.8vw,38px);min-height:100svh;display:flex;flex-direction:column}
+  header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:9px;font-weight:700;letter-spacing:-.03em;font-size:1.02rem}
+  .brand span{font-family:var(--mono);font-size:.4rem;letter-spacing:.14em;color:var(--dim);font-weight:400}
+  .headMid{display:flex;gap:24px;color:var(--dim)}
+  .headRight{display:flex;gap:16px;align-items:center;color:var(--dim)}
+  .headRight b{color:var(--cream);font-weight:400}
+
+  .intro{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding:14px 0 10px;flex-wrap:wrap}
+  .intro h1{font-size:clamp(1.5rem,3vw,2.4rem);font-weight:600;letter-spacing:-.05em}
+  .intro h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--dim)}
+  .intro p{max-width:33ch;color:var(--dim);font-size:.68rem;line-height:1.7;text-align:right}
+
+  .workspace{flex:1;display:grid;grid-template-columns:265px 1fr;gap:14px;min-height:0}
+  .rail{border-top:1px solid var(--line);padding-top:11px;display:flex;flex-direction:column;justify-content:space-between;gap:10px}
+  .axis{margin-bottom:11px}
+  .axisHead{display:flex;justify-content:space-between;gap:8px;color:var(--dim);margin-bottom:4px}
+  .axisHead output{color:var(--cream);font-family:var(--mono);font-size:.47rem;letter-spacing:.03em;text-transform:none}
+  input[type=range]{width:100%;height:18px;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:1px;background:rgba(238,233,220,.3)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--cream);margin-top:-5px;border:2px solid var(--void);box-shadow:0 0 0 1px var(--red)}
+  input[type=range]::-moz-range-track{height:1px;background:rgba(238,233,220,.3)}
+  input[type=range]::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--cream);border:2px solid var(--void);box-shadow:0 0 0 1px var(--red)}
+  .presets{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:2px}
+  .preset{border:1px solid var(--line);padding:7px 8px;font-family:var(--mono);font-size:.43rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:left;transition:border-color .2s,color .2s,background .2s}
+  .preset:hover{border-color:var(--cream);color:var(--cream)}
+  .preset[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--cream)}
+  .random{grid-column:1/-1;border-color:rgba(255,59,36,.45);color:var(--red)}
+  .random:hover{background:var(--red);color:var(--cream);border-color:var(--red)}
+  .railFoot{border-top:1px solid var(--line);padding-top:8px;color:var(--dim);line-height:1.8}
+  .railFoot b{color:var(--cream);font-weight:400}
+
+  .stageWrap{display:flex;flex-direction:column;min-width:0}
+  .stageTop{display:flex;justify-content:space-between;gap:14px;color:var(--dim);padding:0 2px 7px;flex-wrap:wrap}
+  .stageTop b{color:var(--cream);font-weight:400}
+  .stage{position:relative;flex:1;min-height:clamp(300px,46vh,480px);border:1px solid var(--line);overflow:hidden;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% 45%,#18181a,#0c0c0d 72%)}
+  .gridGuide{position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(90deg,rgba(238,233,220,.06) 1px,transparent 1px),linear-gradient(0deg,rgba(238,233,220,.06) 1px,transparent 1px);
+    background-size:8.333% 100%,100% 20%}
+  .baseline{position:absolute;left:4%;right:4%;top:70%;height:1px;background:rgba(255,59,36,.28);pointer-events:none}
+  .baseline::after{content:"BASELINE";position:absolute;right:0;top:4px;font-family:var(--mono);font-size:.36rem;letter-spacing:.12em;color:rgba(255,59,36,.6)}
+  .capLine{position:absolute;left:4%;right:4%;top:22%;height:1px;border-top:1px dashed rgba(238,233,220,.17);pointer-events:none}
+  .xLine{position:absolute;left:4%;right:4%;top:48%;height:1px;border-top:1px dashed rgba(238,233,220,.13);pointer-events:none}
+  .crop{position:absolute;width:16px;height:16px;border-color:rgba(238,233,220,.5);pointer-events:none}
+  .c1{left:12px;top:12px;border-left:1px solid;border-top:1px solid}.c2{right:12px;top:12px;border-right:1px solid;border-top:1px solid}
+  .c3{left:12px;bottom:12px;border-left:1px solid;border-bottom:1px solid}.c4{right:12px;bottom:12px;border-right:1px solid;border-bottom:1px solid}
+  .specimen{position:relative;z-index:2;font-weight:var(--w,700);font-size:var(--size,clamp(7rem,20vw,20rem));line-height:.8;letter-spacing:var(--track,-.06em);
+    transform:scaleX(var(--width,1)) skewX(var(--slant,0deg));transform-origin:center;white-space:nowrap;cursor:pointer;user-select:none;
+    transition:font-weight .2s,letter-spacing .2s,transform .2s,color .2s;color:var(--cream);text-align:center}
+  .specimen:hover{color:#fff}
+  .specimen .thin{color:var(--red)}
+  .stageTag{position:absolute;left:14px;bottom:13px;color:var(--dim);z-index:3;line-height:1.7}
+  .stageTag b{color:var(--red);font-weight:400}
+  .stageTagR{position:absolute;right:14px;bottom:13px;color:var(--dim);z-index:3;text-align:right;line-height:1.7}
+  .verticalTag{position:absolute;left:10px;top:50%;transform:rotate(-90deg) translateX(-50%);transform-origin:left top;color:var(--dim);font-family:var(--mono);font-size:.4rem;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+
+  .alphabet{display:grid;grid-template-columns:repeat(26,1fr);border:1px solid var(--line);margin-top:10px}
+  .letter{aspect-ratio:1/1.25;display:grid;place-items:center;border-right:1px solid rgba(238,233,220,.08);font-size:.72rem;color:var(--dim);transition:background .15s,color .15s}
+  .letter:last-child{border-right:0}
+  .letter:hover{background:var(--red);color:var(--cream)}
+  .strip{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0 16px;color:var(--dim)}
+  .strip b{color:var(--cream);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 0 20px;color:rgba(238,233,220,.3)}
+
+  @media(max-width:920px){
+    .workspace{grid-template-columns:1fr}
+    .rail{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;border-top:1px solid var(--line);order:2}
+    .rail > div:first-child{display:contents}
+    .axis{margin-bottom:8px}
+    .presets{grid-column:1/-1;grid-template-columns:repeat(4,1fr);margin-bottom:10px}
+    .random{grid-column:auto}
+    .railFoot{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px}
+    .stageWrap{order:1}
+    .alphabet{grid-template-columns:repeat(13,1fr)}
+  }
+  @media(max-width:620px){
+    .headMid{display:none}
+    .headRight .hide{display:none}
+    .intro{flex-direction:column;align-items:flex-start;gap:4px}
+    .intro p{text-align:left}
+    .stage{min-height:300px}
+    .specimen{font-size:clamp(5rem,30vw,11rem)}
+    .verticalTag{display:none}
+    .rail{grid-template-columns:1fr}
+    .presets{grid-template-columns:1fr 1fr}
+    .railFoot{flex-direction:column;gap:2px}
+    .alphabet{grid-template-columns:repeat(9,1fr)}
+    .stageTagR{display:none}
+    .strip{font-size:.42rem}
+    .strip span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top">AXIS<span>/ variable type engine</span></a>
+    <div class="headMid mono"><span>Lab 05</span><span>Live proofing</span><span>One axis at a time</span></div>
+    <div class="headRight mono"><span class="hide">Specimen <b id="specimenName">MORPH</b></span><span>No fonts loaded <b>●</b></span></div>
+  </header>
+
+  <main id="top" style="display:flex;flex-direction:column;flex:1">
+    <div class="intro">
+      <h1>Push the letters <em>until they say something.</em></h1>
+      <p>Weight, width, tracking, slant, size. Five axes, one word, and a proofing table that does not care about your taste until you do.</p>
+    </div>
+
+    <div class="workspace">
+      <aside class="rail" aria-label="Type axes">
+        <div>
+          <div class="axis">
+            <div class="axisHead mono"><label for="w">Weight</label><output id="wOut">700</output></div>
+            <input id="w" type="range" min="100" max="900" step="10" value="700">
+          </div>
+          <div class="axis">
+            <div class="axisHead mono"><label for="width">Width</label><output id="widthOut">1.00×</output></div>
+            <input id="width" type="range" min="70" max="140" step="1" value="100">
+          </div>
+          <div class="axis">
+            <div class="axisHead mono"><label for="track">Tracking</label><output id="trackOut">−0.06 em</output></div>
+            <input id="track" type="range" min="-14" max="20" step="1" value="-6">
+          </div>
+          <div class="axis">
+            <div class="axisHead mono"><label for="slant">Slant</label><output id="slantOut">0°</output></div>
+            <input id="slant" type="range" min="-18" max="18" step="1" value="0">
+          </div>
+          <div class="axis">
+            <div class="axisHead mono"><label for="size">Optical size</label><output id="sizeOut">100%</output></div>
+            <input id="size" type="range" min="55" max="135" step="1" value="100">
+          </div>
+          <div class="presets" role="group" aria-label="Presets">
+            <button class="preset" data-preset="poster" aria-pressed="true">Poster</button>
+            <button class="preset" data-preset="whisper" aria-pressed="false">Whisper</button>
+            <button class="preset" data-preset="machine" aria-pressed="false">Machine</button>
+            <button class="preset" data-preset="bloom" aria-pressed="false">Bloom</button>
+            <button class="preset random" id="random">Randomise within reason ↻</button>
+          </div>
+        </div>
+        <div class="railFoot mono">Specimen set in the system grotesque<br>Real CSS axes · <b>no variable font required</b><br>Proof 01 / 2026</div>
+      </aside>
+
+      <div class="stageWrap">
+        <div class="stageTop mono"><span>Proofing table / <b>live</b></span><span id="metrics">700 wt · 1.00 wd · −0.06 tr</span></div>
+        <div class="stage" id="stage">
+          <div class="gridGuide" aria-hidden="true"></div>
+          <div class="capLine" aria-hidden="true"></div>
+          <div class="xLine" aria-hidden="true"></div>
+          <div class="baseline" aria-hidden="true"></div>
+          <span class="crop c1" aria-hidden="true"></span><span class="crop c2" aria-hidden="true"></span><span class="crop c3" aria-hidden="true"></span><span class="crop c4" aria-hidden="true"></span>
+          <span class="verticalTag" aria-hidden="true">AXIS / MORPH / ONE WORD, FIVE AXES</span>
+          <div class="specimen" id="specimen" role="text" aria-label="Type specimen">MORPH</div>
+          <div class="stageTag mono"><b>Fig. 01</b><br>Axis specimen — set at display size</div>
+          <div class="stageTagR mono" id="stageSize">1 200 pt / live</div>
+        </div>
+        <div class="alphabet" id="alphabet" aria-label="Alphabet strip"></div>
+      </div>
+    </div>
+
+    <div class="strip mono">
+      <span>AXIS — a fictional type foundry</span>
+      <span>Drag, read, repeat · click any letter to set a single character</span>
+      <span>Back to <b>MORPH</b> ↑</span>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>AXIS / lab 05 — one word, five axes</span>
+    <span>CSS transforms, no font files</span>
+    <span>© 2026 · set in the browser</span>
+  </footer>
+</div>
+
+<script>
+  const specimen = document.getElementById('specimen');
+  const stage = document.getElementById('stage');
+  const metrics = document.getElementById('metrics');
+  const specimenName = document.getElementById('specimenName');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const w = document.getElementById('w'), width = document.getElementById('width'), track = document.getElementById('track'), slant = document.getElementById('slant'), size = document.getElementById('size');
+  const presets = {
+    poster:  { w: 850, width: 100, track: -8, slant: 0, size: 112 },
+    whisper: { w: 200, width: 118, track: 14, slant: 0, size: 78 },
+    machine: { w: 500, width: 74, track: -2, slant: -12, size: 100 },
+    bloom:   { w: 300, width: 132, track: 8, slant: 8, size: 124 }
+  };
+
+  function apply(){
+    const wv = Number(w.value), wd = Number(width.value), tr = Number(track.value), sl = Number(slant.value), sz = Number(size.value);
+    specimen.style.setProperty('--w', wv);
+    specimen.style.setProperty('--width', wd / 100);
+    specimen.style.setProperty('--track', (tr / 100) + 'em');
+    specimen.style.setProperty('--slant', sl + 'deg');
+    specimen.style.setProperty('--size', 'clamp(4rem,' + (18 * sz / 100) + 'vw,' + (20 * sz / 100) + 'rem)');
+    document.getElementById('wOut').textContent = wv;
+    document.getElementById('widthOut').textContent = (wd / 100).toFixed(2) + '×';
+    document.getElementById('trackOut').textContent = (tr < 0 ? '−' : '+') + Math.abs(tr / 100).toFixed(2) + ' em';
+    document.getElementById('slantOut').textContent = sl + '°';
+    document.getElementById('sizeOut').textContent = sz + '%';
+    metrics.textContent = wv + ' wt · ' + (wd / 100).toFixed(2) + ' wd · ' + (tr < 0 ? '−' : '+') + Math.abs(tr / 100).toFixed(2) + ' tr';
+    document.getElementById('stageSize').textContent = Math.round(1200 * sz / 100).toLocaleString('en-US') + ' pt / live';
+  }
+
+  [w, width, track, slant, size].forEach(el => {
+    el.addEventListener('input', () => {
+      document.querySelectorAll('.preset[data-preset]').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      apply();
+    });
+  });
+
+  function applyPreset(name){
+    const p = presets[name];
+    w.value = p.w; width.value = p.width; track.value = p.track; slant.value = p.slant; size.value = p.size;
+    document.querySelectorAll('.preset[data-preset]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.preset === name)));
+    apply();
+  }
+  document.querySelectorAll('.preset[data-preset]').forEach(btn => btn.addEventListener('click', () => applyPreset(btn.dataset.preset)));
+  document.getElementById('random').addEventListener('click', () => {
+    const keys = ['whisper', 'machine', 'bloom', 'poster'];
+    applyPreset(keys[Math.floor(Math.random() * keys.length)]);
+    w.value = Number(w.value) + (Math.random() * 200 - 100);
+    track.value = Number(track.value) + (Math.random() * 8 - 4);
+    apply();
+  });
+
+  const alphabet = document.getElementById('alphabet');
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(ch => {
+    const b = document.createElement('button');
+    b.className = 'letter';
+    b.textContent = ch;
+    b.setAttribute('aria-label', 'Set specimen letter ' + ch);
+    b.addEventListener('click', () => {
+      specimen.textContent = ch;
+      specimenName.textContent = ch;
+      apply();
+    });
+    alphabet.appendChild(b);
+  });
+  specimen.addEventListener('click', () => {
+    specimen.textContent = 'MORPH';
+    specimenName.textContent = 'MORPH';
+    apply();
+  });
+
+  const n = new URLSearchParams(location.search).get('axis');
+  if (n && presets[n]) applyPreset(n); else applyPreset('poster');
+</script>
+</body>
+</html>

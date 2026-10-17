@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Cartographer's Sleep — a small 3D flip book about maps, weather and rest.">
+<title>The Cartographer's Sleep — A Flip Book</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --table:#241b13; --paper:#f4eddd; --paper2:#e9dfca; --ink:#24344a; --blue:#3b5c7a; --red:#b24a35; --dim:rgba(36,52,74,.5); --line:rgba(36,52,74,.22);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100svh;background:var(--table);color:var(--paper);font-family:var(--sans);overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:24px 12px;
+    background-image:radial-gradient(900px 600px at 50% 0%,#3a2c1e,#1a130d 75%)}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.24;mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--red);color:var(--paper)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:1.5px solid var(--red);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;line-height:1.7}
+  .wrap{width:min(1120px,100%);position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:10px;border-bottom:1px solid rgba(244,237,221,.2);color:rgba(244,237,221,.55);flex-wrap:wrap;margin-bottom:14px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:1rem;color:var(--paper)}
+  .brand .bookmark{width:12px;height:18px;background:var(--red);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);flex:none}
+  .brand span{display:block;font-family:var(--mono);font-size:.34rem;letter-spacing:.13em;color:rgba(244,237,221,.45);text-transform:uppercase;margin-top:2px}
+  .headRight{text-align:right;line-height:1.7}
+
+  .bookStage{display:flex;justify-content:center;perspective:2000px;padding:6px 0 14px}
+  .book{position:relative;width:min(100%,900px);aspect-ratio:1.9/1;display:flex;transform:rotateX(3deg);transform-style:preserve-3d}
+  .book::after{content:"";position:absolute;left:4%;right:4%;bottom:-16px;height:30px;background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%);filter:blur(8px);z-index:-1}
+  .pageBase{position:relative;width:50%;height:100%;background:linear-gradient(160deg,#f7f0e0,#ecdfc8);color:var(--ink);border:1px solid rgba(36,52,74,.25);
+    box-shadow:inset -16px 0 30px rgba(80,60,35,.12)}
+  .pageBase.left{border-radius:4px 0 0 4px}
+  .pageBase.left::after,.pageBase.rightBase::after{content:"";position:absolute;top:0;bottom:0;width:14px;background:linear-gradient(90deg,rgba(60,40,20,.18),transparent);z-index:5}
+  .pageBase.left::after{right:0;background:linear-gradient(90deg,transparent,rgba(60,40,20,.18))}
+  .rightBase{position:relative;width:50%;height:100%;background:linear-gradient(160deg,#f4eddd,#e6d8bf);border:1px solid rgba(36,52,74,.2);border-radius:0 4px 4px 0}
+  .rightBase::after{left:0}
+  .leftContent{position:relative;height:100%;padding:clamp(16px,3vw,34px);display:flex;flex-direction:column;justify-content:space-between;z-index:2}
+  .leftContent .kicker{color:var(--red);font-family:var(--mono);font-size:.4rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+  .leftContent h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,3.4vw,2.8rem);line-height:.95;letter-spacing:-.04em}
+  .leftContent h1 em{font-style:italic;color:var(--blue)}
+  .leftContent p{margin-top:9px;font-family:var(--serif);font-size:clamp(.62rem,1.05vw,.76rem);line-height:1.7;color:rgba(36,52,74,.72);max-width:34ch}
+  .leftContent .imprint{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);color:var(--dim);line-height:1.8}
+  .leftContent .imprint b{color:var(--ink);font-weight:400}
+  .mapArt{width:72%;align-self:flex-end;margin-top:4px;opacity:.9}
+
+  .sheets{position:absolute;left:50%;top:0;width:50%;height:100%;transform-style:preserve-3d;z-index:4}
+  .sheet{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1);cursor:pointer}
+  .sheet.flipped{transform:rotateY(-180deg)}
+  .sheet .front,.sheet .back{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:linear-gradient(160deg,#f8f1e2,#ebddc4);border:1px solid rgba(36,52,74,.22);
+    padding:clamp(14px,2.6vw,28px);color:var(--ink);display:flex;flex-direction:column;justify-content:space-between;border-radius:0 4px 4px 0}
+  .sheet .back{transform:rotateY(180deg);border-radius:4px 0 0 4px;background:linear-gradient(160deg,#f6efdf,#e8dac1)}
+  .sheet .front::after,.sheet .back::after{content:"";position:absolute;top:0;bottom:0;width:18px;pointer-events:none;z-index:2}
+  .sheet .front::after{left:0;background:linear-gradient(90deg,rgba(60,40,20,.16),transparent)}
+  .sheet .back::after{right:0;background:linear-gradient(270deg,rgba(60,40,20,.16),transparent)}
+  .sheet .pageNum{position:absolute;bottom:10px;font-family:var(--mono);font-size:.36rem;letter-spacing:.08em;color:var(--dim)}
+  .sheet .front .pageNum{right:14px}.sheet .back .pageNum{left:14px}
+  .sheet .runHead{font-family:var(--mono);font-size:.34rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+  .sheet h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.1rem,2vw,1.6rem);line-height:1;letter-spacing:-.03em;margin-top:8px}
+  .sheet h2 em{font-style:italic;color:var(--blue)}
+  .sheet p{font-family:var(--serif);font-size:clamp(.6rem,1vw,.74rem);line-height:1.7;color:rgba(36,52,74,.75);margin-top:6px}
+  .sheet .art{display:flex;justify-content:center;margin:6px 0;flex:1;align-items:center;min-height:0}
+  .sheet .art svg{max-height:100%;width:auto;max-width:100%}
+  .corner{position:absolute;right:0;bottom:0;width:34px;height:34px;background:linear-gradient(225deg,#e0d0b2 50%,#c8b48f 51%,#efe2c9 100%);border-left:1px solid rgba(60,40,20,.18);z-index:6;transition:transform .3s;transform-origin:bottom right}
+  .sheet:hover .corner{transform:rotate(-14deg) scale(1.1)}
+
+  .controls{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:rgba(244,237,221,.6)}
+  .controls .leftCtl{display:flex;gap:7px;align-items:center}
+  .btn{border:1px solid rgba(244,237,221,.25);padding:7px 11px;font-family:var(--mono);font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(244,237,221,.65);transition:background .2s,color .2s,border-color .2s}
+  .btn:hover{background:var(--paper);color:var(--table);border-color:var(--paper)}
+  .btn:disabled{opacity:.3;cursor:not-allowed}
+  .progress{flex:1;max-width:180px;height:1px;background:rgba(244,237,221,.2);position:relative}
+  .progress i{position:absolute;left:0;top:0;height:1px;background:var(--red);transition:width .4s}
+  .counter{font-family:var(--mono);font-size:.4rem;letter-spacing:.08em}
+  .counter b{color:var(--paper);font-weight:400}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:12px;padding-top:8px;border-top:1px solid rgba(244,237,221,.15);color:rgba(244,237,221,.3);font-family:var(--mono);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:760px){
+    .book{aspect-ratio:1.35/1;flex-direction:column}
+    .pageBase.left{display:none}
+    .pageBase.rightBase{display:none}
+    .sheets{position:relative;left:0;width:100%;height:100%}
+    .sheet .front,.sheet .back{border-radius:4px}
+    .sheet .back{display:none}
+    .sheet .front{position:relative;inset:auto;height:100%}
+    .sheet .art svg{max-height:150px}
+    .bookStage{padding:0}
+  }
+  @media(max-width:520px){
+    body{padding:14px 8px}
+    .headRight{display:none}
+    .controls{gap:8px}
+    .progress{display:none}
+    .btn{font-size:.32rem;padding:6px 8px}
+    header{font-size:.4rem}
+    footer span:nth-child(2){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#top"><span class="bookmark" aria-hidden="true"></span><span>The Cartographer's Sleep<small>A small book / four spreads</small></span></a>
+    <div class="headRight mono">Hand-bound in one file<br><b>Edition 01 of 01</b></div>
+  </header>
+
+  <div class="bookStage">
+    <div class="book" id="book" tabindex="0" role="group" aria-label="Flip book. Use arrow keys to turn pages.">
+      <div class="pageBase left">
+        <div class="leftContent">
+          <div>
+            <p class="kicker">A short story</p>
+            <h1>The<br>Cartographer's<br><em>Sleep.</em></h1>
+            <p>A mapmaker tries to draw the room he is falling asleep in. The room, politely, declines to hold still.</p>
+          </div>
+          <svg class="mapArt" viewBox="0 0 260 150" aria-hidden="true">
+            <g fill="none" stroke="#3b5c7a" stroke-width=".9" opacity=".8">
+              <path d="M10,120 C40,80 70,96 92,68 C112,42 142,60 160,42 C182,20 214,36 248,18"/>
+              <path d="M18,132 C52,100 82,112 110,86 C134,62 158,76 180,56 C202,36 226,48 250,32" opacity=".5"/>
+              <circle cx="92" cy="68" r="4"/><circle cx="160" cy="42" r="3"/><circle cx="216" cy="30" r="2.4"/>
+              <path d="M92,68 L160,42 L216,30" stroke-dasharray="2 3"/>
+              <path d="M236,22 L246,14 L252,26Z" fill="#b24a35" stroke="none" opacity=".8"/>
+              <text x="14" y="146" font-family="ui-monospace, monospace" font-size="6" fill="#3b5c7a" stroke="none" letter-spacing="1">FIG. 1 — A ROOM, APPROXIMATELY</text>
+            </g>
+          </svg>
+          <div class="imprint mono">Written &amp; drawn in one file<br>Paper <b>ivory</b> · ink <b>blue</b> · <b>6 pages</b></div>
+        </div>
+      </div>
+      <div class="pageBase rightBase"></div>
+
+      <div class="sheets" id="sheets">
+        <div class="sheet" data-i="0">
+          <div class="front">
+            <div class="runHead mono"><span>Chapter one</span><span>p. 1</span></div>
+            <div><h2>The room, <em>at first.</em></h2><p>The cartographer began with the window, because windows are easy: a rectangle, a cross, a little weather beyond. Then the desk refused its outline. Then the chair.</p></div>
+            <div class="art"><svg viewBox="0 0 240 150" aria-hidden="true"><g fill="none" stroke="#3b5c7a" stroke-width="1"><rect x="40" y="24" width="78" height="94"/><path d="M79 24v94M40 71h78"/><path d="M128 118h68M138 118v-40h44v40M152 78v40M170 78v40"/><circle cx="190" cy="46" r="13"/><path d="M190 33v-8M190 59v8M177 46h-8M203 46h8"/></g><g fill="none" stroke="#b24a35" stroke-width=".8" opacity=".75"><path d="M24 132 C60 120 94 128 130 118 S200 96 230 104"/><circle cx="130" cy="118" r="2.6"/><text x="20" y="146" font-family="ui-monospace, monospace" font-size="5.6" fill="#b24a35">THE WINDOW KEPT ITS SHAPE</text></g></svg></div>
+            <span class="pageNum">1</span><span class="corner" aria-hidden="true"></span>
+          </div>
+          <div class="back">
+            <div class="runHead mono"><span>Chapter one</span><span>p. 2</span></div>
+            <div><h2>The desk, <em>unruly.</em></h2><p>He drew the desk four times and each version was more like a boat. He decided to keep the fourth. Maps are allowed to be honest about the wrong thing.</p></div>
+            <div class="art"><svg viewBox="0 0 240 150" aria-hidden="true"><g fill="none" stroke="#3b5c7a" stroke-width="1"><path d="M34 108 L200 108 L186 128 L48 128Z"/><path d="M56 108v-30h118v30M56 78h118"/><path d="M74 78 C74 56 98 46 114 58 C130 44 158 54 158 78"/><path d="M44 92 L210 92" stroke-dasharray="3 4" opacity=".5"/></g><g fill="none" stroke="#b24a35" stroke-width=".8"><path d="M86 56 C96 38 122 34 142 48" stroke-dasharray="2 3"/><circle cx="142" cy="48" r="2.4"/></g></svg></div>
+            <span class="pageNum">2</span>
+          </div>
+        </div>
+        <div class="sheet" data-i="1">
+          <div class="front">
+            <div class="runHead mono"><span>Chapter two</span><span>p. 3</span></div>
+            <div><h2>Outside, <em>a sea.</em></h2><p>Beyond the window, the street had become a very small sea. A boat passed. He drew it in the margin, where impossible things are allowed to dock.</p></div>
+            <div class="art"><svg viewBox="0 0 240 150" aria-hidden="true"><g fill="none" stroke="#3b5c7a" stroke-width="1"><path d="M20 96 C60 86 90 102 130 92 S200 84 226 96"/><path d="M20 110 C60 100 92 116 132 106 S202 98 226 110"/><path d="M94 92 L106 68 L158 76 L166 92Z"/><path d="M132 68 L132 34 L164 64"/><circle cx="190" cy="36" r="9"/></g><g stroke="#b24a35" fill="none" stroke-width=".9"><path d="M118 82 L146 86" stroke-dasharray="2 2"/><path d="M146 78 L152 86 L144 88"/><text x="20" y="142" font-family="ui-monospace, monospace" font-size="5.6" fill="#b24a35">THE BOAT WAS NOT ON ANY CHART</text></g></svg></div>
+            <span class="pageNum">3</span><span class="corner" aria-hidden="true"></span>
+          </div>
+          <div class="back">
+            <div class="runHead mono"><span>Chapter two</span><span>p. 4</span></div>
+            <div><h2>The map, <em>growing.</em></h2><p>By midnight the room contained a harbour, two mountains and a small republic of sleep. He labelled nothing. Naming is a kind of closing.</p></div>
+            <div class="art"><svg viewBox="0 0 240 150" aria-hidden="true"><g fill="none" stroke="#3b5c7a" stroke-width=".9"><circle cx="120" cy="72" r="56"/><circle cx="120" cy="72" r="40" stroke-dasharray="3 5"/><path d="M120 16v112M64 72h112M82 34l76 76M158 34l-76 76"/><path d="M100 50 L120 30 L140 50 L132 76 L108 76Z"/></g><g fill="#b24a35"><circle cx="120" cy="72" r="3"/><circle cx="76" cy="62" r="2"/><circle cx="164" cy="88" r="2"/></g><text x="20" y="144" font-family="ui-monospace, monospace" font-size="5.6" fill="#b24a35">FIG. 2 — A REPUBLIC OF SLEEP</text></svg></div>
+            <span class="pageNum">4</span>
+          </div>
+        </div>
+        <div class="sheet" data-i="2">
+          <div class="front">
+            <div class="runHead mono"><span>Chapter three</span><span>p. 5</span></div>
+            <div><h2>He slept, <em>briefly.</em></h2><p>The pencil rolled to the floor. The room, relieved, returned to being a room. In the morning the map was still there, and slightly more accurate than before.</p></div>
+            <div class="art"><svg viewBox="0 0 240 150" aria-hidden="true"><g fill="none" stroke="#3b5c7a" stroke-width="1"><path d="M44 126 C60 104 80 104 92 120 C104 98 134 98 146 120 C160 106 180 110 190 126Z"/><path d="M54 78 C54 48 84 34 120 34 C156 34 186 48 186 78"/><path d="M64 84 C74 66 100 56 120 56 C140 56 166 66 176 84"/><path d="M38 96 C58 88 80 92 96 104M144 104 C160 92 182 88 202 96"/></g><g fill="#3b5c7a"><circle cx="106" cy="70" r="2"/><circle cx="134" cy="70" r="2"/></g><g fill="#b24a35" opacity=".8"><circle cx="206" cy="40" r="1.6"/><circle cx="30" cy="50" r="1.2"/><circle cx="216" cy="70" r="1"/></g></svg></div>
+            <span class="pageNum">5</span><span class="corner" aria-hidden="true"></span>
+          </div>
+          <div class="back">
+            <div class="runHead mono"><span>Colophon</span><span>p. 6</span></div>
+            <div><h2>The end, <em>for now.</em></h2><p>This book was drawn in the browser, bound in a single file, and set in a system serif. The cartographer is still asleep. Please close the cover quietly.</p></div>
+            <div class="art" style="align-items:flex-end"><svg viewBox="0 0 240 80" aria-hidden="true"><g fill="none" stroke="#3b5c7a" stroke-width=".9"><path d="M20 40 C70 10 170 10 220 40"/><path d="M20 52 C70 22 170 22 220 52"/><path d="M20 64 C70 34 170 34 220 64"/></g><g fill="#b24a35"><circle cx="120" cy="32" r="3"/></g></svg></div>
+            <span class="pageNum">6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" style="margin-top:10px">
+    <div class="leftCtl"><button class="btn" id="prev">← Previous</button><button class="btn" id="next">Next →</button><button class="btn" id="close">Close the book</button></div>
+    <div class="progress" aria-hidden="true"><i id="bar" style="width:0%"></i></div>
+    <span class="counter mono">Spread <b id="spread">01</b> / 03 · Page <b id="page">1</b></span>
+  </div>
+
+  <footer class="mono">
+    <span>The Cartographer's Sleep — a fictional book</span>
+    <span>Paper, ink, four spreads</span>
+    <span>© 2026 · close gently</span>
+  </footer>
+</div>
+
+<script>
+  const sheets = Array.from(document.querySelectorAll('.sheet'));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let flipped = 0;
+
+  function render(){
+    const mobile = window.innerWidth <= 760;
+    sheets.forEach((s, i) => {
+      if (mobile){
+        s.classList.remove('flipped');
+        s.style.display = i === flipped ? 'block' : 'none';
+        s.style.transform = 'none';
+        s.style.pointerEvents = i === flipped ? 'auto' : 'none';
+        return;
+      }
+      s.style.display = 'block';
+      s.classList.toggle('flipped', i < flipped);
+      s.style.zIndex = i < flipped ? i + 1 : sheets.length - i;
+      s.style.pointerEvents = i === flipped ? 'auto' : 'none';
+    });
+    document.getElementById('bar').style.width = (flipped / sheets.length * 100) + '%';
+    document.getElementById('spread').textContent = String(flipped + 1).padStart(2,'0');
+    document.getElementById('page').textContent = flipped === 0 ? '1' : String(flipped * 2 + 1);
+    document.getElementById('prev').disabled = flipped === 0;
+    document.getElementById('next').disabled = flipped === sheets.length;
+    sheets.forEach((s, i) => s.style.transition = reduce ? 'none' : '');
+  }
+
+  document.getElementById('next').addEventListener('click', () => { if (flipped < sheets.length){ flipped++; render(); } });
+  document.getElementById('prev').addEventListener('click', () => { if (flipped > 0){ flipped--; render(); } });
+  document.getElementById('close').addEventListener('click', () => { flipped = 0; render(); });
+  document.getElementById('book').addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight'){ if (flipped < sheets.length){ flipped++; render(); } e.preventDefault(); }
+    if (e.key === 'ArrowLeft'){ if (flipped > 0){ flipped--; render(); } e.preventDefault(); }
+  });
+  document.querySelector('.pageBase.left').addEventListener('click', () => { if (flipped > 0){ flipped--; render(); } });
+  sheets.forEach((s, i) => s.addEventListener('click', () => { if (i === flipped && flipped < sheets.length){ flipped++; render(); } }));
+  window.addEventListener('resize', render);
+  render();
+</script>
+</body>
+</html>

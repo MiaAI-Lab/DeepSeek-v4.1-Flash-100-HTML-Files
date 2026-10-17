@@ -1,0 +1,20 @@
+TITLE
+TERRZO® — A Studio Made of Little Pieces
+
+PROMPT
+Design a playful, premium portfolio page for a fictional design studio called TERRZO®, inspired by terrazzo: a warm cream page scattered with irregular coloured chips, thick black rules, chunky friendly typography and rounded panels. Palette: cream, ink, coral, mint, cobalt, butter and lilac. The hero says "We make joyful things." with coloured highlight blocks and a hand-drawn underline; beside it sits a large terrazzo tile built from dozens of irregular CSS chips, with a rotating circular badge. Add three asymmetric project cards, a colourful marquee, a "throw confetti" interaction that releases paper chips across the screen, and a generous footer. It must feel like a bright, confident independent studio — not a children's page. Fully responsive, one standalone HTML file with inline CSS/JS, no external assets.
+
+DESIGN INTENT
+Joy with art direction. The page borrows the visual logic of terrazzo — many small, irregular pieces making one confident surface — and applies it to layout: chips, cards and type blocks are placed like aggregate in a slab. Thick black strokes and a tight editorial grid keep the playfulness from becoming chaos. Every interaction should feel like handling good paper.
+
+VISUAL TECHNIQUES
+- Terrazzo surfaces built from dozens of absolutely positioned CSS chips with varied border-radius, rotation and colour.
+- Highlight blocks behind words using inline box-decoration-break; a hand-drawn SVG underline.
+- Asymmetric project grid with pastel cards, oversized indices and playful hover offsets.
+- Confetti system using CSS custom properties, Web Animations or keyframes, generated chips and automatic cleanup.
+- Rotating badge with circular text and a small star centre.
+- Chunky grotesque display type with tight tracking; monospaced small caps; generous rounding.
+- Responsive stacking with the tile scaling and the nav collapsing.
+
+INTERACTION MODEL
+Hovering a project card tilts it slightly and slides its arrow; clicking a word in the headline throws a small burst of confetti. The "Throw confetti" button releases a larger shower of chips across the hero, which clean themselves up. The rotating badge pauses on hover. All buttons are keyboard accessible, and reduced-motion suppresses confetti and rotation while keeping the colour and layout.

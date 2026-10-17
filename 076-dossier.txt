@@ -1,0 +1,20 @@
+TITLE
+Case File 07-19 — Bureau of Unresolved Affairs
+
+PROMPT
+Create a classified dossier page styled as a manila folder on a dark wooden desk, for a fictional "Bureau of Unresolved Affairs". Warm manila paper, typewriter type, black redaction bars, red rubber stamps, paperclips and a coffee ring. The folder contains a subject photograph (an abstract silhouette), filed metadata, three tabs (Subject, Timeline, Assets) and paragraphs punctuated by redactions. Clicking a redaction reveals the hidden text; a counter tracks how many remain, and when all are revealed a large "DECLASSIFIED" stamp appears. Include a "Declassify all" control, typewriter signatures, case number and a footer. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+A prop you want to pick up. The folder should feel physically present: slightly misaligned papers, sharp folds, a string closure, carbon-copy type. Redactions are the interaction — each one is a small act of reading something you were not meant to see. The mood is deadpan bureaucratic, not spy-movie camp.
+
+VISUAL TECHNIQUES
+- Manila folder with tab, crease gradients, a string closure and layered paper sheets.
+- CSS subject photograph with silhouette, grain and a redacted eye bar.
+- Typewriter typography, carbon-smudged headings, rubber stamps and handwritten signatures.
+- Black redaction bars as accessible buttons that reveal text on activation.
+- Tabbed dossier sections with different content and case notes.
+- Coffee ring, paperclip and staple details drawn in CSS.
+- Responsive folder that becomes a single column on mobile; reduced-motion only removes transitions.
+
+INTERACTION MODEL
+Clicking a redaction reveals its text and updates the "redactions remaining" count. Tabs switch between Subject, Timeline and Assets. "Declassify all" reveals every redaction in the active file and triggers the stamp. "Reopen" restores all redactions for a fresh reading. Redactions are keyboard-focusable buttons with descriptive labels, and reduced-motion removes the stamp animation only.

@@ -1,0 +1,20 @@
+TITLE
+Sunset Mall — Open Late, Forever
+
+PROMPT
+Create a vaporwave mall landing page called "SUNSET MALL", set in a permanent 1987 sunset. A pink-to-violet sky, a huge striped sun, a purple perspective grid floor stretching to the horizon, dark palm silhouettes, chrome display type and magenta/cyan neon. The hero reads "SUNSET MALL" in a polished chrome gradient with an italic serif "open late, forever" underneath. Include a small header with VHS timestamp, a paired CTA ("Enter the mall" and a neon lights toggle), three storefront cards (Cinema 3, Food Court, Arcade) with neon borders, a marquee strip of announcements, and a VHS playback bar. Toggle the neon to dim the scene and reveal a "closed" state. Fully responsive, one standalone HTML file with inline CSS/JS/SVG, no external images or fonts.
+
+DESIGN INTENT
+A knowingly artificial paradise, art-directed rather than ironic. The composition is symmetrical and monumental: sun, palms, grid, chrome title, neon storefronts. It should feel like a mall at closing time in a film that was never released. The nostalgia is precise — chrome, grid, VHS, hot pink and cyan — but the typography is contemporary and expensive.
+
+VISUAL TECHNIQUES
+- Chrome gradient display type with layered text shadows, italic serif counterpoint and perspective.
+- Striped sun built from repeating linear gradients behind a soft magenta bloom.
+- Perspective floor grid using CSS 3D transforms and an infinite scroll animation.
+- Palm silhouettes drawn inline in SVG with layered fronds.
+- Neon-bordered storefront cards with glow and hover lift.
+- Scanlines, VHS chromatic fringing, timestamp and a play indicator.
+- A "neon off" state that desaturates the scene and shows a closed sign; reduced-motion stops the grid and glows.
+
+INTERACTION MODEL
+"Enter the mall" smooth-scrolls to the store directory. The neon toggle switches between open (bright, animated) and closed (dim, still) with a visible CLOSED sign and updated status text. Store cards glow brighter on hover and show a small "open" label. All controls are keyboard accessible; reduced-motion removes the grid scroll, glows and scanline flicker.

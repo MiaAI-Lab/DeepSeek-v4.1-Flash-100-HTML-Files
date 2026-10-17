@@ -1,0 +1,20 @@
+TITLE
+Sumi — One Breath, One Line
+
+PROMPT
+Create a sumi-e ink painting studio called "Sumi — one breath, one line." Warm rice paper, black ink, a single vermilion seal, and generous empty space. The page is a single sheet: a small masthead, a large hand-painted ensō circle and a branch with leaves already on the paper, a vertical haiku, and a red hanko stamp. Visitors can drag anywhere on the paper to paint ink strokes with taper and bleed; a brush-size slider changes the weight, "Enso" paints a fresh circle, and "New sheet" resets to the opening composition. The canvas should feel absorbent — soft edges, tiny splatters, fibres — not like a digital marker. Typography mixes a restrained serif title with vertical Japanese-style text and tiny monospaced notes. Fully responsive, one standalone HTML file with inline CSS/JS, no external images or fonts.
+
+DESIGN INTENT
+The page is a sheet of paper, not an app. Controls are printed in the margin like instructions on a brush box; the painting takes almost all the room. Black is never pure — it carries warmth and variation. The red seal is the only saturated colour, and it anchors the composition like a signature. Interaction should slow the hand down.
+
+VISUAL TECHNIQUES
+- Canvas painting with velocity- and pressure-sensitive brush width, layered bleed stamps and occasional splatter.
+- A generated ensō circle with a deliberate gap, tapered ends and dry-brush texture.
+- Rice-paper ground: warm gradient, fibre strokes, faint deckled edge and paper grain.
+- Ink brush with soft, irregular edges created by repeated low-alpha jittered circles.
+- Vertical haiku typography, a carved vermilion seal and monospaced marginalia.
+- Brush-size control styled as a thin ink line; three text-only actions.
+- Retina-aware canvas and a reduced-motion path that skips stroke easing but keeps painting.
+
+INTERACTION MODEL
+Dragging on the paper paints a stroke that follows the hand; faster gestures create thinner, drier lines, slower ones pool more ink. The brush-size slider sets the base weight. "Enso" paints a new circle in a slightly different hand. "New sheet" clears the paper and redraws the opening composition. A live note reports when the sheet has been marked. All controls are keyboard accessible, and the canvas remains fully usable by touch.

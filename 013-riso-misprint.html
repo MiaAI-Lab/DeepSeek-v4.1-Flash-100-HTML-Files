@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Misprint — a risograph quarterly about the beauty of imperfect registration.">
+<title>Misprint — A Risograph Quarterly</title>
+<style>
+  html{overflow-x:hidden}
+  :root{
+    --paper:#f1e9d6; --ink:#161412; --pink:#ff4f7e; --blue:#2f6fdb; --violet:#5b2c86; --dim:rgba(22,20,18,.6);
+    --off:4px;
+    --sans:"Helvetica Neue","Arial Narrow",-apple-system,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(rgba(22,20,18,.045) .6px,transparent .6px);background-size:4px 4px}
+  body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.4;mix-blend-mode:multiply;
+    background-image:radial-gradient(rgba(0,0,0,.34) .45px,transparent .7px),radial-gradient(rgba(255,255,255,.22) .4px,transparent .65px),radial-gradient(rgba(0,0,0,.2) .4px,transparent .65px);background-size:3px 3px,4px 4px,5px 5px;background-position:0 0,1px 2px,2px 1px}
+  ::selection{background:var(--pink);color:var(--paper)}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .mono{font-family:var(--mono);font-size:.55rem;letter-spacing:.11em;text-transform:uppercase;line-height:1.6}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 clamp(14px,3vw,38px)}
+  .crop{position:fixed;width:16px;height:16px;z-index:80;pointer-events:none;border-color:var(--ink);opacity:.55}
+  .c1{top:12px;left:12px;border-left:1px solid;border-top:1px solid}.c2{top:12px;right:12px;border-right:1px solid;border-top:1px solid}
+  .c3{bottom:12px;left:12px;border-left:1px solid;border-bottom:1px solid}.c4{bottom:12px;right:12px;border-right:1px solid;border-bottom:1px solid}
+
+  .masthead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:14px 0;border-bottom:3px solid var(--ink)}
+  .masthead .meta{color:var(--dim);line-height:1.8}
+  .masthead .meta b{color:var(--ink);font-weight:400}
+  .logo{text-align:center;font-weight:800;letter-spacing:-.05em;font-size:clamp(1.1rem,2.6vw,1.8rem);line-height:1;text-transform:uppercase}
+  .logo span{display:block;font-family:var(--mono);font-size:.4rem;letter-spacing:.32em;font-weight:400;margin-top:5px}
+  .masthead .right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;color:var(--dim)}
+  .masthead .right b{color:var(--ink);font-weight:400}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--paper);padding:3px 7px;font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+
+  .cover{padding:clamp(24px,4vw,44px) 0 24px;border-bottom:1px solid var(--ink);position:relative}
+  .cover .kicker{display:flex;justify-content:space-between;gap:16px;color:var(--dim);margin-bottom:8px}
+  .cover .kicker b{color:var(--pink);font-weight:400}
+  .displayWrap{position:relative;isolation:isolate;margin:6px 0 0}
+  .bigType{position:relative;font-size:clamp(4.4rem,17.4vw,15.4rem);line-height:.74;font-weight:800;letter-spacing:-.075em;text-transform:uppercase;
+    font-stretch:condensed;white-space:nowrap}
+  .bigType .layer{position:absolute;inset:0;pointer-events:none}
+  .bigType .pink{color:var(--pink);transform:translate(calc(var(--off) * -1.6),calc(var(--off) * -.5));mix-blend-mode:multiply;z-index:-2}
+  .bigType .blue{color:var(--blue);transform:translate(var(--off),calc(var(--off) * .55));mix-blend-mode:multiply;z-index:-1}
+  .bigType .main{position:relative;color:var(--ink);z-index:1}
+  .bigType .main::after{content:"";display:inline-block;width:.1em;height:.1em;background:var(--pink);margin-left:.03em}
+  .coverGrid{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(20px,4vw,48px);align-items:end;margin-top:10px}
+  .coverNote{max-width:42ch;font-family:var(--serif);font-size:clamp(.95rem,1.5vw,1.12rem);line-height:1.55}
+  .coverNote em{background:linear-gradient(transparent 58%,rgba(255,79,126,.35) 58%)}
+  .coverNote .by{display:block;margin-top:14px;font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .artWrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:180px}
+  .halftone{width:clamp(150px,22vw,240px);aspect-ratio:1;border-radius:50%;background:var(--pink);position:relative;mix-blend-mode:multiply;
+    -webkit-mask-image:radial-gradient(circle,#000 58%,transparent 60%);mask-image:radial-gradient(circle,#000 58%,transparent 60%)}
+  .halftone::before{content:"";position:absolute;inset:0;border-radius:50%;
+    background-image:radial-gradient(var(--paper) 1.1px,transparent 1.5px);background-size:6px 6px;mix-blend-mode:screen}
+  .halftone::after{content:"";position:absolute;inset:-14%;border:2px solid var(--blue);border-radius:50%;mix-blend-mode:multiply;transform:rotate(-7deg)}
+  .artLabel{position:absolute;right:0;bottom:6px;font-family:var(--mono);font-size:.44rem;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);text-align:right;line-height:1.6}
+
+  .tape{position:absolute;z-index:6;width:120px;height:28px;background:rgba(240,229,198,.72);border:1px solid rgba(22,20,18,.14);
+    box-shadow:0 2px 8px rgba(22,20,18,.12);transform:rotate(-6deg);top:clamp(18px,4vw,40px);right:4%}
+  .tape::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.25) 0 2px,transparent 2px 5px)}
+  .sticker{position:absolute;z-index:7;left:42%;top:clamp(-16px,-2vw,-6px);width:96px;height:96px;border-radius:50%;background:var(--blue);color:var(--paper);
+    display:grid;place-items:center;text-align:center;font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.5;
+    transform:rotate(9deg);box-shadow:0 4px 0 rgba(22,20,18,.18);mix-blend-mode:multiply}
+  .sticker b{display:block;font-family:var(--sans);font-size:.95rem;letter-spacing:-.03em;line-height:1;margin-bottom:2px}
+
+  .controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding-top:12px;border-top:1px solid rgba(22,20,18,.3)}
+  .controls label{color:var(--dim);white-space:nowrap}
+  input[type=range]{width:min(220px,50vw);height:16px;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--ink)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--pink);border:1px solid var(--ink);margin-top:-6px;border-radius:0}
+  input[type=range]::-moz-range-track{height:2px;background:var(--ink)}
+  input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--pink);border:1px solid var(--ink);border-radius:0}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--ink);font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,color .2s}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.swap{border-color:var(--blue);color:var(--blue)}
+  .btn.swap:hover{background:var(--blue);color:var(--paper)}
+  .regMark{margin-left:auto;color:var(--dim);display:flex;align-items:center;gap:8px}
+  .regMark .target{width:16px;height:16px;border:1px solid var(--ink);border-radius:50%;position:relative}
+  .regMark .target::before,.regMark .target::after{content:"";position:absolute;background:var(--ink)}
+  .regMark .target::before{left:50%;top:-3px;bottom:-3px;width:1px;transform:translateX(-50%)}
+  .regMark .target::after{top:50%;left:-3px;right:-3px;height:1px;transform:translateY(-50%)}
+
+  .spread{display:grid;grid-template-columns:.9fr 1.2fr .9fr;gap:0;padding:26px 0 20px;border-bottom:1px solid var(--ink)}
+  .spread > div{padding:0 clamp(12px,2vw,24px);border-right:1px solid rgba(22,20,18,.28)}
+  .spread > div:first-child{padding-left:0}
+  .spread > div:last-child{border-right:0;padding-right:0}
+  .colhead{display:flex;justify-content:space-between;gap:10px;color:var(--dim);padding-bottom:7px;margin-bottom:12px;border-bottom:2px solid var(--ink)}
+  .colhead b{color:var(--pink);font-weight:400}
+  .copy p{font-family:var(--serif);font-size:.84rem;line-height:1.7;text-align:justify;hyphens:auto;margin-bottom:9px}
+  .copy p:first-child::first-letter{float:left;font-family:var(--sans);font-size:3.4rem;line-height:.72;padding:.1em .08em 0 0;color:var(--pink);font-weight:800}
+  .pull{font-size:clamp(1.3rem,2.5vw,2rem);line-height:1.1;font-weight:800;letter-spacing:-.05em;text-transform:uppercase;color:var(--blue);transform:rotate(-1.5deg);margin:8px 0 14px}
+  .pull span{color:var(--pink)}
+  .mini{font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);line-height:1.8}
+  .mini b{color:var(--ink);font-weight:400}
+  .list{border-top:1px solid var(--ink)}
+  .list div{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(22,20,18,.2);font-family:var(--mono);font-size:.47rem;letter-spacing:.05em;text-transform:uppercase}
+  .list b{font-weight:400;color:var(--dim)}
+  .swatchRow{display:flex;gap:6px;margin-top:12px}
+  .swatch{flex:1;height:34px;position:relative;mix-blend-mode:multiply}
+  .swatch:nth-child(1){background:var(--pink)}.swatch:nth-child(2){background:var(--blue)}.swatch:nth-child(3){background:var(--violet)}
+  .swatchRow + .mini{margin-top:8px}
+  .stamp{display:inline-block;border:2px solid var(--pink);color:var(--pink);padding:5px 8px;transform:rotate(-3deg);font-family:var(--mono);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:12px}
+
+  .strip{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 0 24px;color:var(--dim)}
+  .strip .marks{display:flex;gap:6px}
+  .strip .marks span{width:22px;height:8px;background:var(--ink);opacity:.18}
+  footer{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:12px 0 26px;border-top:3px solid var(--ink);color:var(--dim)}
+  footer b{color:var(--ink);font-weight:400}
+
+  @media(max-width:900px){
+    .coverGrid{grid-template-columns:1fr;gap:18px}
+    .artWrap{min-height:140px;justify-content:flex-start}
+    .tape{right:8%}
+    .spread{grid-template-columns:1fr 1fr}
+    .spread > div:first-child{grid-column:1/-1;border-right:0;border-bottom:1px solid rgba(22,20,18,.28);padding:0 0 16px}
+    .spread > div:nth-child(2){padding-left:0}
+    .sticker{left:auto;right:2%;top:-10px;width:80px;height:80px}
+  }
+  @media(max-width:600px){
+    .masthead{grid-template-columns:1fr auto}
+    .masthead .meta{display:none}
+    .masthead .right .badge{display:none}
+    .logo{text-align:left}
+    .bigType{font-size:21vw}
+    .spread{grid-template-columns:1fr}
+    .spread > div{border-right:0!important;border-bottom:1px solid rgba(22,20,18,.28);padding:14px 0!important}
+    .spread > div:last-child{border-bottom:0}
+    .controls{gap:10px}
+    .regMark{margin-left:0;width:100%;margin-top:4px}
+    .sticker{display:none}
+    .tape{width:80px;height:22px;right:2%}
+    .colhead{font-size:.48rem}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+</style>
+</head>
+<body style="--off:4px">
+<div class="crop c1" aria-hidden="true"></div><div class="crop c2" aria-hidden="true"></div><div class="crop c3" aria-hidden="true"></div><div class="crop c4" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="masthead">
+    <div class="meta mono">Vol. 03 / Issue 09<br><b>Autumn 2026</b></div>
+    <div class="logo">Risograph Quarterly<span>Two inks · no apologies · printed in a bedroom</span></div>
+    <div class="right mono"><span>Edition <b>214 / 300</b></span><span class="badge">Fluorescent pink + medium blue</span></div>
+  </header>
+
+  <main>
+    <section class="cover" aria-labelledby="cover-title">
+      <div class="tape" aria-hidden="true"></div>
+      <div class="kicker mono"><span>Cover story — <b>making it wrong on purpose</b></span><span>36 pages / 2 spot colours</span></div>
+      <div class="displayWrap">
+        <div class="bigType" id="bigType">
+          <span class="layer pink" aria-hidden="true">Misprint</span>
+          <span class="layer blue" aria-hidden="true">Misprint</span>
+          <h1 class="main" id="cover-title">Misprint</h1>
+        </div>
+        <div class="sticker" aria-hidden="true"><span><b>Fresh</b>off the<br>drum</span></div>
+      </div>
+
+      <div class="coverGrid">
+        <p class="coverNote">A quarterly about the happy accident: the sheet that slipped, the ink that bled, the layer that landed <em>three millimetres to the left</em> and made the whole thing better.<span class="by">Words by Nell Park · Cover printed at 03:40</span></p>
+        <div class="artWrap" aria-hidden="true">
+          <div class="halftone"></div>
+          <div class="artLabel">Fig. 1 — the sun,<br>through a 45-line screen</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label class="mono" for="offset">Misregistration</label>
+        <input id="offset" type="range" min="0" max="14" value="4" step="0.5" aria-label="Misregistration amount">
+        <span class="mono" id="offsetOut" style="width:38px;color:var(--pink)">4.0mm</span>
+        <button class="btn" id="reprint">↻ Re-print</button>
+        <button class="btn swap" id="swap">⇄ Swap inks</button>
+        <div class="regMark mono"><span class="target" aria-hidden="true"></span> Register / imperfect by design</div>
+      </div>
+    </section>
+
+    <section class="spread" aria-label="Editorial">
+      <div>
+        <div class="colhead mono"><span>01 — Editorial</span><span><b>p. 04</b></span></div>
+        <div class="copy">
+          <p>The risograph was never meant to be perfect. It was meant to be <em>fast</em>: a machine for schools, churches, flyers, zines. It drinks ink from a tube, prints one colour at a time, and asks you to come back when the drum has stopped spinning.</p>
+          <p>What made it beloved was the gap between passes. The paper shifts. The ink sits on top rather than sinking in. Every copy is a little different, and the difference is the point.</p>
+        </div>
+      </div>
+      <div>
+        <div class="colhead mono"><span>02 — The accident</span><span><b>p. 12</b></span></div>
+        <p class="pull">Every good poster is a near miss that <span>decided to stay.</span></p>
+        <p class="mini" style="margin-bottom:12px">A short taxonomy of happy mistakes, as collected by the studio.</p>
+        <div class="list">
+          <div><span>The slip</span><b>1—3 mm</b></div>
+          <div><span>The bleed</span><b>Deliberate</b></div>
+          <div><span>The ghost</span><b>Second pass</b></div>
+          <div><span>The blot</span><b>Unrepeatable</b></div>
+        </div>
+      </div>
+      <div>
+        <div class="colhead mono"><span>03 — Colophon</span><span><b>p. 36</b></span></div>
+        <p class="mini">Printed in two passes on 120gsm uncoated stock. Set in system grotesque, tracked too tight on purpose. Bound with two staples and a certain amount of optimism.</p>
+        <div class="swatchRow" aria-hidden="true"><span class="swatch"></span><span class="swatch"></span><span class="swatch"></span></div>
+        <p class="mini">Pink 801 / Blue 501 / Overprint 304</p>
+        <span class="stamp">Approved by the studio dog</span>
+      </div>
+    </section>
+
+    <div class="strip mono">
+      <span>Risograph Quarterly — a fictional publication</span>
+      <span class="marks" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>Printed in one file / no ink was harmed</span>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>© 2026 Risograph Quarterly · <b>Issue 09</b></span>
+    <span>Find us at the copy shop, Thursdays</span>
+    <span>Back cover ↑ <a href="#" style="border-bottom:1px solid var(--ink)">reprint</a></span>
+  </footer>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const slider = document.getElementById('offset');
+  const out = document.getElementById('offsetOut');
+  const bigType = document.getElementById('bigType');
+  const sticker = document.querySelector('.sticker');
+  let swapped = false;
+
+  function applyOffset(v){
+    bigType.style.setProperty('--off', v + 'px');
+    out.textContent = Number(v).toFixed(1) + 'mm';
+  }
+
+  slider.addEventListener('input', function(){ applyOffset(this.value); });
+
+  document.getElementById('reprint').addEventListener('click', function(){
+    const base = 2 + Math.random() * 9;
+    slider.value = base.toFixed(1);
+    applyOffset(base);
+    sticker.style.transform = 'rotate(' + (Math.random() * 20 - 10).toFixed(1) + 'deg)';
+  });
+
+  document.getElementById('swap').addEventListener('click', function(){
+    swapped = !swapped;
+    const pink = swapped ? '#2f6fdb' : '#ff4f7e';
+    const blue = swapped ? '#ff4f7e' : '#2f6fdb';
+    root.style.setProperty('--pink', pink);
+    root.style.setProperty('--blue', blue);
+    this.textContent = swapped ? '⇄ Inks swapped' : '⇄ Swap inks';
+  });
+
+  applyOffset(4);
+</script>
+</body>
+</html>
